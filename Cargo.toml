@@ -1,0 +1,5 @@
+[package]
+
+name = "srmat"
+version = "0.0.1"
+authors = ["Shailesh Kumar <shailesh@indigits.com>"]
