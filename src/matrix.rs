@@ -4,7 +4,7 @@ use std::ptr;
 use std::ops;
 use std::cmp;
 use std::fmt;
-use std::num::One;
+use std::num::{One, Zero};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
@@ -226,11 +226,11 @@ impl<T:MatElt> Mat<T> {
     pub fn to_std_vec(&self) -> Vec<T> {
         let mut vec: Vec<T> = Vec::with_capacity(self.num_cells());
         // We iterate over elements in matrix and push in the vector
-        let s = self.as_slice_();
+        let ptr = self.ptr;
         for c in range(0, self.cols){
             for r in range (0, self.rows){
                 let offset = self.cell_to_offset(r, c);
-                vec.push(s[offset]);
+                vec.push(unsafe{*ptr.offset(offset)});
             }
         } 
         vec
@@ -280,14 +280,15 @@ impl <T:MatElt> Clone for Mat<T> {
 
 impl <T:MatElt+fmt::Show> fmt::Show for Mat<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let s = self.as_slice_();
+        let ptr = self.ptr;
         try!(write!(f, "["));
         // Here we print row by row
         for r in range (0, self.rows) {
            try!(write!(f, "\n  "));
             for c in range (0, self.cols){
-                let offset = c * self.stride() + r;
-                try!(write!(f, "{} ", s[offset]));
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                try!(write!(f, "{} ", v));
             }
         }
         try!(write!(f, "\n]\n"));
@@ -340,6 +341,55 @@ impl<T:MatElt> ops::Sub<Mat<T>, Mat<T>> for Mat<T>{
     }
 }
 
+/// Matrix multiplication support
+impl<T:MatElt> ops::Mul<Mat<T>, Mat<T>> for Mat<T>{
+    fn mul(&self, rhs: &Mat<T>) -> Mat<T> {
+        // Validate dimensions match for multiplication
+        if self.cols != rhs.rows{
+            fail!(DimensionsMismatch.to_string());
+        }
+        let result : Mat<T> = Mat::new(self.rows, rhs.cols);
+        let pa = self.ptr;
+        let pb = rhs.ptr;
+        let pc = result.ptr;
+        let zero : T = Zero::zero();
+        unsafe {
+            for r in range(0, self.rows){
+                for c in range(0, rhs.cols){
+                    let mut sum = zero;
+                    for j in range(0, self.cols){
+                        let lhs_offset = self.cell_to_offset(r, j);
+                        let rhs_offset = rhs.cell_to_offset(j, c);
+                        let term = *pa.offset(lhs_offset) * *pb.offset(rhs_offset);
+                        sum = sum + term;
+                    }
+                    let dst_offset = result.cell_to_offset(r, c);
+                    *pc.offset(dst_offset)  = sum;
+                }
+            }
+        }
+        result
+    }
+}
+
+/// Matrix equality check support
+impl<T:MatElt> cmp::PartialEq for Mat<T>{
+    fn eq(&self, other: &Mat<T>) -> bool {
+        let pa = self.ptr as *const  T;
+        let pb = other.ptr as *const  T;
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                let va = unsafe{*pa.offset(offset)};
+                let vb = unsafe{*pb.offset(offset)};
+                if va != vb {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+}
 
 
 #[unsafe_destructor]
@@ -362,15 +412,15 @@ impl<T:MatElt> Drop for Mat<T> {
 
 impl<T:MatElt> Mat<T> {
     /// Returns a slice into `self`.
-    #[inline]
-    fn as_slice_<'a>(&'a self) -> &'a [T] {
+    //#[inline]
+    pub fn as_slice_<'a>(&'a self) -> &'a [T] {
         unsafe { mem::transmute(RawSlice { data: self.as_ptr(), len: self.capacity() }) }
     }
 
     /// Maps a cell index to actual offset in the internal buffer
     #[inline]
-    fn cell_to_offset(&self, r : uint,  c: uint)-> uint {
-        c * self.stride() + r
+    fn cell_to_offset(&self, r : uint,  c: uint)-> int {
+        (c * self.stride() + r) as int
     } 
 }
 
@@ -399,7 +449,7 @@ unsafe fn dealloc<T>(ptr: *mut T, len: uint) {
 #[cfg(test)]
 mod tests {
 
-    use  super::{Mat, MatI64};
+    use  super::{Mat, MatI64, MatF64};
 
     #[test]
     fn  create_mat0(){
@@ -483,10 +533,39 @@ mod tests {
     }
 
     #[test]
+    fn test_sub_float(){
+        let m : MatF64 = Mat::ones(4, 2);
+        let m3 = m  + m + m;
+        let m2 = m3 - m;  
+        let v = vec![2f64, 2., 2., 2., 2., 2., 2., 2.];
+        assert_eq!(m2.to_std_vec(), v);
+    }
+    #[test]
     #[should_fail]
     fn test_sub_fail(){
         let m1 : MatI64 = Mat::ones(4, 2);
         let m2 : MatI64 = Mat::ones(3, 2);
         m1 - m2;
+    }
+
+
+    #[test]
+    fn test_mult(){
+        let m1 : MatI64 = Mat::from_iter(2, 2, range(0, 4));
+        let m2 : MatI64 = Mat::from_iter(2, 2, range(0, 4));
+        let m3 = m1 * m2;
+        let v = vec![2i64, 3, 6, 11];
+        assert_eq!(m3.to_std_vec(), v);
+    }
+
+    #[test]
+    fn test_eq(){
+        let m1 : MatI64 = Mat::from_iter(2, 2, range(0, 4));
+        let m2 : MatI64 = Mat::from_iter(2, 2, range(0, 4));
+        assert_eq!(m1, m2);
+        let v = vec![1.0f64, 2., 3., 4.];
+        let m1 : MatF64 = Mat::from_slice(2, 2, v.as_slice());
+        let m2 : MatF64 = Mat::from_slice(2, 2, v.as_slice());
+        assert_eq!(m1, m2);
     }
 }
