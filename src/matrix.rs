@@ -278,14 +278,14 @@ impl <T:Num+Ord+Copy+fmt::Show> fmt::Show for Mat<T> {
 
 /// Matrix addition support
 impl<T:Num+Ord+Copy> ops::Add<Mat<T>, Mat<T>> for Mat<T> {
-    fn add(&self, _rhs: &Mat<T>) -> Mat<T> {
+    fn add(&self, rhs: &Mat<T>) -> Mat<T> {
         // Validate dimensions are same.
-        if self.size() != _rhs.size(){
+        if self.size() != rhs.size(){
             fail!(DimensionsMismatch.to_string());
         }
         let result : Mat<T> = Mat::new(self.rows, self.cols);
         let pa = self.ptr;
-        let pb = _rhs.ptr;
+        let pb = rhs.ptr;
         let pc = result.ptr;
         let n = self.capacity();
         unsafe{
@@ -297,6 +297,31 @@ impl<T:Num+Ord+Copy> ops::Add<Mat<T>, Mat<T>> for Mat<T> {
         result
     }
 }
+
+
+/// Matrix subtraction support
+impl<T:Num+Ord+Copy> ops::Sub<Mat<T>, Mat<T>> for Mat<T>{
+    fn sub(&self, rhs: &Mat<T>) -> Mat<T> {
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            fail!(DimensionsMismatch.to_string());
+        }
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pb = rhs.ptr;
+        let pc = result.ptr;
+        let n = self.capacity();
+        unsafe{
+            for i_ in range(0, n){
+                let i = i_ as int;
+                *pc.offset(i) = *pa.offset(i) - *pb.offset(i);
+            }
+        }
+        result
+    }
+}
+
+
 
 #[unsafe_destructor]
 impl<T:Num+Ord+Copy> Drop for Mat<T> {
@@ -429,5 +454,20 @@ mod tests {
         m1 + m2;
     }
 
+    #[test]
+    fn test_sub(){
+        let m : MatI64 = Mat::ones(4, 2);
+        let m3 = m  + m + m;
+        let m2 = m3 - m;  
+        let v = vec![2i64, 2, 2, 2, 2, 2, 2, 2];
+        assert_eq!(m2.to_std_vec(), v);
+    }
 
+    #[test]
+    #[should_fail]
+    fn test_sub_fail(){
+        let m1 : MatI64 = Mat::ones(4, 2);
+        let m2 : MatI64 = Mat::ones(3, 2);
+        m1 - m2;
+    }
 }
