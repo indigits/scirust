@@ -1,3 +1,4 @@
+// library imports
 use std::mem;
 use std::ptr;
 use std::ops;
@@ -7,6 +8,7 @@ use std::num::One;
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
+
 
 // The following is needed for destroying matrix.
 
@@ -27,7 +29,7 @@ of rows. May be changed later on.
 For a row vector, the stride  = 1.
 
 "]
-pub struct Mat<T:Ord+Copy> {
+pub struct Mat<T:MatElt> {
     rows : uint,
     cols : uint, 
     ptr : *mut T
@@ -45,8 +47,25 @@ pub enum MatErr{
     DimensionsMismatch,
 }
 
+/// Defines all the traits which a matrix element must support
+pub trait MatElt : Num+PartialOrd+Copy {
+
+}
+
+/// Indicate that i64 fits all requirements for being a matrix element.
+impl MatElt for i64 {
+    
+}
+
+/// Indicate that f64 fits all requirements for being a matrix element.
+impl MatElt for f64 {
+    
+}
+
+
+
 /// Static functions for creating  a matrix
-impl<T:Num+Ord+Copy> Mat<T> {
+impl<T:MatElt> Mat<T> {
 
 
     pub fn new(rows: uint, cols : uint)-> Mat<T> {
@@ -143,7 +162,7 @@ impl<T:Num+Ord+Copy> Mat<T> {
 }
 
 /// Main methods of a matrix
-impl<T:Num+Ord+Copy> Mat<T> {
+impl<T:MatElt> Mat<T> {
     pub fn num_rows(&self) -> uint {
         self.rows
     }
@@ -219,7 +238,7 @@ impl<T:Num+Ord+Copy> Mat<T> {
 }
 
 
-impl<T:Num+Ord+Copy> Index<uint,T> for Mat<T> {
+impl<T:MatElt> Index<uint,T> for Mat<T> {
     #[inline]
     fn index<'a>(&'a self, index: &uint) -> &'a T {
         // The matrix is column major order
@@ -233,7 +252,7 @@ impl<T:Num+Ord+Copy> Index<uint,T> for Mat<T> {
 
 
 
-impl<T:Num+Ord+Copy> Mat<T>{
+impl<T:MatElt> Mat<T>{
     /// This function is for internal use only.
     #[inline]
     fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
@@ -248,7 +267,7 @@ impl<T:Num+Ord+Copy> Mat<T>{
 
 
 
-impl <T:Num+Ord+Copy> Clone for Mat<T> {
+impl <T:MatElt> Clone for Mat<T> {
 
     fn clone(&self )-> Mat<T> {
         let m : Mat<T> = Mat::new(self.rows, self.cols);
@@ -259,7 +278,7 @@ impl <T:Num+Ord+Copy> Clone for Mat<T> {
     }
 }
 
-impl <T:Num+Ord+Copy+fmt::Show> fmt::Show for Mat<T> {
+impl <T:MatElt+fmt::Show> fmt::Show for Mat<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let s = self.as_slice_();
         try!(write!(f, "["));
@@ -277,7 +296,7 @@ impl <T:Num+Ord+Copy+fmt::Show> fmt::Show for Mat<T> {
 }
 
 /// Matrix addition support
-impl<T:Num+Ord+Copy> ops::Add<Mat<T>, Mat<T>> for Mat<T> {
+impl<T:MatElt> ops::Add<Mat<T>, Mat<T>> for Mat<T> {
     fn add(&self, rhs: &Mat<T>) -> Mat<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
@@ -300,7 +319,7 @@ impl<T:Num+Ord+Copy> ops::Add<Mat<T>, Mat<T>> for Mat<T> {
 
 
 /// Matrix subtraction support
-impl<T:Num+Ord+Copy> ops::Sub<Mat<T>, Mat<T>> for Mat<T>{
+impl<T:MatElt> ops::Sub<Mat<T>, Mat<T>> for Mat<T>{
     fn sub(&self, rhs: &Mat<T>) -> Mat<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
@@ -324,7 +343,7 @@ impl<T:Num+Ord+Copy> ops::Sub<Mat<T>, Mat<T>> for Mat<T>{
 
 
 #[unsafe_destructor]
-impl<T:Num+Ord+Copy> Drop for Mat<T> {
+impl<T:MatElt> Drop for Mat<T> {
     fn drop(&mut self) {
         if self.num_cells() != 0 {
             unsafe {
@@ -341,7 +360,7 @@ impl<T:Num+Ord+Copy> Drop for Mat<T> {
  *
  *******************************************************/
 
-impl<T:Num+Ord+Copy> Mat<T> {
+impl<T:MatElt> Mat<T> {
     /// Returns a slice into `self`.
     #[inline]
     fn as_slice_<'a>(&'a self) -> &'a [T] {
