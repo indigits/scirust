@@ -68,6 +68,12 @@ impl MatElt for f64 {
 /// Static functions for creating  a matrix
 impl<T:MatElt> Mat<T> {
 
+    /// Constructs a scalar matrix
+    pub fn from_scalar (scalar : T) -> Mat <T>{
+        let m : Mat<T> = Mat::new(1, 1);
+        unsafe {*m.ptr = scalar;}
+        m
+    }
 
     pub fn new(rows: uint, cols : uint)-> Mat<T> {
         assert! (mem::size_of::<T>() != 0);
@@ -164,20 +170,39 @@ impl<T:MatElt> Mat<T> {
 
 /// Main methods of a matrix
 impl<T:MatElt> Mat<T> {
+    //// Returns the number of rows in the matrix
     pub fn num_rows(&self) -> uint {
         self.rows
     }
 
+    /// Returns the number of columns in the matrix
     pub fn num_cols(&self) -> uint {
         self.cols
     }
 
+    /// Returns the size of matrix in an (r, c) tuple
     pub fn size (&self)-> (uint, uint){
         (self.rows, self.cols)
     }
+    /// Returns the number of cells in matrix
     pub fn num_cells(&self)->uint {
         self.rows * self.cols
     }
+    /// Indicates if the matrix is a row vector
+    pub fn is_row(&self) -> bool {
+        self.rows == 1
+    }
+
+    /// Indicates if the matrix is a column vector
+    pub fn is_col(&self) -> bool {
+        self.cols == 1
+    }
+
+    /// Indicates if the matrix is a scalar actually
+    pub fn is_scalar(&self) -> bool {
+        self.num_cells() == 1
+    }
+
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     pub fn stride (&self)->uint {
@@ -223,6 +248,11 @@ impl<T:MatElt> Mat<T> {
         c * self.rows + r
     }
 
+}
+
+
+/// Functions to construct new matrices out of a matrix and other conversions
+impl<T:MatElt> Mat<T> {
     /// Converts the matrix to vector from standard library
     pub fn to_std_vec(&self) -> Vec<T> {
         let mut vec: Vec<T> = Vec::with_capacity(self.num_cells());
@@ -235,6 +265,14 @@ impl<T:MatElt> Mat<T> {
             }
         } 
         vec
+    }
+
+    /// Converts the matrix to a scalar 
+    pub fn to_scalar(&self) -> T {
+        if !self.is_scalar() {
+            fail! (DimensionsMismatch.to_string());
+        }
+        self.get(0, 0)
     }
 
     /// Returns the r'th row vector
@@ -254,19 +292,22 @@ impl<T:MatElt> Mat<T> {
         }
         result
     }
-    /// Indicates if the matrix is a row vector
-    pub fn is_row(&self) -> bool {
-        self.rows == 1
-    }
-
-    /// Indicates if the matrix is a column vector
-    pub fn is_col(&self) -> bool {
-        self.cols == 1
-    }
-
-    /// Indicates if the matrix is a scalar actually
-    pub fn is_scalar(&self) -> bool {
-        self.num_cells() == 1
+    /// Returns the c'th column vector
+    pub fn col(&self, c : int) -> Mat<T> {
+        // Lets ensure that the col value is mapped to
+        // a value in the range [0, cols - 1]
+        let c = mod_n(c, self.cols as int);        
+        let result : Mat<T> = Mat::new(self.rows, 1);
+        let pd = result.ptr;
+        let ps = self.ptr;
+        for r in range(0, self.rows){
+            let src_offset = self.cell_to_offset(r, c);
+            let dst_offset = result.cell_to_offset(r, 0);
+            unsafe{
+                *pd.offset(dst_offset) = *ps.offset(src_offset);
+            }
+        }
+        result
     }
 }
 
@@ -422,6 +463,7 @@ impl<T:MatElt> cmp::PartialEq for Mat<T>{
         }
         true
     }
+
 }
 
 
@@ -623,10 +665,27 @@ mod tests {
 
     #[test]
     fn test_extract_col(){
-        let m1 : MatI64 = Mat::from_iter(4, 1, range(0, 16));
-        let m2 = m1;
+        let m1 : MatI64 = Mat::from_iter(4, 4, range(0, 16));
+        let m2  = m1.col(0);
+        assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
         assert!(!m2.is_row());
         assert!(m2.is_col());
         assert!(!m2.is_scalar());
+        assert_eq!(m2.num_rows() , m1.num_rows());
+        assert_eq!(m2.num_cells() , m1.num_rows());
+        assert_eq!(m1.col(1).to_std_vec(), vec![4, 5, 6, 7]);
+        assert_eq!(m1.col(2).to_std_vec(), vec![8, 9, 10, 11]);
+        assert_eq!(m1.col(3).to_std_vec(), vec![12, 13, 14, 15]);
+        assert_eq!(m1.col(-1).to_std_vec(), vec![12, 13, 14, 15]);
+        assert_eq!(m1.col(-2).to_std_vec(), vec![8, 9, 10, 11]);
+        assert_eq!(m1.col(-6).to_std_vec(), vec![8, 9, 10, 11]);
+    }
+
+    #[test]
+    fn test_from_scalar(){
+        let  m : MatI64  = Mat::from_scalar(2);
+        assert!(m.is_scalar());
+        assert_eq!(m.to_std_vec(), vec![2]);
+        assert_eq!(m.to_scalar(), 2);
     }
 }
