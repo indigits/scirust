@@ -1,0 +1,32 @@
+/// This module provides useful discrete mathematics functions
+
+use std::num::abs;
+
+#[inline]
+pub fn mod_n (x : int, n : int) -> uint {
+    let x = x % n;
+    if x < 0{
+        (x + abs(n)) as uint
+    }else{
+        x as uint
+    }
+}
+
+/******************************************************
+ *
+ *   Unit tests follow.
+ *
+ *******************************************************/
+
+
+#[cfg(test)]
+mod test{
+    #[test]
+    fn test_modulo_n(){
+        assert_eq!(super::mod_n(4, 5), 4);
+        assert_eq!(super::mod_n(6, 5), 1);
+        assert_eq!(super::mod_n(-3, 5), 2);
+        assert_eq!(super::mod_n(-5, -5), 0);
+        assert_eq!(super::mod_n(-6, -5), 4);
+    }
+}
