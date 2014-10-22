@@ -309,6 +309,31 @@ impl<T:MatElt> Mat<T> {
         }
         result
     }
+
+    /// Extract a submatrix from the matrix
+    /// rows can easily repeat if the number of requested rows is higher than actual rows
+    /// cols can easily repeat if the number of requested cols is higher than actual cols
+    pub fn sub_mat(&self, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> Mat<T> {
+        let r = mod_n(start_row, self.rows as int);        
+        let c = mod_n(start_col, self.cols as int);
+        let result : Mat<T> = Mat::new(num_rows, num_cols);
+        let pd = result.ptr;
+        let ps = self.ptr;
+        let mut dc = 0;
+        for c in range(c, c + num_cols).map(|x | x % self.cols) {
+            let mut dr = 0;
+            for r in range(r , r + num_rows).map(|x|  x % self.rows) {
+                let src_offset = self.cell_to_offset(r, c);
+                let dst_offset = result.cell_to_offset(dr, dc);
+                unsafe{
+                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                }
+                dr += 1;
+            }
+            dc += 1;
+        }
+        result
+    }
 }
 
 
@@ -687,5 +712,18 @@ mod tests {
         assert!(m.is_scalar());
         assert_eq!(m.to_std_vec(), vec![2]);
         assert_eq!(m.to_scalar(), 2);
+    }
+    #[test]
+    fn test_sub_mat(){
+        let m  : MatI64 = Mat::from_iter(4, 4, range(0, 16));
+        let m1 = m.sub_mat(0, 0, 2, 2);
+        assert_eq!(m1.num_cells(), 4);
+        assert_eq!(m1.num_rows(), 2);
+        assert_eq!(m1.num_cols(), 2);
+        assert_eq!(m1.to_std_vec(), vec![0, 1, 4, 5]);
+        assert_eq!(m.sub_mat(1, 0, 2, 2).to_std_vec(), vec![1, 2, 5, 6]);
+        assert_eq!(m.sub_mat(4, 4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
+        assert_eq!(m.sub_mat(-1, -1, 2, 2).to_std_vec(), vec![15, 12, 3, 0]);
+        assert_eq!(m.sub_mat(-4, -4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
     }
 }
