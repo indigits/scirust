@@ -334,6 +334,32 @@ impl<T:MatElt> Mat<T> {
         }
         result
     }
+
+    // Repeats this matrix in both horizontal and vertical directions 
+    pub fn rep_mat(&self, num_rows : uint, num_cols : uint) -> Mat<T> {
+        let rows = self.rows * num_rows;
+        let cols = self.cols * num_cols;
+        let result : Mat<T> = Mat::new(rows, cols);
+        let pd = result.ptr;
+        let ps = self.ptr;
+        for bc in range(0, num_cols){
+            let bc_start = bc * self.cols;
+            for br in range(0, num_rows){
+                let br_start =  br * self.rows;
+                for c in range(0, self.cols) {
+                    for r in range(0, self.rows){
+                        let src_offset = self.cell_to_offset(r, c);
+                        let dst_offset = result.cell_to_offset(br_start + r, bc_start + c);
+                        unsafe{
+                            *pd.offset(dst_offset) = *ps.offset(src_offset);
+                        }
+                    }
+                }
+
+            }
+        }
+        result
+    }
 }
 
 
@@ -725,5 +751,15 @@ mod tests {
         assert_eq!(m.sub_mat(4, 4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
         assert_eq!(m.sub_mat(-1, -1, 2, 2).to_std_vec(), vec![15, 12, 3, 0]);
         assert_eq!(m.sub_mat(-4, -4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
+    }
+
+    #[test]
+    fn test_rep_mat(){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m2 = m.rep_mat(2, 2);
+        assert_eq!(m2.num_cells(), 16);
+        assert_eq!(m2.num_rows(), 4);
+        assert_eq!(m2.num_cols(), 4);
+        assert_eq!(m2.to_std_vec(), vec![0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3]);
     }
 }
