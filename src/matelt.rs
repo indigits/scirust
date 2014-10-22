@@ -1,0 +1,14 @@
+/// Defines all the traits which a matrix element must support
+pub trait MatElt : Num+PartialOrd+Copy {
+
+}
+
+/// Indicate that i64 fits all requirements for being a matrix element.
+impl MatElt for i64 {
+    
+}
+
+/// Indicate that f64 fits all requirements for being a matrix element.
+impl MatElt for f64 {
+    
+}

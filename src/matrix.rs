@@ -9,6 +9,8 @@ use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
 use super::discrete::{mod_n};
+use super::matelt::{MatElt};
+use super::materr::*;
 
 
 // The following is needed for destroying matrix.
@@ -41,27 +43,7 @@ pub type MatI64 = Mat<i64>;
 /// A matrix of 64-bit floating point numbers.
 pub type MatF64 = Mat<f64>;
 
-/// Errors related to matrix operations
-#[deriving(Show)]
-pub enum MatErr{
-    //EmptyMatrix,
-    DimensionsMismatch,
-}
 
-/// Defines all the traits which a matrix element must support
-pub trait MatElt : Num+PartialOrd+Copy {
-
-}
-
-/// Indicate that i64 fits all requirements for being a matrix element.
-impl MatElt for i64 {
-    
-}
-
-/// Indicate that f64 fits all requirements for being a matrix element.
-impl MatElt for f64 {
-    
-}
 
 
 
