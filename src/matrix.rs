@@ -8,6 +8,7 @@ use std::num::{One, Zero};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
+use super::discrete::{mod_n};
 
 
 // The following is needed for destroying matrix.
@@ -235,6 +236,24 @@ impl<T:MatElt> Mat<T> {
         } 
         vec
     }
+
+    /// Returns the r'th row vector
+    pub fn row(&self, r : int) -> Mat<T> {
+        // Lets ensure that the row value is mapped to
+        // a value in the range [0, rows - 1]
+        let r = mod_n(r, self.rows as int);        
+        let result : Mat<T> = Mat::new(1, self.cols);
+        let pd = result.ptr;
+        let ps = self.ptr;
+        for c in range(0, self.cols){
+            let src_offset = self.cell_to_offset(r, c);
+            let dst_offset = result.cell_to_offset(0, c);
+            unsafe{
+                *pd.offset(dst_offset) = *ps.offset(src_offset);
+            }
+        }
+        result
+    }
 }
 
 
@@ -439,6 +458,7 @@ unsafe fn dealloc<T>(ptr: *mut T, len: uint) {
 }
 
 
+
 /******************************************************
  *
  *   Unit tests follow.
@@ -567,5 +587,21 @@ mod tests {
         let m1 : MatF64 = Mat::from_slice(2, 2, v.as_slice());
         let m2 : MatF64 = Mat::from_slice(2, 2, v.as_slice());
         assert_eq!(m1, m2);
+    }
+
+    #[test]
+    fn test_row(){
+        let m1 : MatI64 = Mat::from_iter(4, 4, range(0, 16));
+        let m2  = m1.row(0);
+        assert_eq!(m2.to_std_vec(), vec![0, 4, 8, 12]);
+        assert_eq!(m2.num_rows() , 1);
+        assert_eq!(m2.num_cols() , m1.num_cols());
+        assert_eq!(m2.num_cells() , m1.num_cols());
+        assert_eq!(m1.row(1).to_std_vec(), vec![1, 5, 9, 13]);
+        assert_eq!(m1.row(2).to_std_vec(), vec![2, 6, 10, 14]);
+        assert_eq!(m1.row(3).to_std_vec(), vec![3, 7, 11, 15]);
+        assert_eq!(m1.row(-1).to_std_vec(), vec![3, 7, 11, 15]);
+        assert_eq!(m1.row(-2).to_std_vec(), vec![2, 6, 10, 14]);
+        assert_eq!(m1.row(-6).to_std_vec(), vec![2, 6, 10, 14]);
     }
 }
