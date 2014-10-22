@@ -254,6 +254,15 @@ impl<T:MatElt> Mat<T> {
         }
         result
     }
+    /// Indicates if the matrix is a row vector
+    pub fn is_row(&self) -> bool {
+        self.rows == 1
+    }
+
+    /// Indicates if the matrix is a column vector
+    pub fn is_col(&self) -> bool {
+        self.cols == 1
+    }
 }
 
 
@@ -590,11 +599,12 @@ mod tests {
     }
 
     #[test]
-    fn test_row(){
+    fn test_extract_row(){
         let m1 : MatI64 = Mat::from_iter(4, 4, range(0, 16));
         let m2  = m1.row(0);
         assert_eq!(m2.to_std_vec(), vec![0, 4, 8, 12]);
         assert_eq!(m2.num_rows() , 1);
+        assert!(m2.is_row());
         assert_eq!(m2.num_cols() , m1.num_cols());
         assert_eq!(m2.num_cells() , m1.num_cols());
         assert_eq!(m1.row(1).to_std_vec(), vec![1, 5, 9, 13]);
@@ -603,5 +613,14 @@ mod tests {
         assert_eq!(m1.row(-1).to_std_vec(), vec![3, 7, 11, 15]);
         assert_eq!(m1.row(-2).to_std_vec(), vec![2, 6, 10, 14]);
         assert_eq!(m1.row(-6).to_std_vec(), vec![2, 6, 10, 14]);
+    }
+
+
+    #[test]
+    fn test_extract_col(){
+        let m1 : MatI64 = Mat::from_iter(4, 1, range(0, 16));
+        let m2 = m1;
+        assert!(!m2.is_row());
+        assert!(m2.is_col());
     }
 }
