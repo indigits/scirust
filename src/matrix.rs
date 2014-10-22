@@ -263,6 +263,11 @@ impl<T:MatElt> Mat<T> {
     pub fn is_col(&self) -> bool {
         self.cols == 1
     }
+
+    /// Indicates if the matrix is a scalar actually
+    pub fn is_scalar(&self) -> bool {
+        self.num_cells() == 1
+    }
 }
 
 
@@ -622,5 +627,6 @@ mod tests {
         let m2 = m1;
         assert!(!m2.is_row());
         assert!(m2.is_col());
+        assert!(!m2.is_scalar());
     }
 }
