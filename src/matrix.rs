@@ -362,6 +362,25 @@ impl<T:MatElt> Mat<T> {
 
 /// These functions are available only for integer matrices
 impl<T:MatElt+Int> Mat<T> {
+
+    /// Returns if an integer matrix is a logical matrix
+    //// i.e. all cells are either 0s or 1s.
+    pub fn is_logical(&self) -> bool {
+        let z : T = Zero::zero();
+        let o : T = One::one();
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                unsafe{ 
+                    let v = *self.ptr.offset(offset);
+                    if v != z && v != o {
+                        return false;
+                    }
+                }
+            }
+        }
+        true
+    }
 }
 
 
@@ -839,5 +858,14 @@ mod tests {
         let f = m.is_infinite();
         assert_eq!(f.to_std_vec(), vec![0, 0, 0, 1, 1, 
             0, 0, 0]);
+    }
+
+
+    #[test]
+    fn test_is_logical(){
+        let m : MatI64 = Mat::from_iter(4, 4, range(0, 16).map(|x| x % 2));
+        assert!(m.is_logical());
+        let m = m + m;
+        assert!(!m.is_logical());
     }
 }
