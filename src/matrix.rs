@@ -60,6 +60,12 @@ impl<T:MatElt> Mat<T> {
     pub fn new(rows: uint, cols : uint)-> Mat<T> {
         assert! (mem::size_of::<T>() != 0);
         let size = rows * cols;
+        // Support for empty  matrices
+        if size == 0{
+            // We do not allocate any memory for the buffer.
+            // We leave it as a NULL pointer.
+            return Mat { rows : rows, cols : cols, ptr : ptr::null_mut()};
+        }
         let bytes = size * mem::size_of::<T>();
         let raw = unsafe {
             allocate(bytes, mem::min_align_of::<T>())
@@ -189,6 +195,11 @@ impl<T:MatElt> Mat<T> {
     pub fn is_vector(&self) -> bool {
         (self.rows == 1) ^ (self.cols == 1)
     } 
+
+    /// Indicates if the matrix is empty
+    pub fn is_empty(&self) -> bool {
+        self.rows * self.cols == 0
+    }
 
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
@@ -760,5 +771,18 @@ mod tests {
         assert!(!m.is_vector());
         let m : MatI64 = Mat::new(3,3);
         assert!(!m.is_vector());
+    }
+
+
+    #[test]
+    fn test_is_empty(){
+        let m : MatI64 = Mat::new(3,1);
+        assert!(!m.is_empty());
+        let m : MatI64 = Mat::new(4, 0);
+        assert!(m.is_empty());
+        let m : MatI64 = Mat::new(0, 4);
+        assert!(m.is_empty());
+        let m : MatI64 = Mat::new(0, 0);
+        assert!(m.is_empty());
     }
 }
