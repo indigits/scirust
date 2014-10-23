@@ -358,6 +358,27 @@ impl<T:MatElt> Mat<T> {
         }
         result
     }
+
+    /// Returns a column vector consisting of maximum over each row
+    pub fn max_row_wise(&self) -> Mat<T>{
+        // Pick the first column
+        let result = self.col(0);
+        let pd = result.ptr;
+        let ps = self.ptr;
+        for c in range (1, self.cols){
+            for r  in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let dst_offset = self.cell_to_offset(r, 0);
+                unsafe{
+                    let s = *ps.offset(src_offset);
+                    let d = *pd.offset(dst_offset);
+                    *pd.offset(dst_offset) = if s > d { s } else {d};
+
+                }
+            }
+        }
+        result
+    }
 }
 
 /// These functions are available only for integer matrices
@@ -867,5 +888,20 @@ mod tests {
         assert!(m.is_logical());
         let m = m + m;
         assert!(!m.is_logical());
+    }
+
+    #[test]
+    fn test_max(){
+        // Note the first 4 entries in v form the first column
+        // in the matrix.
+        let v = vec![4, 5, 11, 12, 
+        0, 1, 2, 3, 
+        19, 17, 3, 1, 
+        7, 8, 5, 6];
+        let m : MatI64 = Mat::from_slice(4, 4, v.as_slice());
+        let m2 = m.max_row_wise();
+        assert!(m2.is_vector());
+        assert!(m2.is_col());
+        assert_eq!(m2.to_std_vec(), vec![19, 17, 11, 12]);
     }
 }
