@@ -185,6 +185,11 @@ impl<T:MatElt> Mat<T> {
         self.num_cells() == 1
     }
 
+    /// Indicates if the matrix is a vector
+    pub fn is_vector(&self) -> bool {
+        (self.rows == 1) ^ (self.cols == 1)
+    } 
+
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     pub fn stride (&self)->uint {
@@ -743,5 +748,17 @@ mod tests {
         assert_eq!(m2.num_rows(), 4);
         assert_eq!(m2.num_cols(), 4);
         assert_eq!(m2.to_std_vec(), vec![0, 1, 0, 1, 2, 3, 2, 3, 0, 1, 0, 1, 2, 3, 2, 3]);
+    }
+
+    #[test]
+    fn test_is_vector(){
+        let m : MatI64 = Mat::new(3,1);
+        assert!(m.is_vector());
+        let m : MatI64 = Mat::new(1,4);
+        assert!(m.is_vector());
+        let m : MatI64 = Mat::new(1,1);
+        assert!(!m.is_vector());
+        let m : MatI64 = Mat::new(3,3);
+        assert!(!m.is_vector());
     }
 }
