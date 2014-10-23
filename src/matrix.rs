@@ -582,7 +582,7 @@ impl <T:MatElt> Clone for Mat<T> {
     }
 }
 
-impl <T:MatElt+fmt::Show> fmt::Show for Mat<T> {
+impl <T:MatElt> fmt::Show for Mat<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let ptr = self.ptr;
         try!(write!(f, "["));
@@ -696,6 +696,48 @@ impl<T:MatElt> cmp::PartialEq for Mat<T>{
 
 }
 
+// Element wise operations.
+impl<T:MatElt> Mat<T> {
+    /// Multiplies matrices element by element
+    pub fn mul_elt(&self, rhs: &Mat<T>) -> Mat<T> {
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            fail!(DimensionsMismatch.to_string());
+        }
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pb = rhs.ptr;
+        let pc = result.ptr;
+        let n = self.capacity();
+        unsafe{
+            for i_ in range(0, n){
+                let i = i_ as int;
+                *pc.offset(i) = *pa.offset(i) * *pb.offset(i);
+            }
+        }
+        result
+    }
+
+    /// Divides matrices element by element
+    pub fn div_elt(&self, rhs: &Mat<T>) -> Mat<T> {
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            fail!(DimensionsMismatch.to_string());
+        }
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pb = rhs.ptr;
+        let pc = result.ptr;
+        let n = self.capacity();
+        unsafe{
+            for i_ in range(0, n){
+                let i = i_ as int;
+                *pc.offset(i) = *pa.offset(i) / *pb.offset(i);
+            }
+        }
+        result
+    }
+}
 
 #[unsafe_destructor]
 impl<T:MatElt> Drop for Mat<T> {
@@ -1023,4 +1065,22 @@ mod tests {
         assert_eq!(m.min_scalar(), 0);
         assert_eq!(m.max_scalar(), 19);
     }
+
+    #[test]
+    fn test_mul_elt(){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m2 = m.mul_elt(&m);
+        let m3  : MatI64 = Mat::from_iter(2, 2,  range(0, 4).map(|x| x*x));
+        assert_eq!(m2, m3);
+    }
+
+
+    #[test]
+    fn test_div_elt(){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(1, 20));
+        let m2 = m + m;
+        let m3 = m2.div_elt(&m);
+        assert_eq!(m3.to_std_vec(), vec![2,2,2,2]);
+    }
+
 }
