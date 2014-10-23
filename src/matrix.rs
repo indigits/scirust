@@ -360,6 +360,10 @@ impl<T:MatElt> Mat<T> {
     }
 }
 
+/// These functions are available only for integer matrices
+impl<T:MatElt+Int> Mat<T> {
+}
+
 
 /// These functions are available only for floating point matrices
 impl<T:MatElt+Float> Mat<T> {
@@ -372,6 +376,21 @@ impl<T:MatElt+Float> Mat<T> {
                 unsafe{ 
                     let v = *self.ptr.offset(offset);
                     *m.ptr.offset(offset) = v.is_finite() as u8;
+                }
+            }
+        }
+        m
+    }
+
+    /// Returns a matrix showing all the cells which are infinite
+    pub fn is_infinite(&self) -> Mat<u8>{
+        let m : Mat<u8> = Mat::ones(self.rows, self.cols);
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                unsafe{ 
+                    let v = *self.ptr.offset(offset);
+                    *m.ptr.offset(offset) = v.is_infinite() as u8;
                 }
             }
         }
@@ -811,9 +830,14 @@ mod tests {
 
     #[test]
     fn test_is_finite(){
-        let v = vec![0f64, Float::nan(), Float::nan(), Float::infinity(), 1., 2., 3., 4.];
+        let v = vec![0f64, Float::nan(), Float::nan(), 
+        Float::infinity(), Float::neg_infinity(), 2., 3., 4.];
         let m : MatF64 = Mat::from_slice(2, 4, v.as_slice());
         let f = m.is_finite();
-        assert_eq!(f.to_std_vec(), vec![1, 0, 0, 0, 1, 1, 1, 1]);
+        assert_eq!(f.to_std_vec(), vec![1, 0, 0, 0, 0, 
+            1, 1, 1]);
+        let f = m.is_infinite();
+        assert_eq!(f.to_std_vec(), vec![0, 0, 0, 1, 1, 
+            0, 0, 0]);
     }
 }
