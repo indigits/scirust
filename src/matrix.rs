@@ -443,7 +443,42 @@ impl<T:MatElt> Mat<T> {
             }
         }
         result
-    }}
+    }
+
+    // Returns the minimum scalar value
+    pub fn min_scalar(&self) -> T{
+        if self.is_empty(){
+            fail!(EmptyMatrix.to_string());
+        }
+        let mut v = self.get(0, 0);
+        let ps = self.ptr;
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let s = unsafe{*ps.offset(src_offset)};
+                v = if s < v { s} else { v };
+            }
+        }
+        v
+    }
+
+    // Returns the maximum scalar value
+    pub fn max_scalar(&self) -> T{
+        if self.is_empty(){
+            fail!(EmptyMatrix.to_string());
+        }
+        let mut v = self.get(0, 0);
+        let ps = self.ptr;
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let s = unsafe{*ps.offset(src_offset)};
+                v = if s > v { s} else { v };
+            }
+        }
+        v
+    }
+}
 
 /// These functions are available only for integer matrices
 impl<T:MatElt+Int> Mat<T> {
@@ -984,5 +1019,8 @@ mod tests {
         assert!(m2.is_vector());
         assert!(m2.is_row());
         assert_eq!(m2.to_std_vec(), vec![4, 0, 1, 5]);
+
+        assert_eq!(m.min_scalar(), 0);
+        assert_eq!(m.max_scalar(), 19);
     }
 }
