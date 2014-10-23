@@ -12,3 +12,10 @@ impl MatElt for i64 {
 impl MatElt for f64 {
     
 }
+
+
+/// Indicate that u8 fits all requirements for being a matrix element.
+impl MatElt for u8 {
+    
+}
+
