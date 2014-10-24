@@ -171,6 +171,25 @@ impl<T:MatElt> Mat<T> {
         // return
         mat
     }
+
+    /// Construct a diagonal matrix from a vector
+    pub fn diag_from_vec(v : &Mat<T>) -> Mat<T>{
+        if !v.is_vector(){
+            fail!(NotAVector.to_string());
+        }
+        let n = v.num_cells();
+        let m : Mat<T> = Mat::new(n, n);
+        let src = v.ptr;
+        let dst = m.ptr;
+        // Copy the elements of v in the vector
+        for r in range(0, n){
+            let offset = m.cell_to_offset(r, r);
+            unsafe{
+                *dst.offset(offset) =  *src.offset(r as int);
+            }
+        }
+        m
+    }
 }
 
 /// Main methods of a matrix
@@ -254,6 +273,13 @@ impl<T:MatElt> Mat<T> {
         }
     }
 
+    #[inline]
+    pub fn set(&self, r : uint, c : uint, value : T) {
+        unsafe {
+            *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
+        }
+    }
+
     /// Converts an index to cell address (row, column)
     #[inline]
     pub fn index_to_cell(&self, index : uint) -> (uint, uint){
@@ -290,6 +316,23 @@ impl<T:MatElt> Mat<T> {
         true
     }
 
+    /// Returns if the matrix is a diagonal matrix
+    pub fn is_diagonal(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            for r in range (0, self.rows){
+                if r != c {
+                    let offset = self.cell_to_offset(r, c);
+                    let v = unsafe {*ptr.offset(offset)};
+                    if v != z {
+                        return false;
+                    }
+                }
+            }
+        } 
+        true
+    }
 }
 
 
@@ -718,8 +761,10 @@ impl<T:MatElt> Mat<T>{
 
 
 
+/// Implementation of Clone interface
 impl <T:MatElt> Clone for Mat<T> {
 
+    /// Creates a clone of the matrix
     fn clone(&self )-> Mat<T> {
         let m : Mat<T> = Mat::new(self.rows, self.cols);
         unsafe{
@@ -1333,6 +1378,24 @@ mod tests {
         let m2 = m.unary_minus();
         let m3 = z - m;
         assert_eq!(m2, m3);
+    }
+
+
+    #[test]
+    fn test_diag_from_vector(){
+        let v  : MatI64 = Mat::from_iter(4, 1, range(20, 30));
+        assert!(v.is_vector());
+        let m = Mat::diag_from_vec(&v);
+        assert!(!m.is_empty());
+        assert!(!m.is_vector());
+        assert!(m.is_diagonal());
+        assert_eq!(m.num_cells(), 16);
+        let m2 : MatI64 = Mat::zeros(4, 4);
+        m2.set(0, 0, 20);
+        m2.set(1, 1, 21);
+        m2.set(2, 2, 22);
+        m2.set(3, 3, 23);
+        assert_eq!(m, m2);
     }
 
 }
