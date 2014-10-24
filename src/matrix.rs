@@ -218,6 +218,11 @@ impl<T:MatElt> Mat<T> {
         self.rows * self.cols == 0
     }
 
+    /// Indicates if the matrix is square
+    pub fn is_square(&self) -> bool {
+        self.rows == self.cols
+    }
+
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     pub fn stride (&self)->uint {
@@ -1229,6 +1234,14 @@ mod tests {
         assert!(m.is_identity());
         let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
         assert!(!m.is_identity());
+    }
+
+    #[test]
+    fn test_is_square(){
+        let m : MatI64 = Mat::new(3,4);
+        assert!(!m.is_square());
+        let m : MatI64 = Mat::new(100,100);
+        assert!(m.is_square());
     }
 
 }
