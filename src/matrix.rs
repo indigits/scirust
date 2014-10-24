@@ -478,6 +478,40 @@ impl<T:MatElt> Mat<T> {
         }
         v
     }
+
+
+    /// Multiply the matrix by a scalar
+    pub fn mul_scalar(&self, rhs: T) -> Mat<T> {
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) * rhs;
+                }
+            }
+        }
+        result
+    }
+
+    /// Add the matrix by a scalar
+    pub fn add_scalar(&self, rhs: T) -> Mat<T> {
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) + rhs;
+                }
+            }
+        }
+        result
+    }
+
 }
 
 /// These functions are available only for integer matrices
@@ -645,6 +679,28 @@ impl<T:MatElt> ops::Sub<Mat<T>, Mat<T>> for Mat<T>{
     }
 }
 
+
+#[doc = "
+This is not yet implemented.
+
+We wish to support three different use cases ``m = m1 * m2`` 
+where m1 and m2 are both matrices ``m = m1 * s`` 
+where s is a scalar and ``m = s * m1``
+where s is a scalar.
+
+Currently, Rust doesn't
+support multiple trait implementations for
+the same type. It does get compiled, but one
+faces the error: multiple applicable methods in scope.
+
+The workaround is to define a separate trait in the
+middle. 
+    
+"]
+pub trait MatMul<Result> {
+}
+
+
 /// Matrix multiplication support
 impl<T:MatElt> ops::Mul<Mat<T>, Mat<T>> for Mat<T>{
     fn mul(&self, rhs: &Mat<T>) -> Mat<T> {
@@ -675,6 +731,7 @@ impl<T:MatElt> ops::Mul<Mat<T>, Mat<T>> for Mat<T>{
         result
     }
 }
+
 
 /// Matrix equality check support
 impl<T:MatElt> cmp::PartialEq for Mat<T>{
@@ -1083,4 +1140,18 @@ mod tests {
         assert_eq!(m3.to_std_vec(), vec![2,2,2,2]);
     }
 
+
+    #[test]
+    fn test_mul_scalar (){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m2 = m.mul_scalar(2);
+        assert_eq!(m2.to_std_vec(), vec![0, 2, 4, 6]);
+    }
+
+    #[test]
+    fn test_add_scalar (){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m2 = m.add_scalar(2);
+        assert_eq!(m2.to_std_vec(), vec![2, 3, 4, 5]);
+    }
 }
