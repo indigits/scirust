@@ -587,6 +587,24 @@ impl<T:MatElt> Mat<T> {
         result
     }
 
+    /// Computes the transpose of a matrix.
+    /// This doesn't involve complex conjugation.
+    pub fn transpose(&self) -> Mat <T>{
+        let result : Mat<T> = Mat::new(self.cols, self.rows);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let src_offset = self.cell_to_offset(r, c);
+                let dst_offset = result.cell_to_offset(c, r);
+                unsafe {
+                    *pc.offset(dst_offset) = *pa.offset(src_offset);
+                }
+            }
+        }
+        result
+    }
+
 }
 
 /// These functions are available only for integer matrices
@@ -1275,6 +1293,17 @@ mod tests {
         assert_eq!(m.pow(1).to_std_vec(), vec![0, 1, 2, 3]);
         assert_eq!(m.pow(2), m * m);
         assert_eq!(m.pow(10), m * m * m * m * m * m * m * m * m * m);
+    }
+
+    #[test]
+    fn test_transpose(){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        assert_eq!(m.to_std_vec(), vec![0, 1, 2, 3]);
+        assert_eq!(m.transpose().to_std_vec(), vec![0, 2, 1, 3]);
+        assert_eq!(m.transpose().transpose().to_std_vec(), vec![0, 1, 2, 3]);
+        let m  : MatI64 = Mat::from_iter(2, 3,  range(0, 10));
+        assert_eq!(m.transpose().to_std_vec(), vec![
+            0, 2, 4, 1, 3, 5]);
     }
 
 }
