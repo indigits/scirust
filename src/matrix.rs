@@ -479,6 +479,22 @@ impl<T:MatElt> Mat<T> {
         v
     }
 
+    /// Add the matrix by a scalar
+    pub fn add_scalar(&self, rhs: T) -> Mat<T> {
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) + rhs;
+                }
+            }
+        }
+        result
+    }
+
 
     /// Multiply the matrix by a scalar
     pub fn mul_scalar(&self, rhs: T) -> Mat<T> {
@@ -496,8 +512,8 @@ impl<T:MatElt> Mat<T> {
         result
     }
 
-    /// Add the matrix by a scalar
-    pub fn add_scalar(&self, rhs: T) -> Mat<T> {
+    /// Divide the matrix by a scalar
+    pub fn div_scalar(&self, rhs: T) -> Mat<T> {
         let result : Mat<T> = Mat::new(self.rows, self.cols);
         let pa = self.ptr;
         let pc = result.ptr;
@@ -505,7 +521,7 @@ impl<T:MatElt> Mat<T> {
             for c in range(0, self.cols){
                 let offset = self.cell_to_offset(r, c);
                 unsafe {
-                    *pc.offset(offset) = *pa.offset(offset) + rhs;
+                    *pc.offset(offset) = *pa.offset(offset) / rhs;
                 }
             }
         }
@@ -1140,6 +1156,12 @@ mod tests {
         assert_eq!(m3.to_std_vec(), vec![2,2,2,2]);
     }
 
+    #[test]
+    fn test_add_scalar (){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m2 = m.add_scalar(2);
+        assert_eq!(m2.to_std_vec(), vec![2, 3, 4, 5]);
+    }
 
     #[test]
     fn test_mul_scalar (){
@@ -1149,9 +1171,10 @@ mod tests {
     }
 
     #[test]
-    fn test_add_scalar (){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
-        let m2 = m.add_scalar(2);
-        assert_eq!(m2.to_std_vec(), vec![2, 3, 4, 5]);
+    fn test_div_scalar (){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4).map(|x| x * 3));
+        let m2 = m.div_scalar(3);
+        assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
     }
+
 }
