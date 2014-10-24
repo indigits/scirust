@@ -8,9 +8,10 @@ use std::num::{One, Zero};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
-use super::discrete::{mod_n};
-use super::matelt::{MatrixElt};
-use super::materr::*;
+use discrete::{mod_n};
+use matelt::{MatrixElt};
+use materr::*;
+use matiter::*;
 
 
 // The following is needed for destroying matrix.
@@ -385,6 +386,7 @@ impl<T:MatrixElt> Matrix<T> {
         }
         result
     }
+
     /// Returns the c'th column vector
     pub fn col(&self, c : int) -> Matrix<T> {
         // Lets ensure that the col value is mapped to
@@ -402,6 +404,35 @@ impl<T:MatrixElt> Matrix<T> {
         }
         result
     }
+
+    /// Returns an iterator over a specific row of matrix
+    pub fn row_iter(&self, r : int) -> RowIterator<T>{
+        let r = mod_n(r, self.rows as int);        
+        // Lets find the offset of the begging of the row
+        let offset = self.cell_to_offset(r, 0);
+        let iter : RowIterator<T> = RowIterator::new(self.cols,
+            self.stride(), unsafe {self.ptr.offset(offset)} as *const T);
+        iter
+    }
+
+    /// Returns an iterator over a specific column of the matrix
+    pub fn col_iter(&self, c : int) -> ColIterator<T>{
+        let c = mod_n(c, self.cols as int);        
+        // Lets find the offset of the begging of the column
+        let offset = self.cell_to_offset(0, c);
+        let iter : ColIterator<T> = ColIterator::new(self.rows,
+            unsafe {self.ptr.offset(offset)} as *const T);
+        iter
+    }
+
+    /// Returns an iterator over all cells  of the matrix
+    pub fn cell_iter(&self) -> CellIterator<T>{
+        let iter : CellIterator<T> = CellIterator::new(
+            self.rows, self.cols, self.stride(),
+            self.ptr as *const T);
+        iter
+    }
+
 
     /// Extract a submatrix from the matrix
     /// rows can easily repeat if the number of requested rows is higher than actual rows
@@ -989,6 +1020,7 @@ impl<T:MatrixElt> Drop for Matrix<T> {
 }
 
 
+
 /******************************************************
  *
  *   Private implementation of Matrix
@@ -1437,5 +1469,20 @@ mod tests {
         let mut m : MatrixI64 = Matrix::zeros(10, 1);
         m.set(3, 0, 1);
         assert_eq!(v, m);
+    }
+
+    #[test]
+    fn test_row_col_iter(){
+        let m  : MatrixI64 = Matrix::from_iter(4, 5, range(10, 30));
+        let mut r = m.row_iter(0);
+        let v : Vec<i64> = r.collect();
+        assert_eq!(v, vec![10, 14, 18, 22, 26]);
+        let mut r = m.col_iter(2);
+        let v : Vec<i64> = r.collect();
+        assert_eq!(v, vec![18, 19, 20, 21]);
+        let m  : MatrixI64 = Matrix::from_iter(3, 2, range(10, 30));
+        let mut r = m.cell_iter();
+        let v : Vec<i64> = r.collect();
+        assert_eq!(v, vec![10, 11, 12, 13, 14, 15]);
     }
 }
