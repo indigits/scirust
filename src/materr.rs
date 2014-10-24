@@ -1,6 +1,6 @@
 /// Errors related to matrix operations
 #[deriving(Show)]
-pub enum MatErr{
+pub enum MatrixError{
     /// The matrix is empty
     EmptyMatrix,
     /// The dimensions of two matrices mismatch

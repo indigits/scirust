@@ -1,5 +1,5 @@
 #![feature(unsafe_destructor, globs)]
-pub use  self::matrix::{Mat, MatI64, MatF64};
+pub use  self::matrix::*;
 mod discrete;
 mod matelt;
 mod materr;

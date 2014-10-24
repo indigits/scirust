@@ -9,7 +9,7 @@ use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
 use super::discrete::{mod_n};
-use super::matelt::{MatElt};
+use super::matelt::{MatrixElt};
 use super::materr::*;
 
 
@@ -32,50 +32,50 @@ of rows. May be changed later on.
 For a row vector, the stride  = 1.
 
 "]
-pub struct Mat<T:MatElt> {
+pub struct Matrix<T:MatrixElt> {
     rows : uint,
     cols : uint, 
     ptr : *mut T
 }
 
 /// A matrix of 64-bit signed integers
-pub type MatI64 = Mat<i64>;
+pub type MatrixI64 = Matrix<i64>;
 /// A matrix of 64-bit floating point numbers.
-pub type MatF64 = Mat<f64>;
+pub type MatrixF64 = Matrix<f64>;
 
 
 
 
 /// Static functions for creating  a matrix
-impl<T:MatElt> Mat<T> {
+impl<T:MatrixElt> Matrix<T> {
 
     /// Constructs a scalar matrix
-    pub fn from_scalar (scalar : T) -> Mat <T>{
-        let m : Mat<T> = Mat::new(1, 1);
+    pub fn from_scalar (scalar : T) -> Matrix <T>{
+        let m : Matrix<T> = Matrix::new(1, 1);
         unsafe {*m.ptr = scalar;}
         m
     }
 
-    pub fn new(rows: uint, cols : uint)-> Mat<T> {
+    pub fn new(rows: uint, cols : uint)-> Matrix<T> {
         assert! (mem::size_of::<T>() != 0);
         let size = rows * cols;
         // Support for empty  matrices
         if size == 0{
             // We do not allocate any memory for the buffer.
             // We leave it as a NULL pointer.
-            return Mat { rows : rows, cols : cols, ptr : ptr::null_mut()};
+            return Matrix { rows : rows, cols : cols, ptr : ptr::null_mut()};
         }
         let bytes = size * mem::size_of::<T>();
         let raw = unsafe {
             allocate(bytes, mem::min_align_of::<T>())
         };
         let ptr = raw as *mut T;
-        Mat { rows : rows, cols : cols, ptr : ptr}
+        Matrix { rows : rows, cols : cols, ptr : ptr}
     }
 
     /// Constructs a matrix of all zeros
-    pub fn zeros(rows: uint, cols : uint)-> Mat<T> {
-        let m : Mat<T> = Mat::new(rows, cols);
+    pub fn zeros(rows: uint, cols : uint)-> Matrix<T> {
+        let m : Matrix<T> = Matrix::new(rows, cols);
         // zero out the memory
         unsafe { ptr::zero_memory(m.ptr, m.capacity())};
         m
@@ -83,8 +83,8 @@ impl<T:MatElt> Mat<T> {
 
 
     /// Constructs a matrix of all ones.
-    pub fn ones(rows: uint, cols : uint)-> Mat<T> {
-        let m : Mat<T> = Mat::new(rows, cols);
+    pub fn ones(rows: uint, cols : uint)-> Matrix<T> {
+        let m : Matrix<T> = Matrix::new(rows, cols);
         // fill with ones
         let ptr = m.ptr;
         let o : T = One::one();
@@ -102,8 +102,8 @@ impl<T:MatElt> Mat<T> {
 
 
     /// Constructs an identity matrix
-    pub fn identity(rows: uint, cols : uint) -> Mat<T> {
-        let m : Mat<T> = Mat::zeros(rows, cols);
+    pub fn identity(rows: uint, cols : uint) -> Matrix<T> {
+        let m : Matrix<T> = Matrix::zeros(rows, cols);
         // fill with ones
         let ptr = m.ptr;
         let one : T = One::one();
@@ -118,8 +118,8 @@ impl<T:MatElt> Mat<T> {
     }
 
 
-    pub fn from_slice(rows: uint, cols : uint, values: &[T]) -> Mat<T>{
-        let mut mat : Mat<T> = Mat::new(rows, cols);
+    pub fn from_slice(rows: uint, cols : uint, values: &[T]) -> Matrix<T>{
+        let mut mat : Matrix<T> = Matrix::new(rows, cols);
         let n_cells = mat.num_cells();
         let stride = mat.stride();
         // get a mutable slice from m
@@ -150,8 +150,8 @@ impl<T:MatElt> Mat<T> {
         mat
     }
 
-    pub fn from_iter< A : Iterator<T>>(rows: uint, cols : uint, mut iter: A) -> Mat<T>{
-        let mut mat : Mat<T> = Mat::new(rows, cols);
+    pub fn from_iter< A : Iterator<T>>(rows: uint, cols : uint, mut iter: A) -> Matrix<T>{
+        let mut mat : Matrix<T> = Matrix::new(rows, cols);
         let stride = mat.stride();
         // get a mutable slice from m
         {
@@ -173,12 +173,12 @@ impl<T:MatElt> Mat<T> {
     }
 
     /// Construct a diagonal matrix from a vector
-    pub fn diag_from_vec(v : &Mat<T>) -> Mat<T>{
+    pub fn diag_from_vec(v : &Matrix<T>) -> Matrix<T>{
         if !v.is_vector(){
             fail!(NotAVector.to_string());
         }
         let n = v.num_cells();
-        let m : Mat<T> = Mat::new(n, n);
+        let m : Matrix<T> = Matrix::new(n, n);
         let src = v.ptr;
         let dst = m.ptr;
         // Copy the elements of v in the vector
@@ -193,7 +193,7 @@ impl<T:MatElt> Mat<T> {
 }
 
 /// Main methods of a matrix
-impl<T:MatElt> Mat<T> {
+impl<T:MatrixElt> Matrix<T> {
     //// Returns the number of rows in the matrix
     pub fn num_rows(&self) -> uint {
         self.rows
@@ -337,7 +337,7 @@ impl<T:MatElt> Mat<T> {
 
 
 /// Functions to construct new matrices out of a matrix and other conversions
-impl<T:MatElt> Mat<T> {
+impl<T:MatrixElt> Matrix<T> {
     /// Converts the matrix to vector from standard library
     pub fn to_std_vec(&self) -> Vec<T> {
         let mut vec: Vec<T> = Vec::with_capacity(self.num_cells());
@@ -361,11 +361,11 @@ impl<T:MatElt> Mat<T> {
     }
 
     /// Returns the r'th row vector
-    pub fn row(&self, r : int) -> Mat<T> {
+    pub fn row(&self, r : int) -> Matrix<T> {
         // Lets ensure that the row value is mapped to
         // a value in the range [0, rows - 1]
         let r = mod_n(r, self.rows as int);        
-        let result : Mat<T> = Mat::new(1, self.cols);
+        let result : Matrix<T> = Matrix::new(1, self.cols);
         let pd = result.ptr;
         let ps = self.ptr;
         for c in range(0, self.cols){
@@ -378,11 +378,11 @@ impl<T:MatElt> Mat<T> {
         result
     }
     /// Returns the c'th column vector
-    pub fn col(&self, c : int) -> Mat<T> {
+    pub fn col(&self, c : int) -> Matrix<T> {
         // Lets ensure that the col value is mapped to
         // a value in the range [0, cols - 1]
         let c = mod_n(c, self.cols as int);        
-        let result : Mat<T> = Mat::new(self.rows, 1);
+        let result : Matrix<T> = Matrix::new(self.rows, 1);
         let pd = result.ptr;
         let ps = self.ptr;
         for r in range(0, self.rows){
@@ -398,10 +398,10 @@ impl<T:MatElt> Mat<T> {
     /// Extract a submatrix from the matrix
     /// rows can easily repeat if the number of requested rows is higher than actual rows
     /// cols can easily repeat if the number of requested cols is higher than actual cols
-    pub fn sub_mat(&self, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> Mat<T> {
+    pub fn sub_mat(&self, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> Matrix<T> {
         let r = mod_n(start_row, self.rows as int);        
         let c = mod_n(start_col, self.cols as int);
-        let result : Mat<T> = Mat::new(num_rows, num_cols);
+        let result : Matrix<T> = Matrix::new(num_rows, num_cols);
         let pd = result.ptr;
         let ps = self.ptr;
         let mut dc = 0;
@@ -421,10 +421,10 @@ impl<T:MatElt> Mat<T> {
     }
 
     // Repeats this matrix in both horizontal and vertical directions 
-    pub fn rep_mat(&self, num_rows : uint, num_cols : uint) -> Mat<T> {
+    pub fn rep_mat(&self, num_rows : uint, num_cols : uint) -> Matrix<T> {
         let rows = self.rows * num_rows;
         let cols = self.cols * num_cols;
-        let result : Mat<T> = Mat::new(rows, cols);
+        let result : Matrix<T> = Matrix::new(rows, cols);
         let pd = result.ptr;
         let ps = self.ptr;
         for bc in range(0, num_cols){
@@ -447,8 +447,8 @@ impl<T:MatElt> Mat<T> {
     }
 
     /// Add the matrix by a scalar
-    pub fn add_scalar(&self, rhs: T) -> Mat<T> {
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
+    pub fn add_scalar(&self, rhs: T) -> Matrix<T> {
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pc = result.ptr;
         for r in range(0, self.rows){
@@ -464,8 +464,8 @@ impl<T:MatElt> Mat<T> {
 
 
     /// Multiply the matrix by a scalar
-    pub fn mul_scalar(&self, rhs: T) -> Mat<T> {
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
+    pub fn mul_scalar(&self, rhs: T) -> Matrix<T> {
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pc = result.ptr;
         for r in range(0, self.rows){
@@ -480,8 +480,8 @@ impl<T:MatElt> Mat<T> {
     }
 
     /// Divide the matrix by a scalar
-    pub fn div_scalar(&self, rhs: T) -> Mat<T> {
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
+    pub fn div_scalar(&self, rhs: T) -> Matrix<T> {
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pc = result.ptr;
         for r in range(0, self.rows){
@@ -496,12 +496,12 @@ impl<T:MatElt> Mat<T> {
     }
 
     /// Computes power of a matrix
-    pub fn pow(&self, exp : uint) -> Mat<T>{
+    pub fn pow(&self, exp : uint) -> Matrix<T>{
         if !self.is_square() {
             fail!(NonSquareMatrix.to_string());
         }
         if exp == 0 {
-            return Mat::identity(self.rows, self.cols);
+            return Matrix::identity(self.rows, self.cols);
         }
         let mut result = self.clone();
         for _ in range(0, exp -1){
@@ -512,8 +512,8 @@ impl<T:MatElt> Mat<T> {
 
     /// Computes the transpose of a matrix.
     /// This doesn't involve complex conjugation.
-    pub fn transpose(&self) -> Mat <T>{
-        let result : Mat<T> = Mat::new(self.cols, self.rows);
+    pub fn transpose(&self) -> Matrix <T>{
+        let result : Matrix<T> = Matrix::new(self.cols, self.rows);
         let pa = self.ptr;
         let pc = result.ptr;
         for r in range(0, self.rows){
@@ -529,8 +529,8 @@ impl<T:MatElt> Mat<T> {
     }
 
     /// Computes the unary minus of a matrix
-    pub fn unary_minus(&self)-> Mat<T> {
-        let result : Mat<T> = Mat::new(self.cols, self.rows);
+    pub fn unary_minus(&self)-> Matrix<T> {
+        let result : Matrix<T> = Matrix::new(self.cols, self.rows);
         let pa = self.ptr;
         let pc = result.ptr;
         for r in range(0, self.rows){
@@ -548,9 +548,9 @@ impl<T:MatElt> Mat<T> {
 
 /// These functions are available only for types which support
 /// ordering [at least partial ordering for floating point numbers].
-impl<T:MatElt+PartialOrd> Mat<T> {
+impl<T:MatrixElt+PartialOrd> Matrix<T> {
     /// Returns a column vector consisting of maximum over each row
-    pub fn max_row_wise(&self) -> Mat<T>{
+    pub fn max_row_wise(&self) -> Matrix<T>{
         // Pick the first column
         let result = self.col(0);
         let pd = result.ptr;
@@ -572,7 +572,7 @@ impl<T:MatElt+PartialOrd> Mat<T> {
 
 
    /// Returns a row vector consisting of maximum over each column
-    pub fn max_col_wise(&self) -> Mat<T>{
+    pub fn max_col_wise(&self) -> Matrix<T>{
         // Pick the first row
         let result = self.row(0);
         let pd = result.ptr;
@@ -594,7 +594,7 @@ impl<T:MatElt+PartialOrd> Mat<T> {
 
 
     /// Returns a column vector consisting of minimum over each row
-    pub fn min_row_wise(&self) -> Mat<T>{
+    pub fn min_row_wise(&self) -> Matrix<T>{
         // Pick the first column
         let result = self.col(0);
         let pd = result.ptr;
@@ -616,7 +616,7 @@ impl<T:MatElt+PartialOrd> Mat<T> {
 
 
    /// Returns a row vector consisting of minimum over each column
-    pub fn min_col_wise(&self) -> Mat<T>{
+    pub fn min_col_wise(&self) -> Matrix<T>{
         // Pick the first row
         let result = self.row(0);
         let pd = result.ptr;
@@ -671,7 +671,7 @@ impl<T:MatElt+PartialOrd> Mat<T> {
 }
 
 /// These functions are available only for integer matrices
-impl<T:MatElt+Int> Mat<T> {
+impl<T:MatrixElt+Int> Matrix<T> {
 
     /// Returns if an integer matrix is a logical matrix
     //// i.e. all cells are either 0s or 1s.
@@ -695,10 +695,10 @@ impl<T:MatElt+Int> Mat<T> {
 
 
 /// These functions are available only for floating point matrices
-impl<T:MatElt+Float> Mat<T> {
+impl<T:MatrixElt+Float> Matrix<T> {
     /// Returns a matrix showing all the cells which are finite
-    pub fn is_finite(&self) -> Mat<u8>{
-        let m : Mat<u8> = Mat::ones(self.rows, self.cols);
+    pub fn is_finite(&self) -> Matrix<u8>{
+        let m : Matrix<u8> = Matrix::ones(self.rows, self.cols);
         for c in range(0, self.cols){
             for r in range(0, self.rows){
                 let offset = self.cell_to_offset(r, c);
@@ -712,8 +712,8 @@ impl<T:MatElt+Float> Mat<T> {
     }
 
     /// Returns a matrix showing all the cells which are infinite
-    pub fn is_infinite(&self) -> Mat<u8>{
-        let m : Mat<u8> = Mat::ones(self.rows, self.cols);
+    pub fn is_infinite(&self) -> Matrix<u8>{
+        let m : Matrix<u8> = Matrix::ones(self.rows, self.cols);
         for c in range(0, self.cols){
             for r in range(0, self.rows){
                 let offset = self.cell_to_offset(r, c);
@@ -732,7 +732,7 @@ impl<T:MatElt+Float> Mat<T> {
 
 
 
-impl<T:MatElt> Index<uint,T> for Mat<T> {
+impl<T:MatrixElt> Index<uint,T> for Matrix<T> {
     #[inline]
     fn index<'a>(&'a self, index: &uint) -> &'a T {
         // The matrix is column major order
@@ -746,7 +746,7 @@ impl<T:MatElt> Index<uint,T> for Mat<T> {
 
 
 
-impl<T:MatElt> Mat<T>{
+impl<T:MatrixElt> Matrix<T>{
     /// This function is for internal use only.
     #[inline]
     fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
@@ -762,11 +762,11 @@ impl<T:MatElt> Mat<T>{
 
 
 /// Implementation of Clone interface
-impl <T:MatElt> Clone for Mat<T> {
+impl <T:MatrixElt> Clone for Matrix<T> {
 
     /// Creates a clone of the matrix
-    fn clone(&self )-> Mat<T> {
-        let m : Mat<T> = Mat::new(self.rows, self.cols);
+    fn clone(&self )-> Matrix<T> {
+        let m : Matrix<T> = Matrix::new(self.rows, self.cols);
         unsafe{
             ptr::copy_memory(m.ptr, self.ptr as *const T, self.capacity());
         }
@@ -774,7 +774,7 @@ impl <T:MatElt> Clone for Mat<T> {
     }
 }
 
-impl <T:MatElt> fmt::Show for Mat<T> {
+impl <T:MatrixElt> fmt::Show for Matrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let ptr = self.ptr;
         try!(write!(f, "["));
@@ -793,13 +793,13 @@ impl <T:MatElt> fmt::Show for Mat<T> {
 }
 
 /// Matrix addition support
-impl<T:MatElt> ops::Add<Mat<T>, Mat<T>> for Mat<T> {
-    fn add(&self, rhs: &Mat<T>) -> Mat<T> {
+impl<T:MatrixElt> ops::Add<Matrix<T>, Matrix<T>> for Matrix<T> {
+    fn add(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
             fail!(DimensionsMismatch.to_string());
         }
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pb = rhs.ptr;
         let pc = result.ptr;
@@ -816,13 +816,13 @@ impl<T:MatElt> ops::Add<Mat<T>, Mat<T>> for Mat<T> {
 
 
 /// Matrix subtraction support
-impl<T:MatElt> ops::Sub<Mat<T>, Mat<T>> for Mat<T>{
-    fn sub(&self, rhs: &Mat<T>) -> Mat<T> {
+impl<T:MatrixElt> ops::Sub<Matrix<T>, Matrix<T>> for Matrix<T>{
+    fn sub(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
             fail!(DimensionsMismatch.to_string());
         }
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pb = rhs.ptr;
         let pc = result.ptr;
@@ -855,18 +855,18 @@ The workaround is to define a separate trait in the
 middle. 
     
 "]
-pub trait MatMul<Result> {
+pub trait MatrixMul<Result> {
 }
 
 
 /// Matrix multiplication support
-impl<T:MatElt> ops::Mul<Mat<T>, Mat<T>> for Mat<T>{
-    fn mul(&self, rhs: &Mat<T>) -> Mat<T> {
+impl<T:MatrixElt> ops::Mul<Matrix<T>, Matrix<T>> for Matrix<T>{
+    fn mul(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions match for multiplication
         if self.cols != rhs.rows{
             fail!(DimensionsMismatch.to_string());
         }
-        let result : Mat<T> = Mat::new(self.rows, rhs.cols);
+        let result : Matrix<T> = Matrix::new(self.rows, rhs.cols);
         let pa = self.ptr;
         let pb = rhs.ptr;
         let pc = result.ptr;
@@ -892,8 +892,8 @@ impl<T:MatElt> ops::Mul<Mat<T>, Mat<T>> for Mat<T>{
 
 
 /// Matrix equality check support
-impl<T:MatElt> cmp::PartialEq for Mat<T>{
-    fn eq(&self, other: &Mat<T>) -> bool {
+impl<T:MatrixElt> cmp::PartialEq for Matrix<T>{
+    fn eq(&self, other: &Matrix<T>) -> bool {
         let pa = self.ptr as *const  T;
         let pb = other.ptr as *const  T;
         for c in range(0, self.cols){
@@ -912,14 +912,14 @@ impl<T:MatElt> cmp::PartialEq for Mat<T>{
 }
 
 // Element wise operations.
-impl<T:MatElt> Mat<T> {
+impl<T:MatrixElt> Matrix<T> {
     /// Multiplies matrices element by element
-    pub fn mul_elt(&self, rhs: &Mat<T>) -> Mat<T> {
+    pub fn mul_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
             fail!(DimensionsMismatch.to_string());
         }
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pb = rhs.ptr;
         let pc = result.ptr;
@@ -934,12 +934,12 @@ impl<T:MatElt> Mat<T> {
     }
 
     /// Divides matrices element by element
-    pub fn div_elt(&self, rhs: &Mat<T>) -> Mat<T> {
+    pub fn div_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
             fail!(DimensionsMismatch.to_string());
         }
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pb = rhs.ptr;
         let pc = result.ptr;
@@ -955,7 +955,7 @@ impl<T:MatElt> Mat<T> {
 }
 
 #[unsafe_destructor]
-impl<T:MatElt> Drop for Mat<T> {
+impl<T:MatrixElt> Drop for Matrix<T> {
     fn drop(&mut self) {
         if self.num_cells() != 0 {
             unsafe {
@@ -968,11 +968,11 @@ impl<T:MatElt> Drop for Mat<T> {
 
 /******************************************************
  *
- *   Private implementation of Mat
+ *   Private implementation of Matrix
  *
  *******************************************************/
 
-impl<T:MatElt> Mat<T> {
+impl<T:MatrixElt> Matrix<T> {
     /// Returns a slice into `self`.
     //#[inline]
     pub fn as_slice_<'a>(&'a self) -> &'a [T] {
@@ -1012,11 +1012,11 @@ unsafe fn dealloc<T>(ptr: *mut T, len: uint) {
 #[cfg(test)]
 mod tests {
 
-    use  super::{Mat, MatI64, MatF64};
+    use  super::{Matrix, MatrixI64, MatrixF64};
 
     #[test]
     fn  create_mat0(){
-        let m : MatI64 = Mat::new(3, 4);
+        let m : MatrixI64 = Matrix::new(3, 4);
         assert_eq!(m.num_cells(), 12);
         assert_eq!(m.size(), (3, 4));
         let v : i64 = m.get(0, 0);
@@ -1026,10 +1026,10 @@ mod tests {
 
     #[test]
     fn test_from_iter0(){
-        let m : MatI64 = Mat::from_iter(4, 4, range(1, 20));
+        let m : MatrixI64 = Matrix::from_iter(4, 4, range(1, 20));
         let b: Vec<i64> = range(1, 17).collect();
         assert!(m.as_slice_() == b.as_slice_());
-        let m : MatI64 = Mat::from_iter(4, 4, range(1, 16));
+        let m : MatrixI64 = Matrix::from_iter(4, 4, range(1, 16));
         assert_eq!(m.get(0, 0), 1);
         assert_eq!(m.get(2, 2), 11);
         let mut b: Vec<i64> = range(1, 16).collect();
@@ -1039,7 +1039,7 @@ mod tests {
 
     #[test]
     fn test_index0(){
-        let m : MatI64 = Mat::from_iter(4, 4, range(1, 20));
+        let m : MatrixI64 = Matrix::from_iter(4, 4, range(1, 20));
         let x = m[4];
         assert_eq!(x, 5);
     }
@@ -1048,7 +1048,7 @@ mod tests {
     fn test_cell_index_mapping(){
         let rows = 20;
         let cols = 10;
-        let m : MatI64 = Mat::new(rows, cols);
+        let m : MatrixI64 = Matrix::new(rows, cols);
         assert_eq!(m.index_to_cell(3 + 2*rows), (3, 2));
         assert_eq!(m.cell_to_index(3, 2), 3 + 2*rows);
         assert_eq!(m.cell_to_index(5, 7), 145);
@@ -1057,7 +1057,7 @@ mod tests {
 
     #[test]
     fn test_to_std_vec(){
-        let m : MatI64 = Mat::from_iter(4, 3, range(0, 12));
+        let m : MatrixI64 = Matrix::from_iter(4, 3, range(0, 12));
         let v1 = m.to_std_vec();
         let v2 : Vec<i64> = range(0, 12).collect();
         assert_eq!(v1, v2);
@@ -1065,14 +1065,14 @@ mod tests {
 
     #[test]
     fn test_ones(){
-        let m : MatI64 = Mat::ones(4, 2);
+        let m : MatrixI64 = Matrix::ones(4, 2);
         let v = vec![1i64, 1, 1, 1, 1, 1, 1, 1];
         assert_eq!(m.to_std_vec(), v);
     }
 
     #[test]
     fn test_sum(){
-        let m : MatI64 = Mat::ones(4, 2);
+        let m : MatrixI64 = Matrix::ones(4, 2);
         let m2 = m  + m;
         let v = vec![2i64, 2, 2, 2, 2, 2, 2, 2];
         assert_eq!(m2.to_std_vec(), v);
@@ -1081,14 +1081,14 @@ mod tests {
     #[test]
     #[should_fail]
     fn test_sum_fail(){
-        let m1 : MatI64 = Mat::ones(4, 2);
-        let m2 : MatI64 = Mat::ones(3, 2);
+        let m1 : MatrixI64 = Matrix::ones(4, 2);
+        let m2 : MatrixI64 = Matrix::ones(3, 2);
         m1 + m2;
     }
 
     #[test]
     fn test_sub(){
-        let m : MatI64 = Mat::ones(4, 2);
+        let m : MatrixI64 = Matrix::ones(4, 2);
         let m3 = m  + m + m;
         let m2 = m3 - m;  
         let v = vec![2i64, 2, 2, 2, 2, 2, 2, 2];
@@ -1097,7 +1097,7 @@ mod tests {
 
     #[test]
     fn test_sub_float(){
-        let m : MatF64 = Mat::ones(4, 2);
+        let m : MatrixF64 = Matrix::ones(4, 2);
         let m3 = m  + m + m;
         let m2 = m3 - m;  
         let v = vec![2f64, 2., 2., 2., 2., 2., 2., 2.];
@@ -1106,16 +1106,16 @@ mod tests {
     #[test]
     #[should_fail]
     fn test_sub_fail(){
-        let m1 : MatI64 = Mat::ones(4, 2);
-        let m2 : MatI64 = Mat::ones(3, 2);
+        let m1 : MatrixI64 = Matrix::ones(4, 2);
+        let m2 : MatrixI64 = Matrix::ones(3, 2);
         m1 - m2;
     }
 
 
     #[test]
     fn test_mult(){
-        let m1 : MatI64 = Mat::from_iter(2, 2, range(0, 4));
-        let m2 : MatI64 = Mat::from_iter(2, 2, range(0, 4));
+        let m1 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
+        let m2 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
         let m3 = m1 * m2;
         let v = vec![2i64, 3, 6, 11];
         assert_eq!(m3.to_std_vec(), v);
@@ -1123,18 +1123,18 @@ mod tests {
 
     #[test]
     fn test_eq(){
-        let m1 : MatI64 = Mat::from_iter(2, 2, range(0, 4));
-        let m2 : MatI64 = Mat::from_iter(2, 2, range(0, 4));
+        let m1 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
+        let m2 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
         assert_eq!(m1, m2);
         let v = vec![1.0f64, 2., 3., 4.];
-        let m1 : MatF64 = Mat::from_slice(2, 2, v.as_slice());
-        let m2 : MatF64 = Mat::from_slice(2, 2, v.as_slice());
+        let m1 : MatrixF64 = Matrix::from_slice(2, 2, v.as_slice());
+        let m2 : MatrixF64 = Matrix::from_slice(2, 2, v.as_slice());
         assert_eq!(m1, m2);
     }
 
     #[test]
     fn test_extract_row(){
-        let m1 : MatI64 = Mat::from_iter(4, 4, range(0, 16));
+        let m1 : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16));
         let m2  = m1.row(0);
         assert_eq!(m2.to_std_vec(), vec![0, 4, 8, 12]);
         assert_eq!(m2.num_rows() , 1);
@@ -1152,7 +1152,7 @@ mod tests {
 
     #[test]
     fn test_extract_col(){
-        let m1 : MatI64 = Mat::from_iter(4, 4, range(0, 16));
+        let m1 : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16));
         let m2  = m1.col(0);
         assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
         assert!(!m2.is_row());
@@ -1170,14 +1170,14 @@ mod tests {
 
     #[test]
     fn test_from_scalar(){
-        let  m : MatI64  = Mat::from_scalar(2);
+        let  m : MatrixI64  = Matrix::from_scalar(2);
         assert!(m.is_scalar());
         assert_eq!(m.to_std_vec(), vec![2]);
         assert_eq!(m.to_scalar(), 2);
     }
     #[test]
     fn test_sub_mat(){
-        let m  : MatI64 = Mat::from_iter(4, 4, range(0, 16));
+        let m  : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16));
         let m1 = m.sub_mat(0, 0, 2, 2);
         assert_eq!(m1.num_cells(), 4);
         assert_eq!(m1.num_rows(), 2);
@@ -1191,7 +1191,7 @@ mod tests {
 
     #[test]
     fn test_rep_mat(){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
         let m2 = m.rep_mat(2, 2);
         assert_eq!(m2.num_cells(), 16);
         assert_eq!(m2.num_rows(), 4);
@@ -1201,26 +1201,26 @@ mod tests {
 
     #[test]
     fn test_is_vector(){
-        let m : MatI64 = Mat::new(3,1);
+        let m : MatrixI64 = Matrix::new(3,1);
         assert!(m.is_vector());
-        let m : MatI64 = Mat::new(1,4);
+        let m : MatrixI64 = Matrix::new(1,4);
         assert!(m.is_vector());
-        let m : MatI64 = Mat::new(1,1);
+        let m : MatrixI64 = Matrix::new(1,1);
         assert!(!m.is_vector());
-        let m : MatI64 = Mat::new(3,3);
+        let m : MatrixI64 = Matrix::new(3,3);
         assert!(!m.is_vector());
     }
 
 
     #[test]
     fn test_is_empty(){
-        let m : MatI64 = Mat::new(3,1);
+        let m : MatrixI64 = Matrix::new(3,1);
         assert!(!m.is_empty());
-        let m : MatI64 = Mat::new(4, 0);
+        let m : MatrixI64 = Matrix::new(4, 0);
         assert!(m.is_empty());
-        let m : MatI64 = Mat::new(0, 4);
+        let m : MatrixI64 = Matrix::new(0, 4);
         assert!(m.is_empty());
-        let m : MatI64 = Mat::new(0, 0);
+        let m : MatrixI64 = Matrix::new(0, 0);
         assert!(m.is_empty());
     }
 
@@ -1228,7 +1228,7 @@ mod tests {
     fn test_is_finite(){
         let v = vec![0f64, Float::nan(), Float::nan(), 
         Float::infinity(), Float::neg_infinity(), 2., 3., 4.];
-        let m : MatF64 = Mat::from_slice(2, 4, v.as_slice());
+        let m : MatrixF64 = Matrix::from_slice(2, 4, v.as_slice());
         let f = m.is_finite();
         assert_eq!(f.to_std_vec(), vec![1, 0, 0, 0, 0, 
             1, 1, 1]);
@@ -1240,7 +1240,7 @@ mod tests {
 
     #[test]
     fn test_is_logical(){
-        let m : MatI64 = Mat::from_iter(4, 4, range(0, 16).map(|x| x % 2));
+        let m : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16).map(|x| x % 2));
         assert!(m.is_logical());
         let m = m + m;
         assert!(!m.is_logical());
@@ -1254,7 +1254,7 @@ mod tests {
         0, 1, 2, 3, 
         19, 17, 3, 1, 
         7, 8, 5, 6];
-        let m : MatI64 = Mat::from_slice(4, 4, v.as_slice());
+        let m : MatrixI64 = Matrix::from_slice(4, 4, v.as_slice());
         let m2 = m.max_row_wise();
         assert!(m2.is_vector());
         assert!(m2.is_col());
@@ -1283,16 +1283,16 @@ mod tests {
 
     #[test]
     fn test_mul_elt(){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
         let m2 = m.mul_elt(&m);
-        let m3  : MatI64 = Mat::from_iter(2, 2,  range(0, 4).map(|x| x*x));
+        let m3  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4).map(|x| x*x));
         assert_eq!(m2, m3);
     }
 
 
     #[test]
     fn test_div_elt(){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(1, 20));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(1, 20));
         let m2 = m + m;
         let m3 = m2.div_elt(&m);
         assert_eq!(m3.to_std_vec(), vec![2,2,2,2]);
@@ -1300,57 +1300,57 @@ mod tests {
 
     #[test]
     fn test_add_scalar (){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
         let m2 = m.add_scalar(2);
         assert_eq!(m2.to_std_vec(), vec![2, 3, 4, 5]);
     }
 
     #[test]
     fn test_mul_scalar (){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
         let m2 = m.mul_scalar(2);
         assert_eq!(m2.to_std_vec(), vec![0, 2, 4, 6]);
     }
 
     #[test]
     fn test_div_scalar (){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4).map(|x| x * 3));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4).map(|x| x * 3));
         let m2 = m.div_scalar(3);
         assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
     }
 
     #[test]
     fn test_identity(){
-        let m : MatI64 = Mat::identity(3, 2);
+        let m : MatrixI64 = Matrix::identity(3, 2);
         assert_eq!(m.to_std_vec(), vec![1, 0, 0, 0, 1, 0]);
         assert!(m.is_identity());
-        let m : MatI64 = Mat::identity(2, 2);
+        let m : MatrixI64 = Matrix::identity(2, 2);
         assert_eq!(m.to_std_vec(), vec![1, 0, 0, 1]);
         assert!(m.is_identity());
-        let m : MatI64 = Mat::identity(2, 3);
+        let m : MatrixI64 = Matrix::identity(2, 3);
         assert_eq!(m.to_std_vec(), vec![1, 0, 0, 1, 0, 0]);
         assert!(m.is_identity());
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
         assert!(!m.is_identity());
     }
 
     #[test]
     fn test_is_square(){
-        let m : MatI64 = Mat::new(3,4);
+        let m : MatrixI64 = Matrix::new(3,4);
         assert!(!m.is_square());
-        let m : MatI64 = Mat::new(100,100);
+        let m : MatrixI64 = Matrix::new(100,100);
         assert!(m.is_square());
     }
 
     #[test]
     fn test_pow(){
-        let m : MatI64  = Mat::identity(4, 4);
+        let m : MatrixI64  = Matrix::identity(4, 4);
         let m2 = m.mul_scalar(2);
         assert!(m.is_square());
         let m4 = m2.pow(4);
         let m16 = m.mul_scalar(16);
         assert_eq!(m4, m16); 
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
         assert!(m.is_square());
         let m3 = m.pow(3);
         assert!(m3.is_square());
@@ -1362,19 +1362,19 @@ mod tests {
 
     #[test]
     fn test_transpose(){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
         assert_eq!(m.to_std_vec(), vec![0, 1, 2, 3]);
         assert_eq!(m.transpose().to_std_vec(), vec![0, 2, 1, 3]);
         assert_eq!(m.transpose().transpose().to_std_vec(), vec![0, 1, 2, 3]);
-        let m  : MatI64 = Mat::from_iter(2, 3,  range(0, 10));
+        let m  : MatrixI64 = Matrix::from_iter(2, 3,  range(0, 10));
         assert_eq!(m.transpose().to_std_vec(), vec![
             0, 2, 4, 1, 3, 5]);
     }
 
     #[test]
     fn test_unary_minus(){
-        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
-        let z : MatI64 = Mat::zeros(2,2);
+        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let z : MatrixI64 = Matrix::zeros(2,2);
         let m2 = m.unary_minus();
         let m3 = z - m;
         assert_eq!(m2, m3);
@@ -1383,14 +1383,14 @@ mod tests {
 
     #[test]
     fn test_diag_from_vector(){
-        let v  : MatI64 = Mat::from_iter(4, 1, range(20, 30));
+        let v  : MatrixI64 = Matrix::from_iter(4, 1, range(20, 30));
         assert!(v.is_vector());
-        let m = Mat::diag_from_vec(&v);
+        let m = Matrix::diag_from_vec(&v);
         assert!(!m.is_empty());
         assert!(!m.is_vector());
         assert!(m.is_diagonal());
         assert_eq!(m.num_cells(), 16);
-        let m2 : MatI64 = Mat::zeros(4, 4);
+        let m2 : MatrixI64 = Matrix::zeros(4, 4);
         m2.set(0, 0, 20);
         m2.set(1, 1, 21);
         m2.set(2, 2, 22);
