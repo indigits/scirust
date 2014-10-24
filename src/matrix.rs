@@ -403,6 +403,93 @@ impl<T:MatElt> Mat<T> {
         result
     }
 
+    /// Add the matrix by a scalar
+    pub fn add_scalar(&self, rhs: T) -> Mat<T> {
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) + rhs;
+                }
+            }
+        }
+        result
+    }
+
+
+    /// Multiply the matrix by a scalar
+    pub fn mul_scalar(&self, rhs: T) -> Mat<T> {
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) * rhs;
+                }
+            }
+        }
+        result
+    }
+
+    /// Divide the matrix by a scalar
+    pub fn div_scalar(&self, rhs: T) -> Mat<T> {
+        let result : Mat<T> = Mat::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) / rhs;
+                }
+            }
+        }
+        result
+    }
+
+    /// Computes power of a matrix
+    pub fn pow(&self, exp : uint) -> Mat<T>{
+        if !self.is_square() {
+            fail!(NonSquareMatrix.to_string());
+        }
+        if exp == 0 {
+            return Mat::identity(self.rows, self.cols);
+        }
+        let mut result = self.clone();
+        for _ in range(0, exp -1){
+            result = result * *self;
+        }
+        result
+    }
+
+    /// Computes the transpose of a matrix.
+    /// This doesn't involve complex conjugation.
+    pub fn transpose(&self) -> Mat <T>{
+        let result : Mat<T> = Mat::new(self.cols, self.rows);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let src_offset = self.cell_to_offset(r, c);
+                let dst_offset = result.cell_to_offset(c, r);
+                unsafe {
+                    *pc.offset(dst_offset) = *pa.offset(src_offset);
+                }
+            }
+        }
+        result
+    }
+
+}
+
+/// These functions are available only for types which support
+/// ordering [at least partial ordering for floating point numbers].
+impl<T:MatElt+PartialOrd> Mat<T> {
     /// Returns a column vector consisting of maximum over each row
     pub fn max_row_wise(&self) -> Mat<T>{
         // Pick the first column
@@ -521,90 +608,7 @@ impl<T:MatElt> Mat<T> {
             }
         }
         v
-    }
-
-    /// Add the matrix by a scalar
-    pub fn add_scalar(&self, rhs: T) -> Mat<T> {
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let offset = self.cell_to_offset(r, c);
-                unsafe {
-                    *pc.offset(offset) = *pa.offset(offset) + rhs;
-                }
-            }
-        }
-        result
-    }
-
-
-    /// Multiply the matrix by a scalar
-    pub fn mul_scalar(&self, rhs: T) -> Mat<T> {
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let offset = self.cell_to_offset(r, c);
-                unsafe {
-                    *pc.offset(offset) = *pa.offset(offset) * rhs;
-                }
-            }
-        }
-        result
-    }
-
-    /// Divide the matrix by a scalar
-    pub fn div_scalar(&self, rhs: T) -> Mat<T> {
-        let result : Mat<T> = Mat::new(self.rows, self.cols);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let offset = self.cell_to_offset(r, c);
-                unsafe {
-                    *pc.offset(offset) = *pa.offset(offset) / rhs;
-                }
-            }
-        }
-        result
-    }
-
-    /// Computes power of a matrix
-    pub fn pow(&self, exp : uint) -> Mat<T>{
-        if !self.is_square() {
-            fail!(NonSquareMatrix.to_string());
-        }
-        if exp == 0 {
-            return Mat::identity(self.rows, self.cols);
-        }
-        let mut result = self.clone();
-        for _ in range(0, exp -1){
-            result = result * *self;
-        }
-        result
-    }
-
-    /// Computes the transpose of a matrix.
-    /// This doesn't involve complex conjugation.
-    pub fn transpose(&self) -> Mat <T>{
-        let result : Mat<T> = Mat::new(self.cols, self.rows);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let src_offset = self.cell_to_offset(r, c);
-                let dst_offset = result.cell_to_offset(c, r);
-                unsafe {
-                    *pc.offset(dst_offset) = *pa.offset(src_offset);
-                }
-            }
-        }
-        result
-    }
-
+    }    
 }
 
 /// These functions are available only for integer matrices

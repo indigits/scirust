@@ -1,6 +1,6 @@
 use std::fmt::Show;
 /// Defines all the traits which a matrix element must support
-pub trait MatElt : Num+PartialOrd+Copy+Show {
+pub trait MatElt : Num+Copy+Show {
 
 }
 
