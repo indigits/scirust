@@ -101,6 +101,23 @@ impl<T:MatElt> Mat<T> {
     }
 
 
+    /// Constructs an identity matrix
+    pub fn identity(rows: uint, cols : uint) -> Mat<T> {
+        let m : Mat<T> = Mat::zeros(rows, cols);
+        // fill with ones
+        let ptr = m.ptr;
+        let one : T = One::one();
+        let n = cmp::min(rows, cols);
+        for i in range(0, n){
+            let offset = m.cell_to_offset(i, i);
+            unsafe{
+                *ptr.offset(offset) = one;
+            }
+        }
+        m
+    }
+
+
     pub fn from_slice(rows: uint, cols : uint, values: &[T]) -> Mat<T>{
         let mut mat : Mat<T> = Mat::new(rows, cols);
         let n_cells = mat.num_cells();
@@ -244,6 +261,28 @@ impl<T:MatElt> Mat<T> {
     #[inline]
     pub fn cell_to_index(&self, r : uint,  c: uint) -> uint{
         c * self.rows + r
+    }
+
+    /// Returns if the matrix is an identity matrix
+    pub fn is_identity(&self) -> bool {
+        let o : T = One::one();
+        let z  : T = Zero::zero();
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            for r in range (0, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                if r == c {
+                    if v != o {
+                        return false;
+                    }
+                }else if v != z {
+                    return false;
+                }
+
+            }
+        } 
+        true
     }
 
 }
@@ -1175,6 +1214,21 @@ mod tests {
         let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4).map(|x| x * 3));
         let m2 = m.div_scalar(3);
         assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
+    }
+
+    #[test]
+    fn test_identity(){
+        let m : MatI64 = Mat::identity(3, 2);
+        assert_eq!(m.to_std_vec(), vec![1, 0, 0, 0, 1, 0]);
+        assert!(m.is_identity());
+        let m : MatI64 = Mat::identity(2, 2);
+        assert_eq!(m.to_std_vec(), vec![1, 0, 0, 1]);
+        assert!(m.is_identity());
+        let m : MatI64 = Mat::identity(2, 3);
+        assert_eq!(m.to_std_vec(), vec![1, 0, 0, 1, 0, 0]);
+        assert!(m.is_identity());
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        assert!(!m.is_identity());
     }
 
 }
