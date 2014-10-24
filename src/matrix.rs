@@ -190,6 +190,14 @@ impl<T:MatrixElt> Matrix<T> {
         }
         m
     }
+
+    /// Constructs a unit vector
+    /// (1, 0, 0), (0, 1, 0), (0, 0, 1), etc.
+    pub fn unit_vector( length : uint, dim : uint) -> Matrix<T> {
+        let mut m : Matrix<T> = Matrix::zeros(length, 1);
+        m.set(dim, 0, One::one());
+        m
+    }
 }
 
 /// Main methods of a matrix
@@ -274,7 +282,7 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
     #[inline]
-    pub fn set(&self, r : uint, c : uint, value : T) {
+    pub fn set(&mut self, r : uint, c : uint, value : T) {
         unsafe {
             *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
         }
@@ -1405,7 +1413,7 @@ mod tests {
         assert!(!m.is_vector());
         assert!(m.is_diagonal());
         assert_eq!(m.num_cells(), 16);
-        let m2 : MatrixI64 = Matrix::zeros(4, 4);
+        let mut m2 : MatrixI64 = Matrix::zeros(4, 4);
         m2.set(0, 0, 20);
         m2.set(1, 1, 21);
         m2.set(2, 2, 22);
@@ -1421,5 +1429,13 @@ mod tests {
         assert_eq!(v.num_cells(), 4);
         let v2 : MatrixI64 = Matrix::from_slice(4, 1, vec![10, 15, 20, 25].as_slice());
         assert_eq!(v, v2);
+    }
+
+    #[test]
+    fn test_unit_vector(){
+        let v : MatrixI64 = Matrix::unit_vector(10, 3);
+        let mut m : MatrixI64 = Matrix::zeros(10, 1);
+        m.set(3, 0, 1);
+        assert_eq!(v, m);
     }
 }
