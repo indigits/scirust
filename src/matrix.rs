@@ -572,6 +572,21 @@ impl<T:MatElt> Mat<T> {
         result
     }
 
+    /// Computes power of a matrix
+    pub fn pow(&self, exp : uint) -> Mat<T>{
+        if !self.is_square() {
+            fail!(NonSquareMatrix.to_string());
+        }
+        if exp == 0 {
+            return Mat::identity(self.rows, self.cols);
+        }
+        let mut result = self.clone();
+        for _ in range(0, exp -1){
+            result = result * *self;
+        }
+        result
+    }
+
 }
 
 /// These functions are available only for integer matrices
@@ -1242,6 +1257,24 @@ mod tests {
         assert!(!m.is_square());
         let m : MatI64 = Mat::new(100,100);
         assert!(m.is_square());
+    }
+
+    #[test]
+    fn test_pow(){
+        let m : MatI64  = Mat::identity(4, 4);
+        let m2 = m.mul_scalar(2);
+        assert!(m.is_square());
+        let m4 = m2.pow(4);
+        let m16 = m.mul_scalar(16);
+        assert_eq!(m4, m16); 
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        assert!(m.is_square());
+        let m3 = m.pow(3);
+        assert!(m3.is_square());
+        assert_eq!(m3.to_std_vec(), vec![6, 11, 22, 39]);
+        assert_eq!(m.pow(1).to_std_vec(), vec![0, 1, 2, 3]);
+        assert_eq!(m.pow(2), m * m);
+        assert_eq!(m.pow(10), m * m * m * m * m * m * m * m * m * m);
     }
 
 }
