@@ -3,4 +3,5 @@
 pub enum MatErr{
     EmptyMatrix,
     DimensionsMismatch,
+    NonSquareMatrix,
 }
