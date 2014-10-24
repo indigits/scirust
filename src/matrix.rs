@@ -446,6 +446,21 @@ impl<T:MatrixElt> Matrix<T> {
         result
     }
 
+    /// Extracts the primary diagonal from the matrix as a vector
+    pub fn diagonal(&self) -> Matrix<T> {
+        let m  = cmp::min(self.rows, self.cols);
+        let result : Matrix<T> = Matrix::new(m, 1);
+        let src = self.ptr;
+        let dst = result.ptr;
+        for i in range(0, m){
+            let offset = self.cell_to_offset(i, i);
+            unsafe{
+                *dst.offset(i as int) = *src.offset(offset);
+            } 
+        }
+        result        
+    }
+
     /// Add the matrix by a scalar
     pub fn add_scalar(&self, rhs: T) -> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
@@ -1398,4 +1413,13 @@ mod tests {
         assert_eq!(m, m2);
     }
 
+    #[test]
+    fn test_diagonal(){
+        let m  : MatrixI64 = Matrix::from_iter(4, 5, range(10, 30));
+        let v = m.diagonal();
+        assert!(v.is_vector());
+        assert_eq!(v.num_cells(), 4);
+        let v2 : MatrixI64 = Matrix::from_slice(4, 1, vec![10, 15, 20, 25].as_slice());
+        assert_eq!(v, v2);
+    }
 }
