@@ -398,7 +398,7 @@ impl<T:MatrixElt> Matrix<T> {
     /// Extract a submatrix from the matrix
     /// rows can easily repeat if the number of requested rows is higher than actual rows
     /// cols can easily repeat if the number of requested cols is higher than actual cols
-    pub fn sub_mat(&self, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> Matrix<T> {
+    pub fn sub_matrix(&self, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> Matrix<T> {
         let r = mod_n(start_row, self.rows as int);        
         let c = mod_n(start_col, self.cols as int);
         let result : Matrix<T> = Matrix::new(num_rows, num_cols);
@@ -421,7 +421,7 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
     // Repeats this matrix in both horizontal and vertical directions 
-    pub fn rep_mat(&self, num_rows : uint, num_cols : uint) -> Matrix<T> {
+    pub fn repeat_matrix(&self, num_rows : uint, num_cols : uint) -> Matrix<T> {
         let rows = self.rows * num_rows;
         let cols = self.cols * num_cols;
         let result : Matrix<T> = Matrix::new(rows, cols);
@@ -1176,23 +1176,23 @@ mod tests {
         assert_eq!(m.to_scalar(), 2);
     }
     #[test]
-    fn test_sub_mat(){
+    fn test_sub_matrix(){
         let m  : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16));
-        let m1 = m.sub_mat(0, 0, 2, 2);
+        let m1 = m.sub_matrix(0, 0, 2, 2);
         assert_eq!(m1.num_cells(), 4);
         assert_eq!(m1.num_rows(), 2);
         assert_eq!(m1.num_cols(), 2);
         assert_eq!(m1.to_std_vec(), vec![0, 1, 4, 5]);
-        assert_eq!(m.sub_mat(1, 0, 2, 2).to_std_vec(), vec![1, 2, 5, 6]);
-        assert_eq!(m.sub_mat(4, 4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
-        assert_eq!(m.sub_mat(-1, -1, 2, 2).to_std_vec(), vec![15, 12, 3, 0]);
-        assert_eq!(m.sub_mat(-4, -4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
+        assert_eq!(m.sub_matrix(1, 0, 2, 2).to_std_vec(), vec![1, 2, 5, 6]);
+        assert_eq!(m.sub_matrix(4, 4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
+        assert_eq!(m.sub_matrix(-1, -1, 2, 2).to_std_vec(), vec![15, 12, 3, 0]);
+        assert_eq!(m.sub_matrix(-4, -4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
     }
 
     #[test]
     fn test_rep_mat(){
         let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
-        let m2 = m.rep_mat(2, 2);
+        let m2 = m.repeat_matrix(2, 2);
         assert_eq!(m2.num_cells(), 16);
         assert_eq!(m2.num_rows(), 4);
         assert_eq!(m2.num_cols(), 4);
