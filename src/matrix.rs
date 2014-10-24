@@ -485,6 +485,22 @@ impl<T:MatElt> Mat<T> {
         result
     }
 
+    /// Computes the unary minus of a matrix
+    pub fn unary_minus(&self)-> Mat<T> {
+        let result : Mat<T> = Mat::new(self.cols, self.rows);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = -*pa.offset(offset);
+                }
+            }
+        }
+        result
+    }
+
 }
 
 /// These functions are available only for types which support
@@ -1308,6 +1324,15 @@ mod tests {
         let m  : MatI64 = Mat::from_iter(2, 3,  range(0, 10));
         assert_eq!(m.transpose().to_std_vec(), vec![
             0, 2, 4, 1, 3, 5]);
+    }
+
+    #[test]
+    fn test_unary_minus(){
+        let m  : MatI64 = Mat::from_iter(2, 2,  range(0, 4));
+        let z : MatI64 = Mat::zeros(2,2);
+        let m2 = m.unary_minus();
+        let m3 = z - m;
+        assert_eq!(m2, m3);
     }
 
 }
