@@ -7,7 +7,7 @@ use std::fmt;
 use std::num;
 use std::num::{One, Zero};
 use std::iter::Iterator;
-use std::rt::heap::{allocate, deallocate};
+use std::rt::heap::{allocate, deallocate, reallocate};
 use std::raw::Slice as RawSlice;
 use discrete::{mod_n};
 use matelt::{MatrixElt};
@@ -634,16 +634,15 @@ impl<T:MatrixElt> Matrix<T> {
     pub fn append_columns(&mut self, 
         other : &Matrix<T>
         )-> &mut Matrix<T> {
-        assert_eq!(self.num_rows() , other.num_rows());
-        self
+        let cols = self.cols;
+        self.insert_columns(cols, other)
     }
 
     /// Prepends one or more columns at the beginning of matrix
     pub fn prepend_columns(&mut self,
         other : &Matrix<T> 
         )-> &mut Matrix<T> {
-        assert_eq!(self.num_rows() , other.num_rows());
-        self
+        self.insert_columns(0, other)
     }
 
     pub fn insert_columns(&mut self,
@@ -651,7 +650,80 @@ impl<T:MatrixElt> Matrix<T> {
         other : &Matrix<T> 
         )-> &mut Matrix<T> {
         assert_eq!(self.num_rows() , other.num_rows());
+        assert!(other.num_cols() > 0);
+
+        // check the capacity.
+        let new_cols = self.cols + other.cols;
+        if self.xcols < new_cols {
+            // We need to reallocate memory.
+            let rows = self.rows;
+            self.reallocate(rows, new_cols);
+        }
+        // Now create space for other matrix to be fitted in
+        self.create_column_space(index, other.num_cols());
+        // Finally copy the column data from the matrix.
+        let src_ptr = other.ptr;
+        let dst_ptr = self.ptr;
+        for i in range(0, other.num_cols()){
+            let src_offset = other.cell_to_offset(0, i);
+            let dst_offset = self.cell_to_offset(0, i + index);
+            for j in range(0, self.rows){
+                let jj = j as int;
+                unsafe {
+                    *dst_ptr.offset(dst_offset + jj) = *src_ptr.offset(src_offset + jj);
+                }
+            }
+        }
+        // Update the count of columns
+        self.cols += other.num_cols();
         self
+    }
+
+
+    /// Reallocates the underlying buffer.
+    /// Assumes that requested capacity is greater than zero.
+    fn reallocate(&mut self, rows : uint, cols : uint){
+        let new_xrows = num::next_power_of_two(rows);
+        let new_xcols = num::next_power_of_two(cols);
+        let new_capacity = new_xrows *  new_xcols;
+        assert!(new_capacity > 0);
+        let old_bytes  = self.capacity()* mem::size_of::<T>();
+        let new_bytes = new_capacity * mem::size_of::<T>();
+        let mut raw = self.ptr as *mut u8;
+        unsafe {
+            raw = reallocate(raw, old_bytes, new_bytes, mem::min_align_of::<T>())
+        };
+        self.ptr = raw as *mut T;
+        self.xrows = new_xrows;
+        self.xcols = new_xcols;
+    }
+
+    //// Moves column data around.
+    fn create_column_space(&mut self, start: uint, count :uint){
+        // The end must not be beyond capacity
+        assert!(start + count <= self.xcols);
+        if start >= self.cols {
+            // Nothing to move.
+            return;
+        }
+        // count columns starting from start column need to be
+        // shifted by count.
+        let mut cur_col = self.cols - 1;
+        let ptr = self.ptr;
+        // Number of columns to shift
+        let cols_to_shift =  self.cols - (start + count - 1);
+        for _ in range(0, cols_to_shift){
+            let dst_col = cur_col + count;
+            let src_offset = self.cell_to_offset(0, cur_col);
+            let dst_offset = self.cell_to_offset(0, dst_col);
+            for i in range(0, self.rows){
+                let ii = i as int;
+                unsafe {
+                    *ptr.offset(dst_offset + ii) = *ptr.offset(src_offset + ii);
+                }
+            }
+            cur_col -= 1;
+        }
     }
 }
 
@@ -1540,5 +1612,27 @@ mod tests {
         let mut r = m.cell_iter();
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![10, 11, 12, 13, 14, 15]);
+    }
+
+    #[test]
+    fn test_add_columns(){
+        let mut m1 :  MatrixI64 = Matrix::from_iter(2, 3, range(11, 100));
+        let m2 :  MatrixI64 = Matrix::from_iter(2, 4, range(11, 100));
+        let m3 : MatrixI64  = Matrix::from_iter(2, 1, range(17, 100));
+        let m4 :  MatrixI64 = Matrix::from_iter(2, 5, range(9, 100));
+        let m5 : MatrixI64  = Matrix::from_iter(2, 1, range(9, 100));
+        println!("{}", m1);
+        m1.append_columns(&m3);
+        println!("{}", m1);
+        assert_eq!(m1, m2);
+        m1.prepend_columns(&m5);
+        println!("{}", m1);
+        assert_eq!(m1, m4);
+        let m6 : MatrixI64  = Matrix::from_iter(2, 1, range(5, 100));
+        m1.prepend_columns(&m6);
+        println!("{}", m1);
+        let m7 : MatrixI64  = Matrix::from_iter(2, 1, range(7, 100));
+        m1.insert_columns(1, &m7);
+        println!("{}", m1);
     }
 }
