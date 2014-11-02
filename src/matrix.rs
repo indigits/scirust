@@ -4,6 +4,7 @@ use std::ptr;
 use std::ops;
 use std::cmp;
 use std::fmt;
+use std::num;
 use std::num::{One, Zero};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
@@ -34,8 +35,15 @@ For a row vector, the stride  = 1.
 
 "]
 pub struct Matrix<T:MatrixElt> {
+    /// Number of rows in the matrix
     rows : uint,
+    /// Number of columns in the matrix
     cols : uint, 
+    /// Number of allocated rows 
+    xrows : uint, 
+    /// Number of allocated columns
+    xcols : uint,
+    /// The pointer to raw data array of the matrix
     ptr : *mut T
 }
 
@@ -59,19 +67,31 @@ impl<T:MatrixElt> Matrix<T> {
 
     pub fn new(rows: uint, cols : uint)-> Matrix<T> {
         assert! (mem::size_of::<T>() != 0);
-        let size = rows * cols;
+        let xrows = num::next_power_of_two(rows);
+        let xcols = num::next_power_of_two(cols);
+        let capacity = xrows *  xcols;
+
         // Support for empty  matrices
-        if size == 0{
+        if capacity == 0{
             // We do not allocate any memory for the buffer.
             // We leave it as a NULL pointer.
-            return Matrix { rows : rows, cols : cols, ptr : ptr::null_mut()};
+            return Matrix { rows : rows, 
+                cols : cols,
+                xrows : xrows,
+                xcols : xcols, 
+                ptr : ptr::null_mut()
+            };
         }
-        let bytes = size * mem::size_of::<T>();
+        let bytes = capacity * mem::size_of::<T>();
         let raw = unsafe {
             allocate(bytes, mem::min_align_of::<T>())
         };
         let ptr = raw as *mut T;
-        Matrix { rows : rows, cols : cols, ptr : ptr}
+        Matrix { rows : rows, 
+                cols : cols,
+                xrows : xrows,
+                xcols : xcols, 
+                ptr : ptr}
     }
 
     /// Constructs a matrix of all zeros
@@ -254,11 +274,13 @@ impl<T:MatrixElt> Matrix<T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     pub fn stride (&self)->uint {
-        self.rows
+        self.xrows
     }
 
+    /// Returns the capacity of the matrix 
+    /// i.e. the number of elements it can hold
     pub fn capacity(&self)-> uint {
-        self.stride() * self.cols
+        self.xrows * self.xcols
     }
 
     /// Returns an unsafe pointer to the matrix's 
@@ -501,6 +523,7 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
     /// Add the matrix by a scalar
+    /// Returns a new matrix
     pub fn add_scalar(&self, rhs: T) -> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
@@ -518,6 +541,7 @@ impl<T:MatrixElt> Matrix<T> {
 
 
     /// Multiply the matrix by a scalar
+    /// Returns a new matrix
     pub fn mul_scalar(&self, rhs: T) -> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
@@ -534,6 +558,7 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
     /// Divide the matrix by a scalar
+    /// Returns a new matrix
     pub fn div_scalar(&self, rhs: T) -> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
@@ -550,6 +575,7 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
     /// Computes power of a matrix
+    /// Returns a new matrix
     pub fn pow(&self, exp : uint) -> Matrix<T>{
         if !self.is_square() {
             fail!(NonSquareMatrix.to_string());
@@ -566,6 +592,7 @@ impl<T:MatrixElt> Matrix<T> {
 
     /// Computes the transpose of a matrix.
     /// This doesn't involve complex conjugation.
+    /// Returns a new matrix
     pub fn transpose(&self) -> Matrix <T>{
         let result : Matrix<T> = Matrix::new(self.cols, self.rows);
         let pa = self.ptr;
@@ -599,6 +626,35 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
 }
+
+/// These methods modify the matrix itself
+impl<T:MatrixElt> Matrix<T> {
+
+    /// Appends one or more columns at the end of matrix
+    pub fn append_columns(&mut self, 
+        other : &Matrix<T>
+        )-> &mut Matrix<T> {
+        assert_eq!(self.num_rows() , other.num_rows());
+        self
+    }
+
+    /// Prepends one or more columns at the beginning of matrix
+    pub fn prepend_columns(&mut self,
+        other : &Matrix<T> 
+        )-> &mut Matrix<T> {
+        assert_eq!(self.num_rows() , other.num_rows());
+        self
+    }
+
+    pub fn insert_columns(&mut self,
+        index  : uint,
+        other : &Matrix<T> 
+        )-> &mut Matrix<T> {
+        assert_eq!(self.num_rows() , other.num_rows());
+        self
+    }
+}
+
 
 /// These functions are available only for types which support
 /// ordering [at least partial ordering for floating point numbers].
