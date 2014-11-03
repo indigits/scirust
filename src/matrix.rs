@@ -319,6 +319,7 @@ impl<T:MatrixElt> Matrix<T> {
     /// Converts an index to cell address (row, column)
     #[inline]
     pub fn index_to_cell(&self, index : uint) -> (uint, uint){
+        assert!(index < self.num_cells());
         let c = index / self.rows;
         let r = index - c*self.rows;
         (r, c)
@@ -327,6 +328,8 @@ impl<T:MatrixElt> Matrix<T> {
     /// Converts a cell address to an index (r, c) to index
     #[inline]
     pub fn cell_to_index(&self, r : uint,  c: uint) -> uint{
+        assert!(r < self.rows);
+        assert!(c < self.cols);
         c * self.rows + r
     }
 

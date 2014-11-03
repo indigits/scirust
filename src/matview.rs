@@ -133,6 +133,7 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
     /// Converts an index to cell address (row, column)
     #[inline]
     pub fn index_to_cell(&self, index : uint) -> (uint, uint){
+        assert!(index < self.num_cells());
         let c = index / self.rows;
         let r = index - c*self.rows;
         (r, c)
@@ -141,6 +142,8 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
     /// Converts a cell address to an index (r, c) to index
     #[inline]
     pub fn cell_to_index(&self, r : uint,  c: uint) -> uint{
+        assert!(r < self.rows);
+        assert!(c < self.cols);
         c * self.rows + r
     }
 
@@ -160,6 +163,27 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
 
 }
 
+
+
+/// Functions to construct new views out of a view and other conversions
+impl<'a, T:MatrixElt> MatrixView<'a, T> {
+    /// Converts the view to vector from standard library
+    pub fn to_std_vec(&self) -> Vec<T> {
+        let mut vec: Vec<T> = Vec::with_capacity(self.num_cells());
+        // We iterate over elements in matrix and push in the vector
+        let ptr = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range (0, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                vec.push(unsafe{*ptr.offset(offset)});
+            }
+        } 
+        vec
+    }
+}
+
+impl<'a, T:MatrixElt> MatrixView<'a, T> {
+}
 
 
 impl<'a, T:MatrixElt> MatrixView<'a, T> {
@@ -194,7 +218,7 @@ mod test{
     }
     #[test]
     fn test_view_multiple(){
-        let mut m1 :  MatrixI64 = Matrix::from_iter(10, 8, range(1, 100));
+        let m1 :  MatrixI64 = Matrix::from_iter(10, 8, range(1, 100));
         // We can create multiple views easily.
         let v1 = m1.view(1, 1, 4, 4);
         let v2 = m1.view(2, 2, 4, 4);
@@ -204,6 +228,7 @@ mod test{
         assert_eq!(v3.get(0, 0), 33);
     }
 
+    #[test]
     fn test_view_matrix_mutability(){
         let mut m1 :  MatrixI64 = Matrix::from_iter(10, 8, range(1, 100));
         {
@@ -211,9 +236,37 @@ mod test{
             // The following line doesn't compile since we have borrowed an
             // immutable reference of m1 in v1.
             //m1.set(0, 0, 2);
-            assert_eq!(v1.get(0, 0), 2);
+            assert_eq!(v1.get(0, 0), 23);
         }
         m1.set(0, 0, 2);
     }
+
+    #[test]
+    fn test_cell_index_mapping(){
+        let rows = 20;
+        let cols = 10;
+        let m : MatrixI64 = Matrix::new(rows, cols);
+        let vrows = 4;
+        let vcols = 3;
+        let v = m.view(1, 1, vrows, vcols);
+        assert_eq!(v.index_to_cell(3 + 2*vrows), (3, 2));
+        assert_eq!(v.cell_to_index(3, 2), 3 + 2*vrows);
+        assert_eq!(v.cell_to_index(3, 2), 11);
+        assert_eq!(v.index_to_cell(11), (3, 2));
+    }
+
+    #[test]
+    fn test_to_std_vec(){
+        let m :  MatrixI64 = Matrix::from_iter(10, 8, range(1, 100));
+        let vrows = 4;
+        let vcols = 3;
+        let mv = m.view(1, 1, vrows, vcols);
+        let vv : Vec<i64> = vec![12, 13, 14, 15, 
+        22, 23, 24, 25,
+        32, 33, 34, 35];
+        assert_eq!(mv.to_std_vec(), vv);
+    }
+
+
 }
 
