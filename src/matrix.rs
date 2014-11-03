@@ -333,6 +333,12 @@ impl<T:MatrixElt> Matrix<T> {
         c * self.rows + r
     }
 
+    /// Maps a cell index to actual offset in the internal buffer
+    #[inline]
+    pub fn cell_to_offset(&self, r : uint,  c: uint)-> int {
+        (c * self.stride() + r) as int
+    } 
+
     /// Returns if the matrix is an identity matrix
     pub fn is_identity(&self) -> bool {
         let o : T = One::one();
@@ -629,6 +635,25 @@ impl<T:MatrixElt> Matrix<T> {
                     *pc.offset(offset) = -*pa.offset(offset);
                 }
             }
+        }
+        result
+    }
+
+    /// Inner product or dot product of two vectors
+    /// Both must be column vectors
+    /// Both must have same length
+    pub fn inner_prod(&self, other : &Matrix<T>) -> T {
+        assert!(self.is_col());
+        assert!(other.is_col());
+        assert!(self.num_cells() == other.num_cells());
+        let mut result : T =  Zero::zero();
+        let pa = self.ptr;
+        let pb = other.ptr;
+        for i in range(0, self.num_rows()){
+            let ii = i as int;
+            let va = unsafe{*pa.offset(ii)};
+            let vb = unsafe{*pb.offset(ii)};
+            result = result + va * vb;
         }
         result
     }
@@ -1332,11 +1357,6 @@ impl<T:MatrixElt> Matrix<T> {
         unsafe { mem::transmute(RawSlice { data: self.as_ptr(), len: self.capacity() }) }
     }
 
-    /// Maps a cell index to actual offset in the internal buffer
-    #[inline]
-    fn cell_to_offset(&self, r : uint,  c: uint)-> int {
-        (c * self.stride() + r) as int
-    } 
 }
 
 
@@ -1846,6 +1866,14 @@ mod tests {
         let m7 : MatrixI64  = Matrix::from_iter(2, 1, range(7, 100)).transpose();
         m1.insert_rows(1, &m7);
         println!("{}", m1);
+    }
+
+    #[test]
+    fn test_inner_product(){
+        let m1 : MatrixI64 = Matrix::from_slice(3, 1, vec![2, 1, 1].as_slice());
+        let m2 : MatrixI64 = Matrix::from_slice(3, 1, vec![1, 1, 2].as_slice());
+        let result = m1.inner_prod(&m2);
+        assert_eq!(result, 5);
     }
 
 }
