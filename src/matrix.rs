@@ -668,7 +668,7 @@ impl<T:MatrixElt> Matrix<T> {
         assert!(other.is_col());
         assert!(self.num_cells() == other.num_cells());
         let n = self.num_rows();
-        let mut result : Matrix<T> =  Matrix::new(n, n);
+        let result : Matrix<T> =  Matrix::new(n, n);
         let pa = self.ptr;
         let pb = other.ptr;
         let pc = result.ptr;
@@ -920,6 +920,34 @@ impl<T:MatrixElt> Matrix<T> {
             cur_row -= 1;
         }
     }
+
+
+    /******************************************************
+     *
+     *   Elementary row / column operations.
+     *
+     *******************************************************/
+
+
+    /// Row switching.
+    pub fn ero_switch(&mut self, 
+        i :  uint,
+        j : uint
+        )-> &mut Matrix<T> {
+        assert! (i  < self.rows);
+        assert! (j  < self.rows);
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            let offset_a = self.cell_to_offset(i, c);
+            let offset_b = self.cell_to_offset(j, c);
+            unsafe {
+                ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
+            }
+        }
+        self
+    }
+
+
 }
 
 /// Views of a matrix
@@ -930,6 +958,9 @@ impl<T:MatrixElt> Matrix<T> {
         result
     }
 }
+
+
+
 
 /// These functions are available only for types which support
 /// ordering [at least partial ordering for floating point numbers].
@@ -1913,4 +1944,15 @@ mod tests {
         assert_eq!(result, m3);
     }
 
+    #[test]
+    fn test_row_switch(){
+        let mut m1 : MatrixI64 = Matrix::from_slice(3, 3, vec![2, 3, 9, 2, 1, 7, 4, 2, 6].as_slice());
+        println!("m1: {}", m1);
+        let m2 = m1.clone();
+        m1.ero_switch(1, 2);
+        let m3 : MatrixI64 = Matrix::from_slice(3, 3, vec![2, 9, 3, 2, 7, 1, 4, 6, 2].as_slice());
+        assert_eq!(m1, m3);
+        m1.ero_switch(2, 1);
+        assert_eq!(m1, m2);
+    }
 }
