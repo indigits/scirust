@@ -1090,39 +1090,115 @@ impl<T:MatrixElt+PartialOrd> Matrix<T> {
         result
     }
 
-    // Returns the minimum scalar value
-    pub fn min_scalar(&self) -> T{
+    // Returns the minimum scalar value with location
+    pub fn min_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
             fail!(EmptyMatrix.to_string());
         }
         let mut v = self.get(0, 0);
         let ps = self.ptr;
+        // The location
+        let mut rr = 0;
+        let mut cc = 0;
         for c in range(0, self.cols){
             for r in range(0, self.rows){
                 let src_offset = self.cell_to_offset(r, c);
                 let s = unsafe{*ps.offset(src_offset)};
-                v = if s < v { s} else { v };
+                if s < v { 
+                    v = s;
+                    rr = r;
+                    cc = c;
+                }
             }
         }
+        (v, rr, cc)
+    }
+
+    // Returns the maximum scalar value with location
+    pub fn max_scalar(&self) -> (T, uint, uint){
+        if self.is_empty(){
+            fail!(EmptyMatrix.to_string());
+        }
+        let mut v = self.get(0, 0);
+        // The location
+        let mut rr = 0;
+        let mut cc = 0;
+        let ps = self.ptr;
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let s = unsafe{*ps.offset(src_offset)};
+                if s > v { 
+                    v = s;
+                    rr = r;
+                    cc = c;
+                }
+            }
+        }
+        (v, rr, cc)
+    }
+    /// Returns the minimum scalar value
+    pub fn min_scalar_value(&self) -> T{
+        let (v , _, _) = self.min_scalar();
         v
+    }    
+    /// Returns the maximum scalar value
+    pub fn max_scalar_value(&self) -> T{
+        let (v , _, _) = self.max_scalar();
+        v
+    }    
+}
+
+impl<T:MatrixElt+PartialOrd+Signed> Matrix<T> {
+
+    // Returns the absolute minimum scalar value
+    pub fn abs_min_scalar(&self) -> (T, uint, uint){
+        if self.is_empty(){
+            fail!(EmptyMatrix.to_string());
+        }
+        let mut v = num::abs(self.get(0, 0));
+        // The location
+        let mut rr = 0;
+        let mut cc = 0;
+        let ps = self.ptr;
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let s = num::abs(unsafe{*ps.offset(src_offset)});
+                if s < v { 
+                    v = s;
+                    rr = r;
+                    cc = c;
+                };
+            }
+        }
+        (v, rr, cc)
     }
 
     // Returns the maximum scalar value
-    pub fn max_scalar(&self) -> T{
+    pub fn abs_max_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
             fail!(EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0);
+        let mut v = num::abs(self.get(0, 0));
+        // The location
+        let mut rr = 0;
+        let mut cc = 0;
         let ps = self.ptr;
         for c in range(0, self.cols){
             for r in range(0, self.rows){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = unsafe{*ps.offset(src_offset)};
-                v = if s > v { s} else { v };
+                let s = num::abs(unsafe{*ps.offset(src_offset)});
+                if s > v { 
+                    v  = s;
+                    rr = r;
+                    cc = c;
+                }
             }
         }
-        v
+        (v, rr, cc)
     }    
+
 }
 
 /// These functions are available only for integer matrices
@@ -1747,8 +1823,8 @@ mod tests {
         assert!(m2.is_row());
         assert_eq!(m2.to_std_vec(), vec![4, 0, 1, 5]);
 
-        assert_eq!(m.min_scalar(), 0);
-        assert_eq!(m.max_scalar(), 19);
+        assert_eq!(m.min_scalar_value(), 0);
+        assert_eq!(m.max_scalar_value(), 19);
     }
 
     #[test]

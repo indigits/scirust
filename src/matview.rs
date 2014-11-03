@@ -238,6 +238,16 @@ impl<'a, T:MatrixElt+PartialOrd> MatrixView<'a, T> {
         }
         (v, rr, cc)
     }    
+    /// Returns the minimum scalar value
+    pub fn min_scalar_value(&self) -> T{
+        let (v , _, _) = self.min_scalar();
+        v
+    }    
+    /// Returns the maximum scalar value
+    pub fn max_scalar_value(&self) -> T{
+        let (v , _, _) = self.max_scalar();
+        v
+    }    
 
 }
 
