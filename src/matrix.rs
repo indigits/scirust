@@ -947,6 +947,23 @@ impl<T:MatrixElt> Matrix<T> {
         self
     }
 
+    /// Row scaling by a factor.
+    pub fn ero_scale(&mut self, 
+        r :  uint, 
+        scale : T
+        )-> &mut Matrix<T> {
+        assert! (r  < self.rows);
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            let offset = self.cell_to_offset(r, c);
+            unsafe {
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale * v;
+            }
+        }
+        self
+    }
+
 
 }
 
@@ -1955,4 +1972,21 @@ mod tests {
         m1.ero_switch(2, 1);
         assert_eq!(m1, m2);
     }
+
+
+    #[test]
+    fn test_row_scale(){
+        let mut m1 : MatrixI64 = Matrix::from_slice(3, 3, vec![
+            2, 3, 9, 
+            2, 1, 7, 
+            4, 2, 6].as_slice());
+        println!("m1: {}", m1);
+        m1.ero_scale(1, 2);
+        let m3 : MatrixI64 = Matrix::from_slice(3, 3, vec![
+            2, 6, 9, 
+            2, 2, 7, 
+            4, 4, 6].as_slice());
+        assert_eq!(m1, m3);
+    }
+
 }
