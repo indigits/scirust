@@ -9,10 +9,15 @@ use std::num::{One, Zero};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
+
+
+// srmat imports
+
 use discrete::{mod_n};
 use matelt::{MatrixElt};
 use materr::*;
 use matiter::*;
+use matview::MatrixView;
 
 
 // The following is needed for destroying matrix.
@@ -862,6 +867,14 @@ impl<T:MatrixElt> Matrix<T> {
     }
 }
 
+/// Views of a matrix
+impl<T:MatrixElt> Matrix<T> {
+    /// Creates a view on the matrix
+    pub fn view(&self, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> MatrixView<T> {
+        let result : MatrixView<T> = MatrixView::new(self, start_row, start_col, num_rows, num_cols);
+        result
+    }
+}
 
 /// These functions are available only for types which support
 /// ordering [at least partial ordering for floating point numbers].
@@ -1371,7 +1384,7 @@ mod tests {
         assert_eq!(m.get(2, 2), 11);
         let mut b: Vec<i64> = range(1, 16).collect();
         b.push(0);
-        assert!(m.as_slice_() == b.as_slice_());
+        assert_eq!(m.as_slice_(), b.as_slice_());
     }
 
     #[test]
