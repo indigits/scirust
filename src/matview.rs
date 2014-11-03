@@ -1,6 +1,8 @@
 // Standard library imports
 use std::mem;
 use std::ops;
+use std::num;
+use std::fmt;
 
 // srmat imports
 use matelt::{MatrixElt};
@@ -188,7 +190,107 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
 }
 
 
-impl<'a, T:MatrixElt> MatrixView<'a, T> {
+impl<'a, T:MatrixElt+PartialOrd> MatrixView<'a, T> {
+    // Returns the minimum scalar value
+    pub fn min_scalar(&self) -> (T, uint, uint){
+        if self.is_empty(){
+            fail!(EmptyMatrix.to_string());
+        }
+        let mut v = self.get(0, 0);
+        // The location
+        let mut rr = 0;
+        let mut cc = 0;
+        let ps = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let s = unsafe{*ps.offset(src_offset)};
+                if s < v { 
+                    v = s;
+                    rr = r;
+                    cc = c;
+                }
+            }
+        }
+        (v, rr, cc)
+    }
+
+    // Returns the maximum scalar value
+    pub fn max_scalar(&self) -> (T, uint, uint){
+        if self.is_empty(){
+            fail!(EmptyMatrix.to_string());
+        }
+        let mut v = self.get(0, 0);
+        // The location
+        let mut rr = 0;
+        let mut cc = 0;
+        let ps = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let s = unsafe{*ps.offset(src_offset)};
+                if s > v { 
+                    v = s;
+                    rr = r;
+                    cc = c;
+                }
+            }
+        }
+        (v, rr, cc)
+    }    
+
+}
+
+impl<'a, T:MatrixElt+PartialOrd+Signed> MatrixView<'a, T> {
+
+    // Returns the absolute minimum scalar value
+    pub fn abs_min_scalar(&self) -> (T, uint, uint){
+        if self.is_empty(){
+            fail!(EmptyMatrix.to_string());
+        }
+        let mut v = num::abs(self.get(0, 0));
+        // The location
+        let mut rr = 0;
+        let mut cc = 0;
+        let ps = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let s = num::abs(unsafe{*ps.offset(src_offset)});
+                if s < v { 
+                    v = s;
+                    rr = r;
+                    cc = c;
+                };
+            }
+        }
+        (v, rr, cc)
+    }
+
+    // Returns the maximum scalar value
+    pub fn abs_max_scalar(&self) -> (T, uint, uint){
+        if self.is_empty(){
+            fail!(EmptyMatrix.to_string());
+        }
+        let mut v = num::abs(self.get(0, 0));
+        // The location
+        let mut rr = 0;
+        let mut cc = 0;
+        let ps = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = self.cell_to_offset(r, c);
+                let s = num::abs(unsafe{*ps.offset(src_offset)});
+                if s > v { 
+                    v  = s;
+                    rr = r;
+                    cc = c;
+                }
+            }
+        }
+        (v, rr, cc)
+    }    
+
 }
 
 /// View + View =  Matrix addition
@@ -213,6 +315,25 @@ impl<'a, 'b, T:MatrixElt> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<
             }
         }
         result
+    }
+}
+
+
+impl <'a, T:MatrixElt> fmt::Show for MatrixView<'a, T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let ptr = self.m.as_ptr();
+        try!(write!(f, "["));
+        // Here we print row by row
+        for r in range (0, self.rows) {
+           try!(write!(f, "\n  "));
+            for c in range (0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                try!(write!(f, "{} ", v));
+            }
+        }
+        try!(write!(f, "\n]"));
+        Ok(())
     }
 }
 
@@ -303,5 +424,22 @@ mod test{
         let m3 : MatrixI64 = Matrix::from_slice(2, 2, vec![35, 37, 55, 57].as_slice());
         assert_eq!(m2, m3);
     }
+
+
+    #[test]
+    fn test_min_max(){
+        let m :  MatrixI64 = Matrix::from_iter(20, 20, range(-100, 400));
+        let v1   = m.view(2, 2, 6, 6);
+        println!("v1 : {}", v1);
+        assert_eq!(v1.max_scalar(), (47, 5, 5));
+        assert_eq!(v1.min_scalar(), (-58, 0, 0));
+        let (abs_max, rr, cc) = v1.abs_max_scalar();
+        assert_eq!(abs_max, 58);
+        assert_eq!((rr, cc), (0, 0));
+        let (abs_min, rr, cc) = v1.abs_min_scalar();
+        assert_eq!(abs_min, 2);
+        assert_eq!((rr, cc), (0, 3));
+    }
+
 }
 
