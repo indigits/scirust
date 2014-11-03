@@ -1,9 +1,11 @@
 // Standard library imports
 use std::mem;
+use std::ops;
 
 // srmat imports
 use matelt::{MatrixElt};
 use matrix::{Matrix};
+use materr::*;
 use discrete::*;
 
 #[doc = "
@@ -189,6 +191,31 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
 impl<'a, T:MatrixElt> MatrixView<'a, T> {
 }
 
+/// View + View =  Matrix addition
+impl<'a, 'b, T:MatrixElt> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<'a, T> {
+    fn add(&self, rhs: &MatrixView<T>) -> Matrix<T> {
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            fail!(DimensionsMismatch.to_string());
+        }
+        let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let pa = self.m.as_ptr();
+        let pb = rhs.m.as_ptr();
+        let pc = result.as_mut_ptr();
+        for c in range (0, self.cols){
+            for r in range(0, self.rows){
+                let dst_offset = result.cell_to_offset(r, c);
+                let a_offset  = self.cell_to_offset(r, c);
+                let b_offset = rhs.cell_to_offset(r, c);
+                unsafe{
+                    *pc.offset(dst_offset) = *pa.offset(a_offset) + *pb.offset(b_offset);
+                }
+            }
+        }
+        result
+    }
+}
+
 
 /******************************************************
  *
@@ -267,6 +294,14 @@ mod test{
         assert_eq!(mv.to_std_vec(), vv);
     }
 
-
+    #[test]
+    fn test_addition(){
+        let m :  MatrixI64 = Matrix::from_iter(10, 10, range(1, 200));
+        let v1   = m.view(2, 2, 2, 2); // 23 , 24 , 33, 34
+        let v2 = m.view(1, 1, 2, 2);  // 12, 13, 22, 33
+        let m2 = v1 + v2; // 
+        let m3 : MatrixI64 = Matrix::from_slice(2, 2, vec![35, 37, 55, 57].as_slice());
+        assert_eq!(m2, m3);
+    }
 }
 
