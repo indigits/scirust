@@ -642,6 +642,7 @@ impl<T:MatrixElt> Matrix<T> {
     /// Inner product or dot product of two vectors
     /// Both must be column vectors
     /// Both must have same length
+    /// result = a' * b.
     pub fn inner_prod(&self, other : &Matrix<T>) -> T {
         assert!(self.is_col());
         assert!(other.is_col());
@@ -654,6 +655,32 @@ impl<T:MatrixElt> Matrix<T> {
             let va = unsafe{*pa.offset(ii)};
             let vb = unsafe{*pb.offset(ii)};
             result = result + va * vb;
+        }
+        result
+    }
+
+    /// Outer product of two vectors
+    /// Both must be column vectors
+    /// Both must have same length
+    /// result = a * b'.
+    pub fn outer_prod(&self, other : &Matrix<T>) -> Matrix<T> {
+        assert!(self.is_col());
+        assert!(other.is_col());
+        assert!(self.num_cells() == other.num_cells());
+        let n = self.num_rows();
+        let mut result : Matrix<T> =  Matrix::new(n, n);
+        let pa = self.ptr;
+        let pb = other.ptr;
+        let pc = result.ptr;
+        for r in range(0, n){
+            for c in range(0, n){
+                let va = unsafe{*pa.offset(r as int)};
+                let vb = unsafe{*pb.offset(c as int)};
+                let offset = result.cell_to_offset(r, c);
+                unsafe{
+                    *pc.offset(offset) = va * vb;
+                }
+            }
         }
         result
     }
@@ -1874,6 +1901,16 @@ mod tests {
         let m2 : MatrixI64 = Matrix::from_slice(3, 1, vec![1, 1, 2].as_slice());
         let result = m1.inner_prod(&m2);
         assert_eq!(result, 5);
+    }
+
+
+    #[test]
+    fn test_outer_product(){
+        let m1 : MatrixI64 = Matrix::from_slice(3, 1, vec![2, 1, 1].as_slice());
+        let m2 : MatrixI64 = Matrix::from_slice(3, 1, vec![1, 1, 2].as_slice());
+        let result = m1.outer_prod(&m2);
+        let m3 : MatrixI64 = Matrix::from_slice(3, 3, vec![2, 1, 1, 2, 1, 1, 4, 2, 2].as_slice());
+        assert_eq!(result, m3);
     }
 
 }
