@@ -7,7 +7,7 @@ use std::fmt;
 use std::num;
 use std::num::{One, Zero};
 use std::iter::Iterator;
-use std::rt::heap::{allocate, deallocate, reallocate};
+use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
 use discrete::{mod_n};
 use matelt::{MatrixElt};
@@ -645,6 +645,7 @@ impl<T:MatrixElt> Matrix<T> {
         self.insert_columns(0, other)
     }
 
+    /// Inserts columns at the specified location
     pub fn insert_columns(&mut self,
         index  : uint,
         other : &Matrix<T> 
@@ -680,25 +681,117 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
 
-    /// Reallocates the underlying buffer.
-    /// Assumes that requested capacity is greater than zero.
+    /// Appends one or more rows at the bottom of matrix
+    pub fn append_rows(&mut self, 
+        other : &Matrix<T>
+        )-> &mut Matrix<T> {
+        let rows = self.rows;
+        self.insert_rows(rows, other)
+    }
+
+    /// Prepends one or more rows at the top of matrix
+    pub fn prepend_rows(&mut self,
+        other : &Matrix<T> 
+        )-> &mut Matrix<T> {
+        self.insert_rows(0, other)
+    }
+
+    /// Inserts rows at the specified location
+    pub fn insert_rows(&mut self,
+        index  : uint,
+        other : &Matrix<T> 
+        )-> &mut Matrix<T> {
+        // Make sure that the dimensions are compatible.
+        assert_eq!(self.num_cols() , other.num_cols());
+        // Make sure that there is data to be added.
+        assert!(other.num_rows() > 0);
+
+        // check the capacity.
+        let new_rows = self.rows + other.rows;
+        if self.xrows < new_rows {
+            // We need to reallocate memory.
+            let cols = self.cols;
+            self.reallocate(new_rows, cols);
+        }
+        // Now create space for other matrix to be fitted in
+        self.create_row_space(index, other.num_rows());
+        // Finally copy the row data from the other matrix.
+        let src_ptr = other.ptr;
+        let dst_ptr = self.ptr;
+        let src_stride = other.stride();
+        let dst_stride = self.stride();
+        for i in range(0, other.num_rows()){
+            let src_offset = other.cell_to_offset(i, 0);
+            let dst_offset = self.cell_to_offset(i + index, 0);
+            for j in range(0, self.cols){
+                unsafe {
+                    *dst_ptr.offset(dst_offset + (j*dst_stride) as int) = 
+                    *src_ptr.offset(src_offset + (j*src_stride) as int);
+                }
+            }
+        }
+        // Update the count of rows
+        self.rows += other.num_rows();
+        self
+    }
+
+
+
+    #[doc = "
+    Reallocates the underlying buffer.
+    Assumes that requested capacity is greater than zero.
+
+    ## Notes
+
+    A simple reallocate cannot be used. When the 
+    number of rows changes, the stride also changes.
+    Thus, the matrix elements need to be moved around.
+    "] 
     fn reallocate(&mut self, rows : uint, cols : uint){
         let new_xrows = num::next_power_of_two(rows);
         let new_xcols = num::next_power_of_two(cols);
+        let old_capacity = self.xrows * self.xcols;
         let new_capacity = new_xrows *  new_xcols;
+        if old_capacity >= new_capacity{
+            // Nothing to do.
+            return;
+        }
         assert!(new_capacity > 0);
-        let old_bytes  = self.capacity()* mem::size_of::<T>();
         let new_bytes = new_capacity * mem::size_of::<T>();
-        let mut raw = self.ptr as *mut u8;
-        unsafe {
-            raw = reallocate(raw, old_bytes, new_bytes, mem::min_align_of::<T>())
+        println!("Allocating {} bytes", new_bytes);
+        let raw = unsafe {
+            allocate(new_bytes, mem::min_align_of::<T>())
         };
-        self.ptr = raw as *mut T;
+        let dst_ptr = raw as *mut T;
+        let src_ptr = self.ptr;
+        // Copy data from source to destination.
+        let src_stride = self.xrows;
+        let dst_stride = new_xrows;
+        for c in range(0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset = (c * src_stride + r) as int;
+                let dst_offset = (c * dst_stride + r) as int;
+                unsafe{
+                    *dst_ptr.offset(dst_offset) = *src_ptr.offset(src_offset);
+                }
+            }
+
+        }
+        // Drop older data.
+        unsafe {
+            let old_bytes = old_capacity * mem::size_of::<T>();
+            println!("Allocating {} bytes", old_bytes);
+            deallocate(self.ptr as *mut u8,
+                   old_bytes,
+                   mem::min_align_of::<T>());
+        }
+        // Keep new data
+        self.ptr = dst_ptr;
         self.xrows = new_xrows;
         self.xcols = new_xcols;
     }
 
-    //// Moves column data around.
+    //// Moves column data around and creates space for new columns
     fn create_column_space(&mut self, start: uint, count :uint){
         // The end must not be beyond capacity
         assert!(start + count <= self.xcols);
@@ -706,6 +799,7 @@ impl<T:MatrixElt> Matrix<T> {
             // Nothing to move.
             return;
         }
+        let capacity = self.capacity() as int;
         // count columns starting from start column need to be
         // shifted by count.
         let mut cur_col = self.cols - 1;
@@ -716,13 +810,54 @@ impl<T:MatrixElt> Matrix<T> {
             let dst_col = cur_col + count;
             let src_offset = self.cell_to_offset(0, cur_col);
             let dst_offset = self.cell_to_offset(0, dst_col);
+            assert!(src_offset < capacity);
+            assert!(dst_offset < capacity);
             for i in range(0, self.rows){
                 let ii = i as int;
+                // Some validations
+                assert!(src_offset + ii < capacity);
+                assert!(dst_offset + ii < capacity);
                 unsafe {
                     *ptr.offset(dst_offset + ii) = *ptr.offset(src_offset + ii);
                 }
             }
             cur_col -= 1;
+        }
+    }
+
+    //// Moves rows around and creates space for new rows
+    fn create_row_space(&mut self, start: uint, count :uint){
+        // The end must not be beyond capacity
+        assert!(start + count <= self.xrows);
+        if start >= self.rows {
+            // Nothing to move.
+            return;
+        }
+        let capacity = self.capacity() as int;
+        // count rows starting from start row need to be
+        // shifted by count.
+        let mut cur_row = self.rows - 1;
+        let ptr = self.ptr;
+        // Number of rows to shift
+        let rows_to_shift =  self.rows - (start + count - 1);
+        let stride = self.stride();
+        for _ in range(0, rows_to_shift){
+            let dst_row = cur_row + count;
+            let src_offset = self.cell_to_offset(cur_row, 0);
+            let dst_offset = self.cell_to_offset(dst_row, 0);
+            assert!(src_offset < capacity);
+            assert!(dst_offset < capacity);
+            for i in range(0, self.cols){
+                let ii = (i*stride) as int;
+                // Some validations
+                assert!(src_offset + ii < capacity);
+                assert!(dst_offset + ii < capacity);
+                unsafe {
+                    *ptr.offset(dst_offset + ii) = 
+                    *ptr.offset(src_offset + ii);
+                }
+            }
+            cur_row -= 1;
         }
     }
 }
@@ -950,6 +1085,7 @@ impl <T:MatrixElt> Clone for Matrix<T> {
     fn clone(&self )-> Matrix<T> {
         let m : Matrix<T> = Matrix::new(self.rows, self.cols);
         unsafe{
+            //TODO: this may not work if xrows and xcols are different.
             ptr::copy_memory(m.ptr, self.ptr as *const T, self.capacity());
         }
         m
@@ -969,7 +1105,7 @@ impl <T:MatrixElt> fmt::Show for Matrix<T> {
                 try!(write!(f, "{} ", v));
             }
         }
-        try!(write!(f, "\n]\n"));
+        try!(write!(f, "\n]"));
         Ok(())
     }
 }
@@ -1080,9 +1216,10 @@ impl<T:MatrixElt> cmp::PartialEq for Matrix<T>{
         let pb = other.ptr as *const  T;
         for c in range(0, self.cols){
             for r in range(0, self.rows){
-                let offset = self.cell_to_offset(r, c);
-                let va = unsafe{*pa.offset(offset)};
-                let vb = unsafe{*pb.offset(offset)};
+                let offset_a = self.cell_to_offset(r, c);
+                let offset_b = other.cell_to_offset(r, c);
+                let va = unsafe{*pa.offset(offset_a)};
+                let vb = unsafe{*pb.offset(offset_b)};
                 if va != vb {
                     return false;
                 }
@@ -1147,6 +1284,23 @@ impl<T:MatrixElt> Drop for Matrix<T> {
     }
 }
 
+/******************************************************
+ *
+ *   Utility functions for debugging of Matrix
+ *
+ *******************************************************/
+
+impl<T:MatrixElt> Matrix<T> {
+    pub fn print_state(&self){
+        let capacity = self.capacity();
+        let bytes = capacity * mem::size_of::<T>();
+        println!("Rows: {}, Cols: {}, XRows : {}, XCols {} , Capacity: {}, Bytes; {}, Buffer: {:p}, End : {:p}", 
+            self.rows, self.cols, self.xrows, self.xcols, 
+            capacity, bytes, self.ptr, unsafe {
+                self.ptr.offset(capacity as int)
+            });
+    }
+}
 
 
 /******************************************************
@@ -1552,6 +1706,11 @@ mod tests {
         let m  : MatrixI64 = Matrix::from_iter(2, 3,  range(0, 10));
         assert_eq!(m.transpose().to_std_vec(), vec![
             0, 2, 4, 1, 3, 5]);
+        let m4 :  MatrixI64 = Matrix::from_iter(2, 5, range(9, 100));
+        let m5 = m4.transpose();
+        println!("m4: {}", m4);
+        println!("m5: {}", m5);
+        assert_eq!(m5.transpose(), m4);
     }
 
     #[test]
@@ -1635,4 +1794,42 @@ mod tests {
         m1.insert_columns(1, &m7);
         println!("{}", m1);
     }
+
+
+    #[test]
+    fn test_add_rows(){
+        let mut m1 :  MatrixI64 = Matrix::from_iter(2, 3, range(11, 100)).transpose();
+        let m2 :  MatrixI64 = Matrix::from_iter(2, 4, range(11, 100)).transpose();
+        let m3 : MatrixI64  = Matrix::from_iter(2, 1, range(17, 100)).transpose();
+        let m4 :  MatrixI64 = Matrix::from_iter(2, 5, range(9, 100)).transpose();
+        let m5 : MatrixI64  = Matrix::from_iter(2, 1, range(9, 100)).transpose();
+        println!("m1: {}", m1);
+        m1.print_state();
+        println!("m2: {}", m2);
+        println!("m3: {}", m3);
+        println!("m4: {}", m4);
+        m4.print_state();
+        m1.append_rows(&m3);
+        println!("m1 = [m1 ; m3] {}", m1);
+        m1.print_state();
+        println!("m4: {}", m4);
+        m4.print_state();
+        //assert_eq!(m1, m2);
+        println!("\nm4 {}", m4);
+        m4.print_state();
+        println!("m5 {}", m5);
+        m1.prepend_rows(&m5);
+        println!("m1 = [m5 ; m1] {}", m1);
+        m1.print_state();
+        println!("\nm4 {}", m4);
+        m4.print_state();
+        assert_eq!(m1, m4);
+        let m6 : MatrixI64  = Matrix::from_iter(2, 1, range(5, 100)).transpose();
+        m1.prepend_rows(&m6);
+        println!("{}", m1);
+        let m7 : MatrixI64  = Matrix::from_iter(2, 1, range(7, 100)).transpose();
+        m1.insert_rows(1, &m7);
+        println!("{}", m1);
+    }
+
 }
