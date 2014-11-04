@@ -1,5 +1,5 @@
 [package]
 
-name = "srmat"
-version = "0.0.1"
+name = "scirust"
+version = "0.0.2"
 authors = ["Shailesh Kumar <shailesh@indigits.com>"]
