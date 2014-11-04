@@ -71,7 +71,7 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
     pub fn new(rows: uint, cols : uint)-> Matrix<T> {
-        assert! (mem::size_of::<T>() != 0);
+        debug_assert! (mem::size_of::<T>() != 0);
         let xrows = num::next_power_of_two(rows);
         let xcols = num::next_power_of_two(cols);
         let capacity = xrows *  xcols;
@@ -319,7 +319,7 @@ impl<T:MatrixElt> Matrix<T> {
     /// Converts an index to cell address (row, column)
     #[inline]
     pub fn index_to_cell(&self, index : uint) -> (uint, uint){
-        assert!(index < self.num_cells());
+        debug_assert!(index < self.num_cells());
         let c = index / self.rows;
         let r = index - c*self.rows;
         (r, c)
@@ -328,8 +328,8 @@ impl<T:MatrixElt> Matrix<T> {
     /// Converts a cell address to an index (r, c) to index
     #[inline]
     pub fn cell_to_index(&self, r : uint,  c: uint) -> uint{
-        assert!(r < self.rows);
-        assert!(c < self.cols);
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
         c * self.rows + r
     }
 
@@ -644,9 +644,9 @@ impl<T:MatrixElt> Matrix<T> {
     /// Both must have same length
     /// result = a' * b.
     pub fn inner_prod(&self, other : &Matrix<T>) -> T {
-        assert!(self.is_col());
-        assert!(other.is_col());
-        assert!(self.num_cells() == other.num_cells());
+        debug_assert!(self.is_col());
+        debug_assert!(other.is_col());
+        debug_assert!(self.num_cells() == other.num_cells());
         let mut result : T =  Zero::zero();
         let pa = self.ptr;
         let pb = other.ptr;
@@ -664,9 +664,9 @@ impl<T:MatrixElt> Matrix<T> {
     /// Both must have same length
     /// result = a * b'.
     pub fn outer_prod(&self, other : &Matrix<T>) -> Matrix<T> {
-        assert!(self.is_col());
-        assert!(other.is_col());
-        assert!(self.num_cells() == other.num_cells());
+        debug_assert!(self.is_col());
+        debug_assert!(other.is_col());
+        debug_assert!(self.num_cells() == other.num_cells());
         let n = self.num_rows();
         let result : Matrix<T> =  Matrix::new(n, n);
         let pa = self.ptr;
@@ -710,8 +710,8 @@ impl<T:MatrixElt> Matrix<T> {
         index  : uint,
         other : &Matrix<T> 
         )-> &mut Matrix<T> {
-        assert_eq!(self.num_rows() , other.num_rows());
-        assert!(other.num_cols() > 0);
+        debug_assert_eq!(self.num_rows() , other.num_rows());
+        debug_assert!(other.num_cols() > 0);
 
         // check the capacity.
         let new_cols = self.cols + other.cols;
@@ -762,9 +762,9 @@ impl<T:MatrixElt> Matrix<T> {
         other : &Matrix<T> 
         )-> &mut Matrix<T> {
         // Make sure that the dimensions are compatible.
-        assert_eq!(self.num_cols() , other.num_cols());
+        debug_assert_eq!(self.num_cols() , other.num_cols());
         // Make sure that there is data to be added.
-        assert!(other.num_rows() > 0);
+        debug_assert!(other.num_rows() > 0);
 
         // check the capacity.
         let new_rows = self.rows + other.rows;
@@ -870,13 +870,13 @@ impl<T:MatrixElt> Matrix<T> {
             let dst_col = cur_col + count;
             let src_offset = self.cell_to_offset(0, cur_col);
             let dst_offset = self.cell_to_offset(0, dst_col);
-            assert!(src_offset < capacity);
-            assert!(dst_offset < capacity);
+            debug_assert!(src_offset < capacity);
+            debug_assert!(dst_offset < capacity);
             for i in range(0, self.rows){
                 let ii = i as int;
                 // Some validations
-                assert!(src_offset + ii < capacity);
-                assert!(dst_offset + ii < capacity);
+                debug_assert!(src_offset + ii < capacity);
+                debug_assert!(dst_offset + ii < capacity);
                 unsafe {
                     *ptr.offset(dst_offset + ii) = *ptr.offset(src_offset + ii);
                 }
@@ -905,13 +905,13 @@ impl<T:MatrixElt> Matrix<T> {
             let dst_row = cur_row + count;
             let src_offset = self.cell_to_offset(cur_row, 0);
             let dst_offset = self.cell_to_offset(dst_row, 0);
-            assert!(src_offset < capacity);
-            assert!(dst_offset < capacity);
+            debug_assert!(src_offset < capacity);
+            debug_assert!(dst_offset < capacity);
             for i in range(0, self.cols){
                 let ii = (i*stride) as int;
                 // Some validations
-                assert!(src_offset + ii < capacity);
-                assert!(dst_offset + ii < capacity);
+                debug_assert!(src_offset + ii < capacity);
+                debug_assert!(dst_offset + ii < capacity);
                 unsafe {
                     *ptr.offset(dst_offset + ii) = 
                     *ptr.offset(src_offset + ii);
@@ -934,8 +934,8 @@ impl<T:MatrixElt> Matrix<T> {
         i :  uint,
         j : uint
         )-> &mut Matrix<T> {
-        assert! (i  < self.rows);
-        assert! (j  < self.rows);
+        debug_assert! (i  < self.rows);
+        debug_assert! (j  < self.rows);
         let ptr = self.ptr;
         for c in range(0, self.cols){
             let offset_a = self.cell_to_offset(i, c);
@@ -952,7 +952,7 @@ impl<T:MatrixElt> Matrix<T> {
         r :  uint, 
         scale : T
         )-> &mut Matrix<T> {
-        assert! (r  < self.rows);
+        debug_assert! (r  < self.rows);
         let ptr = self.ptr;
         for c in range(0, self.cols){
             let offset = self.cell_to_offset(r, c);
@@ -971,8 +971,8 @@ impl<T:MatrixElt> Matrix<T> {
         j :  uint, 
         scale : T
         )-> &mut Matrix<T> {
-        assert! (i  < self.rows);
-        assert! (j  < self.rows);
+        debug_assert! (i  < self.rows);
+        debug_assert! (j  < self.rows);
         let ptr = self.ptr;
         for c in range(0, self.cols){
             let offset_a = self.cell_to_offset(i, c);
@@ -992,7 +992,7 @@ impl<T:MatrixElt> Matrix<T> {
 /// Views of a matrix
 impl<T:MatrixElt> Matrix<T> {
     /// Creates a view on the matrix
-    pub fn view(&self, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> MatrixView<T> {
+    pub fn view(&self, start_row : uint, start_col : uint , num_rows: uint, num_cols : uint) -> MatrixView<T> {
         let result : MatrixView<T> = MatrixView::new(self, start_row, start_col, num_rows, num_cols);
         result
     }
@@ -1306,9 +1306,24 @@ impl <T:MatrixElt> Clone for Matrix<T> {
     }
 }
 
-impl <T:MatrixElt> fmt::Show for Matrix<T> {
+impl <T:MatrixElt+PartialOrd> fmt::Show for Matrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // We need to find out the number of characters needed
+        // to show each value.
+        // maximum value
+        let v1 = self.max_scalar_value();
+        // minimum value
+        let v2 = self.min_scalar_value();
+        // string representations
+        let s1 = v1.to_string();
+        let s2 = v2.to_string();
+        // their lengths
+        let n1 = s1.len();
+        let n2 = s2.len();
+        // maximum length
+        let n = if n1 > n2 { n1 } else { n2 };
         let ptr = self.ptr;
+        //println!("{}, {}, {}", v, s, n);
         try!(write!(f, "["));
         // Here we print row by row
         for r in range (0, self.rows) {
@@ -1316,7 +1331,12 @@ impl <T:MatrixElt> fmt::Show for Matrix<T> {
             for c in range (0, self.cols){
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
-                try!(write!(f, "{} ", v));
+                let mut s = v.to_string();
+                let extra = n + 2 - s.len();
+                for _ in range(0, extra){
+                    s.push(' ');
+                }
+                try!(write!(f, "{}", s));
             }
         }
         try!(write!(f, "\n]"));
