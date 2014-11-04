@@ -14,10 +14,10 @@ use std::raw::Slice as RawSlice;
 // srmat imports
 
 use discrete::{mod_n};
-use matelt::{MatrixElt};
-use materr::*;
-use matiter::*;
-use matview::MatrixView;
+use matrix::element::{MatrixElt};
+use matrix::error::*;
+use matrix::iter::*;
+use matrix::view::MatrixView;
 
 
 // The following is needed for destroying matrix.

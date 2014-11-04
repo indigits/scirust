@@ -6,9 +6,9 @@ use std::fmt;
 use std::ptr;
 
 // srmat imports
-use matelt::{MatrixElt};
-use matrix::{Matrix};
-use materr::*;
+use matrix::element::{MatrixElt};
+use matrix::matrix::{Matrix};
+use matrix::error::*;
 //use discrete::*;
 
 #[doc = "

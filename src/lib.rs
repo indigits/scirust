@@ -1,16 +1,4 @@
 #![feature(unsafe_destructor, globs)]
-pub use  self::matrix::*;
-pub use  self::matrand::*;
-pub use  self::matiter::*;
-pub use  self::matview::*;
-
-mod matelt;
-mod materr;
-mod matrix;
-mod matrand;
-mod matiter;
-mod matview;
-
 
 pub mod discrete{
 
@@ -18,6 +6,22 @@ pub mod discrete{
 
     mod modular;
 
+}
+
+pub mod matrix {
+    pub use self::element::*;
+    pub use self::error::*;
+    pub use self::iter::*;
+    pub use self::matrix::*;
+    pub use self::random::*;
+    pub use self::view::*;
+
+    mod element;
+    mod error;
+    mod iter;
+    mod matrix;
+    mod random;
+    mod view;
 }
 
 pub mod linalg {
