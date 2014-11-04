@@ -3,3 +3,9 @@
 name = "scirust"
 version = "0.0.2"
 authors = ["Shailesh Kumar <shailesh@indigits.com>"]
+
+
+[[bin]]
+
+name = "scirust_main"
+doc = false
