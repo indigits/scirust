@@ -3,12 +3,13 @@ use std::mem;
 use std::ops;
 use std::num;
 use std::fmt;
+use std::ptr;
 
 // srmat imports
 use matelt::{MatrixElt};
 use matrix::{Matrix};
 use materr::*;
-use discrete::*;
+//use discrete::*;
 
 #[doc = "
 Defines a view on a matrix. 
@@ -38,17 +39,15 @@ pub struct MatrixView<'a, T:'a+MatrixElt>{
 
 /// Static functions for creating  a view
 impl<'a, T:MatrixElt> MatrixView<'a, T> {
-    pub fn new(m : &Matrix<T>, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> MatrixView<T> {
-        let r = mod_n(start_row, m.num_rows() as int);        
-        let c = mod_n(start_col, m.num_cols() as int);
+    pub fn new(m : &Matrix<T>, start_row : uint, start_col : uint , num_rows: uint, num_cols : uint) -> MatrixView<T> {
         let row_skip = 1u;
         let col_skip = 1u;
-        assert!(r + row_skip*num_rows <= m.num_rows());
-        assert!(c + col_skip*num_cols <= m.num_cols());
+        debug_assert!(start_row + row_skip*num_rows <= m.num_rows());
+        debug_assert!(start_col + col_skip*num_cols <= m.num_cols());
         let result : MatrixView<T> = MatrixView{
             m : m,
-            start_row : r,
-            start_col : c, 
+            start_row : start_row,
+            start_col : start_col, 
             rows: num_rows,
             cols : num_cols,
             row_skip : row_skip,
@@ -56,7 +55,13 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
         };
         result
     }
-    //// Returns the number of rows in the view
+
+    /// Returns the start row
+    pub fn start_row(&self) -> uint{
+        self.start_row
+    } 
+
+    /// Returns the number of rows in the view
     pub fn num_rows(&self) -> uint {
         self.rows
     }
@@ -108,11 +113,11 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
     /// Gets an element in the view
     #[inline]
     pub fn get(&self, r : uint, c : uint) -> T  {
-        assert!(r < self.rows);
-        assert!(c < self.cols);
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
         let ptr = self.m.as_ptr();
         let offset = self.cell_to_offset(r, c);
-        assert!((offset as uint) < self.m.capacity());
+        debug_assert!((offset as uint) < self.m.capacity());
         unsafe {
             *ptr.offset(offset)
         }
@@ -121,14 +126,14 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
     /// Sets an element in the view
     #[inline]
     pub fn set(&mut self, r : uint, c : uint, value : T) {
-        assert!(r < self.rows);
-        assert!(c < self.cols);
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
         let ptr = self.m.as_ptr();
         // I know more than the compiler
         // I am allowing modification of the underlying buffer
         let ptr : *mut T = unsafe { mem::transmute(ptr) };
         let offset = self.cell_to_offset(r, c);
-        assert!((offset as uint) < self.m.capacity());
+        debug_assert!((offset as uint) < self.m.capacity());
         unsafe {
             *ptr.offset(offset) = value;
         }
@@ -137,7 +142,7 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
     /// Converts an index to cell address (row, column)
     #[inline]
     pub fn index_to_cell(&self, index : uint) -> (uint, uint){
-        assert!(index < self.num_cells());
+        debug_assert!(index < self.num_cells());
         let c = index / self.rows;
         let r = index - c*self.rows;
         (r, c)
@@ -146,8 +151,8 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
     /// Converts a cell address to an index (r, c) to index
     #[inline]
     pub fn cell_to_index(&self, r : uint,  c: uint) -> uint{
-        assert!(r < self.rows);
-        assert!(c < self.cols);
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
         c * self.rows + r
     }
 
@@ -184,6 +189,25 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
         } 
         vec
     }
+
+    /// Returns the view as a new matrix.
+    /// Creates a copy of the data.
+    pub fn to_matrix(&self,) -> Matrix<T> {
+        let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let pd = result.as_mut_ptr();
+        let ps = self.m.as_ptr();
+        for c in range(0, self.cols) {
+            for r in range(0, self.rows) {
+                let src_offset = self.cell_to_offset(r, c);
+                let dst_offset = result.cell_to_offset(r, c);
+                unsafe{
+                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                }
+            }
+        }
+        result
+    }
+
 }
 
 impl<'a, T:MatrixElt> MatrixView<'a, T> {
@@ -300,6 +324,86 @@ impl<'a, T:MatrixElt+PartialOrd+Signed> MatrixView<'a, T> {
         }
         (v, rr, cc)
     }    
+
+
+    /******************************************************
+     *
+     *   Elementary row / column operations.
+     *
+     *******************************************************/
+
+
+    /// Row switching.
+    pub fn ero_switch(&mut self, 
+        i :  uint,
+        j : uint
+        )-> &mut MatrixView<'a, T> {
+        debug_assert! (i  < self.rows);
+        debug_assert! (j  < self.rows);
+        let ptr = self.m.as_ptr();
+        // I am allowing modification of the underlying buffer
+        let ptr : *mut T = unsafe { mem::transmute(ptr) };
+        for c in range(0, self.cols){
+            let offset_a = self.cell_to_offset(i, c);
+            let offset_b = self.cell_to_offset(j, c);
+            unsafe {
+                ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
+            }
+        }
+        self
+    }
+
+    /// Row scaling by a factor.
+    pub fn ero_scale(&mut self, 
+        r :  uint, 
+        scale : T
+        )-> &mut MatrixView<'a, T> {
+        debug_assert! (r  < self.rows);
+        let ptr = self.m.as_ptr();
+        // I am allowing modification of the underlying buffer
+        let ptr : *mut T = unsafe { mem::transmute(ptr) };
+        for c in range(0, self.cols){
+            let offset = self.cell_to_offset(r, c);
+            unsafe {
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale * v;
+            }
+        }
+        self
+    }
+
+    /// Row scaling by a factor and adding to another row.
+    /// r_i = r_i + k * r_j
+    /// The j-th row can be outside the view also.
+    /// This is the row relative to the start of the view.
+    pub fn ero_scale_add(&mut self, 
+        i :  uint, 
+        j :  int, 
+        scale : T
+        )-> &mut MatrixView<'a, T> {
+        debug_assert! (i  < self.rows);
+        let m = self.m;
+        // Compute j-th row in m (by doing offset)
+        let j = j + (self.start_row as int);
+        debug_assert! (j  >= 0);
+        let j = j as uint;
+        debug_assert!(j < m.num_rows());
+        let ptr = m.as_ptr();
+        // I am allowing modification of the underlying buffer
+        let ptr : *mut T = unsafe { mem::transmute(ptr) };
+        for c in range(0, self.cols){
+            // i-th row from the view
+            let offset_a = self.cell_to_offset(i, c);
+            // j-th row from the matrix
+            let offset_b = m.cell_to_offset(j, c * self.col_skip + self.start_col);
+            unsafe {
+                let va = *ptr.offset(offset_a);
+                let vb = *ptr.offset(offset_b);
+                *ptr.offset(offset_a) = va + scale * vb;
+            }
+        }
+        self
+    }
 
 }
 
