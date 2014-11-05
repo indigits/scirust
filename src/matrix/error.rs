@@ -9,4 +9,10 @@ pub enum MatrixError{
     NonSquareMatrix,
     /// The object is not a vector
     NotAVector,
+
+
+    /// Is not a power of two
+    IsNotPowerOfTwo,
+
+
 }
