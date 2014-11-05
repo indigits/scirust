@@ -90,6 +90,19 @@ a range in column wise order.
 
 See from_range function  for further discussion.
 
+
+# Examples
+
+    use scirust::matrix::special::from_range_i64;
+
+    let m = from_range_i64(4, 4, 0, 16);
+    for i in range(0, 16){
+        let c = i >> 2;
+        let r = i & 3;
+        assert_eq!(m.get(r, c), i as i64);
+    }
+
+
 "]pub fn from_range_i64(rows : uint, cols : uint, 
     start : i64, stop : i64)->MatrixI64 {
     let m : MatrixI64 = Matrix::from_iter(rows, cols, range(start, stop));
