@@ -139,6 +139,46 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
         }
     }
 
+    /// Copies data from other view
+    // TODO: write tests
+    pub fn copy_from(&mut self, rhs: &MatrixView<T>){
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            fail!(DimensionsMismatch.to_string());
+        }        
+        let pd : *mut T = unsafe { mem::transmute(self.m.as_ptr()) };
+        let ps = rhs.m.as_ptr();
+        for c in range (0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset  = rhs.cell_to_offset(r, c);
+                let dst_offset = self.cell_to_offset(r, c);
+                unsafe{
+                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                }
+            }
+        }
+    }
+
+    /// Copies data from other view with scale factor
+    // TODO: write tests
+    pub fn copy_scaled_from(&mut self, rhs: &MatrixView<T>, scale: T){
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            fail!(DimensionsMismatch.to_string());
+        }        
+        let pd : *mut T = unsafe { mem::transmute(self.m.as_ptr()) };
+        let ps = rhs.m.as_ptr();
+        for c in range (0, self.cols){
+            for r in range(0, self.rows){
+                let src_offset  = rhs.cell_to_offset(r, c);
+                let dst_offset = self.cell_to_offset(r, c);
+                unsafe{
+                    *pd.offset(dst_offset) = scale * *ps.offset(src_offset);
+                }
+            }
+        }
+    }
+
     /// Converts an index to cell address (row, column)
     #[inline]
     pub fn index_to_cell(&self, index : uint) -> (uint, uint){
