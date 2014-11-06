@@ -3,7 +3,7 @@
 // srmat imports
 
 use matrix::MatrixF64;
-use matrix::special::*;
+//use matrix::special::*;
 use linalg::error::*;
 
 /// A Gauss elimination problem specification
@@ -28,14 +28,14 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
         let rows = m.num_rows();
         let cols = m.num_cols();
         // a vector to hold the positions
-        let mut v  = from_range_uint(rows, 1, 0, rows);
+        //let mut v  = from_range_uint(rows, 1, 0, rows);
         // Forward elimination process.
         for k in range(0, rows){
             // We are working on k-th column.
             let rr = {
                 // Create a view of the remaining elements in column
                 let col_k_remaining = m.view(k, k, rows - k, 1);
-                println!("k={}, col_k_remaining: {}", k, col_k_remaining);
+                //println!("k={}, col_k_remaining: {}", k, col_k_remaining);
                 // find the maximum value in this view
                 let (_, rr, _) = col_k_remaining.max_abs_scalar();
                 // translate rr to the overall row number
@@ -45,19 +45,19 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
                 // We need to exchange rows of the submatrix.
                 m.ero_switch(k, rr);
                 // Lets keep this position change information in record
-                v.ero_switch(k, rr);
+                //v.ero_switch(k, rr);
             }
             // Pick up the pivot
             let pivot = m.get(k, k);
             let mut lower_right  = m.view(k + 1, k, rows - k - 1, cols -k);
-            println!("Pivot: {}", pivot);
-            println!("lower_right: {}", lower_right);
+            //println!("Pivot: {}", pivot);
+            //println!("lower_right: {}", lower_right);
             for r in range(0, lower_right.num_rows()){
                 let first = lower_right.get(r, 0);
                 let factor = first  / pivot;
                 lower_right.ero_scale_add(r, -1, -factor);
             }
-            println!("m: {}", m);
+            //println!("m: {}", m);
         }
         // Backward substitution starts now.
         let mut b = m.view(0, self.a.num_cols(), 
@@ -81,12 +81,29 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
             }
             r -= 1;
         }
-        println!("m: {}", m);
+        //println!("m: {}", m);
         // We extract the result.
         Ok(b.to_matrix())
     }
     
 }
+
+
+/// Validates the equality Ax = b subject to maximum
+/// absolute error being less than 1e-6.
+pub fn validate_ax_eq_b(a : &MatrixF64, x : &MatrixF64, 
+    b : &MatrixF64){
+   validate_ax_eq_b_eps(a, x, b, 1e-6);
+}
+
+/// Validates the equality Ax = b subject to maximum
+/// absolute error being less than a specified threshold.
+pub fn validate_ax_eq_b_eps(a : &MatrixF64, x : &MatrixF64, 
+    b : &MatrixF64, threshold: f64){
+    let diff = a * *x  - *b;
+    assert!(diff.max_abs_scalar_value() < threshold);
+}
+
 
 
 #[cfg(test)]
@@ -127,6 +144,32 @@ mod test{
         assert!((x - z).max_abs_scalar_value() < 1e-6);
     }  
 
+    #[test]
+    fn test_ge_2(){
+        let a = matrix_f64(3,3, [1., 0., 0., 
+            -1., 1., 0., 
+            1., 1., 1.]);
+        let b = vector_f64([1., 1., 1.]);
+        let ge = GaussElimination::new(&a, &b);
+        let x  = ge.solve().unwrap();
+        println!("a: {}, x: {}, b: {}", a, x, b);
+        // answer is [0, 0, 1]
+        validate_ax_eq_b(&a, &x, &b); 
+    }
+
+    #[test]
+    fn test_ge_3(){
+        let a = matrix_f64(3,3, [2., 4., -2., 
+            1., -6., 7., 
+            1., 0., 2.]);
+        let b = vector_f64([5., -2., 9.]);
+        let ge = GaussElimination::new(&a, &b);
+        let x  = ge.solve().unwrap();
+        println!("a: {}, x: {}, b: {}", a, x, b);
+        // answer is [1, 1, 2]
+        //assert!(false);
+        validate_ax_eq_b(&a, &x, &b); 
+    }
 
     #[test]
     fn test_ge_no_solution(){
