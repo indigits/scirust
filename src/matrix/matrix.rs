@@ -834,7 +834,7 @@ impl<T:MatrixElt> Matrix<T> {
         }
         assert!(new_capacity > 0);
         let new_bytes = new_capacity * mem::size_of::<T>();
-        println!("Allocating {} bytes", new_bytes);
+        //println!("Allocating {} bytes", new_bytes);
         let raw = unsafe {
             allocate(new_bytes, mem::min_align_of::<T>())
         };
