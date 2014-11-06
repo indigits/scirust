@@ -283,6 +283,89 @@ pub fn matrix_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
 }
 
 
+#[doc="Returns a column vector with entries from a slice.
+"]
+#[inline]
+pub fn col_vector<T:MatrixElt>(values: &[T])-> Matrix<T> {
+    let m : Matrix<T> = Matrix::from_slice(values.len(), 1, values);
+    m 
+}
+
+#[doc="Returns a 8-bit unsigned int column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_u8(values: &[u8])->MatrixU8 {
+    col_vector(values)
+}
+
+#[doc="Returns a 16-bit unsigned int column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_u16(values: &[u16])->MatrixU16 {
+    col_vector(values)
+}
+
+#[doc="Returns a 32-bit unsigned int column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_u32(values: &[u32])->MatrixU32 {
+    col_vector(values)
+}
+
+
+#[doc="Returns a 64-bit unsigned int column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_u64(values: &[u64])->MatrixU64 {
+    col_vector(values)
+}
+
+#[doc="Returns an 8-bit signed int column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_i8(values: &[i8])->MatrixI8 {
+    col_vector(values)
+}
+
+
+#[doc="Returns a 16-bit signed int column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_i16(values: &[i16])->MatrixI16 {
+    col_vector(values)
+}
+
+#[doc="Returns a 32-bit signed int column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_i32(values: &[i32])->MatrixI32 {
+    col_vector(values)
+}
+
+
+#[doc="Returns a 64-bit signed int column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_i64(values: &[i64])->MatrixI64 {
+    col_vector(values)
+}
+
+
+#[doc="Returns a 32-bit float column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_f32(values: &[f32])->MatrixF32 {
+    col_vector(values)
+}
+
+
+
+#[doc="Returns a 64-bit float column vector with entries from a slice.
+"]
+#[inline]
+pub fn vector_f64(values: &[f64])->MatrixF64 {
+    col_vector(values)
+}
 
 
 #[cfg(test)]
@@ -386,4 +469,79 @@ mod test{
             assert_eq!(m.get(r, c), (i + 1) as f64);
         }
     }
+
+    #[test]
+    fn test_vector_type_functions(){
+        let v = vector_u8([1,2,3,4]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as u8);
+        }
+
+        let v = vector_u16([1,2,3,4]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as u16);
+        }
+
+        let v = vector_u32([1,2,3,4]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as u32);
+        }
+
+        let v = vector_u64([1,2,3,4]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as u64);
+        }
+
+        let v = vector_i8([1,2,3,4]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as i8);
+        }
+
+        let v = vector_i16([1,2,3,4]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as i16);
+        }
+
+        let v = vector_i32([1,2,3,4]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as i32);
+        }
+
+        let v = vector_i64([1,2,3,4]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as i64);
+        }
+
+        let v = vector_f32([1.,2.,3.,4.]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as f32);
+        }
+
+        let v = vector_f64([1.,2.,3.,4.]);
+        assert!(v.is_vector());
+        assert!(v.is_col());
+        for i in range(0, 4){
+            assert_eq!(v.get(i, 0), (i + 1) as f64);
+        }
+
+    }
+
 }
