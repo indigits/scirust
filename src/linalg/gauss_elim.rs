@@ -3,6 +3,7 @@
 // srmat imports
 
 use matrix::MatrixF64;
+use matrix::special::*;
 use linalg::error::*;
 
 /// A Gauss elimination problem specification
@@ -26,26 +27,37 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
         m.append_columns(self.b);
         let rows = m.num_rows();
         let cols = m.num_cols();
+        // a vector to hold the positions
+        let mut v  = from_range_uint(rows, 1, 0, rows);
         // Forward elimination process.
         for k in range(0, rows){
             // We are working on k-th column.
-            // Create a view of the remaining elements in column
-            //let col_k_remaining = m.view(k, k, rows - k, 1);
-            //let (max_val, rr, _) = col_k_remaining.abs_max_scalar();
-            //if rr > k {
-            //    // We need to exchange rows of the submatrix.
-            //}
+            let rr = {
+                // Create a view of the remaining elements in column
+                let col_k_remaining = m.view(k, k, rows - k, 1);
+                println!("k={}, col_k_remaining: {}", k, col_k_remaining);
+                // find the maximum value in this view
+                let (_, rr, _) = col_k_remaining.abs_max_scalar();
+                // translate rr to the overall row number
+                rr + k
+            };
+            if rr > k {
+                // We need to exchange rows of the submatrix.
+                m.ero_switch(k, rr);
+                // Lets keep this position change information in record
+                v.ero_switch(k, rr);
+            }
             // Pick up the pivot
             let pivot = m.get(k, k);
             let mut lower_right  = m.view(k + 1, k, rows - k - 1, cols -k);
-            //println!("Pivot: {}", pivot);
-            //println!("{}", lower_right);
+            println!("Pivot: {}", pivot);
+            println!("lower_right: {}", lower_right);
             for r in range(0, lower_right.num_rows()){
                 let first = lower_right.get(r, 0);
                 let factor = first  / pivot;
                 lower_right.ero_scale_add(r, -1, -factor);
             }
-            //println!("m: {}", m);
+            println!("m: {}", m);
         }
         // Backward substitution starts now.
         let mut b = m.view(0, self.a.num_cols(), 
@@ -64,6 +76,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
             }
             r -= 1;
         }
+        println!("m: {}", m);
         // We extract the result.
         Ok(b.to_matrix())
     }
@@ -100,7 +113,13 @@ mod test{
         let ge = GaussElimination::new(&a, &b);
         let z = ge.solve().unwrap();
         println!("z: {}", z);
-        assert_eq!(x, z);
+        /**
+        TODO: have better understanding of
+        the roundoff error.
+        In this case, it is greater than
+        1e-15.
+        */
+        assert!((x - z).abs_max_scalar_value() < 1e-6);
     }  
 
 
