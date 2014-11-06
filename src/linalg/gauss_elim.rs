@@ -3,7 +3,7 @@
 // srmat imports
 
 use matrix::MatrixF64;
-
+use linalg::error::*;
 
 /// A Gauss elimination problem specification
 pub struct GaussElimination<'a, 'b>{
@@ -21,7 +21,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
     } 
 
     /// Carries out the procedure of Gauss elimination.
-    pub fn solve(&self) -> MatrixF64 {
+    pub fn solve(&self) -> Result<MatrixF64,LinearSystemError> {
         let mut m = self.a.clone();
         m.append_columns(self.b);
         let rows = m.num_rows();
@@ -65,7 +65,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
             r -= 1;
         }
         // We extract the result.
-        b.to_matrix()
+        Ok(b.to_matrix())
     }
     
 }
@@ -82,7 +82,7 @@ mod test{
         let a = matrix_f64(2,2, [1., 4., 2., 5.]);
         println!("{}", a);
         let b = vector_f64([3.0, 6.0]);
-        let x = GaussElimination::new(&a, &b).solve();
+        let x = GaussElimination::new(&a, &b).solve().unwrap();
         println!("{}", x);
         assert_eq!(x, vector_f64([-1., 2.]));
     }
@@ -98,8 +98,25 @@ mod test{
         println!("x: {}", x);
         println!("b: {}", b);
         let ge = GaussElimination::new(&a, &b);
-        let z = ge.solve();
+        let z = ge.solve().unwrap();
         println!("z: {}", z);
         assert_eq!(x, z);
-    }    
+    }  
+
+
+    #[test]
+    fn test_ge_no_solution(){
+        let a = matrix_f64(2,2, [1., 4., 2., 8.]);
+        println!("{}", a);
+        let b = vector_f64([3.0, 6.0]);
+        let result = GaussElimination::new(&a, &b).solve();
+        match result {
+            Ok(x) => {
+                println!("{}", x);
+                assert!(false);
+            },
+            Err(e) => println!("{}", e),
+        }
+        
+    }  
 }
