@@ -24,6 +24,10 @@ impl MatrixElt for i64 {
     
 }
 
+/// Indicate that int fits all requirements for being a matrix element.
+impl MatrixElt for int {
+    
+}
 
 
 /// Indicate that u8 fits all requirements for being a matrix element.
@@ -41,6 +45,11 @@ impl MatrixElt for u32 {
 
 /// Indicate that u64 fits all requirements for being a matrix element.
 impl MatrixElt for u64 {
+    
+}
+
+/// Indicate that uint fits all requirements for being a matrix element.
+impl MatrixElt for uint {
     
 }
 

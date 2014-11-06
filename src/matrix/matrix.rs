@@ -71,6 +71,8 @@ pub type MatrixU16 = Matrix<u16>;
 pub type MatrixU32 = Matrix<u32>;
 /// A matrix of 64-bit unsigned integers
 pub type MatrixU64 = Matrix<u64>;
+/// A matrix of  unsigned integers
+pub type MatrixUInt = Matrix<uint>;
 /// A matrix of 32-bit floating point numbers.
 pub type MatrixF32 = Matrix<f32>;
 /// A matrix of 64-bit floating point numbers.
@@ -1220,6 +1222,16 @@ impl<T:MatrixElt+PartialOrd+Signed> Matrix<T> {
         (v, rr, cc)
     }    
 
+    /// Returns the absolute minimum scalar value
+    pub fn abs_min_scalar_value(&self) -> T{
+        let (v , _, _) = self.abs_min_scalar();
+        v
+    }    
+    /// Returns the absolute maximum scalar value
+    pub fn abs_max_scalar_value(&self) -> T{
+        let (v , _, _) = self.abs_max_scalar();
+        v
+    }    
 }
 
 /// These functions are available only for integer matrices
