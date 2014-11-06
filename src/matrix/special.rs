@@ -213,6 +213,12 @@ pub fn from_range_u64(rows : uint, cols : uint,
     from_range(rows, cols, start, stop)
 }
 
+#[inline]
+pub fn from_range_uint(rows : uint, cols : uint, 
+    start : uint, stop : uint)->MatrixUInt {
+    from_range(rows, cols, start, stop)
+}
+
 
 #[doc="Returns an 8-bit unsigned integer matrix whose entries are
 picked up from a slice in column wise order.
