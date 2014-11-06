@@ -68,6 +68,8 @@ pub type MatrixU16 = Matrix<u16>;
 pub type MatrixU32 = Matrix<u32>;
 /// A matrix of 64-bit unsigned integers
 pub type MatrixU64 = Matrix<u64>;
+/// A matrix of 32-bit floating point numbers.
+pub type MatrixF32 = Matrix<f32>;
 /// A matrix of 64-bit floating point numbers.
 pub type MatrixF64 = Matrix<f64>;
 
