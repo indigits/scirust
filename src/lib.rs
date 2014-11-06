@@ -48,6 +48,7 @@ pub mod matrix {
     pub use self::iter::*;
     pub use self::matrix::*;
     pub use self::random::*;
+    pub use self::special::*;
     pub use self::view::*;
 
     mod element;
@@ -66,4 +67,45 @@ pub mod linalg {
     pub use self::gauss_elim::*;
 
     mod gauss_elim;
+}
+
+
+pub mod stat {
+    #![doc="Statistics
+    "]
+}
+
+pub mod opt {
+    #![doc="Optimization
+    "]
+    pub mod lp {
+    #![doc="Linear programming
+    "]
+    }
+    pub mod ls {
+    #![doc="Least squares
+    "]
+    }
+    pub mod cvx {
+    #![doc="Convex optimization
+    "]
+    }
+}
+
+
+
+pub mod signal {
+    #![doc="Signal processing
+    "]    
+}
+
+
+pub mod image {
+    #![doc="Image processing
+    "]
+}
+
+pub mod audio {
+    #![doc="Audio signal processing
+    "]
 }
