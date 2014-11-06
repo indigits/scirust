@@ -10,7 +10,7 @@ use matrix::matrix::*;
 use matrix::error::*;
 use matrix::element::MatrixElt;
 
-#[doc="Returns a hadamard matrix of size n x n
+#[doc="Returns a Hadamard matrix of size n x n
 
 
 n must be a power of 2.
@@ -46,6 +46,19 @@ pub fn hadamard(n : uint) -> Result<MatrixF64, MatrixError>{
     Ok(m)
 }
 
+
+#[doc="Returns a Hilbert matrix.
+"]
+pub fn hilbert(n : uint) -> MatrixF64{
+    let mut m : MatrixF64 = Matrix::new(n, n);
+    for r in range(0, n){
+        for c in range(0, n){
+            let l = (r + c + 1) as f64;
+            m.set(r, c, 1.0 / l);
+        }
+    }
+    m
+}
 
 #[doc="Returns a matrix whose entries are picked up from
 a range in column wise order.
