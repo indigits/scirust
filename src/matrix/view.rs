@@ -318,7 +318,7 @@ impl<'a, T:MatrixElt+PartialOrd> MatrixView<'a, T> {
 impl<'a, T:MatrixElt+PartialOrd+Signed> MatrixView<'a, T> {
 
     // Returns the absolute minimum scalar value
-    pub fn abs_min_scalar(&self) -> (T, uint, uint){
+    pub fn min_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
             fail!(EmptyMatrix.to_string());
         }
@@ -342,7 +342,7 @@ impl<'a, T:MatrixElt+PartialOrd+Signed> MatrixView<'a, T> {
     }
 
     // Returns the maximum scalar value
-    pub fn abs_max_scalar(&self) -> (T, uint, uint){
+    pub fn max_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
             fail!(EmptyMatrix.to_string());
         }
@@ -587,10 +587,10 @@ mod test{
         println!("v1 : {}", v1);
         assert_eq!(v1.max_scalar(), (47, 5, 5));
         assert_eq!(v1.min_scalar(), (-58, 0, 0));
-        let (abs_max, rr, cc) = v1.abs_max_scalar();
+        let (abs_max, rr, cc) = v1.max_abs_scalar();
         assert_eq!(abs_max, 58);
         assert_eq!((rr, cc), (0, 0));
-        let (abs_min, rr, cc) = v1.abs_min_scalar();
+        let (abs_min, rr, cc) = v1.min_abs_scalar();
         assert_eq!(abs_min, 2);
         assert_eq!((rr, cc), (0, 3));
     }

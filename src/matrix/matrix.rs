@@ -1175,7 +1175,7 @@ impl<T:MatrixElt+PartialOrd> Matrix<T> {
 impl<T:MatrixElt+PartialOrd+Signed> Matrix<T> {
 
     // Returns the absolute minimum scalar value
-    pub fn abs_min_scalar(&self) -> (T, uint, uint){
+    pub fn min_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
             fail!(EmptyMatrix.to_string());
         }
@@ -1199,7 +1199,7 @@ impl<T:MatrixElt+PartialOrd+Signed> Matrix<T> {
     }
 
     // Returns the maximum scalar value
-    pub fn abs_max_scalar(&self) -> (T, uint, uint){
+    pub fn max_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
             fail!(EmptyMatrix.to_string());
         }
@@ -1223,13 +1223,13 @@ impl<T:MatrixElt+PartialOrd+Signed> Matrix<T> {
     }    
 
     /// Returns the absolute minimum scalar value
-    pub fn abs_min_scalar_value(&self) -> T{
-        let (v , _, _) = self.abs_min_scalar();
+    pub fn min_abs_scalar_value(&self) -> T{
+        let (v , _, _) = self.min_abs_scalar();
         v
     }    
     /// Returns the absolute maximum scalar value
-    pub fn abs_max_scalar_value(&self) -> T{
-        let (v , _, _) = self.abs_max_scalar();
+    pub fn max_abs_scalar_value(&self) -> T{
+        let (v , _, _) = self.max_abs_scalar();
         v
     }    
 }

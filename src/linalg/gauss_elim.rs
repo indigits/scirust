@@ -37,7 +37,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
                 let col_k_remaining = m.view(k, k, rows - k, 1);
                 println!("k={}, col_k_remaining: {}", k, col_k_remaining);
                 // find the maximum value in this view
-                let (_, rr, _) = col_k_remaining.abs_max_scalar();
+                let (_, rr, _) = col_k_remaining.max_abs_scalar();
                 // translate rr to the overall row number
                 rr + k
             };
@@ -113,13 +113,13 @@ mod test{
         let ge = GaussElimination::new(&a, &b);
         let z = ge.solve().unwrap();
         println!("z: {}", z);
-        /**
+        /*
         TODO: have better understanding of
         the roundoff error.
         In this case, it is greater than
         1e-15.
         */
-        assert!((x - z).abs_max_scalar_value() < 1e-6);
+        assert!((x - z).max_abs_scalar_value() < 1e-6);
     }  
 
 
