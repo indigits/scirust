@@ -201,6 +201,89 @@ pub fn from_range_u64(rows : uint, cols : uint,
 }
 
 
+#[doc="Returns an 8-bit unsigned integer matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+#[doc="Returns a 16-bit unsigned integer matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+#[doc="Returns a 32-bit unsigned integer matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+#[doc="Returns a 64-bit unsigned integer matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+#[doc="Returns an 8-bit signed integer matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+#[doc="Returns a 16-bit signed integer matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+#[doc="Returns a 32-bit signed integer matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+#[doc="Returns a 64-bit signed integer matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+#[doc="Returns a 32-bit float matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+
+#[doc="Returns a 64-bit float matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
+    Matrix::from_slice(rows, cols, values)
+}
+
+
+
 
 #[cfg(test)]
 mod test{
@@ -243,6 +326,64 @@ mod test{
             let c = i >> 2;
             let r = i & 3;
             assert_eq!(m.get(r, c), i as f64);
+        }
+    }
+
+    #[test]
+    fn test_matrix_type_functions(){
+        let m = matrix_u8(2,2, [1,2,3,4]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as u8);
+        }
+        let m = matrix_u16(2,2, [1,2,3,4]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as u16);
+        }
+        let m = matrix_u32(2,2, [1,2,3,4]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as u32);
+        }
+        let m = matrix_u64(2,2, [1,2,3,4]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as u64);
+        }
+        let m = matrix_i8(2,2, [1,2,3,4]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as i8);
+        }
+        let m = matrix_i16(2,2, [1,2,3,4]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as i16);
+        }
+        let m = matrix_i32(2,2, [1,2,3,4]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as i32);
+        }
+        let m = matrix_i64(2,2, [1,2,3,4]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as i64);
+        }
+        let m = matrix_f64(2,2, [1.0,2.0,3.0,4.0]);
+        for i in range(0, 4){
+            let c = i >> 1;
+            let r = i & 1;            
+            assert_eq!(m.get(r, c), (i + 1) as f64);
         }
     }
 }
