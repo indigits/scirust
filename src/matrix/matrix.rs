@@ -52,8 +52,22 @@ pub struct Matrix<T:MatrixElt> {
     ptr : *mut T
 }
 
+/// A matrix of 8-bit signed integers
+pub type MatrixI8 = Matrix<i8>;
+/// A matrix of 16-bit signed integers
+pub type MatrixI16 = Matrix<i16>;
+/// A matrix of 32-bit signed integers
+pub type MatrixI32 = Matrix<i32>;
 /// A matrix of 64-bit signed integers
 pub type MatrixI64 = Matrix<i64>;
+/// A matrix of 8-bit unsigned integers
+pub type MatrixU8 = Matrix<u8>;
+/// A matrix of 16-bit unsigned integers
+pub type MatrixU16 = Matrix<u16>;
+/// A matrix of 32-bit unsigned integers
+pub type MatrixU32 = Matrix<u32>;
+/// A matrix of 64-bit unsigned integers
+pub type MatrixU64 = Matrix<u64>;
 /// A matrix of 64-bit floating point numbers.
 pub type MatrixF64 = Matrix<f64>;
 
