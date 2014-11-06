@@ -69,3 +69,37 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
     }
     
 }
+
+
+#[cfg(test)]
+mod test{
+    use super::*;
+    use matrix::*;
+
+
+    #[test]
+    fn test_ge_0(){
+        let a = matrix_f64(2,2, [1., 4., 2., 5.]);
+        println!("{}", a);
+        let b = vector_f64([3.0, 6.0]);
+        let x = GaussElimination::new(&a, &b).solve();
+        println!("{}", x);
+        assert_eq!(x, vector_f64([-1., 2.]));
+    }
+
+    #[test]
+    fn test_ge_1(){
+        let mut a = from_range(3, 3, 1.0, 100.0);
+        let x = from_range(3, 1, 1.0, 100.0);
+        // a above is rank-2.
+        a.set(2,2, 11.0);
+        let b  = a * x;
+        println!("A: {}", a);
+        println!("x: {}", x);
+        println!("b: {}", b);
+        let ge = GaussElimination::new(&a, &b);
+        let z = ge.solve();
+        println!("z: {}", z);
+        assert_eq!(x, z);
+    }    
+}
