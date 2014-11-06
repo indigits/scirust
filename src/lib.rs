@@ -66,9 +66,11 @@ pub mod linalg {
     "]
     pub use self::gauss_elim::*;
     pub use self::det::*;
+    pub use self::error::*;
 
     mod gauss_elim;
     mod det;
+    mod error;
 }
 
 
