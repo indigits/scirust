@@ -204,15 +204,36 @@ impl<T:MatrixElt> Matrix<T> {
         {
             let dst_slice = mat.as_mut_slice();
             let mut offset_dst = 0;
+            let z : T = Zero::zero();
+            let mut completed_columns  = 0;
             'outer: for _ in range(0, cols){
                 for r in range(0, rows){
                     let next_val = iter.next();
                     match next_val{
                         Some(val) => dst_slice[offset_dst + r] = val,
-                        None => break 'outer
+                        None => {
+                            // Finish this column with zeros
+                            for _ in range(r, rows){
+                                dst_slice[offset_dst + r] = z;
+                            }
+                            completed_columns += 1;
+                            offset_dst += stride;
+                            break 'outer
+                        }
                     };
                 }
+                completed_columns += 1;
                 offset_dst += stride;
+            }
+            if completed_columns < cols {
+                // We  need to fill remaining columns with zeros
+                for _ in range(completed_columns, cols){
+                    for r in range(0, rows){
+                        dst_slice[offset_dst + r] = z;
+                    }
+                    completed_columns += 1;
+                    offset_dst += stride;
+                }
             }
         }
         // return
@@ -225,7 +246,7 @@ impl<T:MatrixElt> Matrix<T> {
             fail!(NotAVector.to_string());
         }
         let n = v.num_cells();
-        let m : Matrix<T> = Matrix::new(n, n);
+        let m : Matrix<T> = Matrix::zeros(n, n);
         let src = v.ptr;
         let dst = m.ptr;
         // Copy the elements of v in the vector
@@ -1632,15 +1653,19 @@ mod tests {
 
     #[test]
     fn test_from_iter0(){
-        let m : MatrixI64 = Matrix::from_iter(4, 4, range(1, 20));
-        let b: Vec<i64> = range(1, 17).collect();
-        assert!(m.as_slice_() == b.as_slice_());
-        let m : MatrixI64 = Matrix::from_iter(4, 4, range(1, 16));
-        assert_eq!(m.get(0, 0), 1);
-        assert_eq!(m.get(2, 2), 11);
-        let mut b: Vec<i64> = range(1, 16).collect();
-        b.push(0);
-        assert_eq!(m.as_slice_(), b.as_slice_());
+        for _ in range(0u, 100){
+            let m : MatrixI64 = Matrix::from_iter(4, 4, range(1, 20));
+            let b: Vec<i64> = range(1, 17).collect();
+            assert!(m.as_slice_() == b.as_slice_());
+            let m : MatrixI64 = Matrix::from_iter(4, 8, range(1, 16));
+            assert_eq!(m.get(0, 0), 1);
+            assert_eq!(m.get(2, 2), 11);
+            let mut b: Vec<i64> = range(1, 16).collect();
+            for _ in range(0u, 17){
+                b.push(0);
+            }
+            assert_eq!(m.as_slice_(), b.as_slice_());
+        }
     }
 
     #[test]
@@ -1994,19 +2019,23 @@ mod tests {
 
     #[test]
     fn test_diag_from_vector(){
-        let v  : MatrixI64 = Matrix::from_iter(4, 1, range(20, 30));
-        assert!(v.is_vector());
-        let m = Matrix::diag_from_vec(&v);
-        assert!(!m.is_empty());
-        assert!(!m.is_vector());
-        assert!(m.is_diagonal());
-        assert_eq!(m.num_cells(), 16);
-        let mut m2 : MatrixI64 = Matrix::zeros(4, 4);
-        m2.set(0, 0, 20);
-        m2.set(1, 1, 21);
-        m2.set(2, 2, 22);
-        m2.set(3, 3, 23);
-        assert_eq!(m, m2);
+        // repeat the same test a hundred times
+        for _ in range(0u, 100){
+            let v  : MatrixI64 = Matrix::from_iter(4, 1, range(20, 30));
+            assert!(v.is_vector());
+            let m = Matrix::diag_from_vec(&v);
+            assert!(!m.is_empty());
+            assert!(!m.is_vector());
+            println!("{}", m);
+            assert!(m.is_diagonal());
+            assert_eq!(m.num_cells(), 16);
+            let mut m2 : MatrixI64 = Matrix::zeros(4, 4);
+            m2.set(0, 0, 20);
+            m2.set(1, 1, 21);
+            m2.set(2, 2, 22);
+            m2.set(3, 3, 23);
+            assert_eq!(m, m2);
+        }
     }
 
     #[test]
