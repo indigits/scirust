@@ -66,6 +66,11 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
         let mut r = m.num_rows() - 1;
         loop {
             let pivot = m.get(r, r);
+            if pivot == 0. {
+                // We have a problem here. We cannot find a solution.
+                // TODO: make it more robust for under-determined systems.
+                return Err(NoSolution);
+            }
             b.ero_scale(r, 1.0/pivot);
             for j in range(r+1, m.num_rows()){
                 let factor = m.get(r, j) / pivot;
