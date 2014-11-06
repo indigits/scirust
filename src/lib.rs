@@ -65,8 +65,10 @@ pub mod linalg {
     #![doc="Linear algebra algorithms
     "]
     pub use self::gauss_elim::*;
+    pub use self::det::*;
 
     mod gauss_elim;
+    mod det;
 }
 
 

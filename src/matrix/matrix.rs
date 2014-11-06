@@ -11,13 +11,16 @@ use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
 
 
-// srmat imports
+// local imports
 
 use discrete::{mod_n};
 use matrix::element::{MatrixElt};
 use matrix::error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
+
+// linear algebra
+use linalg;
 
 
 // The following is needed for destroying matrix.
@@ -394,6 +397,8 @@ impl<T:MatrixElt> Matrix<T> {
         } 
         true
     }
+
+
 }
 
 
@@ -1274,7 +1279,12 @@ impl<T:MatrixElt+Float> Matrix<T> {
     }
 }
 
-
+impl<T:MatrixElt+Signed> Matrix<T>{
+    /// Returns determinant of the matrix
+    pub fn det(&self) -> Result<T,MatrixError>{
+        linalg::det(self)
+    }
+}
 
 
 
@@ -1322,35 +1332,37 @@ impl <T:MatrixElt> Clone for Matrix<T> {
     }
 }
 
-impl <T:MatrixElt+PartialOrd> fmt::Show for Matrix<T> {
+impl <T:MatrixElt> fmt::Show for Matrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // We need to find out the number of characters needed
         // to show each value.
         // maximum value
-        let v1 = self.max_scalar_value();
-        // minimum value
-        let v2 = self.min_scalar_value();
-        // string representations
-        let s1 = v1.to_string();
-        let s2 = v2.to_string();
-        // their lengths
-        let n1 = s1.len();
-        let n2 = s2.len();
-        // maximum length
-        let n = if n1 > n2 { n1 } else { n2 };
+        let mut strings : Vec<String> = Vec::with_capacity(self.num_cells());
+        let mut n : uint = 0;
         let ptr = self.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                let s = v.to_string();
+                let slen = s.len();
+                strings.push(s);
+                if slen > n {
+                    n = slen;
+                }
+            }
+        }
         //println!("{}, {}, {}", v, s, n);
         try!(write!(f, "["));
         // Here we print row by row
         for r in range (0, self.rows) {
            try!(write!(f, "\n  "));
             for c in range (0, self.cols){
-                let offset = self.cell_to_offset(r, c);
-                let v = unsafe {*ptr.offset(offset)};
-                let mut s = v.to_string();
+                let offset =  r *self.cols + c;
+                let ref s = strings[offset];
                 let extra = n + 2 - s.len();
                 for _ in range(0, extra){
-                    s.push(' ');
+                    try!(write!(f, " "));
                 }
                 try!(write!(f, "{}", s));
             }
