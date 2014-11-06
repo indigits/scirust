@@ -861,7 +861,7 @@ impl<T:MatrixElt> Matrix<T> {
         // Drop older data.
         unsafe {
             let old_bytes = old_capacity * mem::size_of::<T>();
-            println!("Allocating {} bytes", old_bytes);
+            //println!("Allocating {} bytes", old_bytes);
             deallocate(self.ptr as *mut u8,
                    old_bytes,
                    mem::min_align_of::<T>());
