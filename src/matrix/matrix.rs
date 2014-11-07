@@ -91,6 +91,16 @@ impl<T:MatrixElt> Matrix<T> {
         m
     }
 
+    #[doc = "Constructs a new matrix of given size (uninitialized).
+
+# Remarks 
+
+The contents of the matrix are not initialized. Hence, 
+it doesn't make sense to use this function liberally.
+Still the function is internally useful since
+different constructor functions need to initialize
+the matrix differently.
+    "]
     pub fn new(rows: uint, cols : uint)-> Matrix<T> {
         debug_assert! (mem::size_of::<T>() != 0);
         let xrows = num::next_power_of_two(rows);
@@ -191,6 +201,43 @@ impl<T:MatrixElt> Matrix<T> {
                     n+=1;
                 }
                 offset_dst += stride;
+            }
+        }
+        // return
+        mat
+    }
+
+    #[doc = "Constructs a matrix from a slice of data reading data in row wise order.
+
+# Remarks 
+
+In source code, when we are constructing matrices from slices, a
+slice looks easier to read in row wise order. Thus, this
+function should be more useful in constructing matrices
+by hand.
+"]
+    pub fn from_slice_rw(rows: uint, cols : uint, values: &[T]) -> Matrix<T>{
+        let mat : Matrix<T> = Matrix::new(rows, cols);
+        // get a mutable slice from m
+        {
+            let ptr = mat.ptr;
+            // The number of entries we can copy
+            let n_values = values.len();
+            let z : T = Zero::zero();
+            let mut n = 0;
+            for r in range(0, rows){
+                for c in range(0, cols){
+                    let v = if n < n_values {
+                        values[n]
+                    }else{
+                        z
+                    };
+                    let dst_offset = mat.cell_to_offset(r,c);
+                    unsafe{
+                        *ptr.offset(dst_offset) = v;
+                    }
+                    n+=1;
+                }
             }
         }
         // return
@@ -346,6 +393,9 @@ impl<T:MatrixElt> Matrix<T> {
 
     #[inline]
     pub fn get(&self, r : uint, c : uint) -> T  {
+        // These assertions help in checking matrix boundaries
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
         unsafe {
             *self.ptr.offset(self.cell_to_offset(r, c) as int)
         }
@@ -353,6 +403,9 @@ impl<T:MatrixElt> Matrix<T> {
 
     #[inline]
     pub fn set(&mut self, r : uint, c : uint, value : T) {
+        // These assertions help in checking matrix boundaries
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
         unsafe {
             *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
         }
@@ -1681,12 +1734,32 @@ mod tests {
     use matrix::constructors::*;
 
     #[test]
-    fn  create_mat0(){
+    fn  test_create_mat0(){
         let m : MatrixI64 = Matrix::new(3, 4);
         assert_eq!(m.num_cells(), 12);
         assert_eq!(m.size(), (3, 4));
+        // NOTE: we cannot use the contents of the
+        // matrix as they are uninitialized.
+        let m : MatrixI64 = Matrix::zeros(3, 4);
         let v : i64 = m.get(0, 0);
         assert_eq!(v, 0i64);
+    }
+
+    #[test]
+    fn test_from_slice_rw0(){
+        let  m : MatrixI64 = Matrix::from_slice_rw(3, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 9
+            ]);
+        assert_eq!(m.get(0, 0), 1);
+        assert_eq!(m.get(0, 1), 2);
+        assert_eq!(m.get(0, 2), 3);
+        assert_eq!(m.get(1, 0), 4);
+        assert_eq!(m.get(1, 1), 5);
+        assert_eq!(m.get(1, 2), 6);
+        assert_eq!(m.get(2, 0), 7);
+        assert_eq!(m.get(2, 1), 8);
     }
 
 

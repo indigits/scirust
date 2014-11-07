@@ -80,10 +80,10 @@ in the range will not be used. They will also not be generated.
 Constructing a 4x4 matrix of floating point numbers:
 
         use scirust::matrix::MatrixF64;
-        use scirust::matrix::from_range;
+        use scirust::matrix::from_range_cw;
         let start  = 0.0;
         let stop = 16.0;
-        let m : MatrixF64 = from_range(4, 4, start, stop);
+        let m : MatrixF64 = from_range_cw(4, 4, start, stop);
         for i in range(0, 16){
             let c = i >> 2;
             let r = i & 3;
@@ -92,7 +92,7 @@ Constructing a 4x4 matrix of floating point numbers:
 
 
 "]
-pub fn from_range<T:MatrixElt+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : uint, 
+pub fn from_range_cw<T:MatrixElt+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : uint, 
     start : T, stop : T )-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, range(start, stop));
     m 
@@ -103,9 +103,9 @@ pub fn from_range<T:MatrixElt+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : 
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_f64(rows : uint, cols : uint, 
+pub fn from_range_cw_f64(rows : uint, cols : uint, 
     start : f64, stop : f64)->MatrixF64 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 
@@ -113,9 +113,9 @@ pub fn from_range_f64(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_i8(rows : uint, cols : uint, 
+pub fn from_range_cw_i8(rows : uint, cols : uint, 
     start : i8, stop : i8)->MatrixI8 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 
@@ -123,32 +123,32 @@ pub fn from_range_i8(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_i16(rows : uint, cols : uint, 
+pub fn from_range_cw_i16(rows : uint, cols : uint, 
     start : i16, stop : i16)->MatrixI16 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 #[doc="Returns an 32-bit signed integer matrix whose entries are
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_i32(rows : uint, cols : uint, 
+pub fn from_range_cw_i32(rows : uint, cols : uint, 
     start : i32, stop : i32)->MatrixI32 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 
 #[doc="Returns an 64-bit signed integer matrix whose entries are
 picked up from a range in column wise order.
 
-See from_range function  for further discussion.
+See from_range_cw function  for further discussion.
 
 
 # Examples
 
-    use scirust::matrix::from_range_i64;
+    use scirust::matrix::from_range_cw_i64;
 
-    let m = from_range_i64(4, 4, 0, 16);
+    let m = from_range_cw_i64(4, 4, 0, 16);
     for i in range(0, 16){
         let c = i >> 2;
         let r = i & 3;
@@ -156,18 +156,18 @@ See from_range function  for further discussion.
     }
 "]
 #[inline]
-pub fn from_range_i64(rows : uint, cols : uint, 
+pub fn from_range_cw_i64(rows : uint, cols : uint, 
     start : i64, stop : i64)->MatrixI64 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 #[doc="Returns an 8-bit unsigned integer matrix whose entries are
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_u8(rows : uint, cols : uint, 
+pub fn from_range_cw_u8(rows : uint, cols : uint, 
     start : u8, stop : u8)->MatrixU8 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 
@@ -175,32 +175,32 @@ pub fn from_range_u8(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_u16(rows : uint, cols : uint, 
+pub fn from_range_cw_u16(rows : uint, cols : uint, 
     start : u16, stop : u16)->MatrixU16 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 #[doc="Returns an 32-bit unsigned integer matrix whose entries are
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_u32(rows : uint, cols : uint, 
+pub fn from_range_cw_u32(rows : uint, cols : uint, 
     start : u32, stop : u32)->MatrixU32 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 
 #[doc="Returns an 64-bit unsigned integer matrix whose entries are
 picked up from a range in column wise order.
 
-See from_range function  for further discussion.
+See from_range_cw function  for further discussion.
 
 
 # Examples
 
-    use scirust::matrix::from_range_u64;
+    use scirust::matrix::from_range_cw_u64;
 
-    let m = from_range_u64(4, 4, 0, 16);
+    let m = from_range_cw_u64(4, 4, 0, 16);
     for i in range(0, 16){
         let c = i >> 2;
         let r = i & 3;
@@ -208,15 +208,15 @@ See from_range function  for further discussion.
     }
 "]
 #[inline]
-pub fn from_range_u64(rows : uint, cols : uint, 
+pub fn from_range_cw_u64(rows : uint, cols : uint, 
     start : u64, stop : u64)->MatrixU64 {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 #[inline]
-pub fn from_range_uint(rows : uint, cols : uint, 
+pub fn from_range_cw_uint(rows : uint, cols : uint, 
     start : uint, stop : uint)->MatrixUInt {
-    from_range(rows, cols, start, stop)
+    from_range_cw(rows, cols, start, stop)
 }
 
 
@@ -409,7 +409,7 @@ mod test{
 
     #[test]
     fn test_range(){
-        let m = from_range_i64(4, 4, 0, 16);
+        let m = from_range_cw_i64(4, 4, 0, 16);
         for i in range(0, 16){
             let c = i >> 2;
             let r = i & 3;
@@ -417,13 +417,13 @@ mod test{
         }
         let start  = 0.0;
         let stop = 16.0;
-        let m : MatrixF64 = from_range(4, 4, start, stop);
+        let m : MatrixF64 = from_range_cw(4, 4, start, stop);
         for i in range(0, 16){
             let c = i >> 2;
             let r = i & 3;
             assert_eq!(m.get(r, c), i as f64);
         }
-        let m = from_range_f64(4, 4, start, stop);
+        let m = from_range_cw_f64(4, 4, start, stop);
         for i in range(0, 16){
             let c = i >> 2;
             let r = i & 3;

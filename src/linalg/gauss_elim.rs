@@ -123,8 +123,8 @@ mod test{
 
     #[test]
     fn test_ge_1(){
-        let mut a = from_range(3, 3, 1.0, 100.0);
-        let x = from_range(3, 1, 1.0, 100.0);
+        let mut a = from_range_cw(3, 3, 1.0, 100.0);
+        let x = from_range_cw(3, 1, 1.0, 100.0);
         // a above is rank-2.
         a.set(2,2, 11.0);
         let b  = a * x;
