@@ -165,31 +165,31 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
 
-    pub fn from_slice(rows: uint, cols : uint, values: &[T]) -> Matrix<T>{
+    #[doc = "Constructs a matrix from a slice of data reading
+    data in column wise order.
+    "]
+    pub fn from_slice_cw(rows: uint, cols : uint, values: &[T]) -> Matrix<T>{
         let mut mat : Matrix<T> = Matrix::new(rows, cols);
-        let n_cells = mat.num_cells();
+        // stride of new matrix
         let stride = mat.stride();
         // get a mutable slice from m
         {
             let dst_slice = mat.as_mut_slice();
-            let n_values = values.len();
             // The number of entries we can copy
-            let n_fill = cmp::min(n_values, n_cells);
+            let n_values = values.len();
+            let z : T = Zero::zero();
             let mut n = 0;
-            let mut offset_src = 0;
             let mut offset_dst = 0;
             for _ in range(0, cols){
                 for r in range(0, rows){
+                    let v = if n < n_values {
+                        values[n]
+                    }else{
+                        z
+                    };
+                    dst_slice[offset_dst + r] = v;
                     n+=1;
-                    dst_slice[offset_dst + r] = values[offset_src + r];
-                    if n == n_fill {
-                        break;
-                    }
                 }
-                if n == n_fill {
-                    break;
-                }
-                offset_src += rows;
                 offset_dst += stride;
             }
         }
@@ -419,6 +419,44 @@ impl<T:MatrixElt> Matrix<T> {
             }
         } 
         true
+    }
+
+    /// Returns if the matrix is lower triangular 
+    pub fn is_lt(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            for r in range (0, c){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                if v != z {
+                    return false;
+                }
+            }
+        } 
+        true
+    }
+
+    /// Returns if the matrix is upper triangular 
+    pub fn is_ut(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            for r in range (c+1, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                println!("r: {}, c: {}, v: {}", r, c, v);
+                if v != z {
+                    return false;
+                }
+            }
+        } 
+        true
+    }
+
+    /// Returns if the matrix is triangular
+    pub fn is_triangular(&self) -> bool {
+        self.is_lt() || self.is_ut()
     }
 
 
@@ -1640,6 +1678,7 @@ unsafe fn dealloc<T>(ptr: *mut T, len: uint) {
 mod tests {
 
     use  super::{Matrix, MatrixI64, MatrixF64};
+    use matrix::special::*;
 
     #[test]
     fn  create_mat0(){
@@ -1758,8 +1797,8 @@ mod tests {
         let m2 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
         assert_eq!(m1, m2);
         let v = vec![1.0f64, 2., 3., 4.];
-        let m1 : MatrixF64 = Matrix::from_slice(2, 2, v.as_slice());
-        let m2 : MatrixF64 = Matrix::from_slice(2, 2, v.as_slice());
+        let m1 : MatrixF64 = Matrix::from_slice_cw(2, 2, v.as_slice());
+        let m2 : MatrixF64 = Matrix::from_slice_cw(2, 2, v.as_slice());
         assert_eq!(m1, m2);
     }
 
@@ -1859,7 +1898,7 @@ mod tests {
     fn test_is_finite(){
         let v = vec![0f64, Float::nan(), Float::nan(), 
         Float::infinity(), Float::neg_infinity(), 2., 3., 4.];
-        let m : MatrixF64 = Matrix::from_slice(2, 4, v.as_slice());
+        let m : MatrixF64 = Matrix::from_slice_cw(2, 4, v.as_slice());
         let f = m.is_finite();
         assert_eq!(f.to_std_vec(), vec![1, 0, 0, 0, 0, 
             1, 1, 1]);
@@ -1885,7 +1924,7 @@ mod tests {
         0, 1, 2, 3, 
         19, 17, 3, 1, 
         7, 8, 5, 6];
-        let m : MatrixI64 = Matrix::from_slice(4, 4, v.as_slice());
+        let m : MatrixI64 = Matrix::from_slice_cw(4, 4, v.as_slice());
         let m2 = m.max_row_wise();
         assert!(m2.is_vector());
         assert!(m2.is_col());
@@ -2044,8 +2083,24 @@ mod tests {
         let v = m.diagonal();
         assert!(v.is_vector());
         assert_eq!(v.num_cells(), 4);
-        let v2 : MatrixI64 = Matrix::from_slice(4, 1, vec![10, 15, 20, 25].as_slice());
+        let v2 : MatrixI64 = Matrix::from_slice_cw(4, 1, vec![10, 15, 20, 25].as_slice());
         assert_eq!(v, v2);
+    }
+
+
+    #[test]
+    fn test_triangular(){
+        let m = matrix_f64(3, 3, [1., 0., 0., 
+            4., 5., 0.,
+            6., 2., 3.]);
+        println!("m: {}", m);
+        assert!(m.is_ut());
+        assert!(!m.is_lt());
+        assert!(m.is_triangular());
+        let m  = m.transpose();
+        assert!(!m.is_ut());
+        assert!(m.is_lt());
+        assert!(m.is_triangular());
     }
 
     #[test]
@@ -2132,8 +2187,8 @@ mod tests {
 
     #[test]
     fn test_inner_product(){
-        let m1 : MatrixI64 = Matrix::from_slice(3, 1, vec![2, 1, 1].as_slice());
-        let m2 : MatrixI64 = Matrix::from_slice(3, 1, vec![1, 1, 2].as_slice());
+        let m1 : MatrixI64 = Matrix::from_slice_cw(3, 1, vec![2, 1, 1].as_slice());
+        let m2 : MatrixI64 = Matrix::from_slice_cw(3, 1, vec![1, 1, 2].as_slice());
         let result = m1.inner_prod(&m2);
         assert_eq!(result, 5);
     }
@@ -2141,20 +2196,20 @@ mod tests {
 
     #[test]
     fn test_outer_product(){
-        let m1 : MatrixI64 = Matrix::from_slice(3, 1, vec![2, 1, 1].as_slice());
-        let m2 : MatrixI64 = Matrix::from_slice(3, 1, vec![1, 1, 2].as_slice());
+        let m1 : MatrixI64 = Matrix::from_slice_cw(3, 1, vec![2, 1, 1].as_slice());
+        let m2 : MatrixI64 = Matrix::from_slice_cw(3, 1, vec![1, 1, 2].as_slice());
         let result = m1.outer_prod(&m2);
-        let m3 : MatrixI64 = Matrix::from_slice(3, 3, vec![2, 1, 1, 2, 1, 1, 4, 2, 2].as_slice());
+        let m3 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![2, 1, 1, 2, 1, 1, 4, 2, 2].as_slice());
         assert_eq!(result, m3);
     }
 
     #[test]
     fn test_row_switch(){
-        let mut m1 : MatrixI64 = Matrix::from_slice(3, 3, vec![2, 3, 9, 2, 1, 7, 4, 2, 6].as_slice());
+        let mut m1 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![2, 3, 9, 2, 1, 7, 4, 2, 6].as_slice());
         println!("m1: {}", m1);
         let m2 = m1.clone();
         m1.ero_switch(1, 2);
-        let m3 : MatrixI64 = Matrix::from_slice(3, 3, vec![2, 9, 3, 2, 7, 1, 4, 6, 2].as_slice());
+        let m3 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![2, 9, 3, 2, 7, 1, 4, 6, 2].as_slice());
         assert_eq!(m1, m3);
         m1.ero_switch(2, 1);
         assert_eq!(m1, m2);
@@ -2163,13 +2218,13 @@ mod tests {
 
     #[test]
     fn test_row_scale(){
-        let mut m1 : MatrixI64 = Matrix::from_slice(3, 3, vec![
+        let mut m1 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![
             2, 3, 9, 
             2, 1, 7, 
             4, 2, 6].as_slice());
         println!("m1: {}", m1);
         m1.ero_scale(1, 2);
-        let m3 : MatrixI64 = Matrix::from_slice(3, 3, vec![
+        let m3 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![
             2, 6, 9, 
             2, 2, 7, 
             4, 4, 6].as_slice());
@@ -2178,13 +2233,13 @@ mod tests {
 
     #[test]
     fn test_row_scale_add(){
-        let mut m1 : MatrixI64 = Matrix::from_slice(3, 3, vec![
+        let mut m1 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![
             2, 3, 9, 
             2, 1, 7, 
             4, 2, 6].as_slice());
         println!("m1: {}", m1);
         m1.ero_scale_add(1, 2, 10);
-        let m3 : MatrixI64 = Matrix::from_slice(3, 3, vec![
+        let m3 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![
             2, 93, 9, 
             2, 71, 7, 
             4, 62, 6].as_slice());

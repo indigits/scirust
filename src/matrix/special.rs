@@ -225,7 +225,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 #[doc="Returns a 16-bit unsigned integer matrix whose entries are
@@ -233,7 +233,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 #[doc="Returns a 32-bit unsigned integer matrix whose entries are
@@ -241,7 +241,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 #[doc="Returns a 64-bit unsigned integer matrix whose entries are
@@ -249,7 +249,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 #[doc="Returns an 8-bit signed integer matrix whose entries are
@@ -257,7 +257,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 #[doc="Returns a 16-bit signed integer matrix whose entries are
@@ -265,7 +265,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 #[doc="Returns a 32-bit signed integer matrix whose entries are
@@ -273,7 +273,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 #[doc="Returns a 64-bit signed integer matrix whose entries are
@@ -281,7 +281,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 #[doc="Returns a 32-bit float matrix whose entries are
@@ -289,7 +289,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 
@@ -298,7 +298,7 @@ picked up from a slice in column wise order.
 "]
 #[inline]
 pub fn matrix_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
-    Matrix::from_slice(rows, cols, values)
+    Matrix::from_slice_cw(rows, cols, values)
 }
 
 
@@ -306,7 +306,7 @@ pub fn matrix_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
 "]
 #[inline]
 pub fn col_vector<T:MatrixElt>(values: &[T])-> Matrix<T> {
-    let m : Matrix<T> = Matrix::from_slice(values.len(), 1, values);
+    let m : Matrix<T> = Matrix::from_slice_cw(values.len(), 1, values);
     m 
 }
 
