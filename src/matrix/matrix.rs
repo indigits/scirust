@@ -197,7 +197,7 @@ impl<T:MatrixElt> Matrix<T> {
         mat
     }
 
-    pub fn from_iter< A : Iterator<T>>(rows: uint, cols : uint, mut iter: A) -> Matrix<T>{
+    pub fn from_iter_cw< A : Iterator<T>>(rows: uint, cols : uint, mut iter: A) -> Matrix<T>{
         let mut mat : Matrix<T> = Matrix::new(rows, cols);
         let stride = mat.stride();
         // get a mutable slice from m
@@ -1691,12 +1691,12 @@ mod tests {
 
 
     #[test]
-    fn test_from_iter0(){
+    fn test_from_iter_cw0(){
         for _ in range(0u, 100){
-            let m : MatrixI64 = Matrix::from_iter(4, 4, range(1, 20));
+            let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(1, 20));
             let b: Vec<i64> = range(1, 17).collect();
             assert!(m.as_slice_() == b.as_slice_());
-            let m : MatrixI64 = Matrix::from_iter(4, 8, range(1, 16));
+            let m : MatrixI64 = Matrix::from_iter_cw(4, 8, range(1, 16));
             assert_eq!(m.get(0, 0), 1);
             assert_eq!(m.get(2, 2), 11);
             let mut b: Vec<i64> = range(1, 16).collect();
@@ -1709,7 +1709,7 @@ mod tests {
 
     #[test]
     fn test_index0(){
-        let m : MatrixI64 = Matrix::from_iter(4, 4, range(1, 20));
+        let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(1, 20));
         let x = m[4];
         assert_eq!(x, 5);
     }
@@ -1727,7 +1727,7 @@ mod tests {
 
     #[test]
     fn test_to_std_vec(){
-        let m : MatrixI64 = Matrix::from_iter(4, 3, range(0, 12));
+        let m : MatrixI64 = Matrix::from_iter_cw(4, 3, range(0, 12));
         let v1 = m.to_std_vec();
         let v2 : Vec<i64> = range(0, 12).collect();
         assert_eq!(v1, v2);
@@ -1784,8 +1784,8 @@ mod tests {
 
     #[test]
     fn test_mult(){
-        let m1 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
-        let m2 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
+        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
         let m3 = m1 * m2;
         let v = vec![2i64, 3, 6, 11];
         assert_eq!(m3.to_std_vec(), v);
@@ -1793,8 +1793,8 @@ mod tests {
 
     #[test]
     fn test_eq(){
-        let m1 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
-        let m2 : MatrixI64 = Matrix::from_iter(2, 2, range(0, 4));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
+        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
         assert_eq!(m1, m2);
         let v = vec![1.0f64, 2., 3., 4.];
         let m1 : MatrixF64 = Matrix::from_slice_cw(2, 2, v.as_slice());
@@ -1804,7 +1804,7 @@ mod tests {
 
     #[test]
     fn test_extract_row(){
-        let m1 : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
         let m2  = m1.row(0);
         assert_eq!(m2.to_std_vec(), vec![0, 4, 8, 12]);
         assert_eq!(m2.num_rows() , 1);
@@ -1822,7 +1822,7 @@ mod tests {
 
     #[test]
     fn test_extract_col(){
-        let m1 : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
         let m2  = m1.col(0);
         assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
         assert!(!m2.is_row());
@@ -1847,7 +1847,7 @@ mod tests {
     }
     #[test]
     fn test_sub_matrix(){
-        let m  : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16));
+        let m  : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
         let m1 = m.sub_matrix(0, 0, 2, 2);
         assert_eq!(m1.num_cells(), 4);
         assert_eq!(m1.num_rows(), 2);
@@ -1861,7 +1861,7 @@ mod tests {
 
     #[test]
     fn test_rep_mat(){
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         let m2 = m.repeat_matrix(2, 2);
         assert_eq!(m2.num_cells(), 16);
         assert_eq!(m2.num_rows(), 4);
@@ -1910,7 +1910,7 @@ mod tests {
 
     #[test]
     fn test_is_logical(){
-        let m : MatrixI64 = Matrix::from_iter(4, 4, range(0, 16).map(|x| x % 2));
+        let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16).map(|x| x % 2));
         assert!(m.is_logical());
         let m = m + m;
         assert!(!m.is_logical());
@@ -1953,16 +1953,16 @@ mod tests {
 
     #[test]
     fn test_mul_elt(){
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         let m2 = m.mul_elt(&m);
-        let m3  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4).map(|x| x*x));
+        let m3  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4).map(|x| x*x));
         assert_eq!(m2, m3);
     }
 
 
     #[test]
     fn test_div_elt(){
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(1, 20));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(1, 20));
         let m2 = m + m;
         let m3 = m2.div_elt(&m);
         assert_eq!(m3.to_std_vec(), vec![2,2,2,2]);
@@ -1970,21 +1970,21 @@ mod tests {
 
     #[test]
     fn test_add_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         let m2 = m.add_scalar(2);
         assert_eq!(m2.to_std_vec(), vec![2, 3, 4, 5]);
     }
 
     #[test]
     fn test_mul_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         let m2 = m.mul_scalar(2);
         assert_eq!(m2.to_std_vec(), vec![0, 2, 4, 6]);
     }
 
     #[test]
     fn test_div_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4).map(|x| x * 3));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4).map(|x| x * 3));
         let m2 = m.div_scalar(3);
         assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
     }
@@ -2000,7 +2000,7 @@ mod tests {
         let m : MatrixI64 = Matrix::identity(2, 3);
         assert_eq!(m.to_std_vec(), vec![1, 0, 0, 1, 0, 0]);
         assert!(m.is_identity());
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         assert!(!m.is_identity());
     }
 
@@ -2020,7 +2020,7 @@ mod tests {
         let m4 = m2.pow(4);
         let m16 = m.mul_scalar(16);
         assert_eq!(m4, m16); 
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         assert!(m.is_square());
         let m3 = m.pow(3);
         assert!(m3.is_square());
@@ -2032,14 +2032,14 @@ mod tests {
 
     #[test]
     fn test_transpose(){
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         assert_eq!(m.to_std_vec(), vec![0, 1, 2, 3]);
         assert_eq!(m.transpose().to_std_vec(), vec![0, 2, 1, 3]);
         assert_eq!(m.transpose().transpose().to_std_vec(), vec![0, 1, 2, 3]);
-        let m  : MatrixI64 = Matrix::from_iter(2, 3,  range(0, 10));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 3,  range(0, 10));
         assert_eq!(m.transpose().to_std_vec(), vec![
             0, 2, 4, 1, 3, 5]);
-        let m4 :  MatrixI64 = Matrix::from_iter(2, 5, range(9, 100));
+        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, range(9, 100));
         let m5 = m4.transpose();
         println!("m4: {}", m4);
         println!("m5: {}", m5);
@@ -2048,7 +2048,7 @@ mod tests {
 
     #[test]
     fn test_unary_minus(){
-        let m  : MatrixI64 = Matrix::from_iter(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         let z : MatrixI64 = Matrix::zeros(2,2);
         let m2 = m.unary_minus();
         let m3 = z - m;
@@ -2060,7 +2060,7 @@ mod tests {
     fn test_diag_from_vector(){
         // repeat the same test a hundred times
         for _ in range(0u, 100){
-            let v  : MatrixI64 = Matrix::from_iter(4, 1, range(20, 30));
+            let v  : MatrixI64 = Matrix::from_iter_cw(4, 1, range(20, 30));
             assert!(v.is_vector());
             let m = Matrix::diag_from_vec(&v);
             assert!(!m.is_empty());
@@ -2079,7 +2079,7 @@ mod tests {
 
     #[test]
     fn test_diagonal(){
-        let m  : MatrixI64 = Matrix::from_iter(4, 5, range(10, 30));
+        let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, range(10, 30));
         let v = m.diagonal();
         assert!(v.is_vector());
         assert_eq!(v.num_cells(), 4);
@@ -2113,14 +2113,14 @@ mod tests {
 
     #[test]
     fn test_row_col_iter(){
-        let m  : MatrixI64 = Matrix::from_iter(4, 5, range(10, 30));
+        let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, range(10, 30));
         let mut r = m.row_iter(0);
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![10, 14, 18, 22, 26]);
         let mut r = m.col_iter(2);
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![18, 19, 20, 21]);
-        let m  : MatrixI64 = Matrix::from_iter(3, 2, range(10, 30));
+        let m  : MatrixI64 = Matrix::from_iter_cw(3, 2, range(10, 30));
         let mut r = m.cell_iter();
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![10, 11, 12, 13, 14, 15]);
@@ -2128,11 +2128,11 @@ mod tests {
 
     #[test]
     fn test_add_columns(){
-        let mut m1 :  MatrixI64 = Matrix::from_iter(2, 3, range(11, 100));
-        let m2 :  MatrixI64 = Matrix::from_iter(2, 4, range(11, 100));
-        let m3 : MatrixI64  = Matrix::from_iter(2, 1, range(17, 100));
-        let m4 :  MatrixI64 = Matrix::from_iter(2, 5, range(9, 100));
-        let m5 : MatrixI64  = Matrix::from_iter(2, 1, range(9, 100));
+        let mut m1 :  MatrixI64 = Matrix::from_iter_cw(2, 3, range(11, 100));
+        let m2 :  MatrixI64 = Matrix::from_iter_cw(2, 4, range(11, 100));
+        let m3 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(17, 100));
+        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, range(9, 100));
+        let m5 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(9, 100));
         println!("{}", m1);
         m1.append_columns(&m3);
         println!("{}", m1);
@@ -2140,10 +2140,10 @@ mod tests {
         m1.prepend_columns(&m5);
         println!("{}", m1);
         assert_eq!(m1, m4);
-        let m6 : MatrixI64  = Matrix::from_iter(2, 1, range(5, 100));
+        let m6 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(5, 100));
         m1.prepend_columns(&m6);
         println!("{}", m1);
-        let m7 : MatrixI64  = Matrix::from_iter(2, 1, range(7, 100));
+        let m7 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(7, 100));
         m1.insert_columns(1, &m7);
         println!("{}", m1);
     }
@@ -2151,11 +2151,11 @@ mod tests {
 
     #[test]
     fn test_add_rows(){
-        let mut m1 :  MatrixI64 = Matrix::from_iter(2, 3, range(11, 100)).transpose();
-        let m2 :  MatrixI64 = Matrix::from_iter(2, 4, range(11, 100)).transpose();
-        let m3 : MatrixI64  = Matrix::from_iter(2, 1, range(17, 100)).transpose();
-        let m4 :  MatrixI64 = Matrix::from_iter(2, 5, range(9, 100)).transpose();
-        let m5 : MatrixI64  = Matrix::from_iter(2, 1, range(9, 100)).transpose();
+        let mut m1 :  MatrixI64 = Matrix::from_iter_cw(2, 3, range(11, 100)).transpose();
+        let m2 :  MatrixI64 = Matrix::from_iter_cw(2, 4, range(11, 100)).transpose();
+        let m3 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(17, 100)).transpose();
+        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, range(9, 100)).transpose();
+        let m5 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(9, 100)).transpose();
         println!("m1: {}", m1);
         m1.print_state();
         println!("m2: {}", m2);
@@ -2177,10 +2177,10 @@ mod tests {
         println!("\nm4 {}", m4);
         m4.print_state();
         assert_eq!(m1, m4);
-        let m6 : MatrixI64  = Matrix::from_iter(2, 1, range(5, 100)).transpose();
+        let m6 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(5, 100)).transpose();
         m1.prepend_rows(&m6);
         println!("{}", m1);
-        let m7 : MatrixI64  = Matrix::from_iter(2, 1, range(7, 100)).transpose();
+        let m7 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(7, 100)).transpose();
         m1.insert_rows(1, &m7);
         println!("{}", m1);
     }

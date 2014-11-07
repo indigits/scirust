@@ -94,7 +94,7 @@ Constructing a 4x4 matrix of floating point numbers:
 "]
 pub fn from_range<T:MatrixElt+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : uint, 
     start : T, stop : T )-> Matrix<T> {
-    let m : Matrix<T> = Matrix::from_iter(rows, cols, range(start, stop));
+    let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, range(start, stop));
     m 
 }
 

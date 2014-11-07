@@ -505,7 +505,7 @@ mod test{
 
     #[test]
     fn test_basic(){
-        let m1 :  MatrixI64 = Matrix::from_iter(10, 8, range(1, 100));
+        let m1 :  MatrixI64 = Matrix::from_iter_cw(10, 8, range(1, 100));
         let mut v1 = m1.view(2, 3, 4, 4);
         assert_eq!(v1.size(), (4u, 4u));
         assert_eq!(v1.num_rows(), 4);
@@ -520,7 +520,7 @@ mod test{
     }
     #[test]
     fn test_view_multiple(){
-        let m1 :  MatrixI64 = Matrix::from_iter(10, 8, range(1, 100));
+        let m1 :  MatrixI64 = Matrix::from_iter_cw(10, 8, range(1, 100));
         // We can create multiple views easily.
         let v1 = m1.view(1, 1, 4, 4);
         let v2 = m1.view(2, 2, 4, 4);
@@ -532,7 +532,7 @@ mod test{
 
     #[test]
     fn test_view_matrix_mutability(){
-        let mut m1 :  MatrixI64 = Matrix::from_iter(10, 8, range(1, 100));
+        let mut m1 :  MatrixI64 = Matrix::from_iter_cw(10, 8, range(1, 100));
         {
             let v1 = m1.view(2, 2, 4, 4);
             // The following line doesn't compile since we have borrowed an
@@ -559,7 +559,7 @@ mod test{
 
     #[test]
     fn test_to_std_vec(){
-        let m :  MatrixI64 = Matrix::from_iter(10, 8, range(1, 100));
+        let m :  MatrixI64 = Matrix::from_iter_cw(10, 8, range(1, 100));
         let vrows = 4;
         let vcols = 3;
         let mv = m.view(1, 1, vrows, vcols);
@@ -571,7 +571,7 @@ mod test{
 
     #[test]
     fn test_addition(){
-        let m :  MatrixI64 = Matrix::from_iter(10, 10, range(1, 200));
+        let m :  MatrixI64 = Matrix::from_iter_cw(10, 10, range(1, 200));
         let v1   = m.view(2, 2, 2, 2); // 23 , 24 , 33, 34
         let v2 = m.view(1, 1, 2, 2);  // 12, 13, 22, 33
         let m2 = v1 + v2; // 
@@ -582,7 +582,7 @@ mod test{
 
     #[test]
     fn test_min_max(){
-        let m :  MatrixI64 = Matrix::from_iter(20, 20, range(-100, 400));
+        let m :  MatrixI64 = Matrix::from_iter_cw(20, 20, range(-100, 400));
         let v1   = m.view(2, 2, 6, 6);
         println!("v1 : {}", v1);
         assert_eq!(v1.max_scalar(), (47, 5, 5));
