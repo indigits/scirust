@@ -2163,7 +2163,7 @@ mod tests {
 
     #[test]
     fn test_triangular(){
-        let m = matrix_f64(3, 3, [1., 0., 0., 
+        let m = matrix_cw_f64(3, 3, [1., 0., 0., 
             4., 5., 0.,
             6., 2., 3.]);
         println!("m: {}", m);

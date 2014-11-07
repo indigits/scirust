@@ -72,7 +72,7 @@ mod test{
 
     #[test]
     fn test_det_0(){
-        let m = matrix_i64(2,2, [1, 2, 3, 4]);
+        let m = matrix_cw_i64(2,2, [1, 2, 3, 4]);
         let d = det(&m).unwrap();
         assert_eq!(d, -2);
     }
@@ -80,7 +80,7 @@ mod test{
 
     #[test]
     fn test_det_1(){
-        let m = matrix_i64(3, 3, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        let m = matrix_cw_i64(3, 3, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
         let d = det(&m).unwrap();
         assert_eq!(d, 0);
     }

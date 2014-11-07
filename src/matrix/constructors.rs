@@ -224,7 +224,7 @@ pub fn from_range_cw_uint(rows : uint, cols : uint,
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
+pub fn matrix_cw_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -232,7 +232,7 @@ pub fn matrix_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
+pub fn matrix_cw_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -240,7 +240,7 @@ pub fn matrix_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
+pub fn matrix_cw_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -248,7 +248,7 @@ pub fn matrix_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
+pub fn matrix_cw_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -256,7 +256,7 @@ pub fn matrix_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
+pub fn matrix_cw_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -264,7 +264,7 @@ pub fn matrix_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
+pub fn matrix_cw_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -272,7 +272,7 @@ pub fn matrix_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
+pub fn matrix_cw_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -280,7 +280,7 @@ pub fn matrix_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
+pub fn matrix_cw_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -288,7 +288,7 @@ pub fn matrix_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
+pub fn matrix_cw_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -297,7 +297,7 @@ pub fn matrix_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
+pub fn matrix_cw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -433,55 +433,55 @@ mod test{
 
     #[test]
     fn test_matrix_type_functions(){
-        let m = matrix_u8(2,2, [1,2,3,4]);
+        let m = matrix_cw_u8(2,2, [1,2,3,4]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u8);
         }
-        let m = matrix_u16(2,2, [1,2,3,4]);
+        let m = matrix_cw_u16(2,2, [1,2,3,4]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u16);
         }
-        let m = matrix_u32(2,2, [1,2,3,4]);
+        let m = matrix_cw_u32(2,2, [1,2,3,4]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u32);
         }
-        let m = matrix_u64(2,2, [1,2,3,4]);
+        let m = matrix_cw_u64(2,2, [1,2,3,4]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u64);
         }
-        let m = matrix_i8(2,2, [1,2,3,4]);
+        let m = matrix_cw_i8(2,2, [1,2,3,4]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i8);
         }
-        let m = matrix_i16(2,2, [1,2,3,4]);
+        let m = matrix_cw_i16(2,2, [1,2,3,4]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i16);
         }
-        let m = matrix_i32(2,2, [1,2,3,4]);
+        let m = matrix_cw_i32(2,2, [1,2,3,4]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i32);
         }
-        let m = matrix_i64(2,2, [1,2,3,4]);
+        let m = matrix_cw_i64(2,2, [1,2,3,4]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i64);
         }
-        let m = matrix_f64(2,2, [1.0,2.0,3.0,4.0]);
+        let m = matrix_cw_f64(2,2, [1.0,2.0,3.0,4.0]);
         for i in range(0, 4){
             let c = i >> 1;
             let r = i & 1;            

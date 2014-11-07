@@ -113,7 +113,7 @@ mod test{
 
     #[test]
     fn test_ge_0(){
-        let a = matrix_f64(2,2, [1., 4., 2., 5.]);
+        let a = matrix_cw_f64(2,2, [1., 4., 2., 5.]);
         println!("{}", a);
         let b = vector_f64([3.0, 6.0]);
         let x = GaussElimination::new(&a, &b).solve().unwrap();
@@ -145,7 +145,7 @@ mod test{
 
     #[test]
     fn test_ge_2(){
-        let a = matrix_f64(3,3, [1., 0., 0., 
+        let a = matrix_cw_f64(3,3, [1., 0., 0., 
             -1., 1., 0., 
             1., 1., 1.]);
         let b = vector_f64([1., 1., 1.]);
@@ -158,7 +158,7 @@ mod test{
 
     #[test]
     fn test_ge_3(){
-        let a = matrix_f64(3,3, [2., 4., -2., 
+        let a = matrix_cw_f64(3,3, [2., 4., -2., 
             1., -6., 7., 
             1., 0., 2.]);
         let b = vector_f64([5., -2., 9.]);
@@ -172,7 +172,7 @@ mod test{
 
     #[test]
     fn test_ge_no_solution(){
-        let a = matrix_f64(2,2, [1., 4., 2., 8.]);
+        let a = matrix_cw_f64(2,2, [1., 4., 2., 8.]);
         println!("{}", a);
         let b = vector_f64([3.0, 6.0]);
         let result = GaussElimination::new(&a, &b).solve();
