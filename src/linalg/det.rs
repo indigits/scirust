@@ -31,7 +31,7 @@ pub fn  det<T:MatrixElt+Signed>(m : &Matrix<T>)->Result<T,MatrixError>{
 /// Assumes that matrix is indeed square.
 fn det_<T:MatrixElt+Signed>(m : &Matrix<T>)->T{
     let a0 = m.get(0, 0);
-    println!("m: {}", m);
+    debug!("m: {}", m);
     if m.is_scalar(){
         return a0;
     }
@@ -44,20 +44,20 @@ fn det_<T:MatrixElt+Signed>(m : &Matrix<T>)->T{
     sign = -sign;
     for c in range(0, n-1){
         for r in range(1, n){
-            println!("r : {}, c : {}", r , c);
+            debug!("r : {}, c : {}", r , c);
             let src_offset = m.cell_to_offset(r, c);
             let dst_offset = m2.cell_to_offset(r - 1, c);
             debug_assert!(src_offset < m.capacity() as int);
             debug_assert!(dst_offset < m2.capacity() as int);
             unsafe {
                 let v = *ps.offset(src_offset);
-                //println!("v = {}", v);
+                //debug!("v = {}", v);
                 *pd.offset(dst_offset) = v;
             }
         }
         let ai = m.get(0, c+1);
         let ai_minor_det =  det_(&m2);
-        println!("sign: {}, ai: {}, Ai : {}", sign, ai, ai_minor_det);
+        debug!("sign: {}, ai: {}, Ai : {}", sign, ai, ai_minor_det);
         result = result + sign * ai * ai_minor_det;
         sign = -sign;
     }
@@ -109,6 +109,12 @@ mod test{
         let m : MatrixI64 = Matrix::new(0, 0);
         let d = m.det().unwrap();
         assert_eq!(d, 1);
+    }
+
+    #[test]
+    fn test_examples_from_testdata(){
+        assert_eq!(testdata::square_0().det().unwrap(), -13.);
+        assert_eq!(testdata::square_1().det().unwrap(), 6.);
     }
 
 }

@@ -1,4 +1,3 @@
-#![feature(unsafe_destructor, globs)]
 
 #![doc="A generics based scientific computing library for Rust
 
@@ -26,6 +25,9 @@ C libraries like BLAS or LAPACK.
 
 "]
 
+#![feature(unsafe_destructor, globs)]
+#![feature(phase)]
+#[phase(plugin, link)] extern crate log;
 
 
 
@@ -58,6 +60,8 @@ pub mod matrix {
     mod random;
     mod constructors;
     mod view;
+    // for internal use only
+    pub mod testdata;
 }
 
 
