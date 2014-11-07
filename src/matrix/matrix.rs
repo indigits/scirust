@@ -657,7 +657,7 @@ impl<T:MatrixElt> Matrix<T> {
     }
 
     /// Extracts the primary diagonal from the matrix as a vector
-    pub fn diagonal(&self) -> Matrix<T> {
+    pub fn diagonal_vector(&self) -> Matrix<T> {
         let m  = cmp::min(self.rows, self.cols);
         let result : Matrix<T> = Matrix::new(m, 1);
         let src = self.ptr;
@@ -669,6 +669,59 @@ impl<T:MatrixElt> Matrix<T> {
             } 
         }
         result        
+    }
+
+    /// Extracts the primary diagonal from the matrix as a matrix of same size
+    pub fn diagonal_matrix(&self) -> Matrix<T> {
+        let m  = cmp::min(self.rows, self.cols);
+        let result : Matrix<T> = Matrix::zeros(self.rows, self.cols);
+        let src = self.ptr;
+        let dst = result.ptr;
+        for i in range(0, m){
+            let offset = self.cell_to_offset(i, i);
+            unsafe{
+                *dst.offset(offset) = *src.offset(offset);
+            } 
+        }
+        result        
+    }
+
+    /// Returns the upper triangular part of the matrix as a new matrix
+    pub fn ut(&self)->Matrix<T>{
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let src = self.ptr;
+        let dst = result.ptr;
+        let z  : T = Zero::zero();
+        for c in range(0, self.cols){
+            for r in range (0, c+1){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {*dst.offset(offset) = *src.offset(offset);}
+            }
+            for r in range (c+1, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {*dst.offset(offset) = z;}
+            }
+        }
+        result
+    }
+
+    /// Returns the lower triangular part of the matrix as a new matrix
+    pub fn lt(&self)->Matrix<T>{
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let src = self.ptr;
+        let dst = result.ptr;
+        let z  : T = Zero::zero();
+        for c in range(0, self.cols){
+            for r in range (0, c){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {*dst.offset(offset) = z;}
+            }
+            for r in range (c, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {*dst.offset(offset) = *src.offset(offset);}
+            }
+        }
+        result
     }
 
     /// Add the matrix by a scalar
@@ -2153,7 +2206,7 @@ mod tests {
     #[test]
     fn test_diagonal(){
         let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, range(10, 30));
-        let v = m.diagonal();
+        let v = m.diagonal_vector();
         assert!(v.is_vector());
         assert_eq!(v.num_cells(), 4);
         let v2 : MatrixI64 = Matrix::from_slice_cw(4, 1, vec![10, 15, 20, 25].as_slice());
@@ -2174,6 +2227,71 @@ mod tests {
         assert!(!m.is_ut());
         assert!(m.is_lt());
         assert!(m.is_triangular());
+    }
+
+    #[test]
+    fn test_extract_triangular(){
+        let m = matrix_rw_i64(3,3,[
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9
+            ]);
+        let mu = matrix_rw_i64(3,3,[
+            1, 2, 3,
+            0, 5, 6,
+            0, 0, 9
+            ]);
+        let ml = matrix_rw_i64(3,3,[
+            1, 0, 0,
+            4, 5, 0,
+            7, 8, 9
+            ]);
+        assert_eq!(m.ut(), mu);
+        assert_eq!(m.lt(), ml);
+    }
+
+    #[test]
+    fn test_extract_diagonal_matrix(){
+        let m = matrix_rw_i64(3,3,[
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9
+            ]);
+        let md = matrix_rw_i64(3,3,[
+            1, 0, 0,
+            0, 5, 0,
+            0, 0, 9
+            ]);
+        assert_eq!(m.diagonal_matrix(), md);
+        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9]));
+        // More columns than rows
+        let m = matrix_rw_i64(3,4,[
+            1, 2, 3, 11,
+            4, 5, 6, 12,
+            7, 8, 9, 19
+            ]);
+        let md = matrix_rw_i64(3,4,[
+            1, 0, 0, 0,
+            0, 5, 0, 0,
+            0, 0, 9, 0
+            ]);
+        assert_eq!(m.diagonal_matrix(), md);
+        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9]));
+        // More rows than columns
+        let m = matrix_rw_i64(4,3,[
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9,
+            10, 11, 12
+            ]);
+        let md = matrix_rw_i64(3,3,[
+            1, 0, 0,
+            0, 5, 0,
+            0, 0, 9,
+            0, 0, 0
+            ]);
+        assert_eq!(m.diagonal_matrix(), md);
+        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9]));
     }
 
     #[test]
