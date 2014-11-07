@@ -48,7 +48,7 @@ pub mod matrix {
     pub use self::iter::*;
     pub use self::matrix::*;
     pub use self::random::*;
-    pub use self::special::*;
+    pub use self::constructors::*;
     pub use self::view::*;
 
     mod element;
@@ -56,7 +56,7 @@ pub mod matrix {
     mod iter;
     mod matrix;
     mod random;
-    pub mod special;
+    mod constructors;
     mod view;
 }
 

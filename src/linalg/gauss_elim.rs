@@ -3,7 +3,6 @@
 // srmat imports
 
 use matrix::MatrixF64;
-//use matrix::special::*;
 use linalg::error::*;
 
 /// A Gauss elimination problem specification

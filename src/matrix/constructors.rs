@@ -1,4 +1,4 @@
-#![doc="Provides functions to create special matrices.
+#![doc="Provides functions to create different types of matrices.
 "]
 
 // std imports

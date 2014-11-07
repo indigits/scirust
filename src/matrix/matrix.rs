@@ -1678,7 +1678,7 @@ unsafe fn dealloc<T>(ptr: *mut T, len: uint) {
 mod tests {
 
     use  super::{Matrix, MatrixI64, MatrixF64};
-    use matrix::special::*;
+    use matrix::constructors::*;
 
     #[test]
     fn  create_mat0(){
