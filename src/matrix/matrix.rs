@@ -485,20 +485,7 @@ impl<T:MatrixElt> Matrix<T> {
 
 /// Functions to construct new matrices out of a matrix and other conversions
 impl<T:MatrixElt> Matrix<T> {
-    /// Converts the matrix to vector from standard library
-    pub fn to_std_vec(&self) -> Vec<T> {
-        let mut vec: Vec<T> = Vec::with_capacity(self.num_cells());
-        // We iterate over elements in matrix and push in the vector
-        let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (0, self.rows){
-                let offset = self.cell_to_offset(r, c);
-                vec.push(unsafe{*ptr.offset(offset)});
-            }
-        } 
-        vec
-    }
-
+    
     /// Converts the matrix to a scalar 
     pub fn to_scalar(&self) -> T {
         if !self.is_scalar() {

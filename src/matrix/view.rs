@@ -58,10 +58,17 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
         result
     }
 
+}
+
+///Basic methods for a view
+impl<'a, T:MatrixElt> MatrixView<'a, T> {
     /// Returns the start row
     pub fn start_row(&self) -> uint{
         self.start_row
     } 
+    pub fn matrix(&self)-> &'a Matrix<T>{
+        self.m
+    }
 
 
     /// Copies data from other view
@@ -105,19 +112,19 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
     }
 
 
+    /// Maps a cell index to actual offset in the internal buffer
+    #[inline]
+    pub fn cell_to_offset(&self, r : uint,  c: uint)-> int {
+        let r = self.start_row + r * self.row_skip;
+        let c = self.start_col + c * self.col_skip;
+        (c * self.m.stride() + r) as int
+    } 
+
     /******************************************************
      *
      *   Private implementation of MatrixView
      *
      *******************************************************/
-
-    /// Maps a cell index to actual offset in the internal buffer
-    #[inline]
-    fn cell_to_offset(&self, r : uint,  c: uint)-> int {
-        let r = self.start_row + r * self.row_skip;
-        let c = self.start_col + c * self.col_skip;
-        (c * self.m.stride() + r) as int
-    } 
 
 }
 
@@ -177,19 +184,6 @@ impl <'a, T:MatrixElt> MatrixType<T> for MatrixView<'a, T> {
 
 /// Functions to construct new views out of a view and other conversions
 impl<'a, T:MatrixElt> MatrixView<'a, T> {
-    /// Converts the view to vector from standard library
-    pub fn to_std_vec(&self) -> Vec<T> {
-        let mut vec: Vec<T> = Vec::with_capacity(self.num_cells());
-        // We iterate over elements in matrix and push in the vector
-        let ptr = self.m.as_ptr();
-        for c in range(0, self.cols){
-            for r in range (0, self.rows){
-                let offset = self.cell_to_offset(r, c);
-                vec.push(unsafe{*ptr.offset(offset)});
-            }
-        } 
-        vec
-    }
 
     /// Returns the view as a new matrix.
     /// Creates a copy of the data.

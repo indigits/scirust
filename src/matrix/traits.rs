@@ -110,4 +110,12 @@ pub trait Introspection {
         false
     }
 
-} 
+}
+
+
+/// Matrix conversion API
+pub trait Conversion<T:MatrixElt> {
+    /// Converts the matrix to vector from standard library
+    fn to_std_vec(&self) -> Vec<T>;
+}
+

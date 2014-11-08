@@ -45,23 +45,27 @@ pub mod matrix {
     #![doc="Fundamental matrix structures
     "]
 
+    pub use self::constructors::*;
     pub use self::element::*;
     pub use self::error::*;
     pub use self::iter::*;
     pub use self::matrix::*;
+    pub use self::matrix_conversion::*;
     pub use self::random::*;
-    pub use self::constructors::*;
-    pub use self::view::*;
     pub use self::traits::*;
+    pub use self::view::*;
+    pub use self::view_conversion::*;
 
+    mod constructors;
     mod element;
     mod error;
     mod iter;
     mod matrix;
+    mod matrix_conversion;
     mod random;
-    mod constructors;
-    mod view;
     mod traits;
+    mod view;
+    mod view_conversion;
     // for internal use only
     pub mod testdata;
 }
