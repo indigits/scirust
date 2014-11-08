@@ -18,7 +18,7 @@ use matrix::element::{MatrixElt};
 use matrix::error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
-use matrix::traits::MatrixType;
+use matrix::traits::{MatrixType, Introspection};
 
 // linear algebra
 use linalg;
@@ -355,6 +355,14 @@ impl<T:MatrixElt> MatrixType<T> for Matrix<T> {
         unsafe {
             *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
         }
+    }
+}
+
+/// Introspection support
+impl<T:MatrixElt> Introspection for Matrix<T> {
+    /// This is a standard matrix object
+    fn is_matrix(&self) -> bool {
+        true
     }
 }
 

@@ -9,7 +9,7 @@ use std::ptr;
 use matrix::element::{MatrixElt};
 use matrix::matrix::{Matrix};
 use matrix::error::*;
-use matrix::traits::MatrixType;
+use matrix::traits::{MatrixType, Introspection};
 
 //use discrete::*;
 
@@ -227,7 +227,12 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
 
 }
 
-impl<'a, T:MatrixElt> MatrixView<'a, T> {
+/// Introspection support
+impl<'a, T:MatrixElt> Introspection for MatrixView<'a, T> {
+    /// This is a view inside a matrix
+    fn is_view(&self) -> bool {
+        true
+    }
 }
 
 
@@ -478,7 +483,7 @@ impl <'a, T:MatrixElt> fmt::Show for MatrixView<'a, T> {
 
 #[cfg(test)]
 mod test{
-    use matrix::{Matrix, MatrixI64, MatrixType};
+    use matrix::*;
 
     #[test]
     fn test_basic(){
@@ -494,6 +499,10 @@ mod test{
         assert_eq!(v1.get(1,1), 44);
         v1.set(1,1, 300);
         assert_eq!(v1.get(1,1), 300);
+        assert!(m1.is_matrix());
+        assert!(!m1.is_view());
+        assert!(!v1.is_matrix());
+        assert!(v1.is_view());
     }
     #[test]
     fn test_view_multiple(){

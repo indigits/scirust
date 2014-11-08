@@ -62,3 +62,31 @@ pub trait MatrixType<T:MatrixElt> {
     /// Sets an element in the view
     fn set(&mut self, r : uint, c : uint, value : T);
 }
+
+
+#[doc=" These methods help in run time to query
+about the properties of the type which is implementing
+the trait. 
+
+As an example, this API helps us decide if an object
+of type MatrixType is a real matrix or a view 
+extracted from a matrix. 
+
+An implementing type needs to implement
+only few of the methods below. For rest, it can
+simply use the default implementation.
+
+"]
+pub trait Introspection {
+
+    /// Indicates if the matrix is a view
+    fn is_view(&self) -> bool {
+        false
+    }
+
+    /// Indicates if the matrix is a standard matrix
+    fn is_matrix(&self) -> bool {
+        false
+    }
+
+} 
