@@ -186,6 +186,19 @@ impl<T: ToStrRadix + Num + PartialOrd> ToStrRadix for Complex<T> {
     }
 }
 
+
+/// Dummy implementation 
+impl <T:Num+Clone> Rem<Complex<T>, Complex<T>> for Complex<T> {
+    fn rem(&self, _rhs: &Complex<T>) -> Complex<T> {
+        Complex::new(Zero::zero(), Zero::zero())
+    }
+}
+
+
+impl <T:Num+Clone> Num for Complex<T> {
+}
+
+
 #[cfg(test)]
 mod test {
     #![allow(non_uppercase_statics)]

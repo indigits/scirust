@@ -11,6 +11,10 @@ use matrix::traits::*;
 use matrix::error::*;
 use matrix::element::MatrixElt;
 
+// complex numbers
+use external::complex::{Complex32, Complex64};
+
+
 #[doc="Returns a Hadamard matrix of size n x n
 
 
@@ -301,6 +305,25 @@ pub fn matrix_cw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
+
+#[doc="Returns a 32-bit complex matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_cw_c32(rows : uint, cols : uint, values: &[Complex32])->MatrixC32 {
+    Matrix::from_slice_cw(rows, cols, values)
+}
+
+
+#[doc="Returns a 64-bit complex matrix whose entries are
+picked up from a slice in column wise order.
+"]
+#[inline]
+pub fn matrix_cw_c64(rows : uint, cols : uint, values: &[Complex64])->MatrixC64 {
+    Matrix::from_slice_cw(rows, cols, values)
+}
+
+
 #[doc="Returns an 8-bit unsigned integer matrix whose entries are
 picked up from a slice in row wise order.
 "]
@@ -381,6 +404,25 @@ picked up from a slice in row wise order.
 pub fn matrix_rw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
     Matrix::from_slice_rw(rows, cols, values)
 }
+
+#[doc="Returns a 32-bit complex matrix whose entries are
+picked up from a slice in row wise order.
+"]
+#[inline]
+pub fn matrix_rw_c32(rows : uint, cols : uint, values: &[Complex32])->MatrixC32 {
+    Matrix::from_slice_rw(rows, cols, values)
+}
+
+
+#[doc="Returns a 64-bit complex matrix whose entries are
+picked up from a slice in row wise order.
+"]
+#[inline]
+pub fn matrix_rw_c64(rows : uint, cols : uint, values: &[Complex64])->MatrixC64 {
+    Matrix::from_slice_rw(rows, cols, values)
+}
+
+
 
 #[doc="Returns a column vector with entries from a slice.
 "]

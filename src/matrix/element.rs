@@ -2,6 +2,10 @@
 use std::fmt::Show;
 
 
+// complex numbers
+use external::complex::{Complex32, Complex64};
+
+
 /// Defines all the traits which a matrix element must support
 pub trait MatrixElt : Num+Copy+Show {
 
@@ -63,5 +67,17 @@ impl MatrixElt for f32 {
 
 /// Indicate that f64 fits all requirements for being a matrix element.
 impl MatrixElt for f64 {
+    
+}
+
+
+/// Indicate that Complex32 fits all requirements for being a matrix element.
+impl MatrixElt for Complex32 {
+    
+}
+
+
+/// Indicate that Complex64 fits all requirements for being a matrix element.
+impl MatrixElt for Complex64 {
     
 }
