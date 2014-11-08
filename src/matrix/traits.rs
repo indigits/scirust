@@ -61,6 +61,27 @@ pub trait MatrixType<T:MatrixElt> {
 
     /// Sets an element in the view
     fn set(&mut self, r : uint, c : uint, value : T);
+
+
+    /// Converts an index to cell address (row, column)
+    #[inline]
+    fn index_to_cell(&self, index : uint) -> (uint, uint){
+        debug_assert!(index < self.num_cells());
+        let rows = self.num_rows();
+        let c = index / rows;
+        let r = index - c*rows;
+        (r, c)
+    }
+
+    /// Converts a cell address to an index (r, c) to index
+    #[inline]
+    fn cell_to_index(&self, r : uint,  c: uint) -> uint{
+        let rows = self.num_rows();
+        debug_assert!(r < rows);
+        debug_assert!(c < self.num_cols());
+        c * rows + r
+    }
+
 }
 
 

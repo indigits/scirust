@@ -395,24 +395,6 @@ impl<T:MatrixElt> Matrix<T> {
         self.ptr
     }
 
-
-    /// Converts an index to cell address (row, column)
-    #[inline]
-    pub fn index_to_cell(&self, index : uint) -> (uint, uint){
-        debug_assert!(index < self.num_cells());
-        let c = index / self.rows;
-        let r = index - c*self.rows;
-        (r, c)
-    }
-
-    /// Converts a cell address to an index (r, c) to index
-    #[inline]
-    pub fn cell_to_index(&self, r : uint,  c: uint) -> uint{
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        c * self.rows + r
-    }
-
     /// Maps a cell index to actual offset in the internal buffer
     #[inline]
     pub fn cell_to_offset(&self, r : uint,  c: uint)-> int {
