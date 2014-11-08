@@ -486,13 +486,6 @@ impl<T:MatrixElt> Matrix<T> {
 /// Functions to construct new matrices out of a matrix and other conversions
 impl<T:MatrixElt> Matrix<T> {
     
-    /// Converts the matrix to a scalar 
-    pub fn to_scalar(&self) -> T {
-        if !self.is_scalar() {
-            fail! (DimensionsMismatch.to_string());
-        }
-        self.get(0, 0)
-    }
 
     /// Returns the r'th row vector
     pub fn row(&self, r : int) -> Matrix<T> {

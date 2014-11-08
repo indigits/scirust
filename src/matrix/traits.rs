@@ -1,7 +1,7 @@
 
 // local imports
 use matrix::element::MatrixElt;
-
+use matrix::error::*;
 
 #[doc="Defines the traits which all matrix types must implement.
 
@@ -114,8 +114,16 @@ pub trait Introspection {
 
 
 /// Matrix conversion API
-pub trait Conversion<T:MatrixElt> {
+pub trait Conversion<T:MatrixElt> : MatrixType<T> {
     /// Converts the matrix to vector from standard library
     fn to_std_vec(&self) -> Vec<T>;
+
+    /// Converts the matrix to a scalar 
+    fn to_scalar(&self) -> T {
+        if !self.is_scalar() {
+            fail! (DimensionsMismatch.to_string());
+        }
+        self.get(0, 0)
+    }
 }
 
