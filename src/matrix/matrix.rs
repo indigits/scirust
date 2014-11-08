@@ -11,6 +11,7 @@ use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
 
 
+
 // local imports
 
 use discrete::{mod_n};
@@ -23,6 +24,9 @@ use matrix::traits::{MatrixType, Introspection};
 // linear algebra
 use linalg;
 
+// complex numbers
+use external::complex::Complex32;
+use external::complex::Complex64;
 
 // The following is needed for destroying matrix.
 
@@ -78,6 +82,10 @@ pub type MatrixUInt = Matrix<uint>;
 pub type MatrixF32 = Matrix<f32>;
 /// A matrix of 64-bit floating point numbers.
 pub type MatrixF64 = Matrix<f64>;
+/// A matrix of 32-bit complex numbers numbers.
+pub type MatrixC32 = Matrix<Complex32>;
+/// A matrix of 64-bit complex numbers numbers.
+pub type MatrixC64 = Matrix<Complex64>;
 
 
 
