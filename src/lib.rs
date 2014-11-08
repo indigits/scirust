@@ -57,6 +57,7 @@ pub mod matrix {
     pub use self::traits::*;
     pub use self::view::*;
     pub use self::view_conversion::*;
+    pub use self::view_minmax::*;
 
     mod constructors;
     mod element;
@@ -70,6 +71,7 @@ pub mod matrix {
     mod traits;
     mod view;
     mod view_conversion;
+    mod view_minmax;
     // for internal use only
     pub mod testdata;
 }

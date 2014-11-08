@@ -163,3 +163,16 @@ pub trait MinMax<T:MatrixElt+PartialOrd> : MatrixType<T> {
     /// Returns a row vector consisting of minimum over each column
     fn min_col_wise(&self) -> Matrix<T>;
 }
+
+
+/// Matrix min-max with absolute values API
+pub trait MinMaxAbs<T:MatrixElt+PartialOrd+Signed> : MatrixType<T> {
+
+    // Returns the absolute minimum scalar value
+    fn min_abs_scalar(&self) -> (T, uint, uint);
+
+    // Returns the maximum scalar value
+    fn max_abs_scalar(&self) -> (T, uint, uint);
+
+
+}
