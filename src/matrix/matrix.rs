@@ -485,43 +485,8 @@ impl<T:MatrixElt> Matrix<T> {
 
 /// Functions to construct new matrices out of a matrix and other conversions
 impl<T:MatrixElt> Matrix<T> {
-    
 
-    /// Returns the r'th row vector
-    pub fn row(&self, r : int) -> Matrix<T> {
-        // Lets ensure that the row value is mapped to
-        // a value in the range [0, rows - 1]
-        let r = mod_n(r, self.rows as int);        
-        let result : Matrix<T> = Matrix::new(1, self.cols);
-        let pd = result.ptr;
-        let ps = self.ptr;
-        for c in range(0, self.cols){
-            let src_offset = self.cell_to_offset(r, c);
-            let dst_offset = result.cell_to_offset(0, c);
-            unsafe{
-                *pd.offset(dst_offset) = *ps.offset(src_offset);
-            }
-        }
-        result
-    }
 
-    /// Returns the c'th column vector
-    pub fn col(&self, c : int) -> Matrix<T> {
-        // Lets ensure that the col value is mapped to
-        // a value in the range [0, cols - 1]
-        let c = mod_n(c, self.cols as int);        
-        let result : Matrix<T> = Matrix::new(self.rows, 1);
-        let pd = result.ptr;
-        let ps = self.ptr;
-        for r in range(0, self.rows){
-            let src_offset = self.cell_to_offset(r, c);
-            let dst_offset = result.cell_to_offset(r, 0);
-            unsafe{
-                *pd.offset(dst_offset) = *ps.offset(src_offset);
-            }
-        }
-        result
-    }
 
     /// Returns an iterator over a specific row of matrix
     pub fn row_iter(&self, r : int) -> RowIterator<T>{
@@ -551,31 +516,6 @@ impl<T:MatrixElt> Matrix<T> {
         iter
     }
 
-
-    /// Extract a submatrix from the matrix
-    /// rows can easily repeat if the number of requested rows is higher than actual rows
-    /// cols can easily repeat if the number of requested cols is higher than actual cols
-    pub fn sub_matrix(&self, start_row : int, start_col : int , num_rows: uint, num_cols : uint) -> Matrix<T> {
-        let r = mod_n(start_row, self.rows as int);        
-        let c = mod_n(start_col, self.cols as int);
-        let result : Matrix<T> = Matrix::new(num_rows, num_cols);
-        let pd = result.ptr;
-        let ps = self.ptr;
-        let mut dc = 0;
-        for c in range(c, c + num_cols).map(|x | x % self.cols) {
-            let mut dr = 0;
-            for r in range(r , r + num_rows).map(|x|  x % self.rows) {
-                let src_offset = self.cell_to_offset(r, c);
-                let dst_offset = result.cell_to_offset(dr, dc);
-                unsafe{
-                    *pd.offset(dst_offset) = *ps.offset(src_offset);
-                }
-                dr += 1;
-            }
-            dc += 1;
-        }
-        result
-    }
 
     // Repeats this matrix in both horizontal and vertical directions 
     pub fn repeat_matrix(&self, num_rows : uint, num_cols : uint) -> Matrix<T> {
@@ -1139,91 +1079,7 @@ impl<T:MatrixElt> Matrix<T> {
 /// These functions are available only for types which support
 /// ordering [at least partial ordering for floating point numbers].
 impl<T:MatrixElt+PartialOrd> Matrix<T> {
-    /// Returns a column vector consisting of maximum over each row
-    pub fn max_row_wise(&self) -> Matrix<T>{
-        // Pick the first column
-        let result = self.col(0);
-        let pd = result.ptr;
-        let ps = self.ptr;
-        for r  in range(0, self.rows){
-            let dst_offset = result.cell_to_offset(r, 0);
-            for c in range (1, self.cols){
-                let src_offset = self.cell_to_offset(r, c);
-                unsafe{
-                    let s = *ps.offset(src_offset);
-                    let d = *pd.offset(dst_offset);
-                    *pd.offset(dst_offset) = if s > d { s } else {d};
 
-                }
-            }
-        }
-        result
-    }
-
-
-   /// Returns a row vector consisting of maximum over each column
-    pub fn max_col_wise(&self) -> Matrix<T>{
-        // Pick the first row
-        let result = self.row(0);
-        let pd = result.ptr;
-        let ps = self.ptr;
-        for c in range (0, self.cols){
-            let dst_offset = result.cell_to_offset(0, c);
-            for r  in range(1, self.rows){
-                let src_offset = self.cell_to_offset(r, c);
-                unsafe{
-                    let s = *ps.offset(src_offset);
-                    let d = *pd.offset(dst_offset);
-                    *pd.offset(dst_offset) = if s > d { s } else {d};
-
-                }
-            }
-        }
-        result
-    }
-
-
-    /// Returns a column vector consisting of minimum over each row
-    pub fn min_row_wise(&self) -> Matrix<T>{
-        // Pick the first column
-        let result = self.col(0);
-        let pd = result.ptr;
-        let ps = self.ptr;
-        for r  in range(0, self.rows){
-            let dst_offset = result.cell_to_offset(r, 0);
-            for c in range (1, self.cols){
-                let src_offset = self.cell_to_offset(r, c);
-                unsafe{
-                    let s = *ps.offset(src_offset);
-                    let d = *pd.offset(dst_offset);
-                    *pd.offset(dst_offset) = if s < d { s } else {d};
-
-                }
-            }
-        }
-        result
-    }
-
-
-   /// Returns a row vector consisting of minimum over each column
-    pub fn min_col_wise(&self) -> Matrix<T>{
-        // Pick the first row
-        let result = self.row(0);
-        let pd = result.ptr;
-        let ps = self.ptr;
-        for c in range (0, self.cols){
-            let dst_offset = result.cell_to_offset(0, c);
-            for r  in range(1, self.rows){
-                let src_offset = self.cell_to_offset(r, c);
-                unsafe{
-                    let s = *ps.offset(src_offset);
-                    let d = *pd.offset(dst_offset);
-                    *pd.offset(dst_offset) = if s < d { s } else {d};
-                }
-            }
-        }
-        result
-    }
 
     // Returns the minimum scalar value with location
     pub fn min_scalar(&self) -> (T, uint, uint){
@@ -2231,7 +2087,7 @@ mod tests {
             7, 8, 9,
             10, 11, 12
             ]);
-        let md = matrix_rw_i64(3,3,[
+        let md = matrix_rw_i64(4,3,[
             1, 0, 0,
             0, 5, 0,
             0, 0, 9,

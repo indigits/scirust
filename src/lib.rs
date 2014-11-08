@@ -51,6 +51,8 @@ pub mod matrix {
     pub use self::iter::*;
     pub use self::matrix::*;
     pub use self::matrix_conversion::*;
+    pub use self::matrix_extraction::*;
+    pub use self::matrix_minmax::*;
     pub use self::random::*;
     pub use self::traits::*;
     pub use self::view::*;
@@ -62,6 +64,8 @@ pub mod matrix {
     mod iter;
     mod matrix;
     mod matrix_conversion;
+    mod matrix_extraction;
+    mod matrix_minmax;
     mod random;
     mod traits;
     mod view;

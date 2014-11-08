@@ -1,6 +1,7 @@
 
 // local imports
 use matrix::element::MatrixElt;
+use matrix::matrix::Matrix;
 use matrix::error::*;
 
 #[doc="Defines the traits which all matrix types must implement.
@@ -127,3 +128,38 @@ pub trait Conversion<T:MatrixElt> : MatrixType<T> {
     }
 }
 
+
+/// Matrix extraction API
+pub trait Extraction<T:MatrixElt> : MatrixType<T> {
+
+    /// Returns the r'th row vector
+    fn row(&self, r : int) -> Matrix<T>;
+
+    /// Returns the c'th column vector
+    fn col(&self, c : int) -> Matrix<T>;
+
+    /// Extract a submatrix from the matrix
+    /// rows can easily repeat if the number of requested rows is higher than actual rows
+    /// cols can easily repeat if the number of requested cols is higher than actual cols
+    fn sub_matrix(&self, start_row : int, 
+        start_col : int , 
+        num_rows: uint, 
+        num_cols : uint) -> Matrix<T>;
+
+}
+
+/// Matrix min-max API
+pub trait MinMax<T:MatrixElt+PartialOrd> : MatrixType<T> {
+
+    /// Returns a column vector consisting of maximum over each row
+    fn max_row_wise(&self) -> Matrix<T>;
+
+    /// Returns a column vector consisting of minimum over each row
+    fn min_row_wise(&self) -> Matrix<T>;
+
+    /// Returns a row vector consisting of maximum over each column
+    fn max_col_wise(&self) -> Matrix<T>;
+
+    /// Returns a row vector consisting of minimum over each column
+    fn min_col_wise(&self) -> Matrix<T>;
+}
