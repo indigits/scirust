@@ -9,6 +9,8 @@ use std::ptr;
 use matrix::element::{MatrixElt};
 use matrix::matrix::{Matrix};
 use matrix::error::*;
+use matrix::traits::MatrixType;
+
 //use discrete::*;
 
 #[doc = "
@@ -61,83 +63,6 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
         self.start_row
     } 
 
-    /// Returns the number of rows in the view
-    pub fn num_rows(&self) -> uint {
-        self.rows
-    }
-
-    /// Returns the number of columns in the view
-    pub fn num_cols(&self) -> uint {
-        self.cols
-    }
-
-
-    /// Returns the size of view in an (r, c) tuple
-    pub fn size (&self)-> (uint, uint){
-        (self.rows, self.cols)
-    }
-    /// Returns the number of cells in view
-    pub fn num_cells(&self)->uint {
-        self.rows * self.cols
-    }
-    /// Indicates if the view is a row vector
-    pub fn is_row(&self) -> bool {
-        self.rows == 1
-    }
-
-    /// Indicates if the view is a column vector
-    pub fn is_col(&self) -> bool {
-        self.cols == 1
-    }
-
-    /// Indicates if the view is a scalar actually
-    pub fn is_scalar(&self) -> bool {
-        self.num_cells() == 1
-    }
-
-    /// Indicates if the view is a vector
-    pub fn is_vector(&self) -> bool {
-        (self.rows == 1) ^ (self.cols == 1)
-    } 
-
-    /// Indicates if the view is empty
-    pub fn is_empty(&self) -> bool {
-        self.rows * self.cols == 0
-    }
-
-    /// Indicates if the view is square
-    pub fn is_square(&self) -> bool {
-        self.rows == self.cols
-    }
-
-    /// Gets an element in the view
-    #[inline]
-    pub fn get(&self, r : uint, c : uint) -> T  {
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        let ptr = self.m.as_ptr();
-        let offset = self.cell_to_offset(r, c);
-        debug_assert!((offset as uint) < self.m.capacity());
-        unsafe {
-            *ptr.offset(offset)
-        }
-    }
-
-    /// Sets an element in the view
-    #[inline]
-    pub fn set(&mut self, r : uint, c : uint, value : T) {
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        let ptr = self.m.as_ptr();
-        // I know more than the compiler
-        // I am allowing modification of the underlying buffer
-        let ptr : *mut T = unsafe { mem::transmute(ptr) };
-        let offset = self.cell_to_offset(r, c);
-        debug_assert!((offset as uint) < self.m.capacity());
-        unsafe {
-            *ptr.offset(offset) = value;
-        }
-    }
 
     /// Copies data from other view
     // TODO: write tests
@@ -212,7 +137,59 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
 
 }
 
+/// Implementation of common matrix methods
+impl <'a, T:MatrixElt> MatrixType<T> for MatrixView<'a, T> {
+    /// Returns the number of rows in the view
+    fn num_rows(&self) -> uint {
+        self.rows
+    }
 
+    /// Returns the number of columns in the view
+    fn num_cols(&self) -> uint {
+        self.cols
+    }
+
+
+    /// Returns the size of view in an (r, c) tuple
+    fn size (&self)-> (uint, uint){
+        (self.rows, self.cols)
+    }
+
+    /// Returns the number of cells in view
+    fn num_cells(&self)->uint {
+        self.rows * self.cols
+    }
+
+    /// Gets an element in the view
+    #[inline]
+    fn get(&self, r : uint, c : uint) -> T  {
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
+        let ptr = self.m.as_ptr();
+        let offset = self.cell_to_offset(r, c);
+        debug_assert!((offset as uint) < self.m.capacity());
+        unsafe {
+            *ptr.offset(offset)
+        }
+    }
+
+    /// Sets an element in the view
+    #[inline]
+    fn set(&mut self, r : uint, c : uint, value : T) {
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
+        let ptr = self.m.as_ptr();
+        // I know more than the compiler
+        // I am allowing modification of the underlying buffer
+        let ptr : *mut T = unsafe { mem::transmute(ptr) };
+        let offset = self.cell_to_offset(r, c);
+        debug_assert!((offset as uint) < self.m.capacity());
+        unsafe {
+            *ptr.offset(offset) = value;
+        }
+    }
+
+}
 
 /// Functions to construct new views out of a view and other conversions
 impl<'a, T:MatrixElt> MatrixView<'a, T> {
@@ -501,7 +478,7 @@ impl <'a, T:MatrixElt> fmt::Show for MatrixView<'a, T> {
 
 #[cfg(test)]
 mod test{
-    use matrix::{Matrix, MatrixI64};
+    use matrix::{Matrix, MatrixI64, MatrixType};
 
     #[test]
     fn test_basic(){

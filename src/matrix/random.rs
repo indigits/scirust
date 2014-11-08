@@ -3,6 +3,7 @@ use std::rand;
 use std::rand::Rng;
 use std::rand::distributions::normal::{StandardNormal};
 use super::matrix::*;
+use matrix::traits::*;
 
 
 
@@ -32,7 +33,7 @@ pub fn rand_std_normal(rows: uint, cols : uint)-> MatrixF64 {
 #[allow(unused_imports)]
 mod tests {
 
-    use matrix::{Matrix, MatrixF64};
+    use matrix::*;
 
     #[test]
     fn test_rand_std_normal(){

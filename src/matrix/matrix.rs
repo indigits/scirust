@@ -18,6 +18,7 @@ use matrix::element::{MatrixElt};
 use matrix::error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
+use matrix::traits::MatrixType;
 
 // linear algebra
 use linalg;
@@ -315,55 +316,50 @@ by hand.
     }
 }
 
-/// Main methods of a matrix
-impl<T:MatrixElt> Matrix<T> {
-    //// Returns the number of rows in the matrix
-    pub fn num_rows(&self) -> uint {
+/// Core methods for all matrix types
+impl<T:MatrixElt> MatrixType<T> for Matrix<T> {
+
+    /// Returns the number of rows in the matrix
+    fn num_rows(&self) -> uint {
         self.rows
     }
 
     /// Returns the number of columns in the matrix
-    pub fn num_cols(&self) -> uint {
+    fn num_cols(&self) -> uint {
         self.cols
     }
 
     /// Returns the size of matrix in an (r, c) tuple
-    pub fn size (&self)-> (uint, uint){
+    fn size (&self)-> (uint, uint){
         (self.rows, self.cols)
     }
+
     /// Returns the number of cells in matrix
-    pub fn num_cells(&self)->uint {
+    fn num_cells(&self)->uint {
         self.rows * self.cols
     }
-    /// Indicates if the matrix is a row vector
-    pub fn is_row(&self) -> bool {
-        self.rows == 1
+
+    fn get(&self, r : uint, c : uint) -> T  {
+        // These assertions help in checking matrix boundaries
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
+        unsafe {
+            *self.ptr.offset(self.cell_to_offset(r, c) as int)
+        }
     }
 
-    /// Indicates if the matrix is a column vector
-    pub fn is_col(&self) -> bool {
-        self.cols == 1
+    fn set(&mut self, r : uint, c : uint, value : T) {
+        // These assertions help in checking matrix boundaries
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
+        unsafe {
+            *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
+        }
     }
+}
 
-    /// Indicates if the matrix is a scalar actually
-    pub fn is_scalar(&self) -> bool {
-        self.num_cells() == 1
-    }
-
-    /// Indicates if the matrix is a vector
-    pub fn is_vector(&self) -> bool {
-        (self.rows == 1) ^ (self.cols == 1)
-    } 
-
-    /// Indicates if the matrix is empty
-    pub fn is_empty(&self) -> bool {
-        self.rows * self.cols == 0
-    }
-
-    /// Indicates if the matrix is square
-    pub fn is_square(&self) -> bool {
-        self.rows == self.cols
-    }
+/// Main methods of a matrix
+impl<T:MatrixElt> Matrix<T> {
 
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
@@ -391,25 +387,6 @@ impl<T:MatrixElt> Matrix<T> {
         self.ptr
     }
 
-    #[inline]
-    pub fn get(&self, r : uint, c : uint) -> T  {
-        // These assertions help in checking matrix boundaries
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        unsafe {
-            *self.ptr.offset(self.cell_to_offset(r, c) as int)
-        }
-    }
-
-    #[inline]
-    pub fn set(&mut self, r : uint, c : uint, value : T) {
-        // These assertions help in checking matrix boundaries
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        unsafe {
-            *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
-        }
-    }
 
     /// Converts an index to cell address (row, column)
     #[inline]
@@ -1784,7 +1761,7 @@ unsafe fn dealloc<T>(ptr: *mut T, len: uint) {
 mod tests {
 
     use  super::{Matrix, MatrixI64, MatrixF64};
-    use matrix::constructors::*;
+    use matrix::*;
 
     #[test]
     fn  test_create_mat0(){

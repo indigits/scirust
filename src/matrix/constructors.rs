@@ -7,6 +7,7 @@ use std::num;
 
 // local imports
 use matrix::matrix::*;
+use matrix::traits::*;
 use matrix::error::*;
 use matrix::element::MatrixElt;
 
@@ -79,8 +80,7 @@ in the range will not be used. They will also not be generated.
 
 Constructing a 4x4 matrix of floating point numbers:
 
-        use scirust::matrix::MatrixF64;
-        use scirust::matrix::from_range_cw;
+        use scirust::matrix::{MatrixF64, from_range_cw, MatrixType};
         let start  = 0.0;
         let stop = 16.0;
         let m : MatrixF64 = from_range_cw(4, 4, start, stop);
@@ -146,7 +146,7 @@ See from_range_cw function  for further discussion.
 
 # Examples
 
-    use scirust::matrix::from_range_cw_i64;
+    use scirust::matrix::{from_range_cw_i64, MatrixType};
 
     let m = from_range_cw_i64(4, 4, 0, 16);
     for i in range(0, 16){
@@ -198,7 +198,7 @@ See from_range_cw function  for further discussion.
 
 # Examples
 
-    use scirust::matrix::from_range_cw_u64;
+    use scirust::matrix::{from_range_cw_u64, MatrixType};
 
     let m = from_range_cw_u64(4, 4, 0, 16);
     for i in range(0, 16){
@@ -470,7 +470,7 @@ pub fn vector_f64(values: &[f64])->MatrixF64 {
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::matrix::*;
+    use matrix::*;
 
     #[test]
     fn test_hadamard(){

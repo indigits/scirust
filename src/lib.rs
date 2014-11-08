@@ -52,6 +52,7 @@ pub mod matrix {
     pub use self::random::*;
     pub use self::constructors::*;
     pub use self::view::*;
+    pub use self::traits::*;
 
     mod element;
     mod error;
@@ -60,6 +61,7 @@ pub mod matrix {
     mod random;
     mod constructors;
     mod view;
+    mod traits;
     // for internal use only
     pub mod testdata;
 }
