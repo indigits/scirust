@@ -686,7 +686,54 @@ pub fn vector_f64(values: &[f64])->MatrixF64 {
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
+#[doc="Returns elementary matrix which can 
+exchange rows i and j
+on left multiplication.
+"]
+pub fn ero_switch<T:Number>(n : uint, 
+    i  : uint, 
+    j : uint)-> Matrix<T> {
+    debug_assert! (i  < n);
+    debug_assert! (j  < n);
+    let mut m : Matrix<T> = Matrix::identity(n, n);
+    let z : T = num::Zero::zero();
+    let o : T = num::One::one();
+    m.set(i, i, z);
+    m.set(j, j, z);
+    m.set(i, j, o);
+    m.set(j, i, o);
+    m
+}
 
+#[doc="Returns elementary matrix which can scale
+a particular row by a factor on left multiplication.
+"]
+pub fn ero_scale<T:Number>(n : uint, 
+    r  : uint, 
+    scale : T)-> Matrix<T> {
+
+    let mut m : Matrix<T> = Matrix::identity(n, n);
+    m.set(r,r, scale);
+    m
+}
+
+
+#[doc="Returns elementary matrix which can scale
+a particular row by a factor and add it to
+another row
+on left multiplication.
+r_i = r_i + k * r_j
+
+"]
+pub fn ero_scale_add<T:Number>(n : uint, 
+    i  : uint, 
+    j : uint, 
+    scale : T)-> Matrix<T> {
+
+    let mut m : Matrix<T> = Matrix::identity(n, n);
+    m.set(i, j, scale);
+    m
+}
 
 
 
@@ -1011,4 +1058,40 @@ mod test{
 
     }
 
+    #[test]
+    fn test_ero_switch_scale(){
+        let eswitch : MatrixF64 = ero_switch(4, 1, 3);
+        let escale : MatrixF64 = ero_scale(4, 2, 2.0);
+        let mut m = matrix_rw_f64(4,4, [0., 1., 2., 3., 
+            4., 5., 6., 7.,
+            8., 9., 10., 11.,
+            12., 13., 14., 15.]);
+        // Carry out transformation through multiplying
+        // elementary matrices 
+        let m2 = eswitch * m;
+        let m3 = escale * m2;
+        // Do ERO operations directly.
+        m.ero_switch(1, 3);
+        m.ero_scale(2, 2.0);
+        println!("eswitch: {}", eswitch);
+        println!("escale: {}", escale);
+        println!("m2: {}", m2);
+        println!("m3: {}", m3);
+        assert_eq!(m3, m);
+    }
+
+
+    #[test]
+    fn test_ero_scale_add(){
+        let mut m = matrix_rw_f64(4,4, [0., 1., 2., 3., 
+            4., 5., 6., 7.,
+            8., 9., 10., 11.,
+            12., 13., 14., 15.]);
+        let esa : MatrixF64 = ero_scale_add(4, 1, 2, 3.0);
+        println!("esa: {}", esa);
+        let m2 = esa * m;
+        println!("m2: {}", m2);
+        m.ero_scale_add(1, 2, 3.);
+        assert_eq!(m2, m);
+    }
 }
