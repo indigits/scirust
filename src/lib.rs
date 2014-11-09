@@ -114,7 +114,9 @@ pub mod opt {
 
 pub mod signal {
     #![doc="Signal processing
-    "]    
+    "]
+    pub use self::signal::*;
+    mod signal;
 }
 
 

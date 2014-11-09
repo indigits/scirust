@@ -1,3 +1,6 @@
+#![doc="Provides the basic Matrix data type
+"]
+
 // library imports
 use std::mem;
 use std::ptr;
