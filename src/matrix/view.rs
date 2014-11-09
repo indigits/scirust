@@ -567,6 +567,16 @@ mod test{
         assert_eq!(v2.to_matrix(), c1);
     }
 
+    #[test]
+    fn test_extract_sub_matrix(){
+        let m :  MatrixI64 = from_range_rw_i64(20, 20, -100, 400);
+        let v1   = m.view(2, 2, 6, 6);
+        let m2  = v1.sub_matrix(2, 2, 4, 4);
+        let m3 = m.sub_matrix(4,4, 4, 4);
+        println!("m2 : {}", m2);
+        assert_eq!(m2, m3);
+    }
+
 
 }
 
