@@ -2,14 +2,14 @@
 use std::mem;
 use std::ops;
 use std::fmt;
-use std::ptr;
+//use std::ptr;
 
 // srmat imports
 use matrix::element::{Number};
 use matrix::matrix::{Matrix};
 use matrix::error::*;
 use matrix::traits::{MatrixType, Introspection, 
-    MatrixBuffer, Extraction};
+    MatrixBuffer, Extraction, ERO};
 
 //use discrete::*;
 
@@ -309,61 +309,15 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
 
 }
 
-impl<'a, T:Number+PartialOrd+Signed> MatrixView<'a, T> {
+/// Implementation of Elementary row operations.
+impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
 
-
-
-    /******************************************************
-     *
-     *   Elementary row / column operations.
-     *
-     *******************************************************/
-
-
-    /// Row switching.
-    pub fn ero_switch(&mut self, 
-        i :  uint,
-        j : uint
-        )-> &mut MatrixView<'a, T> {
-        debug_assert! (i  < self.rows);
-        debug_assert! (j  < self.rows);
-        let ptr = self.m.as_ptr();
-        // I am allowing modification of the underlying buffer
-        let ptr : *mut T = unsafe { mem::transmute(ptr) };
-        for c in range(0, self.cols){
-            let offset_a = self.cell_to_offset(i, c);
-            let offset_b = self.cell_to_offset(j, c);
-            unsafe {
-                ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
-            }
-        }
-        self
-    }
-
-    /// Row scaling by a factor.
-    pub fn ero_scale(&mut self, 
-        r :  uint, 
-        scale : T
-        )-> &mut MatrixView<'a, T> {
-        debug_assert! (r  < self.rows);
-        let ptr = self.m.as_ptr();
-        // I am allowing modification of the underlying buffer
-        let ptr : *mut T = unsafe { mem::transmute(ptr) };
-        for c in range(0, self.cols){
-            let offset = self.cell_to_offset(r, c);
-            unsafe {
-                let v = *ptr.offset(offset);
-                *ptr.offset(offset) = scale * v;
-            }
-        }
-        self
-    }
 
     /// Row scaling by a factor and adding to another row.
     /// r_i = r_i + k * r_j
     /// The j-th row can be outside the view also.
     /// This is the row relative to the start of the view.
-    pub fn ero_scale_add(&mut self, 
+    fn ero_scale_add(&mut self, 
         i :  uint, 
         j :  int, 
         scale : T
@@ -391,7 +345,6 @@ impl<'a, T:Number+PartialOrd+Signed> MatrixView<'a, T> {
         }
         self
     }
-
 }
 
 /// View + View =  Matrix addition

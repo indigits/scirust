@@ -23,7 +23,7 @@ use matrix::error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
 use matrix::traits::{MatrixType, Introspection, 
-    MatrixBuffer, Extraction};
+    MatrixBuffer, Extraction, ERO};
 
 // linear algebra
 use linalg;
@@ -1063,73 +1063,12 @@ impl<T:Number> Matrix<T> {
         }
     }
 
-
-    /******************************************************
-     *
-     *   Elementary row / column operations.
-     *
-     *******************************************************/
-
-
-    /// Row switching.
-    pub fn ero_switch(&mut self, 
-        i :  uint,
-        j : uint
-        )-> &mut Matrix<T> {
-        debug_assert! (i  < self.rows);
-        debug_assert! (j  < self.rows);
-        let ptr = self.ptr;
-        for c in range(0, self.cols){
-            let offset_a = self.cell_to_offset(i, c);
-            let offset_b = self.cell_to_offset(j, c);
-            unsafe {
-                ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
-            }
-        }
-        self
-    }
-
-    /// Row scaling by a factor.
-    pub fn ero_scale(&mut self, 
-        r :  uint, 
-        scale : T
-        )-> &mut Matrix<T> {
-        debug_assert! (r  < self.rows);
-        let ptr = self.ptr;
-        for c in range(0, self.cols){
-            let offset = self.cell_to_offset(r, c);
-            unsafe {
-                let v = *ptr.offset(offset);
-                *ptr.offset(offset) = scale * v;
-            }
-        }
-        self
-    }
-
-    /// Row scaling by a factor and adding to another row.
-    /// r_i = r_i + k * r_j
-    pub fn ero_scale_add(&mut self, 
-        i :  uint, 
-        j :  uint, 
-        scale : T
-        )-> &mut Matrix<T> {
-        debug_assert! (i  < self.rows);
-        debug_assert! (j  < self.rows);
-        let ptr = self.ptr;
-        for c in range(0, self.cols){
-            let offset_a = self.cell_to_offset(i, c);
-            let offset_b = self.cell_to_offset(j, c);
-            unsafe {
-                let va = *ptr.offset(offset_a);
-                let vb = *ptr.offset(offset_b);
-                *ptr.offset(offset_a) = va + scale * vb;
-            }
-        }
-        self
-    }
-
-
 }
+
+/// Implementation of Elementary row operations.
+impl<T:Number> ERO<T> for Matrix<T> {
+}
+
 
 /// Views of a matrix
 impl<T:Number> Matrix<T> {

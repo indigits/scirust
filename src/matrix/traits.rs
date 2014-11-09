@@ -1,3 +1,6 @@
+// Standard library imports
+use std::ptr;
+
 
 // local imports
 use matrix::element::Number;
@@ -250,5 +253,80 @@ pub trait MinMaxAbs<T:Number+PartialOrd+Signed> : MatrixType<T> {
     // Returns the maximum scalar value
     fn max_abs_scalar(&self) -> (T, uint, uint);
 
+
+}
+
+
+/******************************************************
+ *
+ *   Elementary row / column operations.
+ *
+ *******************************************************/
+
+/// Elementary row operations on a matrix
+pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
+
+    /// Row switching.
+    fn ero_switch(&mut self, 
+        i :  uint,
+        j : uint
+        )-> &mut Self {
+        debug_assert! (i  < self.num_rows());
+        debug_assert! (j  < self.num_rows());
+        let ptr = self.as_mut_ptr();
+        for c in range(0, self.num_cols()){
+            let offset_a = self.cell_to_offset(i, c);
+            let offset_b = self.cell_to_offset(j, c);
+            unsafe {
+                ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
+            }
+        }
+        self
+    }
+
+    /// Row scaling by a factor.
+    fn ero_scale(&mut self, 
+        r :  uint, 
+        scale : T
+        )-> &mut Self {
+        debug_assert! (r  < self.num_rows());
+        let ptr = self.as_mut_ptr();
+        for c in range(0, self.num_cols()){
+            let offset = self.cell_to_offset(r, c);
+            unsafe {
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale * v;
+            }
+        }
+        self
+    }
+
+    /// Row scaling by a factor and adding to another row.
+    /// r_i = r_i + k * r_j
+    fn ero_scale_add(&mut self, 
+        i :  uint, 
+        j :  int, 
+        scale : T
+        )-> &mut Self {
+        debug_assert! (i  < self.num_rows());
+        debug_assert! (j  < self.num_rows() as int);
+        let j = if j < 0{
+            mod_n(j, self.num_rows() as int)
+        }
+        else {
+            j as uint
+        };
+        let ptr = self.as_mut_ptr();
+        for c in range(0, self.num_cols()){
+            let offset_a = self.cell_to_offset(i, c);
+            let offset_b = self.cell_to_offset(j, c);
+            unsafe {
+                let va = *ptr.offset(offset_a);
+                let vb = *ptr.offset(offset_b);
+                *ptr.offset(offset_a) = va + scale * vb;
+            }
+        }
+        self
+    }
 
 }
