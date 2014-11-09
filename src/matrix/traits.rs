@@ -86,6 +86,29 @@ pub trait MatrixType<T:MatrixElt> {
 }
 
 
+#[doc=" Defines the low level interface to the internal
+memory buffer of a matrix implementation.  Use it with
+caution. 
+"]
+pub trait MatrixBuffer<T:MatrixElt> {
+
+    /// Returns the number of actual memory elements 
+    /// per column
+    fn stride (&self)->uint;
+
+
+    /// Returns a constant pointer to matrix's buffer
+    fn as_ptr(&self)-> *const T;
+
+    /// Returns a mutable pointer to matrix's buffer
+    fn as_mut_ptr(&mut self) -> *mut T;
+
+
+    /// Maps a cell index to actual offset in buffer
+    fn cell_to_offset(&self, r : uint,  c: uint)-> int;
+
+}
+
 #[doc=" These methods help in run time to query
 about the properties of the type which is implementing
 the trait. 

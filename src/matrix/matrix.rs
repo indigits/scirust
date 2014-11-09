@@ -19,7 +19,7 @@ use matrix::element::{MatrixElt};
 use matrix::error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
-use matrix::traits::{MatrixType, Introspection};
+use matrix::traits::{MatrixType, Introspection, MatrixBuffer};
 
 // linear algebra
 use linalg;
@@ -374,40 +374,45 @@ impl<T:MatrixElt> Introspection for Matrix<T> {
     }
 }
 
-/// Main methods of a matrix
-impl<T:MatrixElt> Matrix<T> {
 
+/// Buffer access
+impl<T:MatrixElt> MatrixBuffer<T> for Matrix<T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
-    pub fn stride (&self)->uint {
+    fn stride (&self)->uint {
         self.xrows
-    }
-
-    /// Returns the capacity of the matrix 
-    /// i.e. the number of elements it can hold
-    pub fn capacity(&self)-> uint {
-        self.xrows * self.xcols
     }
 
     /// Returns an unsafe pointer to the matrix's 
     /// buffer.
     #[inline]
-    pub fn as_ptr(&self)-> *const T{
+    fn as_ptr(&self)-> *const T{
         self.ptr as *const T
     }
 
     /// Returns a mutable unsafe pointer to
     /// the matrix's underlying buffer
     #[inline]
-    pub fn as_mut_ptr(&mut self) -> *mut T{
+    fn as_mut_ptr(&mut self) -> *mut T{
         self.ptr
     }
 
     /// Maps a cell index to actual offset in the internal buffer
     #[inline]
-    pub fn cell_to_offset(&self, r : uint,  c: uint)-> int {
+    fn cell_to_offset(&self, r : uint,  c: uint)-> int {
         (c * self.stride() + r) as int
     } 
+
+}
+
+/// Main methods of a matrix
+impl<T:MatrixElt> Matrix<T> {
+
+    /// Returns the capacity of the matrix 
+    /// i.e. the number of elements it can hold
+    pub fn capacity(&self)-> uint {
+        self.xrows * self.xcols
+    }
 
     /// Returns if the matrix is an identity matrix
     pub fn is_identity(&self) -> bool {

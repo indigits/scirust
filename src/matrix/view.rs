@@ -8,7 +8,7 @@ use std::ptr;
 use matrix::element::{MatrixElt};
 use matrix::matrix::{Matrix};
 use matrix::error::*;
-use matrix::traits::{MatrixType, Introspection};
+use matrix::traits::{MatrixType, Introspection, MatrixBuffer};
 
 //use discrete::*;
 
@@ -111,14 +111,6 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
     }
 
 
-    /// Maps a cell index to actual offset in the internal buffer
-    #[inline]
-    pub fn cell_to_offset(&self, r : uint,  c: uint)-> int {
-        let r = self.start_row + r * self.row_skip;
-        let c = self.start_col + c * self.col_skip;
-        (c * self.m.stride() + r) as int
-    } 
-
     /******************************************************
      *
      *   Private implementation of MatrixView
@@ -126,6 +118,38 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
      *******************************************************/
 
 }
+impl <'a, T:MatrixElt> MatrixBuffer<T> for MatrixView<'a, T> {
+    /// Returns the number of actual memory elements 
+    /// per column stored in the memory
+    fn stride (&self)->uint {
+        self.matrix().stride()
+    }
+
+    /// Returns an unsafe pointer to the matrix's 
+    /// buffer.
+    #[inline]
+    fn as_ptr(&self)-> *const T{
+        self.matrix().as_ptr()
+    }
+
+    /// Returns a mutable unsafe pointer to
+    /// the matrix's underlying buffer
+    #[inline]
+    fn as_mut_ptr(&mut self) -> *mut T{
+        let p  = self.matrix().as_ptr();
+        let ptr : *mut T = unsafe { mem::transmute(p) };
+        ptr
+    }
+
+    /// Maps a cell index to actual offset in the internal buffer
+    #[inline]
+    fn cell_to_offset(&self, r : uint,  c: uint)-> int {
+        let r = self.start_row + r * self.row_skip;
+        let c = self.start_col + c * self.col_skip;
+        (c * self.m.stride() + r) as int
+    } 
+}
+
 
 /// Implementation of common matrix methods
 impl <'a, T:MatrixElt> MatrixType<T> for MatrixView<'a, T> {
