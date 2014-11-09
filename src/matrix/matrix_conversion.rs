@@ -1,10 +1,10 @@
 // local imports
 use matrix::matrix::Matrix;
 use matrix::traits::*;
-use matrix::element::MatrixElt;
+use matrix::element::Number;
 
 /// Implements matrix conversion API
-impl <T:MatrixElt> Conversion<T> for Matrix<T> {
+impl <T:Number> Conversion<T> for Matrix<T> {
     /// Converts the matrix to vector from standard library
     fn to_std_vec(&self) -> Vec<T> {
         let mut vec: Vec<T> = Vec::with_capacity(self.num_cells());

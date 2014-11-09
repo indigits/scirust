@@ -3,10 +3,10 @@
 // local imports
 use matrix::matrix::Matrix;
 use matrix::traits::*;
-use matrix::element::MatrixElt;
+use matrix::element::Number;
 
 /// Implements matrix extraction API
-impl <T:MatrixElt+PartialOrd> MinMax<T> for Matrix<T> {
+impl <T:Number+PartialOrd> MinMax<T> for Matrix<T> {
 
     /// Returns a column vector consisting of maximum over each row
     fn max_row_wise(&self) -> Matrix<T>{

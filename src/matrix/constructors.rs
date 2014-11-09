@@ -9,7 +9,7 @@ use std::num;
 use matrix::matrix::*;
 use matrix::traits::*;
 use matrix::error::*;
-use matrix::element::MatrixElt;
+use matrix::element::Number;
 
 // complex numbers
 use external::complex::{Complex32, Complex64};
@@ -65,6 +65,13 @@ pub fn hilbert(n : uint) -> MatrixF64{
     m
 }
 
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+
 #[doc="Returns a matrix whose entries are picked up from
 a range in column wise order.
 
@@ -96,7 +103,7 @@ Constructing a 4x4 matrix of floating point numbers:
 
 
 "]
-pub fn from_range_cw<T:MatrixElt+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : uint, 
+pub fn from_range_cw<T:Number+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : uint, 
     start : T, stop : T )-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, range(start, stop));
     m 
@@ -222,6 +229,165 @@ pub fn from_range_cw_uint(rows : uint, cols : uint,
     start : uint, stop : uint)->MatrixUInt {
     from_range_cw(rows, cols, start, stop)
 }
+
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+
+#[doc="Returns a matrix whose entries are picked up from
+a range in row wise order.
+"]
+pub fn from_range_rw<T:Number+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : uint, 
+    start : T, stop : T )-> Matrix<T> {
+    let m : Matrix<T> = Matrix::from_iter_rw(rows, cols, range(start, stop));
+    m 
+}
+
+
+#[doc="Returns an 8-bit signed integer matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_i8(rows : uint, cols : uint, 
+    start : i8, stop : i8)->MatrixI8 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+
+#[doc="Returns an 16-bit signed integer matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_i16(rows : uint, cols : uint, 
+    start : i16, stop : i16)->MatrixI16 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+#[doc="Returns an 32-bit signed integer matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_i32(rows : uint, cols : uint, 
+    start : i32, stop : i32)->MatrixI32 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+
+#[doc="Returns an 64-bit signed integer matrix whose entries are
+picked up from a range in row wise order.
+
+See from_range_rw function  for further discussion.
+
+
+# Examples
+
+    use scirust::matrix::{from_range_rw_i64, MatrixType};
+
+    let m = from_range_rw_i64(4, 4, 0, 16);
+    for i in range(0, 16){
+        let r = i >> 2;
+        let c = i & 3;
+        assert_eq!(m.get(r, c), i as i64);
+    }
+"]
+#[inline]
+pub fn from_range_rw_i64(rows : uint, cols : uint, 
+    start : i64, stop : i64)->MatrixI64 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+#[doc="Returns an 8-bit unsigned integer matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_u8(rows : uint, cols : uint, 
+    start : u8, stop : u8)->MatrixU8 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+
+#[doc="Returns an 16-bit unsigned integer matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_u16(rows : uint, cols : uint, 
+    start : u16, stop : u16)->MatrixU16 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+#[doc="Returns an 32-bit unsigned integer matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_u32(rows : uint, cols : uint, 
+    start : u32, stop : u32)->MatrixU32 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+
+#[doc="Returns an 64-bit unsigned integer matrix whose entries are
+picked up from a range in row wise order.
+
+See from_range_rw function  for further discussion.
+
+
+# Examples
+
+    use scirust::matrix::{from_range_rw_u64, MatrixType};
+
+    let m = from_range_rw_u64(4, 4, 0, 16);
+    for i in range(0, 16){
+        let r = i >> 2;
+        let c = i & 3;
+        assert_eq!(m.get(r, c), i as u64);
+    }
+"]
+#[inline]
+pub fn from_range_rw_u64(rows : uint, cols : uint, 
+    start : u64, stop : u64)->MatrixU64 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+#[doc="Returns a 64-bit floating point matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_f64(rows : uint, cols : uint, 
+    start : f64, stop : f64)->MatrixF64 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+
+
+#[doc="Returns a 32-bit floating point matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_f32(rows : uint, cols : uint, 
+    start : f32, stop : f32)->MatrixF32 {
+    from_range_rw(rows, cols, start, stop)
+}
+
+
+
+#[doc="Returns a unsigned int matrix whose entries are
+picked up from a range in row wise order.
+"]
+#[inline]
+pub fn from_range_rw_uint(rows : uint, cols : uint, 
+    start : uint, stop : uint)->MatrixUInt {
+    from_range_rw(rows, cols, start, stop)
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
 
 
 #[doc="Returns an 8-bit unsigned integer matrix whose entries are
@@ -422,12 +588,16 @@ pub fn matrix_rw_c64(rows : uint, cols : uint, values: &[Complex64])->MatrixC64 
     Matrix::from_slice_rw(rows, cols, values)
 }
 
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 
 #[doc="Returns a column vector with entries from a slice.
 "]
 #[inline]
-pub fn col_vector<T:MatrixElt>(values: &[T])-> Matrix<T> {
+pub fn col_vector<T:Number>(values: &[T])-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_slice_cw(values.len(), 1, values);
     m 
 }
@@ -508,6 +678,10 @@ pub fn vector_f64(values: &[f64])->MatrixF64 {
     col_vector(values)
 }
 
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 #[cfg(test)]
 mod test{
@@ -530,7 +704,7 @@ mod test{
     }
 
     #[test]
-    fn test_range(){
+    fn test_range_cw_functions(){
         let m = from_range_cw_i64(4, 4, 0, 16);
         for i in range(0, 16){
             let c = i >> 2;
@@ -552,6 +726,85 @@ mod test{
             assert_eq!(m.get(r, c), i as f64);
         }
     }
+
+    #[test]
+    fn test_range_rw_functions(){
+        let start  = 0.0;
+        let stop = 16.0;
+        let m : MatrixF64 = from_range_rw(4, 4, start, stop);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as f64);
+        }
+        let m = from_range_rw_i8(4, 4, 0, 16);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as i8);
+        }
+        let m = from_range_rw_i16(4, 4, 0, 16);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as i16);
+        }
+        let m = from_range_rw_i32(4, 4, 0, 16);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as i32);
+        }
+        let m = from_range_rw_i64(4, 4, 0, 16);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as i64);
+        }
+
+
+        let m = from_range_rw_u8(4, 4, 0, 16);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as u8);
+        }
+        let m = from_range_rw_u16(4, 4, 0, 16);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as u16);
+        }
+        let m = from_range_rw_u32(4, 4, 0, 16);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as u32);
+        }
+        let m = from_range_rw_u64(4, 4, 0, 16);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as u64);
+        }
+
+
+        let m = from_range_rw_f64(4, 4, start, stop);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as f64);
+        }
+
+        let m = from_range_rw_f32(4, 4, 0.0, 16.0);
+        for i in range(0, 16){
+            let r = i >> 2;
+            let c = i & 3;
+            assert_eq!(m.get(r, c), i as f32);
+        }
+
+    }
+
 
     #[test]
     fn test_matrix_type_functions(){

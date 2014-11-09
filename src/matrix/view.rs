@@ -5,10 +5,11 @@ use std::fmt;
 use std::ptr;
 
 // srmat imports
-use matrix::element::{MatrixElt};
+use matrix::element::{Number};
 use matrix::matrix::{Matrix};
 use matrix::error::*;
-use matrix::traits::{MatrixType, Introspection, MatrixBuffer};
+use matrix::traits::{MatrixType, Introspection, 
+    MatrixBuffer, Extraction};
 
 //use discrete::*;
 
@@ -20,7 +21,7 @@ chosen rows and columns.
 
 
 "]
-pub struct MatrixView<'a, T:'a+MatrixElt>{
+pub struct MatrixView<'a, T:'a+Number>{
     // Reference to the associated matrix
     m : &'a Matrix<T>,
     // start row
@@ -39,7 +40,7 @@ pub struct MatrixView<'a, T:'a+MatrixElt>{
 
 
 /// Static functions for creating  a view
-impl<'a, T:MatrixElt> MatrixView<'a, T> {
+impl<'a, T:Number> MatrixView<'a, T> {
     pub fn new(m : &Matrix<T>, start_row : uint, start_col : uint , num_rows: uint, num_cols : uint) -> MatrixView<T> {
         let row_skip = 1u;
         let col_skip = 1u;
@@ -60,7 +61,7 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
 }
 
 ///Basic methods for a view
-impl<'a, T:MatrixElt> MatrixView<'a, T> {
+impl<'a, T:Number> MatrixView<'a, T> {
     /// Returns the start row
     pub fn start_row(&self) -> uint{
         self.start_row
@@ -118,7 +119,9 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
      *******************************************************/
 
 }
-impl <'a, T:MatrixElt> MatrixBuffer<T> for MatrixView<'a, T> {
+
+/// Implement Buffer API for matrix view
+impl <'a, T:Number> MatrixBuffer<T> for MatrixView<'a, T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     fn stride (&self)->uint {
@@ -151,8 +154,16 @@ impl <'a, T:MatrixElt> MatrixBuffer<T> for MatrixView<'a, T> {
 }
 
 
+/// Implement extraction API for matrix view 
+impl <'a, T:Number> Extraction<T> for MatrixView<'a, T> {
+
+}
+
+
+
+
 /// Implementation of common matrix methods
-impl <'a, T:MatrixElt> MatrixType<T> for MatrixView<'a, T> {
+impl <'a, T:Number> MatrixType<T> for MatrixView<'a, T> {
     /// Returns the number of rows in the view
     fn num_rows(&self) -> uint {
         self.rows
@@ -206,7 +217,7 @@ impl <'a, T:MatrixElt> MatrixType<T> for MatrixView<'a, T> {
 }
 
 /// Functions to construct new views out of a view and other conversions
-impl<'a, T:MatrixElt> MatrixView<'a, T> {
+impl<'a, T:Number> MatrixView<'a, T> {
 
     /// Returns the view as a new matrix.
     /// Creates a copy of the data.
@@ -229,7 +240,7 @@ impl<'a, T:MatrixElt> MatrixView<'a, T> {
 }
 
 /// Introspection support
-impl<'a, T:MatrixElt> Introspection for MatrixView<'a, T> {
+impl<'a, T:Number> Introspection for MatrixView<'a, T> {
     /// This is a view inside a matrix
     fn is_view(&self) -> bool {
         true
@@ -237,7 +248,7 @@ impl<'a, T:MatrixElt> Introspection for MatrixView<'a, T> {
 }
 
 
-impl<'a, T:MatrixElt+PartialOrd> MatrixView<'a, T> {
+impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
     // Returns the minimum scalar value
     pub fn min_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
@@ -298,7 +309,7 @@ impl<'a, T:MatrixElt+PartialOrd> MatrixView<'a, T> {
 
 }
 
-impl<'a, T:MatrixElt+PartialOrd+Signed> MatrixView<'a, T> {
+impl<'a, T:Number+PartialOrd+Signed> MatrixView<'a, T> {
 
 
 
@@ -384,7 +395,7 @@ impl<'a, T:MatrixElt+PartialOrd+Signed> MatrixView<'a, T> {
 }
 
 /// View + View =  Matrix addition
-impl<'a, 'b, T:MatrixElt> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<'a, T> {
+impl<'a, 'b, T:Number> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<'a, T> {
     fn add(&self, rhs: &MatrixView<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
@@ -409,7 +420,7 @@ impl<'a, 'b, T:MatrixElt> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<
 }
 
 
-impl <'a, T:MatrixElt> fmt::Show for MatrixView<'a, T> {
+impl <'a, T:Number> fmt::Show for MatrixView<'a, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let ptr = self.m.as_ptr();
         try!(write!(f, "["));
@@ -534,6 +545,28 @@ mod test{
         assert_eq!(abs_min, 2);
         assert_eq!((rr, cc), (0, 3));
     }
+
+
+    #[test]
+    fn test_extract_row(){
+        let m :  MatrixI64 = Matrix::from_iter_cw(20, 20, range(-100, 400));
+        let v1   = m.view(2, 2, 6, 6);
+        println!("v1 : {}", v1);
+        let r1 = v1.row(0);
+        let v2 = m.view(2,2, 1, 6);
+        assert_eq!(v2.to_matrix(), r1);
+    }
+
+    #[test]
+    fn test_extract_col(){
+        let m :  MatrixI64 = from_range_rw_i64(20, 20, -100, 400);
+        let v1   = m.view(2, 2, 6, 6);
+        println!("v1 : {}", v1);
+        let c1 = v1.col(0);
+        let v2 = m.view(2,2, 6, 1);
+        assert_eq!(v2.to_matrix(), c1);
+    }
+
 
 }
 

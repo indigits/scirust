@@ -7,77 +7,77 @@ use external::complex::{Complex32, Complex64};
 
 
 /// Defines all the traits which a matrix element must support
-pub trait MatrixElt : Num+Copy+Show {
+pub trait Number : Num+Copy+Show {
 
 }
 
 /// Indicate that i8 fits all requirements for being a matrix element.
-impl MatrixElt for i8 {
+impl Number for i8 {
     
 }
 /// Indicate that i16 fits all requirements for being a matrix element.
-impl MatrixElt for i16 {
+impl Number for i16 {
     
 }
 /// Indicate that i32 fits all requirements for being a matrix element.
-impl MatrixElt for i32 {
+impl Number for i32 {
     
 }
 /// Indicate that i64 fits all requirements for being a matrix element.
-impl MatrixElt for i64 {
+impl Number for i64 {
     
 }
 
 /// Indicate that int fits all requirements for being a matrix element.
-impl MatrixElt for int {
+impl Number for int {
     
 }
 
 
 /// Indicate that u8 fits all requirements for being a matrix element.
-impl MatrixElt for u8 {
+impl Number for u8 {
     
 }
 /// Indicate that u16 fits all requirements for being a matrix element.
-impl MatrixElt for u16 {
+impl Number for u16 {
     
 }
 /// Indicate that u32 fits all requirements for being a matrix element.
-impl MatrixElt for u32 {
+impl Number for u32 {
     
 }
 
 /// Indicate that u64 fits all requirements for being a matrix element.
-impl MatrixElt for u64 {
+impl Number for u64 {
     
 }
 
 /// Indicate that uint fits all requirements for being a matrix element.
-impl MatrixElt for uint {
+impl Number for uint {
     
 }
 
 
 
 /// Indicate that f32 fits all requirements for being a matrix element.
-impl MatrixElt for f32 {
+impl Number for f32 {
     
 }
 
 
 /// Indicate that f64 fits all requirements for being a matrix element.
-impl MatrixElt for f64 {
+impl Number for f64 {
     
 }
 
 
 /// Indicate that Complex32 fits all requirements for being a matrix element.
-impl MatrixElt for Complex32 {
+impl Number for Complex32 {
     
 }
 
 
 /// Indicate that Complex64 fits all requirements for being a matrix element.
-impl MatrixElt for Complex64 {
+impl Number for Complex64 {
     
 }

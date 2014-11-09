@@ -16,7 +16,7 @@ The determinant of an empty matrix is 1.
 See http://en.wikipedia.org/wiki/Matrix_(mathematics)#Empty_matrices.
 
 "]
-pub fn  det<T:MatrixElt+Signed>(m : &Matrix<T>)->Result<T,MatrixError>{
+pub fn  det<T:Number+Signed>(m : &Matrix<T>)->Result<T,MatrixError>{
     if !m.is_square(){
         return Err(NonSquareMatrix);
     }
@@ -29,7 +29,7 @@ pub fn  det<T:MatrixElt+Signed>(m : &Matrix<T>)->Result<T,MatrixError>{
 
 /// Private implementation of determinant
 /// Assumes that matrix is indeed square.
-fn det_<T:MatrixElt+Signed>(m : &Matrix<T>)->T{
+fn det_<T:Number+Signed>(m : &Matrix<T>)->T{
     let a0 = m.get(0, 0);
     debug!("m: {}", m);
     if m.is_scalar(){

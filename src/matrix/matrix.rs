@@ -15,11 +15,12 @@ use std::raw::Slice as RawSlice;
 // local imports
 
 use discrete::{mod_n};
-use matrix::element::{MatrixElt};
+use matrix::element::{Number};
 use matrix::error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
-use matrix::traits::{MatrixType, Introspection, MatrixBuffer};
+use matrix::traits::{MatrixType, Introspection, 
+    MatrixBuffer, Extraction};
 
 // linear algebra
 use linalg;
@@ -47,7 +48,7 @@ of rows. May be changed later on.
 For a row vector, the stride  = 1.
 
 "]
-pub struct Matrix<T:MatrixElt> {
+pub struct Matrix<T:Number> {
     /// Number of rows in the matrix
     rows : uint,
     /// Number of columns in the matrix
@@ -91,7 +92,7 @@ pub type MatrixC64 = Matrix<Complex64>;
 
 
 /// Static functions for creating  a matrix
-impl<T:MatrixElt> Matrix<T> {
+impl<T:Number> Matrix<T> {
 
     /// Constructs a scalar matrix
     pub fn from_scalar (scalar : T) -> Matrix <T>{
@@ -296,6 +297,50 @@ by hand.
         mat
     }
 
+
+    /// Builds a matrix from an iterator reading numbers in a 
+    /// row-wise order
+    pub fn from_iter_rw< A : Iterator<T>>(rows: uint, cols : uint, 
+        mut iter: A) -> Matrix<T>{
+        let m : Matrix<T> = Matrix::new(rows, cols);
+        let ptr = m.ptr;
+        let z : T = Zero::zero();
+        let mut r = 0;
+        let mut c = 0;
+        let nc = m.num_cols();
+        let nr = m.num_rows();
+        for v in iter {
+            if c == nc {
+                c = 0;
+                r = r + 1;
+            }
+            if r == nr {
+                break;
+            }
+            let dst_offset = m.cell_to_offset(r, c);
+            unsafe{
+                *ptr.offset(dst_offset) = v;
+            }
+            c += 1;
+        }
+        loop {
+            if c == nc {
+                c = 0;
+                r = r + 1;
+            }
+            if r == nr {
+                break;
+            }
+            let dst_offset = m.cell_to_offset(r, c);
+            unsafe{
+                *ptr.offset(dst_offset) = z;
+            }
+            c += 1;
+        }
+        // return
+        m
+    }
+
     /// Construct a diagonal matrix from a vector
     pub fn diag_from_vec(v : &Matrix<T>) -> Matrix<T>{
         if !v.is_vector(){
@@ -325,7 +370,7 @@ by hand.
 }
 
 /// Core methods for all matrix types
-impl<T:MatrixElt> MatrixType<T> for Matrix<T> {
+impl<T:Number> MatrixType<T> for Matrix<T> {
 
     /// Returns the number of rows in the matrix
     fn num_rows(&self) -> uint {
@@ -367,7 +412,7 @@ impl<T:MatrixElt> MatrixType<T> for Matrix<T> {
 }
 
 /// Introspection support
-impl<T:MatrixElt> Introspection for Matrix<T> {
+impl<T:Number> Introspection for Matrix<T> {
     /// This is a standard matrix object
     fn is_matrix(&self) -> bool {
         true
@@ -376,7 +421,7 @@ impl<T:MatrixElt> Introspection for Matrix<T> {
 
 
 /// Buffer access
-impl<T:MatrixElt> MatrixBuffer<T> for Matrix<T> {
+impl<T:Number> MatrixBuffer<T> for Matrix<T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     fn stride (&self)->uint {
@@ -406,7 +451,7 @@ impl<T:MatrixElt> MatrixBuffer<T> for Matrix<T> {
 }
 
 /// Main methods of a matrix
-impl<T:MatrixElt> Matrix<T> {
+impl<T:Number> Matrix<T> {
 
     /// Returns the capacity of the matrix 
     /// i.e. the number of elements it can hold
@@ -495,9 +540,15 @@ impl<T:MatrixElt> Matrix<T> {
 
 }
 
+/// Implements matrix extraction API
+impl <T:Number> Extraction<T> for Matrix<T> {
+
+
+}
+
 
 /// Functions to construct new matrices out of a matrix and other conversions
-impl<T:MatrixElt> Matrix<T> {
+impl<T:Number> Matrix<T> {
 
 
 
@@ -776,7 +827,7 @@ impl<T:MatrixElt> Matrix<T> {
 }
 
 /// These methods modify the matrix itself
-impl<T:MatrixElt> Matrix<T> {
+impl<T:Number> Matrix<T> {
 
     /// Appends one or more columns at the end of matrix
     pub fn append_columns(&mut self, 
@@ -1078,7 +1129,7 @@ impl<T:MatrixElt> Matrix<T> {
 }
 
 /// Views of a matrix
-impl<T:MatrixElt> Matrix<T> {
+impl<T:Number> Matrix<T> {
     /// Creates a view on the matrix
     pub fn view(&self, start_row : uint, start_col : uint , num_rows: uint, num_cols : uint) -> MatrixView<T> {
         let result : MatrixView<T> = MatrixView::new(self, start_row, start_col, num_rows, num_cols);
@@ -1091,7 +1142,7 @@ impl<T:MatrixElt> Matrix<T> {
 
 /// These functions are available only for types which support
 /// ordering [at least partial ordering for floating point numbers].
-impl<T:MatrixElt+PartialOrd> Matrix<T> {
+impl<T:Number+PartialOrd> Matrix<T> {
 
 
     // Returns the minimum scalar value with location
@@ -1153,7 +1204,7 @@ impl<T:MatrixElt+PartialOrd> Matrix<T> {
     }    
 }
 
-impl<T:MatrixElt+PartialOrd+Signed> Matrix<T> {
+impl<T:Number+PartialOrd+Signed> Matrix<T> {
 
     // Returns the absolute minimum scalar value
     pub fn min_abs_scalar(&self) -> (T, uint, uint){
@@ -1216,7 +1267,7 @@ impl<T:MatrixElt+PartialOrd+Signed> Matrix<T> {
 }
 
 /// These functions are available only for integer matrices
-impl<T:MatrixElt+Int> Matrix<T> {
+impl<T:Number+Int> Matrix<T> {
 
     /// Returns if an integer matrix is a logical matrix
     //// i.e. all cells are either 0s or 1s.
@@ -1240,7 +1291,7 @@ impl<T:MatrixElt+Int> Matrix<T> {
 
 
 /// These functions are available only for floating point matrices
-impl<T:MatrixElt+Float> Matrix<T> {
+impl<T:Number+Float> Matrix<T> {
     /// Returns a matrix showing all the cells which are finite
     pub fn is_finite(&self) -> Matrix<u8>{
         let m : Matrix<u8> = Matrix::ones(self.rows, self.cols);
@@ -1272,7 +1323,7 @@ impl<T:MatrixElt+Float> Matrix<T> {
     }
 }
 
-impl<T:MatrixElt+Signed> Matrix<T>{
+impl<T:Number+Signed> Matrix<T>{
     /// Returns determinant of the matrix
     pub fn det(&self) -> Result<T,MatrixError>{
         linalg::det(self)
@@ -1282,7 +1333,7 @@ impl<T:MatrixElt+Signed> Matrix<T>{
 
 
 
-impl<T:MatrixElt> Index<uint,T> for Matrix<T> {
+impl<T:Number> Index<uint,T> for Matrix<T> {
     #[inline]
     fn index<'a>(&'a self, index: &uint) -> &'a T {
         // The matrix is column major order
@@ -1296,7 +1347,7 @@ impl<T:MatrixElt> Index<uint,T> for Matrix<T> {
 
 
 
-impl<T:MatrixElt> Matrix<T>{
+impl<T:Number> Matrix<T>{
     /// This function is for internal use only.
     #[inline]
     fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
@@ -1312,7 +1363,7 @@ impl<T:MatrixElt> Matrix<T>{
 
 
 /// Implementation of Clone interface
-impl <T:MatrixElt> Clone for Matrix<T> {
+impl <T:Number> Clone for Matrix<T> {
 
     /// Creates a clone of the matrix
     fn clone(&self )-> Matrix<T> {
@@ -1325,7 +1376,7 @@ impl <T:MatrixElt> Clone for Matrix<T> {
     }
 }
 
-impl <T:MatrixElt> fmt::Show for Matrix<T> {
+impl <T:Number> fmt::Show for Matrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // We need to find out the number of characters needed
         // to show each value.
@@ -1366,7 +1417,7 @@ impl <T:MatrixElt> fmt::Show for Matrix<T> {
 }
 
 /// Matrix addition support
-impl<T:MatrixElt> ops::Add<Matrix<T>, Matrix<T>> for Matrix<T> {
+impl<T:Number> ops::Add<Matrix<T>, Matrix<T>> for Matrix<T> {
     fn add(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
@@ -1389,7 +1440,7 @@ impl<T:MatrixElt> ops::Add<Matrix<T>, Matrix<T>> for Matrix<T> {
 
 
 /// Matrix subtraction support
-impl<T:MatrixElt> ops::Sub<Matrix<T>, Matrix<T>> for Matrix<T>{
+impl<T:Number> ops::Sub<Matrix<T>, Matrix<T>> for Matrix<T>{
     fn sub(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
@@ -1433,7 +1484,7 @@ pub trait MatrixMul<Result> {
 
 
 /// Matrix multiplication support
-impl<T:MatrixElt> ops::Mul<Matrix<T>, Matrix<T>> for Matrix<T>{
+impl<T:Number> ops::Mul<Matrix<T>, Matrix<T>> for Matrix<T>{
     fn mul(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions match for multiplication
         if self.cols != rhs.rows{
@@ -1465,7 +1516,7 @@ impl<T:MatrixElt> ops::Mul<Matrix<T>, Matrix<T>> for Matrix<T>{
 
 
 /// Matrix equality check support
-impl<T:MatrixElt> cmp::PartialEq for Matrix<T>{
+impl<T:Number> cmp::PartialEq for Matrix<T>{
     fn eq(&self, other: &Matrix<T>) -> bool {
         let pa = self.ptr as *const  T;
         let pb = other.ptr as *const  T;
@@ -1486,7 +1537,7 @@ impl<T:MatrixElt> cmp::PartialEq for Matrix<T>{
 }
 
 // Element wise operations.
-impl<T:MatrixElt> Matrix<T> {
+impl<T:Number> Matrix<T> {
     /// Multiplies matrices element by element
     pub fn mul_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1529,7 +1580,7 @@ impl<T:MatrixElt> Matrix<T> {
 }
 
 #[unsafe_destructor]
-impl<T:MatrixElt> Drop for Matrix<T> {
+impl<T:Number> Drop for Matrix<T> {
     fn drop(&mut self) {
         if self.num_cells() != 0 {
             unsafe {
@@ -1545,7 +1596,7 @@ impl<T:MatrixElt> Drop for Matrix<T> {
  *
  *******************************************************/
 
-impl<T:MatrixElt> Matrix<T> {
+impl<T:Number> Matrix<T> {
     pub fn print_state(&self){
         let capacity = self.capacity();
         let bytes = capacity * mem::size_of::<T>();
@@ -1564,7 +1615,7 @@ impl<T:MatrixElt> Matrix<T> {
  *
  *******************************************************/
 
-impl<T:MatrixElt> Matrix<T> {
+impl<T:Number> Matrix<T> {
     /// Returns a slice into `self`.
     //#[inline]
     pub fn as_slice_<'a>(&'a self) -> &'a [T] {

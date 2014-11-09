@@ -5,11 +5,11 @@ use std::num;
 use matrix::error::*;
 use matrix::view::MatrixView;
 use matrix::traits::*;
-use matrix::element::MatrixElt;
+use matrix::element::Number;
 
 
 /// Implementation of min-max with absolute values API for matrix view
-impl <'a, T:MatrixElt+PartialOrd+Signed> MinMaxAbs<T> for MatrixView<'a, T> {
+impl <'a, T:Number+PartialOrd+Signed> MinMaxAbs<T> for MatrixView<'a, T> {
 
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, uint, uint){
