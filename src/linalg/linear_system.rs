@@ -93,27 +93,53 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
 }
 
 
-
-#[doc="Implements the back substitution algorithm for
-solving a upper triangular linear system. L X = B
-"]pub fn ut_back_substitute(l : &MatrixF64, b : &MatrixF64) -> 
+#[doc="Implements the forward substitution algorithm for
+solving a lower triangular linear system. L X = B
+"]pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) -> 
     Result<MatrixF64, LinearSystemError>{
-    assert_eq!(l.num_rows(), b.num_rows());
     assert!(l.is_square());
-    debug_assert!(l.is_ut());
+    let n = l.num_rows();
+    assert_eq!(n, b.num_rows());
+    debug_assert!(l.is_lt());
     // Create a copy for the result
     let mut b = b.clone();
-    let mut r = l.num_rows() - 1;
-    loop {
+    for r in range(0, n) {
         let pivot = l.get(r, r);
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
             return Err(NoSolution);
         }
+        for k in range(0,  r){
+            b.ero_scale_add(r, k as int, -l.get(r, k));
+        }
         b.ero_scale(r, 1.0/pivot);
-        for j in range(r+1, l.num_rows()){
-            let factor = l.get(r, j) / pivot;
+    }
+    Ok(b)
+}
+
+
+
+#[doc="Implements the back substitution algorithm for
+solving a upper triangular linear system. L X = B
+"]pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) -> 
+    Result<MatrixF64, LinearSystemError>{
+    assert_eq!(u.num_rows(), b.num_rows());
+    assert!(u.is_square());
+    debug_assert!(u.is_ut());
+    // Create a copy for the result
+    let mut b = b.clone();
+    let mut r = u.num_rows() - 1;
+    loop {
+        let pivot = u.get(r, r);
+        if pivot == 0. {
+            // We have a problem here. We cannot find a solution.
+            // TODO: make it more robust for under-determined systems.
+            return Err(NoSolution);
+        }
+        b.ero_scale(r, 1.0/pivot);
+        for j in range(r+1, u.num_rows()){
+            let factor = u.get(r, j) / pivot;
             b.ero_scale_add(r, j as int, -factor);  
         }
         if r == 0 {
@@ -123,6 +149,8 @@ solving a upper triangular linear system. L X = B
     }
     Ok(b)
 }
+
+
 
 
 
@@ -264,13 +292,26 @@ mod test{
     }
 
     #[test]
-    fn test_lt_0(){
+    fn test_ut_0(){
         let l = matrix_rw_f64(2, 2, [
             1., 1.,
             0., 1.]);
         let x = vector_f64([1., 2.]);
         let b = l * x;
-        let x = ut_back_substitute(&l, &b).unwrap();
+        let x = ut_solve(&l, &b).unwrap();
+        let lsv = LinearSystemValidator::new(&l, &x, &b);
+        lsv.print();
+        assert!(lsv.is_max_abs_val_below_threshold(1e-6));
+    }
+
+    #[test]
+    fn test_lt_0(){
+        let l = matrix_rw_f64(2, 2, [
+            1., 0.,
+            1., 1.]);
+        let x = vector_f64([1., 2.]);
+        let b = l * x;
+        let x = lt_solve(&l, &b).unwrap();
         let lsv = LinearSystemValidator::new(&l, &x, &b);
         lsv.print();
         assert!(lsv.is_max_abs_val_below_threshold(1e-6));
