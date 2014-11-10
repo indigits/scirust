@@ -83,12 +83,14 @@
 <span id='41'>41</span>
 <span id='42'>42</span>
 <span id='43'>43</span>
+<span id='44'>44</span>
 </pre><pre class='rust '>
 <span class='comment'>// library imports</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>rand</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>rand</span>::<span class='ident'>Rng</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>rand</span>::<span class='ident'>distributions</span>::<span class='ident'>normal</span>::{<span class='ident'>StandardNormal</span>};
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>matrix</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>traits</span>::<span class='op'>*</span>;
 
 
 
@@ -118,7 +120,7 @@
 <span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>unused_imports</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
 
-    <span class='kw'>use</span> <span class='ident'>matrix</span>::{<span class='ident'>Matrix</span>, <span class='ident'>MatrixF64</span>};
+    <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='op'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_rand_std_normal</span>(){

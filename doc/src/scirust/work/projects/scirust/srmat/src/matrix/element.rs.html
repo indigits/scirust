@@ -98,63 +98,113 @@
 <span id='56'>56</span>
 <span id='57'>57</span>
 <span id='58'>58</span>
+<span id='59'>59</span>
+<span id='60'>60</span>
+<span id='61'>61</span>
+<span id='62'>62</span>
+<span id='63'>63</span>
+<span id='64'>64</span>
+<span id='65'>65</span>
+<span id='66'>66</span>
+<span id='67'>67</span>
+<span id='68'>68</span>
+<span id='69'>69</span>
+<span id='70'>70</span>
+<span id='71'>71</span>
+<span id='72'>72</span>
+<span id='73'>73</span>
+<span id='74'>74</span>
+<span id='75'>75</span>
+<span id='76'>76</span>
+<span id='77'>77</span>
+<span id='78'>78</span>
+<span id='79'>79</span>
+<span id='80'>80</span>
+<span id='81'>81</span>
+<span id='82'>82</span>
+<span id='83'>83</span>
 </pre><pre class='rust '>
 <span class='comment'>// Imports</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::<span class='ident'>Show</span>;
 
 
+<span class='comment'>// complex numbers</span>
+<span class='kw'>use</span> <span class='ident'>external</span>::<span class='ident'>complex</span>::{<span class='ident'>Complex32</span>, <span class='ident'>Complex64</span>};
+
+
 <span class='doccomment'>/// Defines all the traits which a matrix element must support</span>
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>MatrixElt</span> : <span class='ident'>Num</span><span class='op'>+</span><span class='ident'>Copy</span><span class='op'>+</span><span class='ident'>Show</span> {
+<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Number</span> : <span class='ident'>Num</span><span class='op'>+</span><span class='ident'>Copy</span><span class='op'>+</span><span class='ident'>Show</span> {
 
 }
 
 <span class='doccomment'>/// Indicate that i8 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>i8</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>i8</span> {
     
 }
 <span class='doccomment'>/// Indicate that i16 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>i16</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>i16</span> {
     
 }
 <span class='doccomment'>/// Indicate that i32 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>i32</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>i32</span> {
     
 }
 <span class='doccomment'>/// Indicate that i64 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>i64</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>i64</span> {
     
 }
 
+<span class='doccomment'>/// Indicate that int fits all requirements for being a matrix element.</span>
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>int</span> {
+    
+}
 
 
 <span class='doccomment'>/// Indicate that u8 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>u8</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>u8</span> {
     
 }
 <span class='doccomment'>/// Indicate that u16 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>u16</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>u16</span> {
     
 }
 <span class='doccomment'>/// Indicate that u32 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>u32</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>u32</span> {
     
 }
 
 <span class='doccomment'>/// Indicate that u64 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>u64</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>u64</span> {
+    
+}
+
+<span class='doccomment'>/// Indicate that uint fits all requirements for being a matrix element.</span>
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>uint</span> {
     
 }
 
 
 
 <span class='doccomment'>/// Indicate that f32 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>f32</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>f32</span> {
     
 }
 
 
 <span class='doccomment'>/// Indicate that f64 fits all requirements for being a matrix element.</span>
-<span class='kw'>impl</span> <span class='ident'>MatrixElt</span> <span class='kw'>for</span> <span class='ident'>f64</span> {
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>f64</span> {
+    
+}
+
+
+<span class='doccomment'>/// Indicate that Complex32 fits all requirements for being a matrix element.</span>
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>Complex32</span> {
+    
+}
+
+
+<span class='doccomment'>/// Indicate that Complex64 fits all requirements for being a matrix element.</span>
+<span class='kw'>impl</span> <span class='ident'>Number</span> <span class='kw'>for</span> <span class='ident'>Complex64</span> {
     
 }
 </pre>

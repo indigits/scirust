@@ -575,42 +575,20 @@
 <span id='533'>533</span>
 <span id='534'>534</span>
 <span id='535'>535</span>
-<span id='536'>536</span>
-<span id='537'>537</span>
-<span id='538'>538</span>
-<span id='539'>539</span>
-<span id='540'>540</span>
-<span id='541'>541</span>
-<span id='542'>542</span>
-<span id='543'>543</span>
-<span id='544'>544</span>
-<span id='545'>545</span>
-<span id='546'>546</span>
-<span id='547'>547</span>
-<span id='548'>548</span>
-<span id='549'>549</span>
-<span id='550'>550</span>
-<span id='551'>551</span>
-<span id='552'>552</span>
-<span id='553'>553</span>
-<span id='554'>554</span>
-<span id='555'>555</span>
-<span id='556'>556</span>
-<span id='557'>557</span>
-<span id='558'>558</span>
-<span id='559'>559</span>
 </pre><pre class='rust '>
 <span class='comment'>// Standard library imports</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>num</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ptr</span>;
+<span class='comment'>//use std::ptr;</span>
 
 <span class='comment'>// srmat imports</span>
-<span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>element</span>::{<span class='ident'>MatrixElt</span>};
+<span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>element</span>::{<span class='ident'>Number</span>};
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>matrix</span>::{<span class='ident'>Matrix</span>};
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>error</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>traits</span>::{<span class='ident'>MatrixType</span>, <span class='ident'>Introspection</span>, 
+    <span class='ident'>MatrixBuffer</span>, <span class='ident'>Extraction</span>, <span class='ident'>ERO</span>};
+
 <span class='comment'>//use discrete::*;</span>
 
 <span class='attribute'>#[<span class='ident'>doc</span> <span class='op'>=</span> <span class='string'>&quot;
@@ -621,7 +599,7 @@ chosen rows and columns.
 
 
 &quot;</span>]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='lifetime'>&#39;a</span><span class='op'>+</span><span class='ident'>MatrixElt</span><span class='op'>&gt;</span>{
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='lifetime'>&#39;a</span><span class='op'>+</span><span class='ident'>Number</span><span class='op'>&gt;</span>{
     <span class='comment'>// Reference to the associated matrix</span>
     <span class='ident'>m</span> : <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
     <span class='comment'>// start row</span>
@@ -640,7 +618,7 @@ chosen rows and columns.
 
 
 <span class='doccomment'>/// Static functions for creating  a view</span>
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>m</span> : <span class='kw-2'>&amp;</span><span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>start_row</span> : <span class='ident'>uint</span>, <span class='ident'>start_col</span> : <span class='ident'>uint</span> , <span class='ident'>num_rows</span>: <span class='ident'>uint</span>, <span class='ident'>num_cols</span> : <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>row_skip</span> <span class='op'>=</span> <span class='number'>1u</span>;
         <span class='kw'>let</span> <span class='ident'>col_skip</span> <span class='op'>=</span> <span class='number'>1u</span>;
@@ -658,63 +636,136 @@ chosen rows and columns.
         <span class='ident'>result</span>
     }
 
+}
+
+<span class='doccomment'>///Basic methods for a view</span>
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Returns the start row</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>start_row</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>uint</span>{
         <span class='self'>self</span>.<span class='ident'>start_row</span>
     } 
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>matrix</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
+        <span class='self'>self</span>.<span class='ident'>m</span>
+    }
 
+
+    <span class='doccomment'>/// Copies data from other view</span>
+    <span class='comment'>// TODO: write tests</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>copy_from</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>){
+        <span class='comment'>// Validate dimensions are same.</span>
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
+            <span class='macro'>fail</span><span class='macro'>!</span>(<span class='ident'>DimensionsMismatch</span>.<span class='ident'>to_string</span>());
+        }        
+        <span class='kw'>let</span> <span class='ident'>pd</span> : <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>mem</span>::<span class='ident'>transmute</span>(<span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>()) };
+        <span class='kw'>let</span> <span class='ident'>ps</span> <span class='op'>=</span> <span class='ident'>rhs</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
+        <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>range</span> (<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>cols</span>){
+            <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>rows</span>){
+                <span class='kw'>let</span> <span class='ident'>src_offset</span>  <span class='op'>=</span> <span class='ident'>rhs</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
+                <span class='kw'>let</span> <span class='ident'>dst_offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
+                <span class='kw'>unsafe</span>{
+                    <span class='op'>*</span><span class='ident'>pd</span>.<span class='ident'>offset</span>(<span class='ident'>dst_offset</span>) <span class='op'>=</span> <span class='op'>*</span><span class='ident'>ps</span>.<span class='ident'>offset</span>(<span class='ident'>src_offset</span>);
+                }
+            }
+        }
+    }
+
+    <span class='doccomment'>/// Copies data from other view with scale factor</span>
+    <span class='comment'>// TODO: write tests</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>copy_scaled_from</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>scale</span>: <span class='ident'>T</span>){
+        <span class='comment'>// Validate dimensions are same.</span>
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
+            <span class='macro'>fail</span><span class='macro'>!</span>(<span class='ident'>DimensionsMismatch</span>.<span class='ident'>to_string</span>());
+        }        
+        <span class='kw'>let</span> <span class='ident'>pd</span> : <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>mem</span>::<span class='ident'>transmute</span>(<span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>()) };
+        <span class='kw'>let</span> <span class='ident'>ps</span> <span class='op'>=</span> <span class='ident'>rhs</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
+        <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>range</span> (<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>cols</span>){
+            <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>rows</span>){
+                <span class='kw'>let</span> <span class='ident'>src_offset</span>  <span class='op'>=</span> <span class='ident'>rhs</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
+                <span class='kw'>let</span> <span class='ident'>dst_offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
+                <span class='kw'>unsafe</span>{
+                    <span class='op'>*</span><span class='ident'>pd</span>.<span class='ident'>offset</span>(<span class='ident'>dst_offset</span>) <span class='op'>=</span> <span class='ident'>scale</span> <span class='op'>*</span> <span class='op'>*</span><span class='ident'>ps</span>.<span class='ident'>offset</span>(<span class='ident'>src_offset</span>);
+                }
+            }
+        }
+    }
+
+
+    <span class='comment'>/******************************************************
+     *
+     *   Private implementation of MatrixView
+     *
+     *******************************************************/</span>
+
+}
+
+<span class='doccomment'>/// Implement Buffer API for matrix view</span>
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>MatrixBuffer</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Returns the number of actual memory elements </span>
+    <span class='doccomment'>/// per column stored in the memory</span>
+    <span class='kw'>fn</span> <span class='ident'>stride</span> (<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span><span class='ident'>uint</span> {
+        <span class='self'>self</span>.<span class='ident'>matrix</span>().<span class='ident'>stride</span>()
+    }
+
+    <span class='doccomment'>/// Returns an unsafe pointer to the matrix&#39;s </span>
+    <span class='doccomment'>/// buffer.</span>
+    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>as_ptr</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>{
+        <span class='self'>self</span>.<span class='ident'>matrix</span>().<span class='ident'>as_ptr</span>()
+    }
+
+    <span class='doccomment'>/// Returns a mutable unsafe pointer to</span>
+    <span class='doccomment'>/// the matrix&#39;s underlying buffer</span>
+    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>as_mut_ptr</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span>{
+        <span class='kw'>let</span> <span class='ident'>p</span>  <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>matrix</span>().<span class='ident'>as_ptr</span>();
+        <span class='kw'>let</span> <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>mem</span>::<span class='ident'>transmute</span>(<span class='ident'>p</span>) };
+        <span class='ident'>ptr</span>
+    }
+
+    <span class='doccomment'>/// Maps a cell index to actual offset in the internal buffer</span>
+    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>cell_to_offset</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>uint</span>,  <span class='ident'>c</span>: <span class='ident'>uint</span>)<span class='op'>-&gt;</span> <span class='ident'>int</span> {
+        <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>start_row</span> <span class='op'>+</span> <span class='ident'>r</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>row_skip</span>;
+        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>start_col</span> <span class='op'>+</span> <span class='ident'>c</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>col_skip</span>;
+        (<span class='ident'>c</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>stride</span>() <span class='op'>+</span> <span class='ident'>r</span>) <span class='kw'>as</span> <span class='ident'>int</span>
+    } 
+}
+
+
+<span class='doccomment'>/// Implement extraction API for matrix view </span>
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>Extraction</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+
+}
+
+
+
+
+<span class='doccomment'>/// Implementation of common matrix methods</span>
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>MatrixType</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Returns the number of rows in the view</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>num_rows</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>uint</span> {
+    <span class='kw'>fn</span> <span class='ident'>num_rows</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>uint</span> {
         <span class='self'>self</span>.<span class='ident'>rows</span>
     }
 
     <span class='doccomment'>/// Returns the number of columns in the view</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>num_cols</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>uint</span> {
+    <span class='kw'>fn</span> <span class='ident'>num_cols</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>uint</span> {
         <span class='self'>self</span>.<span class='ident'>cols</span>
     }
 
 
     <span class='doccomment'>/// Returns the size of view in an (r, c) tuple</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>size</span> (<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span> (<span class='ident'>uint</span>, <span class='ident'>uint</span>){
+    <span class='kw'>fn</span> <span class='ident'>size</span> (<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span> (<span class='ident'>uint</span>, <span class='ident'>uint</span>){
         (<span class='self'>self</span>.<span class='ident'>rows</span>, <span class='self'>self</span>.<span class='ident'>cols</span>)
     }
+
     <span class='doccomment'>/// Returns the number of cells in view</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>num_cells</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span><span class='ident'>uint</span> {
+    <span class='kw'>fn</span> <span class='ident'>num_cells</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span><span class='ident'>uint</span> {
         <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>cols</span>
-    }
-    <span class='doccomment'>/// Indicates if the view is a row vector</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_row</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>==</span> <span class='number'>1</span>
-    }
-
-    <span class='doccomment'>/// Indicates if the view is a column vector</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_col</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>==</span> <span class='number'>1</span>
-    }
-
-    <span class='doccomment'>/// Indicates if the view is a scalar actually</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_scalar</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>num_cells</span>() <span class='op'>==</span> <span class='number'>1</span>
-    }
-
-    <span class='doccomment'>/// Indicates if the view is a vector</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_vector</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        (<span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>==</span> <span class='number'>1</span>) <span class='op'>^</span> (<span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>==</span> <span class='number'>1</span>)
-    } 
-
-    <span class='doccomment'>/// Indicates if the view is empty</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_empty</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>==</span> <span class='number'>0</span>
-    }
-
-    <span class='doccomment'>/// Indicates if the view is square</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_square</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>cols</span>
     }
 
     <span class='doccomment'>/// Gets an element in the view</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>uint</span>, <span class='ident'>c</span> : <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span>  {
+    <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>uint</span>, <span class='ident'>c</span> : <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span>  {
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>r</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>rows</span>);
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>c</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>cols</span>);
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
@@ -727,7 +778,7 @@ chosen rows and columns.
 
     <span class='doccomment'>/// Sets an element in the view</span>
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>uint</span>, <span class='ident'>c</span> : <span class='ident'>uint</span>, <span class='ident'>value</span> : <span class='ident'>T</span>) {
+    <span class='kw'>fn</span> <span class='ident'>set</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>uint</span>, <span class='ident'>c</span> : <span class='ident'>uint</span>, <span class='ident'>value</span> : <span class='ident'>T</span>) {
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>r</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>rows</span>);
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>c</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>cols</span>);
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
@@ -741,56 +792,10 @@ chosen rows and columns.
         }
     }
 
-    <span class='doccomment'>/// Converts an index to cell address (row, column)</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>index_to_cell</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>index</span> : <span class='ident'>uint</span>) <span class='op'>-&gt;</span> (<span class='ident'>uint</span>, <span class='ident'>uint</span>){
-        <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>index</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>num_cells</span>());
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>index</span> <span class='op'>/</span> <span class='self'>self</span>.<span class='ident'>rows</span>;
-        <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>index</span> <span class='op'>-</span> <span class='ident'>c</span><span class='op'>*</span><span class='self'>self</span>.<span class='ident'>rows</span>;
-        (<span class='ident'>r</span>, <span class='ident'>c</span>)
-    }
-
-    <span class='doccomment'>/// Converts a cell address to an index (r, c) to index</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>cell_to_index</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>uint</span>,  <span class='ident'>c</span>: <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>uint</span>{
-        <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>r</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>rows</span>);
-        <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>c</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>cols</span>);
-        <span class='ident'>c</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>+</span> <span class='ident'>r</span>
-    }
-
-    <span class='comment'>/******************************************************
-     *
-     *   Private implementation of MatrixView
-     *
-     *******************************************************/</span>
-
-    <span class='doccomment'>/// Maps a cell index to actual offset in the internal buffer</span>
-    <span class='attribute'>#[<span class='ident'>inline</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>cell_to_offset</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>uint</span>,  <span class='ident'>c</span>: <span class='ident'>uint</span>)<span class='op'>-&gt;</span> <span class='ident'>int</span> {
-        <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>start_row</span> <span class='op'>+</span> <span class='ident'>r</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>row_skip</span>;
-        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>start_col</span> <span class='op'>+</span> <span class='ident'>c</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>col_skip</span>;
-        (<span class='ident'>c</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>stride</span>() <span class='op'>+</span> <span class='ident'>r</span>) <span class='kw'>as</span> <span class='ident'>int</span>
-    } 
-
 }
 
-
-
 <span class='doccomment'>/// Functions to construct new views out of a view and other conversions</span>
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Converts the view to vector from standard library</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_std_vec</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>vec</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='self'>self</span>.<span class='ident'>num_cells</span>());
-        <span class='comment'>// We iterate over elements in matrix and push in the vector</span>
-        <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
-        <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>cols</span>){
-            <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='ident'>range</span> (<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>rows</span>){
-                <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
-                <span class='ident'>vec</span>.<span class='ident'>push</span>(<span class='kw'>unsafe</span>{<span class='op'>*</span><span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>)});
-            }
-        } 
-        <span class='ident'>vec</span>
-    }
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
 
     <span class='doccomment'>/// Returns the view as a new matrix.</span>
     <span class='doccomment'>/// Creates a copy of the data.</span>
@@ -812,11 +817,16 @@ chosen rows and columns.
 
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='doccomment'>/// Introspection support</span>
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>Introspection</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// This is a view inside a matrix</span>
+    <span class='kw'>fn</span> <span class='ident'>is_view</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='boolval'>true</span>
+    }
 }
 
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>+</span><span class='ident'>PartialOrd</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>+</span><span class='ident'>PartialOrd</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='comment'>// Returns the minimum scalar value</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>min_scalar</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>T</span>, <span class='ident'>uint</span>, <span class='ident'>uint</span>){
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>(){
@@ -877,108 +887,15 @@ chosen rows and columns.
 
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>+</span><span class='ident'>PartialOrd</span><span class='op'>+</span><span class='ident'>Signed</span><span class='op'>&gt;</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='doccomment'>/// Implementation of Elementary row operations.</span>
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>ERO</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
 
-    <span class='comment'>// Returns the absolute minimum scalar value</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>abs_min_scalar</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>T</span>, <span class='ident'>uint</span>, <span class='ident'>uint</span>){
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>(){
-            <span class='macro'>fail</span><span class='macro'>!</span>(<span class='ident'>EmptyMatrix</span>.<span class='ident'>to_string</span>());
-        }
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>num</span>::<span class='ident'>abs</span>(<span class='self'>self</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>));
-        <span class='comment'>// The location</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rr</span> <span class='op'>=</span> <span class='number'>0</span>;
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cc</span> <span class='op'>=</span> <span class='number'>0</span>;
-        <span class='kw'>let</span> <span class='ident'>ps</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
-        <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>cols</span>){
-            <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>rows</span>){
-                <span class='kw'>let</span> <span class='ident'>src_offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
-                <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>num</span>::<span class='ident'>abs</span>(<span class='kw'>unsafe</span>{<span class='op'>*</span><span class='ident'>ps</span>.<span class='ident'>offset</span>(<span class='ident'>src_offset</span>)});
-                <span class='kw'>if</span> <span class='ident'>s</span> <span class='op'>&lt;</span> <span class='ident'>v</span> { 
-                    <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>s</span>;
-                    <span class='ident'>rr</span> <span class='op'>=</span> <span class='ident'>r</span>;
-                    <span class='ident'>cc</span> <span class='op'>=</span> <span class='ident'>c</span>;
-                };
-            }
-        }
-        (<span class='ident'>v</span>, <span class='ident'>rr</span>, <span class='ident'>cc</span>)
-    }
-
-    <span class='comment'>// Returns the maximum scalar value</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>abs_max_scalar</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>T</span>, <span class='ident'>uint</span>, <span class='ident'>uint</span>){
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>(){
-            <span class='macro'>fail</span><span class='macro'>!</span>(<span class='ident'>EmptyMatrix</span>.<span class='ident'>to_string</span>());
-        }
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>num</span>::<span class='ident'>abs</span>(<span class='self'>self</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>));
-        <span class='comment'>// The location</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rr</span> <span class='op'>=</span> <span class='number'>0</span>;
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cc</span> <span class='op'>=</span> <span class='number'>0</span>;
-        <span class='kw'>let</span> <span class='ident'>ps</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
-        <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>cols</span>){
-            <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>rows</span>){
-                <span class='kw'>let</span> <span class='ident'>src_offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
-                <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>num</span>::<span class='ident'>abs</span>(<span class='kw'>unsafe</span>{<span class='op'>*</span><span class='ident'>ps</span>.<span class='ident'>offset</span>(<span class='ident'>src_offset</span>)});
-                <span class='kw'>if</span> <span class='ident'>s</span> <span class='op'>&gt;</span> <span class='ident'>v</span> { 
-                    <span class='ident'>v</span>  <span class='op'>=</span> <span class='ident'>s</span>;
-                    <span class='ident'>rr</span> <span class='op'>=</span> <span class='ident'>r</span>;
-                    <span class='ident'>cc</span> <span class='op'>=</span> <span class='ident'>c</span>;
-                }
-            }
-        }
-        (<span class='ident'>v</span>, <span class='ident'>rr</span>, <span class='ident'>cc</span>)
-    }    
-
-
-    <span class='comment'>/******************************************************
-     *
-     *   Elementary row / column operations.
-     *
-     *******************************************************/</span>
-
-
-    <span class='doccomment'>/// Row switching.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>ero_switch</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, 
-        <span class='ident'>i</span> :  <span class='ident'>uint</span>,
-        <span class='ident'>j</span> : <span class='ident'>uint</span>
-        )<span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='macro'>debug_assert</span><span class='macro'>!</span> (<span class='ident'>i</span>  <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>rows</span>);
-        <span class='macro'>debug_assert</span><span class='macro'>!</span> (<span class='ident'>j</span>  <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>rows</span>);
-        <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
-        <span class='comment'>// I am allowing modification of the underlying buffer</span>
-        <span class='kw'>let</span> <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>mem</span>::<span class='ident'>transmute</span>(<span class='ident'>ptr</span>) };
-        <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>cols</span>){
-            <span class='kw'>let</span> <span class='ident'>offset_a</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>i</span>, <span class='ident'>c</span>);
-            <span class='kw'>let</span> <span class='ident'>offset_b</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>j</span>, <span class='ident'>c</span>);
-            <span class='kw'>unsafe</span> {
-                <span class='ident'>ptr</span>::<span class='ident'>swap</span>(<span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset_a</span>), <span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset_b</span>));
-            }
-        }
-        <span class='self'>self</span>
-    }
-
-    <span class='doccomment'>/// Row scaling by a factor.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>ero_scale</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, 
-        <span class='ident'>r</span> :  <span class='ident'>uint</span>, 
-        <span class='ident'>scale</span> : <span class='ident'>T</span>
-        )<span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='macro'>debug_assert</span><span class='macro'>!</span> (<span class='ident'>r</span>  <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>rows</span>);
-        <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
-        <span class='comment'>// I am allowing modification of the underlying buffer</span>
-        <span class='kw'>let</span> <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>mem</span>::<span class='ident'>transmute</span>(<span class='ident'>ptr</span>) };
-        <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>range</span>(<span class='number'>0</span>, <span class='self'>self</span>.<span class='ident'>cols</span>){
-            <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
-            <span class='kw'>unsafe</span> {
-                <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>);
-                <span class='op'>*</span><span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>) <span class='op'>=</span> <span class='ident'>scale</span> <span class='op'>*</span> <span class='ident'>v</span>;
-            }
-        }
-        <span class='self'>self</span>
-    }
 
     <span class='doccomment'>/// Row scaling by a factor and adding to another row.</span>
     <span class='doccomment'>/// r_i = r_i + k * r_j</span>
     <span class='doccomment'>/// The j-th row can be outside the view also.</span>
     <span class='doccomment'>/// This is the row relative to the start of the view.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>ero_scale_add</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, 
+    <span class='kw'>fn</span> <span class='ident'>ero_scale_add</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, 
         <span class='ident'>i</span> :  <span class='ident'>uint</span>, 
         <span class='ident'>j</span> :  <span class='ident'>int</span>, 
         <span class='ident'>scale</span> : <span class='ident'>T</span>
@@ -1006,11 +923,10 @@ chosen rows and columns.
         }
         <span class='self'>self</span>
     }
-
 }
 
 <span class='doccomment'>/// View + View =  Matrix addition</span>
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>ops</span>::<span class='ident'>Add</span><span class='op'>&lt;</span><span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;b</span>, <span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>ops</span>::<span class='ident'>Add</span><span class='op'>&lt;</span><span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;b</span>, <span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>add</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='comment'>// Validate dimensions are same.</span>
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
@@ -1035,7 +951,7 @@ chosen rows and columns.
 }
 
 
-<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Show</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Show</span> <span class='kw'>for</span> <span class='ident'>MatrixView</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>f</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>fmt</span>::<span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>m</span>.<span class='ident'>as_ptr</span>();
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;[&quot;</span>));
@@ -1063,11 +979,11 @@ chosen rows and columns.
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span>{
-    <span class='kw'>use</span> <span class='ident'>matrix</span>::{<span class='ident'>Matrix</span>, <span class='ident'>MatrixI64</span>};
+    <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='op'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_basic</span>(){
-        <span class='kw'>let</span> <span class='ident'>m1</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter</span>(<span class='number'>10</span>, <span class='number'>8</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>100</span>));
+        <span class='kw'>let</span> <span class='ident'>m1</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>10</span>, <span class='number'>8</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>100</span>));
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v1</span> <span class='op'>=</span> <span class='ident'>m1</span>.<span class='ident'>view</span>(<span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>4</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v1</span>.<span class='ident'>size</span>(), (<span class='number'>4u</span>, <span class='number'>4u</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v1</span>.<span class='ident'>num_rows</span>(), <span class='number'>4</span>);
@@ -1079,10 +995,14 @@ chosen rows and columns.
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v1</span>.<span class='ident'>get</span>(<span class='number'>1</span>,<span class='number'>1</span>), <span class='number'>44</span>);
         <span class='ident'>v1</span>.<span class='ident'>set</span>(<span class='number'>1</span>,<span class='number'>1</span>, <span class='number'>300</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v1</span>.<span class='ident'>get</span>(<span class='number'>1</span>,<span class='number'>1</span>), <span class='number'>300</span>);
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>m1</span>.<span class='ident'>is_matrix</span>());
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>m1</span>.<span class='ident'>is_view</span>());
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>v1</span>.<span class='ident'>is_matrix</span>());
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v1</span>.<span class='ident'>is_view</span>());
     }
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_view_multiple</span>(){
-        <span class='kw'>let</span> <span class='ident'>m1</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter</span>(<span class='number'>10</span>, <span class='number'>8</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>100</span>));
+        <span class='kw'>let</span> <span class='ident'>m1</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>10</span>, <span class='number'>8</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>100</span>));
         <span class='comment'>// We can create multiple views easily.</span>
         <span class='kw'>let</span> <span class='ident'>v1</span> <span class='op'>=</span> <span class='ident'>m1</span>.<span class='ident'>view</span>(<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>4</span>, <span class='number'>4</span>);
         <span class='kw'>let</span> <span class='ident'>v2</span> <span class='op'>=</span> <span class='ident'>m1</span>.<span class='ident'>view</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>4</span>, <span class='number'>4</span>);
@@ -1094,7 +1014,7 @@ chosen rows and columns.
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_view_matrix_mutability</span>(){
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>m1</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter</span>(<span class='number'>10</span>, <span class='number'>8</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>100</span>));
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>m1</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>10</span>, <span class='number'>8</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>100</span>));
         {
             <span class='kw'>let</span> <span class='ident'>v1</span> <span class='op'>=</span> <span class='ident'>m1</span>.<span class='ident'>view</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>4</span>, <span class='number'>4</span>);
             <span class='comment'>// The following line doesn&#39;t compile since we have borrowed an</span>
@@ -1121,7 +1041,7 @@ chosen rows and columns.
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_to_std_vec</span>(){
-        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter</span>(<span class='number'>10</span>, <span class='number'>8</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>100</span>));
+        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>10</span>, <span class='number'>8</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>100</span>));
         <span class='kw'>let</span> <span class='ident'>vrows</span> <span class='op'>=</span> <span class='number'>4</span>;
         <span class='kw'>let</span> <span class='ident'>vcols</span> <span class='op'>=</span> <span class='number'>3</span>;
         <span class='kw'>let</span> <span class='ident'>mv</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>1</span>, <span class='number'>1</span>, <span class='ident'>vrows</span>, <span class='ident'>vcols</span>);
@@ -1133,29 +1053,61 @@ chosen rows and columns.
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_addition</span>(){
-        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter</span>(<span class='number'>10</span>, <span class='number'>10</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>200</span>));
+        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>10</span>, <span class='number'>10</span>, <span class='ident'>range</span>(<span class='number'>1</span>, <span class='number'>200</span>));
         <span class='kw'>let</span> <span class='ident'>v1</span>   <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>2</span>); <span class='comment'>// 23 , 24 , 33, 34</span>
         <span class='kw'>let</span> <span class='ident'>v2</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>2</span>);  <span class='comment'>// 12, 13, 22, 33</span>
         <span class='kw'>let</span> <span class='ident'>m2</span> <span class='op'>=</span> <span class='ident'>v1</span> <span class='op'>+</span> <span class='ident'>v2</span>; <span class='comment'>// </span>
-        <span class='kw'>let</span> <span class='ident'>m3</span> : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_slice</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>35</span>, <span class='number'>37</span>, <span class='number'>55</span>, <span class='number'>57</span>].<span class='ident'>as_slice</span>());
+        <span class='kw'>let</span> <span class='ident'>m3</span> : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_slice_cw</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>35</span>, <span class='number'>37</span>, <span class='number'>55</span>, <span class='number'>57</span>].<span class='ident'>as_slice</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m2</span>, <span class='ident'>m3</span>);
     }
 
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_min_max</span>(){
-        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter</span>(<span class='number'>20</span>, <span class='number'>20</span>, <span class='ident'>range</span>(<span class='op'>-</span><span class='number'>100</span>, <span class='number'>400</span>));
+        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>20</span>, <span class='number'>20</span>, <span class='ident'>range</span>(<span class='op'>-</span><span class='number'>100</span>, <span class='number'>400</span>));
         <span class='kw'>let</span> <span class='ident'>v1</span>   <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>6</span>, <span class='number'>6</span>);
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;v1 : {}&quot;</span>, <span class='ident'>v1</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v1</span>.<span class='ident'>max_scalar</span>(), (<span class='number'>47</span>, <span class='number'>5</span>, <span class='number'>5</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v1</span>.<span class='ident'>min_scalar</span>(), (<span class='op'>-</span><span class='number'>58</span>, <span class='number'>0</span>, <span class='number'>0</span>));
-        <span class='kw'>let</span> (<span class='ident'>abs_max</span>, <span class='ident'>rr</span>, <span class='ident'>cc</span>) <span class='op'>=</span> <span class='ident'>v1</span>.<span class='ident'>abs_max_scalar</span>();
+        <span class='kw'>let</span> (<span class='ident'>abs_max</span>, <span class='ident'>rr</span>, <span class='ident'>cc</span>) <span class='op'>=</span> <span class='ident'>v1</span>.<span class='ident'>max_abs_scalar</span>();
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>abs_max</span>, <span class='number'>58</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>((<span class='ident'>rr</span>, <span class='ident'>cc</span>), (<span class='number'>0</span>, <span class='number'>0</span>));
-        <span class='kw'>let</span> (<span class='ident'>abs_min</span>, <span class='ident'>rr</span>, <span class='ident'>cc</span>) <span class='op'>=</span> <span class='ident'>v1</span>.<span class='ident'>abs_min_scalar</span>();
+        <span class='kw'>let</span> (<span class='ident'>abs_min</span>, <span class='ident'>rr</span>, <span class='ident'>cc</span>) <span class='op'>=</span> <span class='ident'>v1</span>.<span class='ident'>min_abs_scalar</span>();
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>abs_min</span>, <span class='number'>2</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>((<span class='ident'>rr</span>, <span class='ident'>cc</span>), (<span class='number'>0</span>, <span class='number'>3</span>));
     }
+
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>test_extract_row</span>(){
+        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>20</span>, <span class='number'>20</span>, <span class='ident'>range</span>(<span class='op'>-</span><span class='number'>100</span>, <span class='number'>400</span>));
+        <span class='kw'>let</span> <span class='ident'>v1</span>   <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>6</span>, <span class='number'>6</span>);
+        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;v1 : {}&quot;</span>, <span class='ident'>v1</span>);
+        <span class='kw'>let</span> <span class='ident'>r1</span> <span class='op'>=</span> <span class='ident'>v1</span>.<span class='ident'>row</span>(<span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>v2</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='number'>1</span>, <span class='number'>6</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v2</span>.<span class='ident'>to_matrix</span>(), <span class='ident'>r1</span>);
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>test_extract_col</span>(){
+        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>from_range_rw_i64</span>(<span class='number'>20</span>, <span class='number'>20</span>, <span class='op'>-</span><span class='number'>100</span>, <span class='number'>400</span>);
+        <span class='kw'>let</span> <span class='ident'>v1</span>   <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>6</span>, <span class='number'>6</span>);
+        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;v1 : {}&quot;</span>, <span class='ident'>v1</span>);
+        <span class='kw'>let</span> <span class='ident'>c1</span> <span class='op'>=</span> <span class='ident'>v1</span>.<span class='ident'>col</span>(<span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>v2</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='number'>6</span>, <span class='number'>1</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v2</span>.<span class='ident'>to_matrix</span>(), <span class='ident'>c1</span>);
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>test_extract_sub_matrix</span>(){
+        <span class='kw'>let</span> <span class='ident'>m</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>from_range_rw_i64</span>(<span class='number'>20</span>, <span class='number'>20</span>, <span class='op'>-</span><span class='number'>100</span>, <span class='number'>400</span>);
+        <span class='kw'>let</span> <span class='ident'>v1</span>   <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>6</span>, <span class='number'>6</span>);
+        <span class='kw'>let</span> <span class='ident'>m2</span>  <span class='op'>=</span> <span class='ident'>v1</span>.<span class='ident'>sub_matrix</span>(<span class='number'>2</span>, <span class='number'>2</span>, <span class='number'>4</span>, <span class='number'>4</span>);
+        <span class='kw'>let</span> <span class='ident'>m3</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>sub_matrix</span>(<span class='number'>4</span>,<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>4</span>);
+        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;m2 : {}&quot;</span>, <span class='ident'>m2</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m2</span>, <span class='ident'>m3</span>);
+    }
+
 
 }
 

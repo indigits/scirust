@@ -155,7 +155,7 @@
 
 
 <span class='comment'>// local imports</span>
-<span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>element</span>::{<span class='ident'>MatrixElt</span>};
+<span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>element</span>::{<span class='ident'>Number</span>};
 
 
 <span class='comment'>/******************************************************
@@ -165,7 +165,7 @@
  *******************************************************/</span>
 
 <span class='doccomment'>/// An iterator over the elements of a matrix in a row</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span>{
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span>{
     <span class='ident'>cols</span> : <span class='ident'>uint</span>,
     <span class='ident'>stride</span>: <span class='ident'>uint</span>,
     <span class='ident'>pos</span>  : <span class='ident'>uint</span>, 
@@ -174,14 +174,14 @@
 
 
 
-<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Creates a new iterator object</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>cols</span>: <span class='ident'>uint</span>, <span class='ident'>stride</span> : <span class='ident'>uint</span>, <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>)<span class='op'>-&gt;</span> <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
         <span class='ident'>RowIterator</span>{<span class='ident'>cols</span> : <span class='ident'>cols</span>, <span class='ident'>stride</span> : <span class='ident'>stride</span>, <span class='ident'>pos</span> : <span class='number'>0</span>, <span class='ident'>ptr</span> : <span class='ident'>ptr</span>}
     }
 }
 
-<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>pos</span>{
             <span class='comment'>// No more data</span>
@@ -194,14 +194,14 @@
 }
 
  <span class='doccomment'>/// An iterator over the elements of a matrix in a column</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span>{
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span>{
     <span class='ident'>rows</span> : <span class='ident'>uint</span>,
     <span class='ident'>pos</span>  : <span class='ident'>uint</span>, 
     <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>
 }
 
 
-<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Creates a new iterator object</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>rows</span>: <span class='ident'>uint</span>, <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>)<span class='op'>-&gt;</span> <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
         <span class='ident'>ColIterator</span>{<span class='ident'>rows</span> : <span class='ident'>rows</span>, <span class='ident'>pos</span> : <span class='number'>0</span>, <span class='ident'>ptr</span> : <span class='ident'>ptr</span>}
@@ -210,7 +210,7 @@
 
 
 
-<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>pos</span>{
             <span class='comment'>// No more data</span>
@@ -223,7 +223,7 @@
 }
 
 <span class='doccomment'>/// A column major iterator over the elements of a matrix</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CellIterator</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span>{
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CellIterator</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span>{
     <span class='ident'>rows</span> : <span class='ident'>uint</span>,
     <span class='ident'>cols</span> : <span class='ident'>uint</span>,
     <span class='ident'>stride</span>: <span class='ident'>uint</span>, 
@@ -232,7 +232,7 @@
     <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>
 }
 
-<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>CellIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>CellIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Creates a new iterator object</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>rows</span>: <span class='ident'>uint</span>, <span class='ident'>cols</span>: <span class='ident'>uint</span>, <span class='ident'>stride</span> : <span class='ident'>uint</span>, <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>)<span class='op'>-&gt;</span> <span class='ident'>CellIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
         <span class='ident'>CellIterator</span>{<span class='ident'>rows</span> : <span class='ident'>rows</span>, 
@@ -244,7 +244,7 @@
 }
 
 
-<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MatrixElt</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>CellIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>CellIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>c</span>{
             <span class='comment'>// No more data</span>
