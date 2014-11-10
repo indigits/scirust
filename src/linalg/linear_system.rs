@@ -1,9 +1,15 @@
+#![doc="Methods for solving linear systems of equations
+"]
+
+
 // std imports
 
 // srmat imports
 
 use matrix::{MatrixF64, MatrixType, MinMaxAbs, ERO};
 use linalg::error::*;
+use linalg::singularity::*;
+
 
 /// A Gauss elimination problem specification
 pub struct GaussElimination<'a, 'b>{
@@ -95,7 +101,8 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
 
 #[doc="Implements the forward substitution algorithm for
 solving a lower triangular linear system. L X = B
-"]pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) -> 
+"]
+pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) -> 
     Result<MatrixF64, LinearSystemError>{
     assert!(l.is_square());
     let n = l.num_rows();
@@ -122,13 +129,79 @@ solving a lower triangular linear system. L X = B
 
 #[doc="Implements the back substitution algorithm for
 solving a upper triangular linear system. L X = B
-"]pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) -> 
+"]
+pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) -> 
     Result<MatrixF64, LinearSystemError>{
     assert_eq!(u.num_rows(), b.num_rows());
     assert!(u.is_square());
     debug_assert!(u.is_ut());
     // Create a copy for the result
     let mut b = b.clone();
+    let mut r = u.num_rows() - 1;
+    loop {
+        let pivot = u.get(r, r);
+        if pivot == 0. {
+            // We have a problem here. We cannot find a solution.
+            // TODO: make it more robust for under-determined systems.
+            return Err(NoSolution);
+        }
+        b.ero_scale(r, 1.0/pivot);
+        for j in range(r+1, u.num_rows()){
+            let factor = u.get(r, j) / pivot;
+            b.ero_scale_add(r, j as int, -factor);  
+        }
+        if r == 0 {
+            break;
+        }
+        r -= 1;
+    }
+    Ok(b)
+}
+
+
+#[doc="Implements the algorithm for solving the equation LDU X = B
+where L, D, U are known (LDU decomposition of A), B is known and X is unknown.
+Uses a combination of forward and backward substitutions. 
+"]
+pub fn ldu_solve(l : &MatrixF64, 
+    d : &MatrixF64,
+    u : &MatrixF64,
+    b : &MatrixF64) -> 
+    Result<MatrixF64, LinearSystemError>{
+    assert_eq!(b.num_rows(), u.num_rows());
+    assert_eq!(l.num_rows(), u.num_rows());
+    assert_eq!(d.num_rows(), u.num_rows());
+    assert!(u.is_square());
+    assert!(l.is_square());
+    debug_assert!(!is_singular_lt(l));
+    debug_assert!(!is_singular_diagonal(d));
+    debug_assert!(!is_singular_ut(u));
+
+    let n = l.num_rows();
+    // Create a copy for the result
+    let mut b = b.clone();
+
+    // Solve forward substitution problem L X = B
+    for r in range(0, n) {
+        let pivot = l.get(r, r);
+        if pivot == 0. {
+            // We have a problem here. We cannot find a solution.
+            // TODO: make it more robust for under-determined systems.
+            return Err(NoSolution);
+        }
+        for k in range(0,  r){
+            b.ero_scale_add(r, k as int, -l.get(r, k));
+        }
+        b.ero_scale(r, 1.0/pivot);
+    }
+
+    // Perform inverse scaling D X = B
+    for r in range(0, n){
+        let factor = d.get(r, r);
+        b.ero_scale(r, 1.0/factor);
+    }
+
+    // Solve backward substitution problem U X = B
     let mut r = u.num_rows() - 1;
     loop {
         let pivot = u.get(r, r);
