@@ -69,6 +69,7 @@ mod test{
     use super::*;
     use matrix::*;
     use std::num;
+    use testdata;
 
     #[test]
     fn test_det_0(){
@@ -113,8 +114,8 @@ mod test{
 
     #[test]
     fn test_examples_from_testdata(){
-        assert_eq!(testdata::square_0().det().unwrap(), -13.);
-        assert_eq!(testdata::square_1().det().unwrap(), 6.);
+        assert_eq!(testdata::matrix::square_0().det().unwrap(), -13.);
+        assert_eq!(testdata::matrix::square_1().det().unwrap(), 6.);
     }
 
 }

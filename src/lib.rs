@@ -70,8 +70,6 @@ pub mod matrix {
     mod view;
     mod view_conversion;
     mod view_minmax;
-    // for internal use only
-    pub mod testdata;
 }
 
 
@@ -181,4 +179,18 @@ for complex numbers, then this library will be removed.
 
 pub mod complex;
 
+}
+
+
+
+// for internal use only
+pub mod testdata{
+
+    pub mod matrix {
+
+        pub use self::simple::*;
+
+        mod simple;
+
+    }
 }
