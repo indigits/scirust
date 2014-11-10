@@ -23,7 +23,7 @@ use matrix::error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
 use matrix::traits::{MatrixType, Introspection, 
-    MatrixBuffer, Extraction, ERO};
+    MatrixBuffer, Extraction, ERO, Updates};
 
 // linear algebra
 use linalg;
@@ -1067,6 +1067,10 @@ impl<T:Number> Matrix<T> {
 
 /// Implementation of Elementary row operations.
 impl<T:Number> ERO<T> for Matrix<T> {
+}
+
+/// Implementation of Matrix general update operations.
+impl<T:Number> Updates<T> for Matrix<T> {
 }
 
 
@@ -2244,6 +2248,43 @@ mod tests {
             2, 71, 7, 
             4, 62, 6].as_slice());
         assert_eq!(m1, m3);
+    }
+
+    #[test]
+    fn test_set_diag(){
+        let mut m = from_range_rw_f64(4, 4, 1., 100.);
+        m.set_diagonal(0.);
+        let m2 = matrix_rw_f64(4, 4, [
+            0., 2., 3., 4., 
+            5., 0., 7., 8.,
+            9., 10., 0., 12.,
+            13., 14., 15., 0.,
+            ]);
+        assert_eq!(m, m2);
+        m.set_row(0, 1.);
+        let m2 = matrix_rw_f64(4, 4, [
+            1., 1., 1., 1., 
+            5., 0., 7., 8.,
+            9., 10., 0., 12.,
+            13., 14., 15., 0.,
+            ]);
+        assert_eq!(m, m2);
+        m.set_col(2, 20.);
+        let m2 = matrix_rw_f64(4, 4, [
+            1., 1., 20., 1., 
+            5., 0., 20., 8.,
+            9., 10., 20., 12.,
+            13., 14., 20., 0.,
+            ]);
+        assert_eq!(m, m2);
+        m.set_block(2, 2, 2, 2, 30.);
+        let m2 = matrix_rw_f64(4, 4, [
+            1., 1., 20., 1., 
+            5., 0., 20., 8.,
+            9., 10., 30., 30.,
+            13., 14., 30., 30.,
+            ]);
+        assert_eq!(m, m2);
     }
 
 }
