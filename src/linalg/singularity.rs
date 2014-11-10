@@ -65,19 +65,19 @@ mod test{
 
     #[test]
     fn test_triangular_singularity(){
-        let  m = from_range_rw_f64(10, 10, 1., 500.);
+        let  m = from_range_rw_f64(6, 6, 1., 500.);
         println!{"{}", m};
         let mut l = m.lt();
         assert!(!is_singular_lt(&l));
         assert!(l.det().unwrap() != 0.);
-        l.set(9, 9, 0.);
+        l.set(4, 4, 0.);
         assert!(is_singular_lt(&l));
         assert_eq!(l.det().unwrap(), 0.);
 
         let mut u = m.ut();
         assert!(!is_singular_ut(&u));
         assert!(u.det().unwrap() != 0.);
-        u.set(9, 9, 0.);
+        u.set(4, 4, 0.);
         assert!(is_singular_ut(&u));
         assert_eq!(u.det().unwrap(), 0.);
 
@@ -88,7 +88,7 @@ mod test{
         let mut d = m.diagonal_matrix();
         assert!(!is_singular_diagonal(&d));
         assert!(d.det().unwrap() != 0.);
-        d.set(4,4, 0.);
+        d.set(3, 3, 0.);
         assert!(is_singular_diagonal(&d));
         assert_eq!(d.det().unwrap(), 0.);
     }

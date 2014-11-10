@@ -46,7 +46,6 @@ impl<'a> LUPartialPivot<'a>{
             let rr = {
                 // Create a view of the remaining elements in column
                 let col_k_remaining = self.u.view(k, k, n - k, 1);
-                //println!("k={}, col_k_remaining: {}", k, col_k_remaining);
                 // find the maximum value in this view
                 let (_, rr, _) = col_k_remaining.max_abs_scalar();
                 // translate rr to the overall row number
@@ -54,7 +53,11 @@ impl<'a> LUPartialPivot<'a>{
             };
             if rr > k {
                 // We need to exchange rows of the submatrix.
-                self.u.ero_switch(k, rr);
+                let mut u_lr = self.u.view(k, k, n - k, n - k);
+                u_lr.ero_switch(0, rr - k);
+                // We will switch only those columns in l which have been filled up so far.
+                let mut l_lr = self.l.view(0, 0, n, k);
+                l_lr.ero_switch(k , rr);
                 // The corresponding change in permutation matrix also
                 self.p.ero_switch(k, rr);
             }
@@ -63,12 +66,12 @@ impl<'a> LUPartialPivot<'a>{
             // The lower right part of U matrix
             let mut u_lr  = self.u.view(k + 1, k, n - k - 1, n -k);
             // The lower right part of L matrix
-            let mut l_lr = self.l.view(k + 1, k, n - k - 1, n -k);
+            //let mut l_lr = self.l.view(k + 1, k, n - k - 1, n -k);
             for r in range(0, u_lr.num_rows()){
                 let first = u_lr.get(r, 0);
                 let factor = first  / pivot;
                 u_lr.ero_scale_add(r, -1, -factor);
-                l_lr.ero_scale_add(r, -1, factor);
+                self.l.set(r + k + 1, k, factor); 
             }
         }
     }
@@ -88,6 +91,19 @@ impl<'a> LUPartialPivot<'a>{
         println!("u: {}", self.u);
         println!("lu: {}", self.l * self.u);
     }
+}
+
+/// Wrapper function to perform LU factorization
+pub fn lu(a : &MatrixF64) -> (MatrixF64, MatrixF64){
+        let mut lu = LUPartialPivot::new(a);
+        lu.solve();
+        (lu.p.transpose() * lu.l, lu.u)
+}
+
+pub fn lup(a : &MatrixF64) -> (MatrixF64, MatrixF64, MatrixF64){
+        let mut lu = LUPartialPivot::new(a);
+        lu.solve();
+        (lu.l, lu.u, lu.p)
 }
 
 
@@ -135,5 +151,19 @@ mod test{
         lu.solve();
         lu.print();
         assert_eq!(lu.max_abs_diff(), 0.);
+    }
+
+    #[test]
+    fn test_lu_pp_wrapper_method_0(){
+        let a = from_range_rw_f64(4,4, 1., 100.);
+        let mut lus = LUPartialPivot::new(&a);
+        lus.solve();
+        lus.print();
+        assert_eq!(lus.max_abs_diff(), 0.);
+        let (l, u) = lu(&a);
+        assert_eq!(a, l*u);
+
+        let (l, u, p) = lup(&a);
+        assert_eq!(p*a, l*u);
     }
 }
