@@ -134,6 +134,6 @@ mod test{
         let mut lu = LUPartialPivot::new(&a);
         lu.solve();
         lu.print();
-        assert_eq!(lu.max_abs_diff(), 1.);
+        assert_eq!(lu.max_abs_diff(), 0.);
     }
 }

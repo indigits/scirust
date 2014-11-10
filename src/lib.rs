@@ -76,12 +76,12 @@ pub mod matrix {
 pub mod linalg {
     #![doc="Linear algebra algorithms
     "]
-    pub use self::gauss_elim::*;
+    pub use self::linear_system::*;
     pub use self::det::*;
     pub use self::lu::*;
     pub use self::error::*;
 
-    mod gauss_elim;
+    mod linear_system;
     mod det;
     mod lu;
     mod error;

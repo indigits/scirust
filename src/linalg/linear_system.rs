@@ -7,10 +7,15 @@ use linalg::error::*;
 
 /// A Gauss elimination problem specification
 pub struct GaussElimination<'a, 'b>{
+    /// The matrix A of AX = B
     pub a : &'a MatrixF64,
+    /// The matrix B of AX = B
     pub b : &'b MatrixF64
 }
 
+#[doc="Implements the Gauss elimination algorithm
+for solving the linear system AX = B.
+"]
 impl<'a, 'b> GaussElimination<'a, 'b>{
 
     /// Setup of a new Gauss elimination problem.
@@ -88,20 +93,87 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
 }
 
 
-/// Validates the equality Ax = b subject to maximum
-/// absolute error being less than 1e-6.
-pub fn validate_ax_eq_b(a : &MatrixF64, x : &MatrixF64, 
-    b : &MatrixF64){
-   validate_ax_eq_b_eps(a, x, b, 1e-6);
+
+#[doc="Implements the back substitution algorithm for
+solving a upper triangular linear system. L X = B
+"]pub fn ut_back_substitute(l : &MatrixF64, b : &MatrixF64) -> 
+    Result<MatrixF64, LinearSystemError>{
+    assert_eq!(l.num_rows(), b.num_rows());
+    assert!(l.is_square());
+    debug_assert!(l.is_ut());
+    // Create a copy for the result
+    let mut b = b.clone();
+    let mut r = l.num_rows() - 1;
+    loop {
+        let pivot = l.get(r, r);
+        if pivot == 0. {
+            // We have a problem here. We cannot find a solution.
+            // TODO: make it more robust for under-determined systems.
+            return Err(NoSolution);
+        }
+        b.ero_scale(r, 1.0/pivot);
+        for j in range(r+1, l.num_rows()){
+            let factor = l.get(r, j) / pivot;
+            b.ero_scale_add(r, j as int, -factor);  
+        }
+        if r == 0 {
+            break;
+        }
+        r -= 1;
+    }
+    Ok(b)
 }
 
-/// Validates the equality Ax = b subject to maximum
-/// absolute error being less than a specified threshold.
-pub fn validate_ax_eq_b_eps(a : &MatrixF64, x : &MatrixF64, 
-    b : &MatrixF64, threshold: f64){
-    let diff = a * *x  - *b;
-    assert!(diff.max_abs_scalar_value() < threshold);
+
+
+/// Validates the solution of linear system
+pub struct LinearSystemValidator<'a, 'b, 'c>{
+    /// The matrix A of AX = B
+    pub a : &'a MatrixF64,
+    /// The matrix X of AX = B
+    pub x : &'b MatrixF64,
+    /// The matrix B of AX = B
+    pub b : &'c MatrixF64,
+    /// The difference matrix 
+    pub d : MatrixF64
 }
+
+impl<'a, 'b, 'c> LinearSystemValidator<'a, 'b, 'c>{
+
+    /// Setup of a new Gauss elimination problem.
+    pub fn new(a : &'a MatrixF64, 
+        x : &'b MatrixF64,
+        b : &'c MatrixF64,
+        ) -> LinearSystemValidator<'a, 'b, 'c>{
+        assert_eq!(a.num_rows(), b.num_rows());
+        LinearSystemValidator{a : a , 
+            x : x, 
+            b : b, 
+            d : *a * *x - *b}
+    }
+
+    pub fn max_abs_scalar_value(&self)-> f64{
+        self.d.max_abs_scalar_value()
+    }
+
+    /// Validates the equality Ax = b subject to maximum
+    /// absolute error being less than a specified threshold.
+    pub fn is_max_abs_val_below_threshold(&self, threshold: f64)-> bool{
+        self.max_abs_scalar_value() < threshold
+    }
+
+    /// Printing for debugging
+    pub fn print(&self){
+        println!("a: {}", self.a);
+        println!("x: {}", self.x);
+        println!("ax: {}", self.a * *(self.x));
+        println!("b: {}", self.b);
+        println!("diff: {}", self.d);
+        println!("max abs diff: {}", self.max_abs_scalar_value());
+    }
+}
+
+
 
 
 
@@ -119,6 +191,8 @@ mod test{
         let x = GaussElimination::new(&a, &b).solve().unwrap();
         println!("{}", x);
         assert_eq!(x, vector_f64([-1., 2.]));
+        let lsv = LinearSystemValidator::new(&a, &x, &b);
+        assert!(lsv.is_max_abs_val_below_threshold(1e-6));
     }
 
     #[test]
@@ -140,7 +214,8 @@ mod test{
         In this case, it is greater than
         1e-15.
         */
-        assert!((x - z).max_abs_scalar_value() < 1e-6);
+        let lsv = LinearSystemValidator::new(&a, &x, &b);
+        assert!(lsv.is_max_abs_val_below_threshold(1e-6));
     }  
 
     #[test]
@@ -153,7 +228,8 @@ mod test{
         let x  = ge.solve().unwrap();
         println!("a: {}, x: {}, b: {}", a, x, b);
         // answer is [0, 0, 1]
-        validate_ax_eq_b(&a, &x, &b); 
+        let lsv = LinearSystemValidator::new(&a, &x, &b);
+        assert!(lsv.is_max_abs_val_below_threshold(1e-6));
     }
 
     #[test]
@@ -167,7 +243,8 @@ mod test{
         println!("a: {}, x: {}, b: {}", a, x, b);
         // answer is [1, 1, 2]
         //assert!(false);
-        validate_ax_eq_b(&a, &x, &b); 
+        let lsv = LinearSystemValidator::new(&a, &x, &b);
+        assert!(lsv.is_max_abs_val_below_threshold(1e-6));
     }
 
     #[test]
@@ -184,5 +261,19 @@ mod test{
             Err(e) => println!("{}", e),
         }
         
-    }  
+    }
+
+    #[test]
+    fn test_lt_0(){
+        let l = matrix_rw_f64(2, 2, [
+            1., 1.,
+            0., 1.]);
+        let x = vector_f64([1., 2.]);
+        let b = l * x;
+        let x = ut_back_substitute(&l, &b).unwrap();
+        let lsv = LinearSystemValidator::new(&l, &x, &b);
+        lsv.print();
+        assert!(lsv.is_max_abs_val_below_threshold(1e-6));
+    }
+
 }
