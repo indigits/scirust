@@ -189,8 +189,9 @@ pub mod complex;
 
 
 // for internal use only
-pub mod testdata{
+mod testdata{
 
+    #[cfg(test)]
     pub mod matrix {
 
         pub use self::simple::*;
