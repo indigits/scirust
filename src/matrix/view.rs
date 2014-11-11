@@ -28,32 +28,24 @@ pub struct MatrixView<'a, T:'a+Number>{
     start_row : uint,
     // number or rows
     rows  : uint, 
-    // skip between rows (by default 1)
-    row_skip : uint,
     // start column
     start_col : uint,
     // Number of columns 
     cols : uint,
-    // Skip between columns (by default 1)
-    col_skip : uint
 }
 
 
 /// Static functions for creating  a view
 impl<'a, T:Number> MatrixView<'a, T> {
     pub fn new(m : &Matrix<T>, start_row : uint, start_col : uint , num_rows: uint, num_cols : uint) -> MatrixView<T> {
-        let row_skip = 1u;
-        let col_skip = 1u;
-        debug_assert!(start_row + row_skip*num_rows <= m.num_rows());
-        debug_assert!(start_col + col_skip*num_cols <= m.num_cols());
+        debug_assert!(start_row + num_rows <= m.num_rows());
+        debug_assert!(start_col + num_cols <= m.num_cols());
         let result : MatrixView<T> = MatrixView{
             m : m,
             start_row : start_row,
             start_col : start_col, 
             rows: num_rows,
-            cols : num_cols,
-            row_skip : row_skip,
-            col_skip : col_skip
+            cols : num_cols
         };
         result
     }
@@ -147,8 +139,8 @@ impl <'a, T:Number> MatrixBuffer<T> for MatrixView<'a, T> {
     /// Maps a cell index to actual offset in the internal buffer
     #[inline]
     fn cell_to_offset(&self, r : uint,  c: uint)-> int {
-        let r = self.start_row + r * self.row_skip;
-        let c = self.start_col + c * self.col_skip;
+        let r = self.start_row + r;
+        let c = self.start_col + c;
         (c * self.m.stride() + r) as int
     } 
 }
@@ -332,16 +324,21 @@ impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
         let ptr = m.as_ptr();
         // I am allowing modification of the underlying buffer
         let ptr : *mut T = unsafe { mem::transmute(ptr) };
-        for c in range(0, self.cols){
-            // i-th row from the view
-            let offset_a = self.cell_to_offset(i, c);
-            // j-th row from the matrix
-            let offset_b = m.cell_to_offset(j, c * self.col_skip + self.start_col);
+        let sc = self.start_col;
+        // Compute initial offsets
+        let mut offset_a = self.cell_to_offset(i, 0);
+        let mut offset_b = m.cell_to_offset(j, sc);
+        let stride_a = self.stride() as int;
+        let stride_b = m.stride() as int;
+        for _ in range(0, self.cols){
             unsafe {
                 let va = *ptr.offset(offset_a);
                 let vb = *ptr.offset(offset_b);
                 *ptr.offset(offset_a) = va + scale * vb;
             }
+            // Update offsets
+            offset_a += stride_a; 
+            offset_b += stride_b;
         }
         self
     }
