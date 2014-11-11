@@ -274,11 +274,14 @@ pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
         debug_assert! (i  < self.num_rows());
         debug_assert! (j  < self.num_rows());
         let ptr = self.as_mut_ptr();
-        for c in range(0, self.num_cols()){
-            let offset_a = self.cell_to_offset(i, c);
-            let offset_b = self.cell_to_offset(j, c);
+        let mut offset_a = self.cell_to_offset(i, 0);
+        let mut offset_b = self.cell_to_offset(j, 0);
+        let stride = self.stride() as int;
+        for _ in range(0, self.num_cols()){
             unsafe {
                 ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
+                offset_a += stride;
+                offset_b += stride;
             }
         }
         self
@@ -330,6 +333,82 @@ pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
     }
 
 }
+
+
+/// Elementary column operations on a matrix
+pub trait ECO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
+
+    /// Column switching.
+    fn eco_switch(&mut self, 
+        i :  uint,
+        j : uint
+        )-> &mut Self {
+        debug_assert! (i  < self.num_cols());
+        debug_assert! (j  < self.num_cols());
+        let ptr = self.as_mut_ptr();
+        let mut offset_a = self.cell_to_offset(0, i);
+        let mut offset_b = self.cell_to_offset(0, j);
+        for _ in range(0, self.num_rows()){
+            unsafe {
+                ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
+                offset_a += 1;
+                offset_b += 1;
+            }
+        }
+        self
+    }
+
+    /// Column scaling by a factor.
+    fn eco_scale(&mut self, 
+        c :  uint, 
+        scale : T
+        )-> &mut Self {
+        debug_assert! (c  < self.num_cols());
+        let ptr = self.as_mut_ptr();
+        let mut offset = self.cell_to_offset(0, c);
+        for _ in range(0, self.num_rows()){
+            unsafe {
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale * v;
+                offset += 1;
+            }
+        }
+        self
+    }
+
+    /// Column scaling by a factor and adding to another row.
+    /// r_i = r_i + k * r_j
+    fn eco_scale_add(&mut self, 
+        i :  uint, 
+        j :  int, 
+        scale : T
+        )-> &mut Self {
+        debug_assert! (i  < self.num_cols());
+        debug_assert! (j  < self.num_cols() as int);
+        let j = if j < 0{
+            mod_n(j, self.num_cols() as int)
+        }
+        else {
+            j as uint
+        };
+        let ptr = self.as_mut_ptr();
+        let mut offset_a = self.cell_to_offset(0, i);
+        let mut offset_b = self.cell_to_offset(0, j);
+        for _ in range(0, self.num_rows()){
+            unsafe {
+                let va = *ptr.offset(offset_a);
+                let vb = *ptr.offset(offset_b);
+                *ptr.offset(offset_a) = va + scale * vb;
+                offset_a += 1;
+                offset_b += 1;
+            }
+        }
+        self
+    }
+
+}
+
+
 
 #[doc="Various kind of updates to the matrix
 

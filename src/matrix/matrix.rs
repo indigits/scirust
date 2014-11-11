@@ -23,7 +23,7 @@ use matrix::error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
 use matrix::traits::{MatrixType, Introspection, 
-    MatrixBuffer, Extraction, ERO, Updates};
+    MatrixBuffer, Extraction, ERO, ECO, Updates};
 
 // linear algebra
 use linalg;
@@ -1067,6 +1067,10 @@ impl<T:Number> Matrix<T> {
 
 /// Implementation of Elementary row operations.
 impl<T:Number> ERO<T> for Matrix<T> {
+}
+
+/// Implementation of Elementary column operations.
+impl<T:Number> ECO<T> for Matrix<T> {
 }
 
 /// Implementation of Matrix general update operations.
@@ -2250,6 +2254,36 @@ mod tests {
         assert_eq!(m1, m3);
     }
 
+    #[test]
+    fn test_col_switch(){
+        let mut m1 = from_range_rw_i32(10, 6, 0, 500);
+        println!("m1: {}", m1);
+        let mut m2 = m1.transpose();
+        m1.eco_switch(1, 2);
+        m2.ero_switch(1, 2);
+        assert_eq!(m1, m2.transpose());
+    }
+
+
+    #[test]
+    fn test_col_scale(){
+        let mut m1 = from_range_rw_i32(10, 6, 0, 500);
+        println!("m1: {}", m1);
+        let mut m2 = m1.transpose();
+        m1.eco_scale(1, 2);
+        m2.ero_scale(1, 2);
+        assert_eq!(m1, m2.transpose());
+    }
+
+    #[test]
+    fn test_col_scale_add(){
+        let mut m1 = from_range_rw_i32(10, 6, 0, 500);
+        println!("m1: {}", m1);
+        let mut m2 = m1.transpose();
+        m1.eco_scale_add(1, 2, 3);
+        m2.ero_scale_add(1, 2, 3);
+        assert_eq!(m1, m2.transpose());
+    }
     #[test]
     fn test_set_diag(){
         let mut m = from_range_rw_f64(4, 4, 1., 100.);
