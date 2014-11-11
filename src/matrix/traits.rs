@@ -376,8 +376,8 @@ pub trait ECO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
         self
     }
 
-    /// Column scaling by a factor and adding to another row.
-    /// r_i = r_i + k * r_j
+    /// Column scaling by a factor and adding to another column.
+    /// c_i = c_i + k * c_j
     fn eco_scale_add(&mut self, 
         i :  uint, 
         j :  int, 

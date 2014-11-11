@@ -9,7 +9,7 @@ use matrix::element::{Number};
 use matrix::matrix::{Matrix};
 use matrix::error::*;
 use matrix::traits::{MatrixType, Introspection, 
-    MatrixBuffer, Extraction, ERO};
+    MatrixBuffer, Extraction, ERO, ECO};
 
 //use discrete::*;
 
@@ -344,6 +344,45 @@ impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
     }
 }
 
+/// Implementation of Elementary column operations.
+impl<'a, T:Number> ECO<T> for MatrixView<'a, T> {
+    /// Column scaling by a factor and adding to another column.
+    /// c_i = c_i + k * c_j
+    /// The j-th column can be outside the view also.
+    /// This is the column relative to the start of the view.
+    fn eco_scale_add(&mut self, 
+        i :  uint, 
+        j :  int, 
+        scale : T
+        )-> &mut MatrixView<'a, T> {
+        debug_assert! (i  < self.cols);
+        let m = self.m;
+        // Compute j-th column in m (by doing offset)
+        let j = j + (self.start_col as int);
+        debug_assert! (j  >= 0);
+        let j = j as uint;
+        debug_assert!(j < m.num_cols());
+        let ptr = m.as_ptr();
+        // I am allowing modification of the underlying buffer
+        let ptr : *mut T = unsafe { mem::transmute(ptr) };
+        let sr = self.start_row;
+        // Compute initial offsets
+        let mut offset_a = self.cell_to_offset(0, i);
+        let mut offset_b = m.cell_to_offset(sr, j);
+        for _ in range(0, self.rows){
+            unsafe {
+                let va = *ptr.offset(offset_a);
+                let vb = *ptr.offset(offset_b);
+                *ptr.offset(offset_a) = va + scale * vb;
+            }
+            // Update offsets
+            offset_a += 1; 
+            offset_b += 1;
+        }
+        self
+    }
+}
+
 /// View + View =  Matrix addition
 impl<'a, 'b, T:Number> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<'a, T> {
     fn add(&self, rhs: &MatrixView<T>) -> Matrix<T> {
@@ -527,6 +566,69 @@ mod test{
         assert_eq!(m2, m3);
     }
 
+
+    #[test]
+    fn test_col_switch(){
+        let m1 = from_range_rw_i32(10, 20, 0, 500);
+        println!("m1: {}", m1);
+        let m2 = m1.transpose();
+        let mut v1 = m1.view(2, 2, 4, 6);
+        let mut v2 = m2.view(2, 2, 6, 4);
+        v1.eco_switch(1, 2);
+        v2.ero_switch(1, 2);
+        println!("m1: {}", m1);
+        println!("m2: {}", m2);
+        assert_eq!(m1, m2.transpose());
+    }
+
+
+    #[test]
+    fn test_col_scale(){
+        let m1 = from_range_rw_i32(10, 20, 0, 500);
+        println!("m1: {}", m1);
+        let m2 = m1.transpose();
+        let mut v1 = m1.view(2, 2, 4, 6);
+        let mut v2 = m2.view(2, 2, 6, 4);
+        v1.eco_scale(1, 2);
+        v2.ero_scale(1, 2);
+        println!("m1: {}", m1);
+        println!("m2: {}", m2);
+        assert_eq!(m1, m2.transpose());
+    }
+
+    #[test]
+    fn test_col_scale_add_0(){
+        let m1 = from_range_rw_i32(3, 3, 0, 100);
+        println!("m1: {}", m1);
+        let m2 = m1.transpose();
+        println!("m2: {}", m2);
+        let mut v1 = m1.view(1, 1, 1, 2);
+        let mut v2 = m2.view(1, 1, 2, 1);
+        println!("v1: {}", v1);
+        println!("v2: {}", v2);
+        v1.eco_scale_add(1, 0, 3);
+        v2.ero_scale_add(1, 0, 3);
+        println!("v1: {}", v1);
+        println!("v2: {}", v2);
+        println!("m1: {}", m1);
+        println!("m2: {}", m2);
+        assert_eq!(m1, m2.transpose());
+    }
+
+
+    #[test]
+    fn test_col_scale_add_1(){
+        let m1 = from_range_rw_i32(10, 20, 0, 500);
+        println!("m1: {}", m1);
+        let m2 = m1.transpose();
+        let mut v1 = m1.view(2, 2, 4, 6);
+        let mut v2 = m2.view(2, 2, 6, 4);
+        v1.eco_scale_add(1, 2, 3);
+        v2.ero_scale_add(1, 2, 3);
+        println!("m1: {}", m1);
+        println!("m2: {}", m2);
+        assert_eq!(m1, m2.transpose());
+    }
 
 }
 

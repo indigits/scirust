@@ -1600,6 +1600,8 @@ unsafe fn dealloc<T>(ptr: *mut T, len: uint) {
 #[cfg(test)]
 mod tests {
 
+    extern crate test;
+    use self::test::Bencher;
     use  super::{Matrix, MatrixI64, MatrixF64};
     use matrix::*;
 
@@ -2321,4 +2323,36 @@ mod tests {
         assert_eq!(m, m2);
     }
 
+
+    #[bench]
+    fn bench_eo_col_switch(b: &mut Bencher){
+        let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
+        b.iter(|| {
+                    m.eco_switch(1, 100);
+                });
+    }
+
+    #[bench]
+    fn bench_eo_row_switch(b: &mut Bencher){
+        let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
+        b.iter(|| {
+                    m.ero_switch(1, 100);
+                });
+    }
+
+    #[bench]
+    fn bench_eo_col_scale(b: &mut Bencher){
+        let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
+        b.iter(|| {
+                    m.eco_scale(50, 10.);
+                });
+    }
+
+    #[bench]
+    fn bench_eo_row_scale(b: &mut Bencher){
+        let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
+        b.iter(|| {
+                    m.ero_scale(50, 10.);
+                });
+    }
 }
