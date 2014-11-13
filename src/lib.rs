@@ -57,6 +57,7 @@ pub mod matrix {
     pub use self::view::*;
     pub use self::view_conversion::*;
     pub use self::view_minmax::*;
+    pub use self::triangular_matrix::*;
 
     mod constructors;
     mod element;
@@ -70,6 +71,7 @@ pub mod matrix {
     mod view;
     mod view_conversion;
     mod view_minmax;
+    mod triangular_matrix;
 }
 
 
@@ -184,6 +186,12 @@ for complex numbers, then this library will be removed.
 
 pub mod complex;
 
+}
+
+// for internal use only
+pub mod util{
+
+    pub mod memory;
 }
 
 

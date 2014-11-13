@@ -1,7 +1,7 @@
 #![doc="Provides the basic Matrix data type
 "]
 
-// library imports
+// std imports
 use std::mem;
 use std::ptr;
 use std::ops;
@@ -32,9 +32,7 @@ use linalg;
 use external::complex::Complex32;
 use external::complex::Complex64;
 
-// The following is needed for destroying matrix.
-
-
+use util;
 
 
 #[doc = "
@@ -43,12 +41,6 @@ Represents a matrix of numbers.
 
 The numbers are stored in column-major order.
 This is the standard in Fortran and MATLAB.
-
-
-Currently, the stride is same as the number
-of rows. May be changed later on.
-
-For a row vector, the stride  = 1.
 
 "]
 pub struct Matrix<T:Number> {
@@ -395,6 +387,79 @@ impl<T:Number> MatrixType<T> for Matrix<T> {
         self.rows * self.cols
     }
 
+    /// Returns if the matrix is an identity matrix
+    fn is_identity(&self) -> bool {
+        let o : T = One::one();
+        let z  : T = Zero::zero();
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            for r in range (0, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                if r == c {
+                    if v != o {
+                        return false;
+                    }
+                }else if v != z {
+                    return false;
+                }
+
+            }
+        } 
+        true
+    }
+
+    /// Returns if the matrix is a diagonal matrix
+    fn is_diagonal(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            for r in range (0, self.rows){
+                if r != c {
+                    let offset = self.cell_to_offset(r, c);
+                    let v = unsafe {*ptr.offset(offset)};
+                    if v != z {
+                        return false;
+                    }
+                }
+            }
+        } 
+        true
+    }
+
+    /// Returns if the matrix is lower triangular 
+    fn is_lt(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            for r in range (0, c){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                if v != z {
+                    return false;
+                }
+            }
+        } 
+        true
+    }
+
+    /// Returns if the matrix is upper triangular 
+    fn is_ut(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.ptr;
+        for c in range(0, self.cols){
+            for r in range (c+1, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                println!("r: {}, c: {}, v: {}", r, c, v);
+                if v != z {
+                    return false;
+                }
+            }
+        } 
+        true
+    }
+
     fn get(&self, r : uint, c : uint) -> T  {
         // These assertions help in checking matrix boundaries
         debug_assert!(r < self.rows);
@@ -417,7 +482,7 @@ impl<T:Number> MatrixType<T> for Matrix<T> {
 /// Introspection support
 impl<T:Number> Introspection for Matrix<T> {
     /// This is a standard matrix object
-    fn is_matrix(&self) -> bool {
+    fn is_standard_matrix_type(&self) -> bool {
         true
     }
 }
@@ -462,83 +527,6 @@ impl<T:Number> Matrix<T> {
         self.xrows * self.xcols
     }
 
-    /// Returns if the matrix is an identity matrix
-    pub fn is_identity(&self) -> bool {
-        let o : T = One::one();
-        let z  : T = Zero::zero();
-        let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (0, self.rows){
-                let offset = self.cell_to_offset(r, c);
-                let v = unsafe {*ptr.offset(offset)};
-                if r == c {
-                    if v != o {
-                        return false;
-                    }
-                }else if v != z {
-                    return false;
-                }
-
-            }
-        } 
-        true
-    }
-
-    /// Returns if the matrix is a diagonal matrix
-    pub fn is_diagonal(&self) -> bool {
-        let z  : T = Zero::zero();
-        let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (0, self.rows){
-                if r != c {
-                    let offset = self.cell_to_offset(r, c);
-                    let v = unsafe {*ptr.offset(offset)};
-                    if v != z {
-                        return false;
-                    }
-                }
-            }
-        } 
-        true
-    }
-
-    /// Returns if the matrix is lower triangular 
-    pub fn is_lt(&self) -> bool {
-        let z  : T = Zero::zero();
-        let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (0, c){
-                let offset = self.cell_to_offset(r, c);
-                let v = unsafe {*ptr.offset(offset)};
-                if v != z {
-                    return false;
-                }
-            }
-        } 
-        true
-    }
-
-    /// Returns if the matrix is upper triangular 
-    pub fn is_ut(&self) -> bool {
-        let z  : T = Zero::zero();
-        let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (c+1, self.rows){
-                let offset = self.cell_to_offset(r, c);
-                let v = unsafe {*ptr.offset(offset)};
-                println!("r: {}, c: {}, v: {}", r, c, v);
-                if v != z {
-                    return false;
-                }
-            }
-        } 
-        true
-    }
-
-    /// Returns if the matrix is triangular
-    pub fn is_triangular(&self) -> bool {
-        self.is_lt() || self.is_ut()
-    }
 
 
 }
@@ -1534,7 +1522,7 @@ impl<T:Number> Drop for Matrix<T> {
     fn drop(&mut self) {
         if self.num_cells() != 0 {
             unsafe {
-                dealloc(self.ptr, self.capacity())
+                util::memory::dealloc(self.ptr, self.capacity())
             }
         }
     }
@@ -1572,20 +1560,6 @@ impl<T:Number> Matrix<T> {
         unsafe { mem::transmute(RawSlice { data: self.as_ptr(), len: self.capacity() }) }
     }
 
-}
-
-
-/***
-Private helper functions follow
-*/
-
-#[inline]
-unsafe fn dealloc<T>(ptr: *mut T, len: uint) {
-    if mem::size_of::<T>() != 0 {
-        deallocate(ptr as *mut u8,
-                   len * mem::size_of::<T>(),
-                   mem::min_align_of::<T>())
-    }
 }
 
 

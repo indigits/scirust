@@ -2,6 +2,7 @@
 use std::mem;
 use std::ops;
 use std::fmt;
+use std::num::{One, Zero};
 //use std::ptr;
 
 // srmat imports
@@ -177,6 +178,79 @@ impl <'a, T:Number> MatrixType<T> for MatrixView<'a, T> {
         self.rows * self.cols
     }
 
+    /// Returns if the matrix is an identity matrix
+    fn is_identity(&self) -> bool {
+        let o : T = One::one();
+        let z  : T = Zero::zero();
+        let ptr = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range (0, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                if r == c {
+                    if v != o {
+                        return false;
+                    }
+                }else if v != z {
+                    return false;
+                }
+
+            }
+        } 
+        true
+    }
+
+    /// Returns if the matrix is a diagonal matrix
+    fn is_diagonal(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range (0, self.rows){
+                if r != c {
+                    let offset = self.cell_to_offset(r, c);
+                    let v = unsafe {*ptr.offset(offset)};
+                    if v != z {
+                        return false;
+                    }
+                }
+            }
+        } 
+        true
+    }
+
+    /// Returns if the matrix is lower triangular 
+    fn is_lt(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range (0, c){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                if v != z {
+                    return false;
+                }
+            }
+        } 
+        true
+    }
+
+    /// Returns if the matrix is upper triangular 
+    fn is_ut(&self) -> bool {
+        let z  : T = Zero::zero();
+        let ptr = self.m.as_ptr();
+        for c in range(0, self.cols){
+            for r in range (c+1, self.rows){
+                let offset = self.cell_to_offset(r, c);
+                let v = unsafe {*ptr.offset(offset)};
+                println!("r: {}, c: {}, v: {}", r, c, v);
+                if v != z {
+                    return false;
+                }
+            }
+        } 
+        true
+    }
+
     /// Gets an element in the view
     #[inline]
     fn get(&self, r : uint, c : uint) -> T  {
@@ -234,7 +308,7 @@ impl<'a, T:Number> MatrixView<'a, T> {
 /// Introspection support
 impl<'a, T:Number> Introspection for MatrixView<'a, T> {
     /// This is a view inside a matrix
-    fn is_view(&self) -> bool {
+    fn is_matrix_view_type(&self) -> bool {
         true
     }
 }
@@ -453,10 +527,10 @@ mod test{
         assert_eq!(v1.get(1,1), 44);
         v1.set(1,1, 300);
         assert_eq!(v1.get(1,1), 300);
-        assert!(m1.is_matrix());
-        assert!(!m1.is_view());
-        assert!(!v1.is_matrix());
-        assert!(v1.is_view());
+        assert!(m1.is_standard_matrix_type());
+        assert!(!m1.is_matrix_view_type());
+        assert!(!v1.is_standard_matrix_type());
+        assert!(v1.is_matrix_view_type());
     }
     #[test]
     fn test_view_multiple(){

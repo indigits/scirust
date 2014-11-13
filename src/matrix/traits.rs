@@ -63,6 +63,26 @@ pub trait MatrixType<T:Number> {
         self.num_rows() == self.num_cols()
     }
 
+    /// Returns if the matrix is an identity matrix
+    fn is_identity(&self) -> bool;
+
+    /// Returns if the matrix is a diagonal matrix
+    fn is_diagonal(&self) -> bool;
+
+    /// Returns if the matrix is lower triangular 
+    fn is_lt(&self) -> bool;
+
+    /// Returns if the matrix is upper triangular 
+    fn is_ut(&self) -> bool;
+
+
+    /// Returns if the matrix is triangular
+    fn is_triangular(&self) -> bool{
+        self.is_lt() || self.is_ut()
+    }
+
+
+
     /// Gets an element by its row and column number
     fn get(&self, r : uint, c : uint) -> T;
 
@@ -131,15 +151,19 @@ simply use the default implementation.
 pub trait Introspection {
 
     /// Indicates if the matrix is a view
-    fn is_view(&self) -> bool {
+    fn is_matrix_view_type(&self) -> bool {
         false
     }
 
     /// Indicates if the matrix is a standard matrix
-    fn is_matrix(&self) -> bool {
+    fn is_standard_matrix_type(&self) -> bool {
         false
     }
 
+    /// Indicates if the matrix is a triangular matrix
+    fn is_triangular_matrix_type(&self) -> bool {
+        false
+    }
 }
 
 
