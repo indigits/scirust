@@ -542,6 +542,38 @@ mod tests {
                 }
             }
         }
+        assert_eq!(m.num_rows(), n);
+        assert_eq!(m.num_cols(), n);
+        assert_eq!(m.size(), (n, n));
+        assert_eq!(m.num_cells(), n * n);
+    }
+
+    #[test]
+    fn test_identity(){
+        let n = 4;
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
+        assert!(!m.is_identity());
+        let mut m : TriangularMatrixI64 = TriangularMatrix::zeros(n, true);
+        assert!(!m.is_identity());
+        for i in range(0, n){
+            m.set(i, i, 1);
+        }
+        assert!(m.is_identity());
+        assert!(m.is_diagonal());
+    }
+
+    #[test]
+    fn test_is_diagonal(){
+        let n = 4;
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
+        assert!(!m.is_diagonal());
+        let mut m : TriangularMatrixI64 = TriangularMatrix::zeros(n, true);
+        assert!(m.is_diagonal());
+        for i in range(0, n){
+            m.set(i, i, i as i64);
+        }
+        assert!(!m.is_identity());
+        assert!(m.is_diagonal());
     }
 }
 
