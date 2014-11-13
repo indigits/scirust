@@ -5,6 +5,7 @@
 // std imports
 use std::ptr;
 use std::mem;
+use std::fmt;
 use std::num::{Zero, One};
 use std::rt::heap::allocate;
 
@@ -12,8 +13,7 @@ use std::rt::heap::allocate;
 // local imports
 
 use matrix::element::{Number};
-
-
+use matrix::matrix::Matrix;
 use matrix::error::*;
 
 use matrix::traits::{MatrixType, Introspection, 
@@ -25,6 +25,7 @@ use external::complex::Complex32;
 use external::complex::Complex64;
 
 use util;
+use discrete::mod_n;
 
 #[doc = "
 Represents a triangular square matrix of numbers.
@@ -126,6 +127,21 @@ impl<T:Number> TriangularMatrix<T> {
         unsafe { ptr::zero_memory(m.ptr, m.capacity())};
         m
     }
+
+    /// Constructs a matrix of all ones.
+    pub fn ones(size: uint, ut : bool)-> TriangularMatrix<T> {
+        let m : TriangularMatrix<T> = TriangularMatrix::new(size, ut);
+        // fill with ones
+        let ptr = m.ptr;
+        let o : T = One::one();
+        let n = m.capacity() as int;
+        for i in range(0i, n){
+            unsafe{
+                *ptr.offset(i) = o;
+            }
+        }
+        m
+    }
 }
 
 
@@ -224,6 +240,10 @@ impl<T:Number> MatrixType<T> for TriangularMatrix<T> {
         // These assertions help in checking matrix boundaries
         debug_assert!(r < self.size);
         debug_assert!(c < self.size);
+        if (self.ut_flag && r > c) || (!self.ut_flag && r < c) {
+            let v : T = Zero::zero();
+            return v;
+        }
         unsafe {
             *self.ptr.offset(self.cell_to_offset(r, c) as int)
         }
@@ -313,4 +333,217 @@ impl<T:Number> Drop for TriangularMatrix<T> {
         }
     }
 }
+
+
+
+/// Implement extraction API for triangular matrix 
+impl <T:Number> Extraction<T> for TriangularMatrix<T> {
+
+    /// Returns the r'th row vector
+    fn row(&self, r : int) -> Matrix<T> {
+        // Lets ensure that the row value is mapped to
+        // a value in the range [0, rows - 1]
+        let r = mod_n(r, self.num_rows() as int);        
+        let mut result : Matrix<T> = Matrix::new(1, self.num_cols());
+        let pd = result.as_mut_ptr();
+        let ps = self.as_ptr();
+        let z : T  = Zero::zero();
+        let mut dst_offset = 0i;
+        let n = self.size;
+        if self.ut_flag {
+            // The triangle is stored in column major order.
+            // We have zeros in the beginning r zeros
+            for _ in range(0, r) {
+                unsafe{
+                    *pd.offset(dst_offset) = z;
+                }
+                dst_offset += 1;
+            }
+            for c in range(r, n){
+                let src_offset = self.cell_to_offset(r, c);
+                unsafe{
+                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                }
+                dst_offset += 1;
+            }
+        }
+        else {
+            // the lower triangle is stored in row major order.
+            // r-th row contains r + 1 entries. Rest are zero.
+            for c in range(0, r + 1) {
+                let src_offset = self.cell_to_offset(r, c);
+                unsafe{
+                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                }
+                dst_offset += 1;
+            }
+            for _ in range(r + 1, n){
+                unsafe{
+                    *pd.offset(dst_offset) = z;
+                }
+                dst_offset += 1;
+            }
+       }
+        result
+    }
+
+    /// Returns the c'th column vector
+    fn col(&self, c : int) -> Matrix<T>{
+        // Lets ensure that the col value is mapped to
+        // a value in the range [0, cols - 1]
+        let c = mod_n(c, self.num_cols() as int);        
+        let mut result : Matrix<T> = Matrix::new(self.num_rows(), 1);
+        let pd = result.as_mut_ptr();
+        let ps = self.as_ptr();
+        for r in range(0, self.num_rows()){
+            let src_offset = self.cell_to_offset(r, c);
+            let dst_offset = result.cell_to_offset(r, 0);
+            unsafe{
+                *pd.offset(dst_offset) = *ps.offset(src_offset);
+            }
+        }
+        result
+    }
+
+    /// Extract a submatrix from the matrix
+    /// rows can easily repeat if the number of requested rows is higher than actual rows
+    /// cols can easily repeat if the number of requested cols is higher than actual cols
+    fn sub_matrix(&self, start_row : int, 
+        start_col : int , 
+        num_rows: uint, 
+        num_cols : uint) -> Matrix<T>{
+        let r = mod_n(start_row, self.num_rows() as int);        
+        let c = mod_n(start_col, self.num_cols() as int);
+        let mut result : Matrix<T> = Matrix::new(num_rows, num_cols);
+        let pd = result.as_mut_ptr();
+        let ps = self.as_ptr();
+        let mut dc = 0;
+        for c in range(c, c + num_cols).map(|x | x % self.num_cols()) {
+            let mut dr = 0;
+            for r in range(r , r + num_rows).map(|x|  x % self.num_rows()) {
+                let src_offset = self.cell_to_offset(r, c);
+                let dst_offset = result.cell_to_offset(dr, dc);
+                unsafe{
+                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                }
+                dr += 1;
+            }
+            dc += 1;
+        }
+        result
+    }
+
+}
+
+
+/// Formatting of the triangular matrix on screen
+impl <T:Number> fmt::Show for TriangularMatrix<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // We need to find out the number of characters needed
+        // to show each value.
+        // maximum value
+        let cap = self.capacity();
+        let mut strings : Vec<String> = Vec::with_capacity(cap);
+        let mut max_len : uint = 0;
+        let ptr = self.ptr;
+        for i in range(0i, cap as int){
+            let v = unsafe {*ptr.offset(i)};
+            let s = v.to_string();
+            let slen = s.len();
+            strings.push(s);
+            if slen > max_len {
+                max_len = slen;
+            }
+        }
+        try!(write!(f, "["));
+        // Here we print row by row
+        let n = self.size;
+        for r in range (0, n) {
+           try!(write!(f, "\n  "));
+            for c in range (0, n){
+                if self.ut_flag {
+                    if r > c {
+                        for _ in range(0, max_len + 1){
+                            try!(write!(f, " "));
+                        }
+                        try!(write!(f, "0"));
+                        continue;
+                    }
+                }
+                else {
+                    if r < c {
+                        for _ in range(0, max_len + 1){
+                            try!(write!(f, " "));
+                        }
+                        try!(write!(f, "0"));
+                        continue;
+                    }
+                }
+                // This is something from within the matrix.
+                let offset = self.cell_to_offset(r, c);
+                let ref s = strings[offset as uint];
+                let extra = max_len + 2 - s.len();
+                for _ in range(0, extra){
+                    try!(write!(f, " "));
+                }
+                try!(write!(f, "{}", s));
+            }
+        }
+        try!(write!(f, "\n]"));
+        Ok(())
+    }
+}
+
+
+
+/******************************************************
+ *
+ *   Unit tests follow.
+ *
+ *******************************************************/
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use matrix::*;
+
+    #[test]
+    fn test_create_0(){
+        let m : TriangularMatrixI64 = TriangularMatrix::new(4, true);
+        println!("{}", m);
+        assert_eq!(m.size(), (4, 4));
+    }
+
+    #[test]
+    fn test_create_ones(){
+        let n = 4;
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
+        println!("{}", m);
+        for r in range(0, n) {
+            for c in range(0, n){
+                if r > c {
+                    assert_eq!(m.get(r, c), 0);
+                }
+                else {
+                    assert_eq!(m.get(r, c), 1);
+                }
+            }
+        }
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
+        println!("{}", m);
+        for r in range(0, n) {
+            for c in range(0, n){
+                if r < c {
+                    assert_eq!(m.get(r, c), 0);
+                }
+                else {
+                    assert_eq!(m.get(r, c), 1);
+                }
+            }
+        }
+    }
+}
+
+
 
