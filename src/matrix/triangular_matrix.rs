@@ -14,10 +14,10 @@ use std::rt::heap::allocate;
 
 use matrix::element::{Number};
 use matrix::matrix::Matrix;
-use matrix::error::*;
+//use matrix::error::*;
 
 use matrix::traits::{MatrixType, Introspection, 
-    MatrixBuffer, Extraction, ERO, ECO, Updates};
+    MatrixBuffer, Extraction};
 
 
 // complex numbers
@@ -395,13 +395,43 @@ impl <T:Number> Extraction<T> for TriangularMatrix<T> {
         let mut result : Matrix<T> = Matrix::new(self.num_rows(), 1);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for r in range(0, self.num_rows()){
-            let src_offset = self.cell_to_offset(r, c);
-            let dst_offset = result.cell_to_offset(r, 0);
-            unsafe{
-                *pd.offset(dst_offset) = *ps.offset(src_offset);
+        let z : T  = Zero::zero();
+        let mut dst_offset = 0i;
+        let n = self.size;
+        if self.ut_flag {
+            // The upper triangle is stored in column major order.
+            // c-th col contains c + 1 entries. Rest are zero.
+            for r in range(0, c + 1) {
+                let src_offset = self.cell_to_offset(r, c);
+                unsafe{
+                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                }
+                dst_offset += 1;
+            }
+            for _ in range(c + 1, n){
+                unsafe{
+                    *pd.offset(dst_offset) = z;
+                }
+                dst_offset += 1;
             }
         }
+        else {
+            // the lower triangle is stored in row major order.
+            // We have zeros in the beginning c zeros
+            for _ in range(0, c) {
+                unsafe{
+                    *pd.offset(dst_offset) = z;
+                }
+                dst_offset += 1;
+            }
+            for r in range(c, n){
+                let src_offset = self.cell_to_offset(r, c);
+                unsafe{
+                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                }
+                dst_offset += 1;
+            }
+       }
         result
     }
 
@@ -416,15 +446,14 @@ impl <T:Number> Extraction<T> for TriangularMatrix<T> {
         let c = mod_n(start_col, self.num_cols() as int);
         let mut result : Matrix<T> = Matrix::new(num_rows, num_cols);
         let pd = result.as_mut_ptr();
-        let ps = self.as_ptr();
         let mut dc = 0;
         for c in range(c, c + num_cols).map(|x | x % self.num_cols()) {
             let mut dr = 0;
             for r in range(r , r + num_rows).map(|x|  x % self.num_rows()) {
-                let src_offset = self.cell_to_offset(r, c);
+                let v = self.get(r, c);
                 let dst_offset = result.cell_to_offset(dr, dc);
                 unsafe{
-                    *pd.offset(dst_offset) = *ps.offset(src_offset);
+                    *pd.offset(dst_offset) = v;
                 }
                 dr += 1;
             }
@@ -530,6 +559,10 @@ mod tests {
                 }
             }
         }
+        assert!(m.is_ut());
+        assert!(!m.is_lt());
+        assert!(m.is_triangular());
+        assert!(m.is_triangular_matrix_type());
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
         println!("{}", m);
         for r in range(0, n) {
@@ -546,6 +579,11 @@ mod tests {
         assert_eq!(m.num_cols(), n);
         assert_eq!(m.size(), (n, n));
         assert_eq!(m.num_cells(), n * n);
+        assert_eq!(m.capacity(), n * (n + 1)/ 2);
+        assert!(!m.is_ut());
+        assert!(m.is_lt());
+        assert!(m.is_triangular());
+        assert!(m.is_triangular_matrix_type());
     }
 
     #[test]
@@ -574,6 +612,67 @@ mod tests {
         }
         assert!(!m.is_identity());
         assert!(m.is_diagonal());
+    }
+
+    #[test]
+    fn test_extract_row(){
+        let n = 4;
+        // upper triangular 
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
+        let r = m.row(0);
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 1]));
+        let r = m.row(1);
+        assert_eq!(r, matrix_cw_i64(1,4, [0, 1, 1, 1]));
+        let r = m.row(2);
+        assert_eq!(r, matrix_cw_i64(1,4, [0, 0, 1, 1]));
+        let r = m.row(3);
+        assert_eq!(r, matrix_cw_i64(1,4, [0, 0, 0, 1]));
+        // lower triangular 
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
+        let r = m.row(0);
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 0, 0, 0]));
+        let r = m.row(1);
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 0, 0]));
+        let r = m.row(2);
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 0]));
+        let r = m.row(3);
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 1]));
+    }
+
+    #[test]
+    fn test_extract_col(){
+        let n = 4;
+        // lower triangular
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
+        let r = m.col(0);
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 1]));
+        let r = m.col(1);
+        assert_eq!(r, matrix_cw_i64(4,1, [0, 1, 1, 1]));
+        let r = m.col(2);
+        assert_eq!(r, matrix_cw_i64(4,1, [0, 0, 1, 1]));
+        let r = m.col(3);
+        assert_eq!(r, matrix_cw_i64(4,1, [0, 0, 0, 1]));
+        // upper triangular 
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
+        let r = m.col(0);
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 0, 0, 0]));
+        let r = m.col(1);
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 0, 0]));
+        let r = m.col(2);
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 0]));
+        let r = m.col(3);
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 1]));
+    }
+
+    #[test]
+    fn test_extract_sub_matrix(){
+        let n = 4;
+        // lower triangular
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
+        let m2 = m.sub_matrix(0, 0, 2, 2);
+        assert_eq!(m2, matrix_rw_i64(2,2, [
+            1, 0,
+            1, 1]));
     }
 }
 
