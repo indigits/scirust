@@ -8,32 +8,35 @@ use std::fmt::Show;
 
 
 // complex numbers
-use external::complex::{Complex32, Complex64};
+pub use external::complex::{Complex32, Complex64};
 
 
 /// Defines all the traits which a matrix element must support
 pub trait Number : Num+Copy+Show {
 
-    fn is_float() -> bool {
+    #[inline]
+    fn is_float(&self) -> bool {
         false
     }
 
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         false
     }
 
-    fn is_complex() -> bool {
+    #[inline]
+    fn is_complex(&self) -> bool {
         false
     }
 
-    fn is_signed() -> bool;
+    fn is_signed(&self) -> bool;
 }
 
 /// Indicate that i8 fits all requirements for being a matrix element.
 impl Number for i8 {
 
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         true
     }
     
@@ -42,11 +45,12 @@ impl Number for i8 {
 impl Number for i16 {
 
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         true
     }
     
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -55,11 +59,12 @@ impl Number for i16 {
 impl Number for i32 {
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         true
     }
 
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -68,12 +73,13 @@ impl Number for i32 {
 impl Number for i64 {
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         true
     }
 
     
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -84,11 +90,12 @@ impl Number for int {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         true
     }
 
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -100,11 +107,12 @@ impl Number for u8 {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         false
     }
 
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -114,11 +122,12 @@ impl Number for u16 {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         false
     }
 
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -128,11 +137,12 @@ impl Number for u32 {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         false
     }
 
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -143,11 +153,12 @@ impl Number for u64 {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         false
     }
 
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -158,11 +169,12 @@ impl Number for uint {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         false
     }
 
-    fn is_int() -> bool {
+    #[inline]
+    fn is_int(&self) -> bool {
         true
     }
 
@@ -175,11 +187,12 @@ impl Number for f32 {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         true
     }
 
-    fn is_float() -> bool {
+    #[inline]
+    fn is_float(&self) -> bool {
         true
     }
 
@@ -191,11 +204,12 @@ impl Number for f64 {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
         true
     }
 
-    fn is_float() -> bool {
+    #[inline]
+    fn is_float(&self) -> bool {
         true
     }
 
@@ -207,7 +221,12 @@ impl Number for Complex32 {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
+        true
+    }
+
+    #[inline]
+    fn is_complex(&self) -> bool {
         true
     }
 
@@ -219,7 +238,12 @@ impl Number for Complex64 {
     
     
     #[inline]
-    fn is_signed() -> bool {
+    fn is_signed(&self) -> bool {
+        true
+    }
+
+    #[inline]
+    fn is_complex(&self) -> bool {
         true
     }
 
@@ -227,6 +251,55 @@ impl Number for Complex64 {
 
 
 //TODO: figure out how to make this work.
-//pub fn describe<T: Number>(){
-    //println!("Signed: {}", T.is_signed());
-//}
+pub fn describe<T: Number>(z : T){
+     println!("Signed: {}", z.is_signed());
+}
+
+
+/******************************************************
+ *
+ *   Unit tests follow.
+ *
+ *******************************************************/
+
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use std::num::Zero;
+
+
+
+    #[test]
+    fn  test_introspection_i64(){
+       let z : i64 = Zero::zero();
+        describe(z);
+        assert!(z.is_signed());
+        assert!(!z.is_float());
+        assert!(!z.is_complex());
+        assert!(z.is_int());
+    }
+
+    #[test]
+    fn  test_introspection_f64(){
+       let z : f64 = Zero::zero();
+        describe(z);
+        assert!(z.is_signed());
+        assert!(z.is_float());
+        assert!(!z.is_complex());
+        assert!(!z.is_int());
+    }
+
+
+    #[test]
+    fn  test_introspection_c64(){
+       let z : Complex64 = Zero::zero();
+        describe(z);
+        assert!(z.is_signed());
+        assert!(!z.is_float());
+        assert!(z.is_complex());
+        assert!(!z.is_int());
+    }
+
+}
