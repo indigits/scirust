@@ -223,6 +223,11 @@ pub fn lup_eco(a : &MatrixF64) -> (MatrixF64, MatrixF64, MatrixF64){
 }
 
 
+/******************************************************
+ *
+ *   Unit tests follow.
+ *
+ *******************************************************/
 #[cfg(test)]
 mod test{
     extern crate test;
@@ -362,6 +367,13 @@ mod test{
         let (l, u, p) = lup_eco(&a);
         assert_eq!(a*p, l*u);
     }
+
+
+/******************************************************
+ *
+ *   Bench marks follow.
+ *
+ *******************************************************/
 
     #[bench]
     fn bench_lu_ero_hadamard_32 (b: &mut Bencher){
