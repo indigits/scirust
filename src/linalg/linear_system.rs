@@ -6,7 +6,9 @@
 
 // srmat imports
 //use error::*;
-use matrix::{MatrixF64, MatrixType, MinMaxAbs, ERO};
+use matrix::{MatrixF64, MatrixType, Matrix, 
+    MinMaxAbs, 
+    ERO, Search};
 use error::*;
 use linalg::singularity::*;
 
@@ -224,6 +226,59 @@ pub fn ldu_solve(l : &MatrixF64,
 }
 
 
+/// Computes the inverse of a matrix
+pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
+    if !a.is_square(){
+        return Err(NonSquareMatrix);
+    }
+    let n = a.num_rows();
+    let mut result  : MatrixF64 = Matrix::identity(n, n);
+    // forward elimination
+    for k in range(0, n){
+        let (_, rr) = a.max_abs_scalar_in_col(k, k, n);
+        if rr > k {
+            // TODO : we can switch only part of row
+            a.ero_switch(k, rr);
+            result.ero_switch(k, rr);
+        }
+        let mut v = a.view(k, k, n - k, n - k);
+        // Pick the pivot
+        let pivot  = v.get(0, 0);
+        if pivot == 0. {
+            return Err(IsSingular);
+        }
+        // bring 1 in the diagonal 
+        v.ero_scale(0, 1./pivot);
+        result.ero_scale(k, 1./pivot);
+        for r in range(1, v.num_rows()){
+            let first = v.get(r, 0);
+            v.ero_scale_add(r, 0, -first);
+            // TODO: ignore 0 entries in k-th row of result
+            result.ero_scale_add(k + r, k as int, -first);
+        }
+        //println!("a: {}", a);
+        //println!("b: {}", result);
+    }
+    //println!("a: {}", a);
+    //println!("b: {}", result);
+    // back substitution
+    let mut k = n -1;
+    loop {
+        // We are using (k, k) entry in a and
+        // updating k-th column in a.
+        for r in range(0, k){
+            let factor = a.get(r, k);
+            result.ero_scale_add(r, k as int, -factor);
+        }
+        if k == 0 {
+            break;
+        }
+        k -= 1;
+    }
+    //println!("a: {}", a);
+    //println!("result: {}", result);
+    Ok(result)
+}
 
 
 
@@ -282,6 +337,7 @@ impl<'a, 'b, 'c> LinearSystemValidator<'a, 'b, 'c>{
 mod test{
     use super::*;
     use matrix::*;
+    use std::num;
 
 
     #[test]
@@ -388,6 +444,64 @@ mod test{
         let lsv = LinearSystemValidator::new(&l, &x, &b);
         lsv.print();
         assert!(lsv.is_max_abs_val_below_threshold(1e-6));
+    }
+
+
+
+    #[test]
+    fn test_inv_ero_0(){
+        let a = matrix_rw_f64(2, 2, [
+            1., 0.,
+            1., 1.]);
+        let b = inverse_ero(&mut a.clone()).unwrap();
+        let c = a * b;
+        assert!(c.is_identity());
+
+    }
+
+    #[test]
+    fn test_inv_ero_hadamard(){
+        for i in range(2, 6){
+            let n = num::pow(2,i);
+            let a = hadamard(n).unwrap();
+            println!("n: {}", n);
+            println!("a: {}", a);
+            let b = inverse_ero(&mut a.clone()).unwrap();
+            let c = a * b;
+            println!("b: {}", b);
+            println!("c: {}", c);
+
+            assert!(c.is_identity());
+        }
+
+    }
+
+    #[test]
+    fn test_inv_ero_hilbert(){
+        for n in range(2, 10){
+            let a = hilbert(n);
+            println!("n: {}", n);
+            println!("a: {}", a);
+            let b = inverse_ero(&mut a.clone()).unwrap();
+            let c = a * b;
+            println!("b: {}", b);
+            println!("c: {}", c);
+            let i : MatrixF64  = Matrix::identity(n, n);
+            /*
+            Hilbert matrices are badly conditioned. Hence,
+            the numerical accuracy fails. We don't really
+            get a proper identity matrix. What we get
+            is a matrix which is close to identity matrix.
+
+            A suitable way to verify correctness is to 
+            measure the maximum deviation of any entry
+            int the difference matrix below from identity. 
+            */
+            let diff = i  - c;
+            let max = diff.max_abs_scalar_value();
+            assert!(max < 1e-3);
+        }
+
     }
 
 }
