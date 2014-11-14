@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>scirust</a></p><div class='block mod'><h2>Modules</h2><a class='mod ' href='../audio/index.html'>audio</a><a class='mod ' href='../discrete/index.html'>discrete</a><a class='mod ' href='../dx/index.html'>dx</a><a class='mod ' href='../external/index.html'>external</a><a class='mod ' href='../image/index.html'>image</a><a class='mod current' href='../linalg/index.html'>linalg</a><a class='mod ' href='../matrix/index.html'>matrix</a><a class='mod ' href='../opt/index.html'>opt</a><a class='mod ' href='../signal/index.html'>signal</a><a class='mod ' href='../stat/index.html'>stat</a><a class='mod ' href='../testdata/index.html'>testdata</a></div>
+        <p class='location'><a href='../index.html'>scirust</a></p><div class='block mod'><h2>Modules</h2><a class='mod ' href='../audio/index.html'>audio</a><a class='mod ' href='../discrete/index.html'>discrete</a><a class='mod ' href='../dx/index.html'>dx</a><a class='mod ' href='../error/index.html'>error</a><a class='mod ' href='../external/index.html'>external</a><a class='mod ' href='../image/index.html'>image</a><a class='mod current' href='../linalg/index.html'>linalg</a><a class='mod ' href='../matrix/index.html'>matrix</a><a class='mod ' href='../number/index.html'>number</a><a class='mod ' href='../opt/index.html'>opt</a><a class='mod ' href='../signal/index.html'>signal</a><a class='mod ' href='../stat/index.html'>stat</a><a class='mod ' href='../util/index.html'>util</a></div>
     </section>
 
     <nav class="sub">
@@ -44,7 +44,7 @@
 <h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>scirust</a>::<wbr><a class='mod' href=''>linalg</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-14433' href='../../src/scirust/work/projects/scirust/srmat/src/lib.rs.html#76-91'>[src]</a></span></h1>
+        </span><a id='src-17826' href='../../src/scirust/work/projects/scirust/srmat/src/lib.rs.html#78-93'>[src]</a></span></h1>
 <div class='docblock'><p>Linear algebra algorithms</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
@@ -139,16 +139,31 @@ solving a lower triangular linear system. L X = B</p>
                     </tr>
                 
                     <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.lu.html'
-                               title='scirust::linalg::lu'>lu</a></td>
-                        <td class='docblock short'><p>Wrapper function to perform LU factorization</p>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.lu_eco.html'
+                               title='scirust::linalg::lu_eco'>lu_eco</a></td>
+                        <td class='docblock short'><p>Performs LU factorization  A = LU</p>
 </td>
                     </tr>
                 
                     <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.lup.html'
-                               title='scirust::linalg::lup'>lup</a></td>
-                        <td class='docblock short'></td>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.lu_ero.html'
+                               title='scirust::linalg::lu_ero'>lu_ero</a></td>
+                        <td class='docblock short'><p>Performs LU factorization  A = LU</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.lup_eco.html'
+                               title='scirust::linalg::lup_eco'>lup_eco</a></td>
+                        <td class='docblock short'><p>Performs LU factorization  AP = LU</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.lup_ero.html'
+                               title='scirust::linalg::lup_ero'>lup_ero</a></td>
+                        <td class='docblock short'><p>Performs LU factorization  PA = LU</p>
+</td>
                     </tr>
                 
                     <tr>

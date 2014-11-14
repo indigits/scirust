@@ -241,6 +241,15 @@
 <span id='199'>199</span>
 <span id='200'>200</span>
 <span id='201'>201</span>
+<span id='202'>202</span>
+<span id='203'>203</span>
+<span id='204'>204</span>
+<span id='205'>205</span>
+<span id='206'>206</span>
+<span id='207'>207</span>
+<span id='208'>208</span>
+<span id='209'>209</span>
+<span id='210'>210</span>
 </pre><pre class='rust '>
 
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;A generics based scientific computing library for Rust
@@ -275,6 +284,9 @@ C libraries like BLAS or LAPACK.
 
 
 
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>number</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>error</span>;
+
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>discrete</span>{
     <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Discrete mathematics
     &quot;</span>]</span>
@@ -288,10 +300,9 @@ C libraries like BLAS or LAPACK.
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>matrix</span> {
     <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Fundamental matrix structures
     &quot;</span>]</span>
-
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>number</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>error</span>::<span class='op'>*</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>constructors</span>::<span class='op'>*</span>;
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>element</span>::<span class='op'>*</span>;
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>error</span>::<span class='op'>*</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>iter</span>::<span class='op'>*</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>matrix</span>::<span class='op'>*</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>matrix_conversion</span>::<span class='op'>*</span>;
@@ -301,10 +312,9 @@ C libraries like BLAS or LAPACK.
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>view</span>::<span class='op'>*</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>view_conversion</span>::<span class='op'>*</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>view_minmax</span>::<span class='op'>*</span>;
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>triangular_matrix</span>::<span class='op'>*</span>;
 
     <span class='kw'>mod</span> <span class='ident'>constructors</span>;
-    <span class='kw'>mod</span> <span class='ident'>element</span>;
-    <span class='kw'>mod</span> <span class='ident'>error</span>;
     <span class='kw'>mod</span> <span class='ident'>iter</span>;
     <span class='kw'>mod</span> <span class='ident'>matrix</span>;
     <span class='kw'>mod</span> <span class='ident'>matrix_conversion</span>;
@@ -314,6 +324,7 @@ C libraries like BLAS or LAPACK.
     <span class='kw'>mod</span> <span class='ident'>view</span>;
     <span class='kw'>mod</span> <span class='ident'>view_conversion</span>;
     <span class='kw'>mod</span> <span class='ident'>view_minmax</span>;
+    <span class='kw'>mod</span> <span class='ident'>triangular_matrix</span>;
 }
 
 
@@ -430,11 +441,18 @@ for complex numbers, then this library will be removed.
 
 }
 
+<span class='comment'>// for internal use only</span>
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>util</span>{
+
+    <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>memory</span>;
+}
+
 
 
 <span class='comment'>// for internal use only</span>
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>testdata</span>{
+<span class='kw'>mod</span> <span class='ident'>testdata</span>{
 
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
     <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>matrix</span> {
 
         <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>simple</span>::<span class='op'>*</span>;

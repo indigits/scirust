@@ -1148,8 +1148,8 @@
 <span class='comment'>// local imports</span>
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>matrix</span>::<span class='op'>*</span>;
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>traits</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>error</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>element</span>::<span class='ident'>Number</span>;
+<span class='kw'>use</span> <span class='ident'>error</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>number</span>::<span class='ident'>Number</span>;
 
 <span class='comment'>// complex numbers</span>
 <span class='kw'>use</span> <span class='ident'>external</span>::<span class='ident'>complex</span>::{<span class='ident'>Complex32</span>, <span class='ident'>Complex64</span>};
@@ -1160,7 +1160,7 @@
 
 n must be a power of 2.
 &quot;</span>]</span> 
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>hadamard</span>(<span class='ident'>n</span> : <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>MatrixF64</span>, <span class='ident'>MatrixError</span><span class='op'>&gt;</span>{
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>hadamard</span>(<span class='ident'>n</span> : <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>MatrixF64</span>, <span class='ident'>SRError</span><span class='op'>&gt;</span>{
     <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>num</span>::<span class='ident'>is_power_of_two</span>(<span class='ident'>n</span>){
         <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IsNotPowerOfTwo</span>);
     }

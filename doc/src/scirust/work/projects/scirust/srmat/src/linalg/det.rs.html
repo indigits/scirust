@@ -180,7 +180,7 @@ The determinant of an empty matrix is 1.
 See http://en.wikipedia.org/wiki/Matrix_(mathematics)#Empty_matrices.
 
 &quot;</span>]</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span>  <span class='ident'>det</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>+</span><span class='ident'>Signed</span><span class='op'>&gt;</span>(<span class='ident'>m</span> : <span class='kw-2'>&amp;</span><span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>)<span class='op'>-&gt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>,<span class='ident'>MatrixError</span><span class='op'>&gt;</span>{
+<span class='kw'>pub</span> <span class='kw'>fn</span>  <span class='ident'>det</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>Number</span><span class='op'>+</span><span class='ident'>Signed</span><span class='op'>&gt;</span>(<span class='ident'>m</span> : <span class='kw-2'>&amp;</span><span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>)<span class='op'>-&gt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>,<span class='ident'>SRError</span><span class='op'>&gt;</span>{
     <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>m</span>.<span class='ident'>is_square</span>(){
         <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>NonSquareMatrix</span>);
     }

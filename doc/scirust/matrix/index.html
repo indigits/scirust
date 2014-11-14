@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>scirust</a></p><div class='block mod'><h2>Modules</h2><a class='mod ' href='../audio/index.html'>audio</a><a class='mod ' href='../discrete/index.html'>discrete</a><a class='mod ' href='../dx/index.html'>dx</a><a class='mod ' href='../external/index.html'>external</a><a class='mod ' href='../image/index.html'>image</a><a class='mod ' href='../linalg/index.html'>linalg</a><a class='mod current' href='../matrix/index.html'>matrix</a><a class='mod ' href='../opt/index.html'>opt</a><a class='mod ' href='../signal/index.html'>signal</a><a class='mod ' href='../stat/index.html'>stat</a><a class='mod ' href='../testdata/index.html'>testdata</a></div>
+        <p class='location'><a href='../index.html'>scirust</a></p><div class='block mod'><h2>Modules</h2><a class='mod ' href='../audio/index.html'>audio</a><a class='mod ' href='../discrete/index.html'>discrete</a><a class='mod ' href='../dx/index.html'>dx</a><a class='mod ' href='../error/index.html'>error</a><a class='mod ' href='../external/index.html'>external</a><a class='mod ' href='../image/index.html'>image</a><a class='mod ' href='../linalg/index.html'>linalg</a><a class='mod current' href='../matrix/index.html'>matrix</a><a class='mod ' href='../number/index.html'>number</a><a class='mod ' href='../opt/index.html'>opt</a><a class='mod ' href='../signal/index.html'>signal</a><a class='mod ' href='../stat/index.html'>stat</a><a class='mod ' href='../util/index.html'>util</a></div>
     </section>
 
     <nav class="sub">
@@ -44,9 +44,10 @@
 <h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>scirust</a>::<wbr><a class='mod' href=''>matrix</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-50' href='../../src/scirust/work/projects/scirust/srmat/src/lib.rs.html#44-73'>[src]</a></span></h1>
+        </span><a id='src-525' href='../../src/scirust/work/projects/scirust/srmat/src/lib.rs.html#47-75'>[src]</a></span></h1>
 <div class='docblock'><p>Fundamental matrix structures</p>
-</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
+<table><tr><td><code>pub use super::<a class='mod' href='../../scirust/number/index.html' title='scirust::number'>number</a>::*;</code></td></tr><tr><td><code>pub use super::<a class='mod' href='../../scirust/error/index.html' title='scirust::error'>error</a>::*;</code></td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                     <tr>
                         <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.CellIterator.html'
@@ -82,12 +83,11 @@
                         <td class='docblock short'><p>An iterator over the elements of a matrix in a row</p>
 </td>
                     </tr>
-                </table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
-<table>
+                
                     <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='enum' href='enum.MatrixError.html'
-                               title='scirust::matrix::MatrixError'>MatrixError</a></td>
-                        <td class='docblock short'><p>Errors related to matrix operations</p>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.TriangularMatrix.html'
+                               title='scirust::matrix::TriangularMatrix'>TriangularMatrix</a></td>
+                        <td class='docblock short'><p>Represents a triangular square matrix of numbers.</p>
 </td>
                     </tr>
                 </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
@@ -96,6 +96,13 @@
                         <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.Conversion.html'
                                title='scirust::matrix::Conversion'>Conversion</a></td>
                         <td class='docblock short'><p>Matrix conversion API</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.ECO.html'
+                               title='scirust::matrix::ECO'>ECO</a></td>
+                        <td class='docblock short'><p>Elementary column operations on a matrix</p>
 </td>
                     </tr>
                 
@@ -156,13 +163,6 @@ caution. </p>
                         <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.MinMaxAbs.html'
                                title='scirust::matrix::MinMaxAbs'>MinMaxAbs</a></td>
                         <td class='docblock short'><p>Matrix min-max with absolute values API</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.Number.html'
-                               title='scirust::matrix::Number'>Number</a></td>
-                        <td class='docblock short'><p>Defines all the traits which a matrix element must support</p>
 </td>
                     </tr>
                 
@@ -762,6 +762,97 @@ picked up from a slice in row wise order.</p>
                     <tr>
                         <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixUInt.html'
                                title='scirust::matrix::MatrixUInt'>MatrixUInt</a></td>
+                        <td class='docblock short'><p>A matrix of  unsigned integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixC32.html'
+                               title='scirust::matrix::TriangularMatrixC32'>TriangularMatrixC32</a></td>
+                        <td class='docblock short'><p>A matrix of 32-bit complex numbers numbers.</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixC64.html'
+                               title='scirust::matrix::TriangularMatrixC64'>TriangularMatrixC64</a></td>
+                        <td class='docblock short'><p>A matrix of 64-bit complex numbers numbers.</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixF32.html'
+                               title='scirust::matrix::TriangularMatrixF32'>TriangularMatrixF32</a></td>
+                        <td class='docblock short'><p>A matrix of 32-bit floating point numbers.</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixF64.html'
+                               title='scirust::matrix::TriangularMatrixF64'>TriangularMatrixF64</a></td>
+                        <td class='docblock short'><p>A matrix of 64-bit floating point numbers.</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixI16.html'
+                               title='scirust::matrix::TriangularMatrixI16'>TriangularMatrixI16</a></td>
+                        <td class='docblock short'><p>A matrix of 16-bit signed integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixI32.html'
+                               title='scirust::matrix::TriangularMatrixI32'>TriangularMatrixI32</a></td>
+                        <td class='docblock short'><p>A matrix of 32-bit signed integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixI64.html'
+                               title='scirust::matrix::TriangularMatrixI64'>TriangularMatrixI64</a></td>
+                        <td class='docblock short'><p>A matrix of 64-bit signed integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixI8.html'
+                               title='scirust::matrix::TriangularMatrixI8'>TriangularMatrixI8</a></td>
+                        <td class='docblock short'><p>A matrix of 8-bit signed integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixU16.html'
+                               title='scirust::matrix::TriangularMatrixU16'>TriangularMatrixU16</a></td>
+                        <td class='docblock short'><p>A matrix of 16-bit unsigned integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixU32.html'
+                               title='scirust::matrix::TriangularMatrixU32'>TriangularMatrixU32</a></td>
+                        <td class='docblock short'><p>A matrix of 32-bit unsigned integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixU64.html'
+                               title='scirust::matrix::TriangularMatrixU64'>TriangularMatrixU64</a></td>
+                        <td class='docblock short'><p>A matrix of 64-bit unsigned integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixU8.html'
+                               title='scirust::matrix::TriangularMatrixU8'>TriangularMatrixU8</a></td>
+                        <td class='docblock short'><p>A matrix of 8-bit unsigned integers</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixUInt.html'
+                               title='scirust::matrix::TriangularMatrixUInt'>TriangularMatrixUInt</a></td>
                         <td class='docblock short'><p>A matrix of  unsigned integers</p>
 </td>
                     </tr>
