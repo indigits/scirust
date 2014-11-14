@@ -8,7 +8,7 @@
 //use error::*;
 use matrix::{MatrixF64, MatrixType, Matrix, 
     MinMaxAbs, 
-    ERO, Search};
+    ERO, ECO, Search};
 use error::*;
 use linalg::singularity::*;
 
@@ -226,7 +226,7 @@ pub fn ldu_solve(l : &MatrixF64,
 }
 
 
-/// Computes the inverse of a matrix
+/// Computes the inverse of a matrix using elementary row operations
 pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     if !a.is_square(){
         return Err(NonSquareMatrix);
@@ -281,6 +281,60 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
 }
 
 
+/// Computes the inverse of a matrix using elementary column operations
+pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
+    if !a.is_square(){
+        return Err(NonSquareMatrix);
+    }
+    let n = a.num_rows();
+    let mut result  : MatrixF64 = Matrix::identity(n, n);
+    // forward elimination
+    for k in range(0, n){
+        let (_, cc) = a.max_abs_scalar_in_row(k, k, n);
+        if cc > k {
+            // TODO : we can switch only part of column
+            a.eco_switch(k, cc);
+            result.eco_switch(k, cc);
+        }
+        let mut v = a.view(k, k, n - k, n - k);
+        // Pick the pivot
+        let pivot  = v.get(0, 0);
+        if pivot == 0. {
+            return Err(IsSingular);
+        }
+        // bring 1 in the diagonal 
+        v.eco_scale(0, 1./pivot);
+        result.eco_scale(k, 1./pivot);
+        for c in range(1, v.num_cols()){
+            let first = v.get(0, c);
+            v.eco_scale_add(c, 0, -first);
+            // TODO: ignore 0 entries in k-th col of result
+            result.eco_scale_add(k + c, k as int, -first);
+        }
+        //println!("a: {}", a);
+        //println!("b: {}", result);
+    }
+    //println!("a: {}", a);
+    //println!("b: {}", result);
+    // back substitution
+    let mut k = n -1;
+    loop {
+        // We are using (k, k) entry in a and
+        // updating k-th row in a.
+        for c in range(0, k){
+            let factor = a.get(k, c);
+            result.eco_scale_add(c, k as int, -factor);
+        }
+        if k == 0 {
+            break;
+        }
+        k -= 1;
+    }
+    //println!("a: {}", a);
+    //println!("result: {}", result);
+    Ok(result)
+}
+
 
 /// Validates the solution of linear system
 pub struct LinearSystemValidator<'a, 'b, 'c>{
@@ -332,6 +386,11 @@ impl<'a, 'b, 'c> LinearSystemValidator<'a, 'b, 'c>{
 
 
 
+/******************************************************
+ *
+ *   Unit tests follow.
+ *
+ *******************************************************/
 
 #[cfg(test)]
 mod test{
@@ -460,6 +519,17 @@ mod test{
     }
 
     #[test]
+    fn test_inv_eco_0(){
+        let a = matrix_rw_f64(2, 2, [
+            1., 0.,
+            1., 1.]);
+        let b = inverse_eco(&mut a.clone()).unwrap();
+        let c = a * b;
+        assert!(c.is_identity());
+
+    }
+
+    #[test]
     fn test_inv_ero_hadamard(){
         for i in range(2, 6){
             let n = num::pow(2,i);
@@ -475,6 +545,23 @@ mod test{
         }
 
     }
+
+    #[test]
+    fn test_inv_eco_hadamard(){
+        for i in range(2, 6){
+            let n = num::pow(2,i);
+            let a = hadamard(n).unwrap();
+            println!("n: {}", n);
+            println!("a: {}", a);
+            let b = inverse_eco(&mut a.clone()).unwrap();
+            let c = a * b;
+            println!("b: {}", b);
+            println!("c: {}", c);
+
+            assert!(c.is_identity());
+        }
+    }
+
 
     #[test]
     fn test_inv_ero_hilbert(){
@@ -504,4 +591,155 @@ mod test{
 
     }
 
+    #[test]
+    fn test_inv_eco_hilbert(){
+        for n in range(2, 10){
+            let a = hilbert(n);
+            println!("n: {}", n);
+            println!("a: {}", a);
+            let b = inverse_eco(&mut a.clone()).unwrap();
+            let c = a * b;
+            println!("b: {}", b);
+            println!("c: {}", c);
+            let i : MatrixF64  = Matrix::identity(n, n);
+            let diff = i  - c;
+            let max = diff.max_abs_scalar_value();
+            assert!(max < 1e-3);
+        }
+
+    }
+
+}
+
+
+/******************************************************
+ *
+ *   Bench marks follow.
+ *
+ *******************************************************/
+
+#[cfg(test)]
+mod bench{
+    extern crate test;
+    use super::*;
+    use matrix::*;
+    use self::test::Bencher;
+
+    #[bench]
+    fn bench_inverse_ero_hadamard_32 (b: &mut Bencher){
+        let mut a = hadamard(32).unwrap();
+        b.iter(|| {
+            let result = inverse_ero(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }
+
+    #[bench]
+    fn bench_inverse_ero_hadamard_64 (b: &mut Bencher){
+        let mut a = hadamard(64).unwrap();
+        b.iter(|| {
+            let result = inverse_ero(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }    
+
+    #[bench]
+    fn bench_inverse_ero_hadamard_128 (b: &mut Bencher){
+        let mut a = hadamard(128).unwrap();
+        b.iter(|| {
+            let result = inverse_ero(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }    
+
+    #[bench]
+    #[ignore]
+    fn bench_inverse_ero_hadamard_256 (b: &mut Bencher){
+        let mut a = hadamard(256).unwrap();
+        b.iter(|| {
+            let result = inverse_ero(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }    
+
+    #[bench]
+    fn bench_inverse_eco_hadamard_32 (b: &mut Bencher){
+        let mut a = hadamard(32).unwrap();
+        b.iter(|| {
+            let result = inverse_eco(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }
+
+    #[bench]
+    fn bench_inverse_eco_hadamard_64 (b: &mut Bencher){
+        let mut a = hadamard(64).unwrap();
+        b.iter(|| {
+            let result = inverse_eco(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }    
+
+    #[bench]
+    fn bench_inverse_eco_hadamard_128 (b: &mut Bencher){
+        let mut a = hadamard(128).unwrap();
+        b.iter(|| {
+            let result = inverse_eco(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }    
+
+    #[bench]
+    fn bench_inverse_eco_hadamard_256 (b: &mut Bencher){
+        let mut a = hadamard(256).unwrap();
+        b.iter(|| {
+            let result = inverse_eco(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }    
+
+    #[bench]
+    fn bench_inverse_eco_hadamard_512 (b: &mut Bencher){
+        let mut a = hadamard(512).unwrap();
+        b.iter(|| {
+            let result = inverse_eco(&mut a);
+            match result {
+                Ok(c) => assert!(c.is_square()),
+                Err(e) => panic!(e.to_string()),
+            }
+            
+        });
+    }
 }
