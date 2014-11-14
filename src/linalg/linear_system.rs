@@ -7,7 +7,7 @@
 // srmat imports
 //use error::*;
 use matrix::{MatrixF64, MatrixType, MinMaxAbs, ERO};
-use linalg::error::*;
+use error::*;
 use linalg::singularity::*;
 
 
@@ -32,7 +32,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
     } 
 
     /// Carries out the procedure of Gauss elimination.
-    pub fn solve(&self) -> Result<MatrixF64,LinearSystemError> {
+    pub fn solve(&self) -> Result<MatrixF64,SRError> {
         let mut m = self.a.clone();
         m.append_columns(self.b);
         let rows = m.num_rows();
@@ -103,7 +103,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
 solving a lower triangular linear system. L X = B
 "]
 pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) -> 
-    Result<MatrixF64, LinearSystemError>{
+    Result<MatrixF64, SRError>{
     assert!(l.is_square());
     let n = l.num_rows();
     assert_eq!(n, b.num_rows());
@@ -131,7 +131,7 @@ pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) ->
 solving a upper triangular linear system. L X = B
 "]
 pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) -> 
-    Result<MatrixF64, LinearSystemError>{
+    Result<MatrixF64, SRError>{
     assert_eq!(u.num_rows(), b.num_rows());
     assert!(u.is_square());
     debug_assert!(u.is_ut());
@@ -167,7 +167,7 @@ pub fn ldu_solve(l : &MatrixF64,
     d : &MatrixF64,
     u : &MatrixF64,
     b : &MatrixF64) -> 
-    Result<MatrixF64, LinearSystemError>{
+    Result<MatrixF64, SRError>{
     assert_eq!(b.num_rows(), u.num_rows());
     assert_eq!(l.num_rows(), u.num_rows());
     assert_eq!(d.num_rows(), u.num_rows());

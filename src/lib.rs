@@ -81,13 +81,12 @@ pub mod linalg {
     pub use self::linear_system::*;
     pub use self::det::*;
     pub use self::lu::*;
-    pub use self::error::*;
+    pub use super::error::*;
     pub use self::singularity::*;
 
     mod linear_system;
     mod det;
     mod lu;
-    mod error;
     mod singularity;
 
 }

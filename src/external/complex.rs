@@ -186,7 +186,7 @@ impl <T:Num+Clone> Num for Complex<T> {
 
 #[cfg(test)]
 mod test {
-    #![allow(non_uppercase_globals)]
+    #![allow(non_upper_case_globals)]
 
     use super::{Complex64, Complex};
     use std::num::{Zero, One, Float};
