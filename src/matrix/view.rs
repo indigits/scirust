@@ -383,6 +383,7 @@ impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
     /// r_i = r_i + k * r_j
     /// The j-th row can be outside the view also.
     /// This is the row relative to the start of the view.
+    #[inline]
     fn ero_scale_add(&mut self, 
         i :  uint, 
         j :  int, 
@@ -424,6 +425,7 @@ impl<'a, T:Number> ECO<T> for MatrixView<'a, T> {
     /// c_i = c_i + k * c_j
     /// The j-th column can be outside the view also.
     /// This is the column relative to the start of the view.
+    #[inline]
     fn eco_scale_add(&mut self, 
         i :  uint, 
         j :  int, 
