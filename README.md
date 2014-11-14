@@ -17,7 +17,7 @@ Current areas of focus
 
 
 For more details and examples, 
-see the [API Guide](http://scirust.github.io/scirust/doc/scirust/index.html).
+see the [API Guide](http://indigits.github.io/scirust).
 
 If you are unfamiliar with Rust, you are recommended to go through
 [The Rust Guide](http://doc.rust-lang.org/guide.html).
