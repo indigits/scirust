@@ -2,10 +2,10 @@
 use std::num;
 
 // local imports
-use matrix::error::*;
+use error::*;
 use matrix::view::MatrixView;
 use matrix::traits::*;
-use matrix::element::Number;
+use number::Number;
 
 
 /// Implementation of min-max with absolute values API for matrix view

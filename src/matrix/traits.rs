@@ -3,9 +3,9 @@ use std::ptr;
 use std::cmp;
 
 // local imports
-use matrix::element::Number;
+use number::Number;
 use matrix::matrix::Matrix;
-use matrix::error::*;
+use error::*;
 
 use discrete::{mod_n};
 

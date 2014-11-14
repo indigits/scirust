@@ -7,6 +7,7 @@
 
 
 // local imports
+//use error::*;
 use matrix::*;
 
 

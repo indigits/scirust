@@ -6,9 +6,9 @@ use std::num::{One, Zero};
 //use std::ptr;
 
 // srmat imports
-use matrix::element::{Number};
+use number::{Number};
+use error::*;
 use matrix::matrix::{Matrix};
-use matrix::error::*;
 use matrix::traits::{MatrixType, Introspection, 
     MatrixBuffer, Extraction, ERO, ECO};
 

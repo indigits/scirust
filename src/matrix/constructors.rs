@@ -8,8 +8,8 @@ use std::num;
 // local imports
 use matrix::matrix::*;
 use matrix::traits::*;
-use matrix::error::*;
-use matrix::element::Number;
+use error::*;
+use number::Number;
 
 // complex numbers
 use external::complex::{Complex32, Complex64};
@@ -20,7 +20,7 @@ use external::complex::{Complex32, Complex64};
 
 n must be a power of 2.
 "] 
-pub fn hadamard(n : uint) -> Result<MatrixF64, MatrixError>{
+pub fn hadamard(n : uint) -> Result<MatrixF64, SRError>{
     if !num::is_power_of_two(n){
         return Err(IsNotPowerOfTwo);
     }

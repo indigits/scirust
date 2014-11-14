@@ -4,6 +4,8 @@ use std::num;
 
 // local imports
 
+use number::*;
+use error::*;
 use matrix::*;
 
 #[doc="Returns the determinant of a matrix.
@@ -16,7 +18,7 @@ The determinant of an empty matrix is 1.
 See http://en.wikipedia.org/wiki/Matrix_(mathematics)#Empty_matrices.
 
 "]
-pub fn  det<T:Number+Signed>(m : &Matrix<T>)->Result<T,MatrixError>{
+pub fn  det<T:Number+Signed>(m : &Matrix<T>)->Result<T,SRError>{
     if !m.is_square(){
         return Err(NonSquareMatrix);
     }

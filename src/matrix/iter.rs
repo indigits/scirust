@@ -2,7 +2,7 @@
 
 
 // local imports
-use matrix::element::{Number};
+use number::{Number};
 
 
 /******************************************************

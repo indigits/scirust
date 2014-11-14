@@ -12,7 +12,7 @@ use std::rt::heap::allocate;
 
 // local imports
 
-use matrix::element::{Number};
+use number::{Number};
 use matrix::matrix::Matrix;
 //use matrix::error::*;
 

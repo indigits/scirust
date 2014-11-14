@@ -31,6 +31,9 @@ C libraries like BLAS or LAPACK.
 
 
 
+pub mod number;
+pub mod error;
+
 pub mod discrete{
     #![doc="Discrete mathematics
     "]
@@ -46,8 +49,6 @@ pub mod matrix {
     "]
 
     pub use self::constructors::*;
-    pub use self::element::*;
-    pub use self::error::*;
     pub use self::iter::*;
     pub use self::matrix::*;
     pub use self::matrix_conversion::*;
@@ -60,8 +61,6 @@ pub mod matrix {
     pub use self::triangular_matrix::*;
 
     mod constructors;
-    mod element;
-    mod error;
     mod iter;
     mod matrix;
     mod matrix_conversion;

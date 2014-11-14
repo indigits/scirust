@@ -18,8 +18,8 @@ use std::raw::Slice as RawSlice;
 // local imports
 
 use discrete::{mod_n};
-use matrix::element::{Number};
-use matrix::error::*;
+use number::{Number};
+use error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
 use matrix::traits::{MatrixType, Introspection, 
@@ -1263,7 +1263,7 @@ impl<T:Number+Float> Matrix<T> {
 
 impl<T:Number+Signed> Matrix<T>{
     /// Returns determinant of the matrix
-    pub fn det(&self) -> Result<T,MatrixError>{
+    pub fn det(&self) -> Result<T,SRError>{
         linalg::det(self)
     }
 }

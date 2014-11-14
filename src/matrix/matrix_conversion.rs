@@ -1,7 +1,7 @@
 // local imports
 use matrix::matrix::Matrix;
 use matrix::traits::*;
-use matrix::element::Number;
+use number::Number;
 
 /// Implements matrix conversion API
 impl <T:Number> Conversion<T> for Matrix<T> {

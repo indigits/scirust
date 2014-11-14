@@ -1,3 +1,8 @@
+#![doc="Defines generic traits for numbers on which
+SciRust library works.
+"]
+
+
 // Imports
 use std::fmt::Show;
 

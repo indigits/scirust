@@ -5,6 +5,7 @@
 use std::num::{One, Zero};
 
 // local imports
+use number::*;
 use matrix::*;
 
 pub struct Impulse<T:Number>{

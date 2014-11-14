@@ -2,7 +2,7 @@
 // local imports
 use matrix::view::MatrixView;
 use matrix::traits::*;
-use matrix::element::Number;
+use number::Number;
 
 /// Implements matrix conversion API
 impl <'a, T:Number> Conversion<T> for MatrixView<'a, T> {

@@ -7,6 +7,8 @@ use std::cmp;
 use std::num::Zero;
 
 // local imports
+use number::*;
+//use error::*;
 use matrix::*;
 
 /// Indicates if a lower triangular matrix is singular or not.

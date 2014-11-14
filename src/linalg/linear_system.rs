@@ -5,7 +5,7 @@
 // std imports
 
 // srmat imports
-
+//use error::*;
 use matrix::{MatrixF64, MatrixType, MinMaxAbs, ERO};
 use linalg::error::*;
 use linalg::singularity::*;
