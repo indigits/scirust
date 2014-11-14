@@ -175,7 +175,7 @@ pub trait Conversion<T:Number> : MatrixType<T> {
     /// Converts the matrix to a scalar 
     fn to_scalar(&self) -> T {
         if !self.is_scalar() {
-            fail! (DimensionsMismatch.to_string());
+            panic! (DimensionsMismatch.to_string());
         }
         self.get(0, 0)
     }

@@ -12,7 +12,7 @@
 //! Complex numbers.
 
 use std::fmt;
-use std::num::{Zero, One, ToStrRadix};
+use std::num::{Zero, One};
 
 // FIXME #1284: handle complex NaN & infinity etc. This
 // probably doesn't map to C's _Complex correctly.
@@ -172,21 +172,6 @@ impl<T: fmt::Show + Num + PartialOrd> fmt::Show for Complex<T> {
     }
 }
 
-impl<T: ToStrRadix + Num + PartialOrd> ToStrRadix for Complex<T> {
-    fn to_str_radix(&self, radix: uint) -> String {
-        if self.im < Zero::zero() {
-            format!("{}-{}i",
-                    self.re.to_str_radix(radix),
-                    (-self.im).to_str_radix(radix))
-        } else {
-            format!("{}+{}i",
-                    self.re.to_str_radix(radix),
-                    self.im.to_str_radix(radix))
-        }
-    }
-}
-
-
 /// Dummy implementation 
 impl <T:Num+Clone> Rem<Complex<T>, Complex<T>> for Complex<T> {
     fn rem(&self, _rhs: &Complex<T>) -> Complex<T> {
@@ -201,7 +186,7 @@ impl <T:Num+Clone> Num for Complex<T> {
 
 #[cfg(test)]
 mod test {
-    #![allow(non_uppercase_statics)]
+    #![allow(non_uppercase_globals)]
 
     use super::{Complex64, Complex};
     use std::num::{Zero, One, Float};

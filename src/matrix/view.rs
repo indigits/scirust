@@ -69,7 +69,7 @@ impl<'a, T:Number> MatrixView<'a, T> {
     pub fn copy_from(&mut self, rhs: &MatrixView<T>){
         // Validate dimensions are same.
         if self.size() != rhs.size(){
-            fail!(DimensionsMismatch.to_string());
+            panic!(DimensionsMismatch.to_string());
         }        
         let pd : *mut T = unsafe { mem::transmute(self.m.as_ptr()) };
         let ps = rhs.m.as_ptr();
@@ -89,7 +89,7 @@ impl<'a, T:Number> MatrixView<'a, T> {
     pub fn copy_scaled_from(&mut self, rhs: &MatrixView<T>, scale: T){
         // Validate dimensions are same.
         if self.size() != rhs.size(){
-            fail!(DimensionsMismatch.to_string());
+            panic!(DimensionsMismatch.to_string());
         }        
         let pd : *mut T = unsafe { mem::transmute(self.m.as_ptr()) };
         let ps = rhs.m.as_ptr();
@@ -318,7 +318,7 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
     // Returns the minimum scalar value
     pub fn min_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            fail!(EmptyMatrix.to_string());
+            panic!(EmptyMatrix.to_string());
         }
         let mut v = self.get(0, 0);
         // The location
@@ -342,7 +342,7 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
     // Returns the maximum scalar value
     pub fn max_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            fail!(EmptyMatrix.to_string());
+            panic!(EmptyMatrix.to_string());
         }
         let mut v = self.get(0, 0);
         // The location
@@ -462,7 +462,7 @@ impl<'a, 'b, T:Number> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<'a,
     fn add(&self, rhs: &MatrixView<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
-            fail!(DimensionsMismatch.to_string());
+            panic!(DimensionsMismatch.to_string());
         }
         let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.m.as_ptr();

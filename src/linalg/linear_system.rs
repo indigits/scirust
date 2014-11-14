@@ -267,7 +267,7 @@ impl<'a, 'b, 'c> LinearSystemValidator<'a, 'b, 'c>{
     pub fn print(&self){
         println!("a: {}", self.a);
         println!("x: {}", self.x);
-        println!("ax: {}", self.a * *(self.x));
+        println!("ax: {}", *self.a * *(self.x));
         println!("b: {}", self.b);
         println!("diff: {}", self.d);
         println!("max abs diff: {}", self.max_abs_scalar_value());

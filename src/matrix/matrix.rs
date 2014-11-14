@@ -339,7 +339,7 @@ by hand.
     /// Construct a diagonal matrix from a vector
     pub fn diag_from_vec(v : &Matrix<T>) -> Matrix<T>{
         if !v.is_vector(){
-            fail!(NotAVector.to_string());
+            panic!(NotAVector.to_string());
         }
         let n = v.num_cells();
         let m : Matrix<T> = Matrix::zeros(n, n);
@@ -722,7 +722,7 @@ impl<T:Number> Matrix<T> {
     /// Returns a new matrix
     pub fn pow(&self, exp : uint) -> Matrix<T>{
         if !self.is_square() {
-            fail!(NonSquareMatrix.to_string());
+            panic!(NonSquareMatrix.to_string());
         }
         if exp == 0 {
             return Matrix::identity(self.rows, self.cols);
@@ -1086,7 +1086,7 @@ impl<T:Number+PartialOrd> Matrix<T> {
     // Returns the minimum scalar value with location
     pub fn min_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            fail!(EmptyMatrix.to_string());
+            panic!(EmptyMatrix.to_string());
         }
         let mut v = self.get(0, 0);
         let ps = self.ptr;
@@ -1110,7 +1110,7 @@ impl<T:Number+PartialOrd> Matrix<T> {
     // Returns the maximum scalar value with location
     pub fn max_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            fail!(EmptyMatrix.to_string());
+            panic!(EmptyMatrix.to_string());
         }
         let mut v = self.get(0, 0);
         // The location
@@ -1147,7 +1147,7 @@ impl<T:Number+PartialOrd+Signed> Matrix<T> {
     // Returns the absolute minimum scalar value
     pub fn min_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            fail!(EmptyMatrix.to_string());
+            panic!(EmptyMatrix.to_string());
         }
         let mut v = num::abs(self.get(0, 0));
         // The location
@@ -1171,7 +1171,7 @@ impl<T:Number+PartialOrd+Signed> Matrix<T> {
     // Returns the maximum scalar value
     pub fn max_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            fail!(EmptyMatrix.to_string());
+            panic!(EmptyMatrix.to_string());
         }
         let mut v = num::abs(self.get(0, 0));
         // The location
@@ -1359,7 +1359,7 @@ impl<T:Number> ops::Add<Matrix<T>, Matrix<T>> for Matrix<T> {
     fn add(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
-            fail!(DimensionsMismatch.to_string());
+            panic!(DimensionsMismatch.to_string());
         }
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
@@ -1382,7 +1382,7 @@ impl<T:Number> ops::Sub<Matrix<T>, Matrix<T>> for Matrix<T>{
     fn sub(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
-            fail!(DimensionsMismatch.to_string());
+            panic!(DimensionsMismatch.to_string());
         }
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
@@ -1426,7 +1426,7 @@ impl<T:Number> ops::Mul<Matrix<T>, Matrix<T>> for Matrix<T>{
     fn mul(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions match for multiplication
         if self.cols != rhs.rows{
-            fail!(DimensionsMismatch.to_string());
+            panic!(DimensionsMismatch.to_string());
         }
         let result : Matrix<T> = Matrix::new(self.rows, rhs.cols);
         let pa = self.ptr;
@@ -1480,7 +1480,7 @@ impl<T:Number> Matrix<T> {
     pub fn mul_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
-            fail!(DimensionsMismatch.to_string());
+            panic!(DimensionsMismatch.to_string());
         }
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
@@ -1500,7 +1500,7 @@ impl<T:Number> Matrix<T> {
     pub fn div_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
-            fail!(DimensionsMismatch.to_string());
+            panic!(DimensionsMismatch.to_string());
         }
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;

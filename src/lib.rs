@@ -67,7 +67,7 @@ pub mod matrix {
     mod matrix_conversion;
     mod matrix_minmax;
     mod random;
-    mod traits;
+    pub mod traits;
     mod view;
     mod view_conversion;
     mod view_minmax;

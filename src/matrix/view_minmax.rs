@@ -14,7 +14,7 @@ impl <'a, T:Number+PartialOrd+Signed> MinMaxAbs<T> for MatrixView<'a, T> {
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            fail!(EmptyMatrix.to_string());
+            panic!(EmptyMatrix.to_string());
         }
         let mut v = num::abs(self.get(0, 0));
         // The location
@@ -38,7 +38,7 @@ impl <'a, T:Number+PartialOrd+Signed> MinMaxAbs<T> for MatrixView<'a, T> {
     // Returns the maximum scalar value
     fn max_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            fail!(EmptyMatrix.to_string());
+            panic!(EmptyMatrix.to_string());
         }
         let mut v = num::abs(self.get(0, 0));
         // The location
