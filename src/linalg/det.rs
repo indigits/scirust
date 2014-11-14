@@ -4,8 +4,6 @@ use std::num;
 
 // local imports
 
-use number::*;
-use error::*;
 use matrix::*;
 
 #[doc="Returns the determinant of a matrix.

@@ -47,7 +47,8 @@ pub mod discrete{
 pub mod matrix {
     #![doc="Fundamental matrix structures
     "]
-
+    pub use super::number::*;
+    pub use super::error::*;
     pub use self::constructors::*;
     pub use self::iter::*;
     pub use self::matrix::*;
