@@ -227,6 +227,6 @@ impl Number for Complex64 {
 
 
 //TODO: figure out how to make this work.
-pub fn describe<T: Number>(value : T ){
+//pub fn describe<T: Number>(){
     //println!("Signed: {}", T.is_signed());
-}
+//}
