@@ -23,7 +23,8 @@ use error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
 use matrix::traits::{MatrixType, Introspection, 
-    MatrixBuffer, Extraction, ERO, ECO, Updates};
+    MatrixBuffer, Extraction, ERO, ECO, Updates,
+    Transpose};
 
 // linear algebra
 use linalg;
@@ -734,25 +735,6 @@ impl<T:Number> Matrix<T> {
         result
     }
 
-    /// Computes the transpose of a matrix.
-    /// This doesn't involve complex conjugation.
-    /// Returns a new matrix
-    pub fn transpose(&self) -> Matrix <T>{
-        let result : Matrix<T> = Matrix::new(self.cols, self.rows);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let src_offset = self.cell_to_offset(r, c);
-                let dst_offset = result.cell_to_offset(c, r);
-                unsafe {
-                    *pc.offset(dst_offset) = *pa.offset(src_offset);
-                }
-            }
-        }
-        result
-    }
-
     /// Computes the unary minus of a matrix
     pub fn unary_minus(&self)-> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.cols, self.rows);
@@ -816,6 +798,30 @@ impl<T:Number> Matrix<T> {
     }
 
 }
+
+
+impl <T:Number> Transpose<T> for Matrix<T> {
+    /// Computes the transpose of a matrix.
+    /// This doesn't involve complex conjugation.
+    /// Returns a new matrix
+    fn transpose(&self) -> Matrix <T>{
+        let result : Matrix<T> = Matrix::new(self.cols, self.rows);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let src_offset = self.cell_to_offset(r, c);
+                let dst_offset = result.cell_to_offset(c, r);
+                unsafe {
+                    *pc.offset(dst_offset) = *pa.offset(src_offset);
+                }
+            }
+        }
+        result
+    }
+    
+}
+
 
 /// These methods modify the matrix itself
 impl<T:Number> Matrix<T> {

@@ -519,3 +519,17 @@ pub trait Updates<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 
 }
 
+
+
+#[doc="Implemented by matrix types
+which support transpose operations.
+"]
+pub trait Transpose<T:Number> : MatrixType<T>{
+
+    /// Returns a new matrix holding the transpose
+    fn transpose(&self) -> Matrix <T>;
+
+    // Performs transpose operation within the matrix itself
+    //fn transpose_self(&mut self)->&mut Self;
+}
+
