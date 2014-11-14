@@ -24,7 +24,7 @@ use matrix::iter::*;
 use matrix::view::MatrixView;
 use matrix::traits::{MatrixType, Introspection, 
     MatrixBuffer, Extraction, ERO, ECO, Updates,
-    Transpose};
+    Transpose, Search};
 
 // linear algebra
 use linalg;
@@ -819,7 +819,7 @@ impl <T:Number> Transpose<T> for Matrix<T> {
         }
         result
     }
-    
+
 }
 
 
@@ -1070,6 +1070,12 @@ impl<T:Number> ECO<T> for Matrix<T> {
 /// Implementation of Matrix general update operations.
 impl<T:Number> Updates<T> for Matrix<T> {
 }
+
+
+/// Implementation of Matrix search operations.
+impl<T:Number+PartialOrd+Signed> Search<T> for Matrix<T> {
+}
+
 
 
 /// Views of a matrix
@@ -1405,26 +1411,6 @@ impl<T:Number> ops::Sub<Matrix<T>, Matrix<T>> for Matrix<T>{
     }
 }
 
-
-#[doc = "
-This is not yet implemented.
-
-We wish to support three different use cases ``m = m1 * m2`` 
-where m1 and m2 are both matrices ``m = m1 * s`` 
-where s is a scalar and ``m = s * m1``
-where s is a scalar.
-
-Currently, Rust doesn't
-support multiple trait implementations for
-the same type. It does get compiled, but one
-faces the error: multiple applicable methods in scope.
-
-The workaround is to define a separate trait in the
-middle. 
-    
-"]
-pub trait MatrixMul<Result> {
-}
 
 
 /// Matrix multiplication support
@@ -2301,6 +2287,32 @@ mod tests {
             13., 14., 30., 30.,
             ]);
         assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_max_abs_scalar_in_row(){
+        let m = matrix_rw_i64(3, 3, [
+            2, 93, 9, 
+            2, 71, -79, 
+            -83, 62, 6]);
+        assert_eq!(m.max_abs_scalar_in_row(0, 0, 3), (93, 1));
+        assert_eq!(m.max_abs_scalar_in_row(1, 0, 3), (79, 2));
+        assert_eq!(m.max_abs_scalar_in_row(2, 0, 3), (83, 0));
+        assert_eq!(m.max_abs_scalar_in_row(1, 0, 2), (71, 1));
+        assert_eq!(m.max_abs_scalar_in_row(2, 1, 2), (62, 1));
+    }
+
+    #[test]
+    fn test_max_abs_scalar_in_col(){
+        let m = matrix_cw_i64(3, 3, [
+            2, 93, 9, 
+            2, 71, -79, 
+            -83, 62, 6]);
+        assert_eq!(m.max_abs_scalar_in_col(0, 0, 3), (93, 1));
+        assert_eq!(m.max_abs_scalar_in_col(1, 0, 3), (79, 2));
+        assert_eq!(m.max_abs_scalar_in_col(2, 0, 3), (83, 0));
+        assert_eq!(m.max_abs_scalar_in_col(1, 0, 2), (71, 1));
+        assert_eq!(m.max_abs_scalar_in_col(2, 1, 2), (62, 1));
     }
 
 

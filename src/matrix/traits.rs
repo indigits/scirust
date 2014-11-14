@@ -1,6 +1,7 @@
 // Standard library imports
 use std::ptr;
 use std::cmp;
+use std::num;
 
 // local imports
 use number::Number;
@@ -291,6 +292,7 @@ pub trait MinMaxAbs<T:Number+PartialOrd+Signed> : MatrixType<T> {
 pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 
     /// Row switching.
+    #[inline]
     fn ero_switch(&mut self, 
         i :  uint,
         j : uint
@@ -312,6 +314,7 @@ pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
     }
 
     /// Row scaling by a factor.
+    #[inline]
     fn ero_scale(&mut self, 
         r :  uint, 
         scale : T
@@ -330,6 +333,7 @@ pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 
     /// Row scaling by a factor and adding to another row.
     /// r_i = r_i + k * r_j
+    #[inline]
     fn ero_scale_add(&mut self, 
         i :  uint, 
         j :  int, 
@@ -363,6 +367,7 @@ pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 pub trait ECO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 
     /// Column switching.
+    #[inline]
     fn eco_switch(&mut self, 
         i :  uint,
         j : uint
@@ -383,6 +388,7 @@ pub trait ECO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
     }
 
     /// Column scaling by a factor.
+    #[inline]
     fn eco_scale(&mut self, 
         c :  uint, 
         scale : T
@@ -402,6 +408,7 @@ pub trait ECO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 
     /// Column scaling by a factor and adding to another column.
     /// c_i = c_i + k * c_j
+    #[inline]
     fn eco_scale_add(&mut self, 
         i :  uint, 
         j :  int, 
@@ -533,3 +540,58 @@ pub trait Transpose<T:Number> : MatrixType<T>{
     //fn transpose_self(&mut self)->&mut Self;
 }
 
+
+#[doc="Features for searching within the matrix
+"]
+
+pub trait Search<T:Number+PartialOrd+Signed> : MatrixType<T>+MatrixBuffer<T>{
+
+    /// Returns the largest entry (by magnitude) in the row between
+    /// [start, end) columns
+    fn max_abs_scalar_in_row(&self, 
+        row : uint, 
+        start_col: uint, 
+        end_col : uint)-> (T, uint){
+        debug_assert!(row < self.num_rows());
+        debug_assert!(end_col <= self.num_cols());
+        let p = self.as_ptr();
+        let stride = self.stride();
+        let mut offset = start_col * stride + row;
+        let mut result = num::abs(unsafe{*p.offset(offset as int)});
+        let mut index  = 0;
+        for i in range(1, end_col - start_col){
+            offset += stride;
+            let s = num::abs(unsafe{*p.offset(offset as int)});
+            if s > result {
+                index = i;
+                result = s;
+            }
+        }
+        (result, index + start_col)
+    }
+
+
+    /// Returns the largest entry (by magnitude) in the column between
+    /// [start, end) rows
+    fn max_abs_scalar_in_col(&self, 
+        col : uint, 
+        start_row: uint, 
+        end_row : uint)-> (T, uint){
+        debug_assert!(end_row <= self.num_rows());
+        debug_assert!(col < self.num_cols());
+        let p = self.as_ptr();
+        let stride = self.stride();
+        let mut offset = col * stride + start_row;
+        let mut result = num::abs(unsafe{*p.offset(offset as int)});
+        let mut index  = 0;
+        for i in range(1, end_row - start_row){
+            offset += 1;
+            let s = num::abs(unsafe{*p.offset(offset as int)});
+            if s > result {
+                index = i;
+                result = s;
+            }
+        }
+        (result, index + start_row)
+    }
+}
