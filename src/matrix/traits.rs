@@ -523,7 +523,18 @@ pub trait Updates<T:Number> : MatrixType<T>+MatrixBuffer<T> {
         }
         self
     }
-
+    /// Scales a specific row in lower triangular part 
+    fn scale_row_lt(&mut self, r :  uint, scale_factor : T)-> &mut Self;
+    /// Scales a specific column in lower triangular part
+    fn scale_col_lt(&mut self, c :  uint, scale_factor : T)-> &mut Self;
+    /// Scales a specific row in upper triangular part
+    fn scale_row_ut(&mut self, r :  uint, scale_factor : T)-> &mut Self;
+    /// Scales a specific column in upper triangular part
+    fn scale_col_ut(&mut self, c :  uint, scale_factor : T)-> &mut Self;
+    /// Scale all rows as per the scale factors
+    fn scale_rows(&mut self, scale_factors : &Matrix<T>)-> &mut Self;
+    /// Scale all columns as per the scale factors
+    fn scale_cols(&mut self, scale_factors : &Matrix<T>)-> &mut Self;
 }
 
 

@@ -429,7 +429,7 @@ mod test{
             1., 2., 3.
             ]);
         let mut lu = LUDecomposition::new(a.clone());
-        lu.decompose_crout();
+        lu.decompose_crout().unwrap();
         lu.print();
         assert_eq!(lu.max_abs_diff(&a), 0.);
     }
@@ -443,7 +443,7 @@ mod test{
             144., 12., 1.
             ]);
         let mut lu = LUDecomposition::new(a.clone());
-        lu.decompose_crout();
+        lu.decompose_crout().unwrap();
         lu.print();
         assert_eq!(lu.max_abs_diff(&a), 20.);
     }
@@ -460,7 +460,7 @@ mod test{
              0.,  0., -1., 2.,
             ]);
         let mut lu = LUDecomposition::new(a.clone());
-        lu.decompose_crout();
+        lu.decompose_crout().unwrap();
         lu.print();
         assert_eq!(lu.max_abs_diff(&a), 0.);
         //assert!(false);
@@ -471,7 +471,7 @@ mod test{
     fn test_lu_crout_hadamard(){
         let a = hadamard(16).unwrap();
         let mut lus = LUDecomposition::new(a.clone());
-        lus.decompose_crout();
+        lus.decompose_crout().unwrap();
         assert_eq!(lus.max_abs_diff(&a), 0.);
     }
 

@@ -667,6 +667,45 @@ impl<T:Number> Matrix<T> {
         result
     }
 
+    /// Returns the matrix with permuted rows
+    pub fn permuted_rows(&self, permutation : &MatrixU16)->Matrix<T>{
+        debug_assert!(permutation.is_col());
+        debug_assert_eq!(permutation.num_cells(), self.num_rows());
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let src = self.ptr;
+        let dst = result.ptr;
+        for c in range(0, self.cols){
+            let src_start = self.cell_to_offset(0, c);
+            let dst_start = result.cell_to_offset(0, c);
+            for r in range (0, self.num_rows()){
+                let src_offset = src_start + permutation[r] as int;
+                let dst_offset = dst_start +  r as int;
+                unsafe {*dst.offset(dst_offset) = *src.offset(src_offset);}
+            }
+        }
+        result
+    }
+
+    /// Returns the matrix with permuted columns
+    pub fn permuted_cols(&self, permutation : &MatrixU16)->Matrix<T>{
+        debug_assert!(permutation.is_col());
+        debug_assert_eq!(permutation.num_cells(), self.num_cols());
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let src = self.ptr;
+        let dst = result.ptr;
+        for c in range(0, self.cols){
+            debug_assert!((permutation[c] as uint) < self.num_cols());
+            let mut src_offset = self.cell_to_offset(0, permutation[c] as uint);
+            let mut dst_offset = result.cell_to_offset(0, c);
+            for _ in range (0, self.num_rows()){
+                unsafe {*dst.offset(dst_offset) = *src.offset(src_offset);}
+                src_offset += 1;
+                dst_offset += 1;
+            }
+        }
+        result
+    }
+
     /// Add the matrix by a scalar
     /// Returns a new matrix
     pub fn add_scalar(&self, rhs: T) -> Matrix<T> {
@@ -1069,6 +1108,79 @@ impl<T:Number> ECO<T> for Matrix<T> {
 
 /// Implementation of Matrix general update operations.
 impl<T:Number> Updates<T> for Matrix<T> {
+    fn scale_row_lt(&mut self, r :  uint, scale_factor : T)-> &mut Matrix<T>{
+        debug_assert!(r < self.num_rows());
+        let stride = self.stride() as int;
+        let ptr = self.ptr;
+        let mut offset = self.cell_to_offset(r, 0);
+        for _ in range(0, r + 1){
+            unsafe{
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale_factor * v;
+                offset += stride;
+                debug_assert!(offset < self.capacity() as int);
+            }
+        }
+        self
+    }
+    fn scale_col_lt(&mut self, c :  uint, scale_factor : T)-> &mut Matrix<T>{
+        debug_assert!(c < self.num_cols());
+        let ptr = self.ptr;
+        let mut offset = self.cell_to_offset(c, c);
+        for _ in range(c, self.num_cols()){
+            unsafe{
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale_factor * v;
+                offset += 1;
+            }
+        }
+        self
+    }
+    fn scale_row_ut(&mut self, r :  uint, scale_factor : T)-> &mut Matrix<T>{
+        debug_assert!(r < self.num_rows());
+        let stride = self.stride() as int;
+        let ptr = self.ptr;
+        let mut offset = self.cell_to_offset(r, r);
+        for _ in range(r, self.num_cols()){
+            unsafe{
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale_factor * v;
+                offset += stride;
+            }
+        }
+        self
+    }
+    fn scale_col_ut(&mut self, c :  uint, scale_factor : T)-> &mut Matrix<T>{
+        debug_assert!(c < self.num_cols());
+        let ptr = self.ptr;
+        let mut offset = self.cell_to_offset(0, c);
+        for _ in range(0, c + 1){
+            unsafe{
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale_factor * v;
+                offset += 1;
+            }
+        }
+        self
+    }
+    fn scale_rows(&mut self, scale_factors : &Matrix<T>)-> &mut Matrix<T>{
+        assert!(scale_factors.is_col());
+        assert_eq!(scale_factors.num_cells(), self.num_rows());
+        for r in range(0, self.num_rows()){
+            let factor = scale_factors[r];
+            self.ero_scale(r, factor);
+        }
+        self
+    }
+    fn scale_cols(&mut self, scale_factors : &Matrix<T>)-> &mut Matrix<T>{
+        assert!(scale_factors.is_col());
+        assert_eq!(scale_factors.num_cells(), self.num_cols());
+        for c in range(0, self.num_cols()){
+            let factor = scale_factors[c];
+            self.eco_scale(c, factor);
+        }
+        self
+    }
 }
 
 
@@ -1564,10 +1676,8 @@ impl<T:Number> Matrix<T> {
 
 
 #[cfg(test)]
-mod tests {
+mod test {
 
-    extern crate test;
-    use self::test::Bencher;
     use  super::{Matrix, MatrixI64, MatrixF64};
     use matrix::*;
 
@@ -2315,6 +2425,173 @@ mod tests {
         assert_eq!(m.max_abs_scalar_in_col(2, 1, 2), (62, 1));
     }
 
+    #[test]
+    fn test_scale_row_lt(){
+        let mut m = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 9
+            ]);
+        let m2 = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            21, 24, 27
+            ]);
+        m.scale_row_lt(2, 3);
+        assert_eq!(m, m2);
+    }
+    #[test]
+    fn test_scale_col_lt(){
+        let mut m = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 9
+            ]);
+        let m2 = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 27
+            ]);
+        m.scale_col_lt(2, 3);
+        assert_eq!(m, m2);
+        let m2 = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 10, 6,
+            7, 16, 27
+            ]);
+        m.scale_col_lt(1, 2);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_scale_row_ut(){
+        let mut m = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 9
+            ]);
+        let m2 = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 27
+            ]);
+        m.scale_row_ut(2, 3);
+        assert_eq!(m, m2);
+        m.scale_row_ut(1, 2);
+        let m2 = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 10, 12,
+            7, 8, 27
+            ]);
+        assert_eq!(m, m2);
+    }
+    #[test]
+    fn test_scale_col_ut(){
+        let mut m = matrix_rw_i64(3, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 9
+            ]);
+        let m2 = matrix_rw_i64(3, 3, [
+            1, 2, 9, 
+            4, 5, 18,
+            7, 8, 27
+            ]);
+        m.scale_col_ut(2, 3);
+        assert_eq!(m, m2);
+        let m2 = matrix_rw_i64(3, 3, [
+            1, 4, 9, 
+            4, 10, 18,
+            7, 8, 27
+            ]);
+        m.scale_col_ut(1, 2);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_scale_rows(){
+        let mut m = matrix_rw_i64(4, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 9,
+            10, 11, 12
+            ]);
+        let factors = vector_i64([1, 2, 3, 4]);
+        m.scale_rows(&factors);
+        let m2 = matrix_rw_i64(4, 3, [
+            1, 2, 3, 
+            8, 10, 12,
+            21, 24, 27,
+            40, 44, 48
+            ]);
+        assert_eq!(m, m2);
+    }
+    #[test]
+    fn test_scale_cols(){
+        let mut m = matrix_rw_i64(2, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let factors = vector_i64([1, 2, 3]);
+        m.scale_cols(&factors);
+        let m2 = matrix_rw_i64(2, 3, [
+            1, 4, 9, 
+            4, 10, 18,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_permute_rows(){
+        let m = matrix_rw_i64(4, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 9,
+            10, 11, 12
+            ]);
+        let permutation = vector_u16([0, 3, 1, 2]);
+        let m = m.permuted_rows(&permutation);
+        let m2 = matrix_rw_i64(4, 3, [
+            1, 2, 3, 
+            10, 11, 12,
+            4, 5, 6,
+            7, 8, 9,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_permute_cols(){
+        let m = matrix_rw_i64(4, 3, [
+            1, 2, 3, 
+            4, 5, 6,
+            7, 8, 9,
+            10, 11, 12
+            ]);
+        let permutation = vector_u16([2, 0, 1]);
+        let m = m.permuted_cols(&permutation);
+        let m2 = matrix_rw_i64(4, 3, [
+            3, 1, 2,
+            6, 4, 5,
+            9, 7, 8,
+            12, 10, 11,
+            ]);
+        assert_eq!(m, m2);
+    }
+}
+
+/******************************************************
+ *
+ *   Bench marks follow.
+ *
+ *******************************************************/
+
+
+#[cfg(test)]
+mod bench {
+    extern crate test;
+    use self::test::Bencher;
+    use matrix::*;
 
     #[bench]
     fn bench_eo_col_switch(b: &mut Bencher){
