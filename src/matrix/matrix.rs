@@ -723,7 +723,7 @@ impl<T:Number> Matrix<T> {
     /// Returns a new matrix
     pub fn pow(&self, exp : uint) -> Matrix<T>{
         if !self.is_square() {
-            panic!(NonSquareMatrix.to_string());
+            panic!(IsNotSquareMatrix.to_string());
         }
         if exp == 0 {
             return Matrix::identity(self.rows, self.cols);

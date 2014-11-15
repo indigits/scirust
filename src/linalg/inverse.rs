@@ -14,7 +14,7 @@ use error::*;
 /// Computes the inverse of a matrix using elementary row operations
 pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     if !a.is_square(){
-        return Err(NonSquareMatrix);
+        return Err(IsNotSquareMatrix);
     }
     let n = a.num_rows();
     let mut result  : MatrixF64 = Matrix::identity(n, n);
@@ -69,7 +69,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
 /// Computes the inverse of a matrix using elementary column operations
 pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     if !a.is_square(){
-        return Err(NonSquareMatrix);
+        return Err(IsNotSquareMatrix);
     }
     let n = a.num_rows();
     let mut result  : MatrixF64 = Matrix::identity(n, n);

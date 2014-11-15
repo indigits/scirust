@@ -24,7 +24,7 @@ pub enum SRError{
     /// The dimensions of two matrices mismatch
     DimensionsMismatch,
     /// The matrix is not a square matrix
-    NonSquareMatrix,
+    IsNotSquareMatrix,
     /// The matrix is not a vector
     NotAVector,
     /// Indicates that a matrix is not full rank
@@ -53,6 +53,8 @@ pub enum SRError{
      *
      *******************************************************/
 
+     /// The dimensions of left and right hand side don't match
+     LRDimensionMismatch,
     /// There is no solution to the system of equations
     NoSolution,
     /// There are infinite solutions to the system of equations.
@@ -79,7 +81,7 @@ impl SRError{
             //  Matrices
             EmptyMatrix => format!("Matrix is empty"),
             DimensionsMismatch => format!("Dimensions don't match"),
-            NonSquareMatrix => format!("Matrix is not square"),
+            IsNotSquareMatrix => format!("Matrix is not square"),
             NotAVector => format!("Matrix is not a vector"),
             IsNotFullRankMatrix => format!("Matrix is not full rank"),
             IsFullRankMatrix => format!("Matrix is full rank"),
@@ -91,6 +93,7 @@ impl SRError{
             IsNegativeSemiDefinite => format!("Matrix is negative semi-definite"),
             IsNonDefinite => format!("Matrix is non-definite"),
             // Linear systems
+            LRDimensionMismatch => format!("The dimensions of LHS and RHS don't match"),
             NoSolution => format!("No solution"),
             InfiniteSolutions => format!("Infinite solutions"),
             // Discrete numbers

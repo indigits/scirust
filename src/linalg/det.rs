@@ -18,7 +18,7 @@ See http://en.wikipedia.org/wiki/Matrix_(mathematics)#Empty_matrices.
 "]
 pub fn  det<T:Number+Signed>(m : &Matrix<T>)->Result<T,SRError>{
     if !m.is_square(){
-        return Err(NonSquareMatrix);
+        return Err(IsNotSquareMatrix);
     }
     if m.is_empty(){
         return Ok(num::One::one());

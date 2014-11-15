@@ -106,9 +106,13 @@ solving a lower triangular linear system. L X = B
 "]
 pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) -> 
     Result<MatrixF64, SRError>{
-    assert!(l.is_square());
+    if !l.is_square() {
+        return Err(IsNotSquareMatrix);
+    }
     let n = l.num_rows();
-    assert_eq!(n, b.num_rows());
+    if n != b.num_rows() {
+        return Err(LRDimensionMismatch);
+    }
     debug_assert!(l.is_lt());
     // Create a copy for the result
     let mut b = b.clone();
@@ -117,7 +121,7 @@ pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) ->
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
-            return Err(NoSolution);
+            return Err(IsSingular);
         }
         for k in range(0,  r){
             b.ero_scale_add(r, k as int, -l.get(r, k));
@@ -145,7 +149,7 @@ pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) ->
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
-            return Err(NoSolution);
+            return Err(IsSingular);
         }
         b.ero_scale(r, 1.0/pivot);
         for j in range(r+1, u.num_rows()){
@@ -189,7 +193,7 @@ pub fn ldu_solve(l : &MatrixF64,
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
-            return Err(NoSolution);
+            return Err(IsSingular);
         }
         for k in range(0,  r){
             b.ero_scale_add(r, k as int, -l.get(r, k));
@@ -210,7 +214,7 @@ pub fn ldu_solve(l : &MatrixF64,
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
-            return Err(NoSolution);
+            return Err(IsSingular);
         }
         b.ero_scale(r, 1.0/pivot);
         for j in range(r+1, u.num_rows()){
@@ -394,6 +398,35 @@ mod test{
         assert!(lsv.is_max_abs_val_below_threshold(1e-6));
     }
 
+
+    #[test]
+    fn test_lt_1(){
+        let l = matrix_rw_f64(4, 4, [
+        1.0, 0.0, 0.0, 0.0,
+        2.0, 1.0, 0.0, 0.0,
+        3.0, 1.0, 2.0, 0.0,
+        1.0, 1.0, 1.0, 1.0
+        ]);
+        let x = vector_f64([1., 2., 3., 4.]);
+        let b = l * x;
+        let x = lt_solve(&l, &b).unwrap();
+        let lsv = LinearSystemValidator::new(&l, &x, &b);
+        lsv.print();
+        assert!(lsv.is_max_abs_val_below_threshold(1e-6));
+    }
+
+
+    #[test]
+    fn test_lt_2(){
+        let m = from_range_rw_f64(10, 10, 1., 200.);
+        let x = vector_f64([1., 2., 3., 4., 5., 6., 7., 8., 9., 10.]);
+        let l = m.lt();
+        let b = l * x;
+        let x = lt_solve(&l, &b).unwrap();
+        let lsv = LinearSystemValidator::new(&l, &x, &b);
+        lsv.print();
+        assert!(lsv.is_max_abs_val_below_threshold(1e-6));
+    }
 
 
 
