@@ -84,12 +84,14 @@ pub mod linalg {
     pub use super::error::*;
     pub use self::singularity::*;
     pub use self::inverse::*;
+    pub use self::rank::*;
 
     mod linear_system;
     mod det;
     mod lu;
     mod singularity;
     mod inverse;
+    mod rank;
 
 }
 
