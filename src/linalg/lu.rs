@@ -10,6 +10,7 @@
 //use error::*;
 use matrix::*;
 use error::*;
+use discrete::permutations::*;
 
 
 #[doc="LU factorization with partial
@@ -20,11 +21,11 @@ pub struct LUDecomposition {
     ///  The factorization is done in place.
     a : MatrixF64,
     /// The corresponding permutation vector
-    perm_vector : MatrixU16,
+    pub perm_vector : MatrixU16,
     /// The corresponding diagonal vector
-    diag_vector : MatrixF64,
+    pub diag_vector : MatrixF64,
     /// Indicates if the permutation matrix is pre or post multiplied
-    pre : bool
+    pub pre : bool
 }
 
 
@@ -247,28 +248,39 @@ impl LUDecomposition{
 pub fn lu_ero(a : &MatrixF64) -> (MatrixF64, MatrixF64){
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_ero();
-        (lu.p().transpose() * lu.l(), lu.d() * lu.u())
+        let inv_p = inverse_permutation(&lu.perm_vector);
+        let mut u = lu.u();
+        u.scale_rows(&lu.diag_vector);
+        (lu.l().permuted_rows(&inv_p), u)
 }
 
 ///Performs LU factorization  PA = LU 
 pub fn lup_ero(a : &MatrixF64) -> (MatrixF64, MatrixF64, MatrixF64){
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_ero();
-        (lu.l(), lu.d() * lu.u(), lu.p())
+        let mut u = lu.u();
+        u.scale_rows(&lu.diag_vector);
+        (lu.l(), u, lu.p())
 }
 
 ///Performs LU factorization  A = LU 
 pub fn lu_eco(a : &MatrixF64) -> (MatrixF64, MatrixF64){
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_eco();
-        (lu.l() * lu.d(), lu.u() * lu.p().transpose())
+        let mut l = lu.l();
+        l.scale_cols(&lu.diag_vector);
+        let u = lu.u();
+        let inv_p = inverse_permutation(&lu.perm_vector);
+        (l, u.permuted_cols(&inv_p))
 }
 
 ///Performs LU factorization  AP = LU 
 pub fn lup_eco(a : &MatrixF64) -> (MatrixF64, MatrixF64, MatrixF64){
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_eco();
-        (lu.l() * lu.d(), lu.u(), lu.p())
+        let mut l = lu.l();
+        l.scale_cols(&lu.diag_vector);
+        (l, lu.u(), lu.p())
 }
 
 
