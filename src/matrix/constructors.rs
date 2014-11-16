@@ -602,6 +602,18 @@ pub fn col_vector<T:Number>(values: &[T])-> Matrix<T> {
     m 
 }
 
+#[doc="Returns a column vector with entries from an iterator.
+"]
+#[inline]
+pub fn col_vector_from_iter<T:Number, A : Iterator<T>>(
+    values: A,
+    len : uint)-> Matrix<T> {
+    let m : Matrix<T> = Matrix::from_iter_rw(len, 1, values);
+    m 
+}
+
+
+
 #[doc="Returns a 8-bit unsigned int column vector with entries from a slice.
 "]
 #[inline]
@@ -677,6 +689,12 @@ pub fn vector_f32(values: &[f32])->MatrixF32 {
 pub fn vector_f64(values: &[f64])->MatrixF64 {
     col_vector(values)
 }
+
+//pub fn vec_f64<T:Number+ToPrimitive>(values: &[T])->MatrixF64 {
+//    let n = values.len();
+//    let iter = values.iter().map(|&x| x.to_f64().unwrap());
+//    col_vector_from_iter(iter, n)
+//}
 
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
