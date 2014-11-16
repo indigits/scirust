@@ -11,6 +11,7 @@
 use matrix::*;
 use error::*;
 use discrete::permutations::*;
+use matrix::vector::*;
 
 
 #[doc="LU factorization with partial
@@ -241,6 +242,11 @@ impl LUDecomposition{
         Matrix::diag_from_vec(&self.diag_vector)
     }
 
+    /// Computes the determinant
+    pub fn det(&self)-> f64{
+        vec_reduce_product(&self.diag_vector)
+    }
+
     pub fn print(&self){
         println!("p: {}", self.perm_vector);
         let d = self.d();
@@ -442,6 +448,18 @@ mod test{
     }
 
     #[test]
+    fn test_lu_eco_hadamard_det(){
+        let a = hadamard(8).unwrap();
+        let mut lus = LUDecomposition::new(a.clone());
+        lus.decompose_eco();
+        assert_eq!(lus.max_abs_diff(&a), 0.);
+        let det1 = lus.det();
+        let det2 = a.det().unwrap();
+        assert_eq!(det1, det2);
+    }
+
+
+    #[test]
     fn test_lu_crout_1(){
         let a = matrix_rw_f64(3, 3, [
             1., 1., 1.,
@@ -500,6 +518,8 @@ mod test{
         lus.decompose_crout().unwrap();
         assert!(lus.max_abs_diff(&a) < 1e-10);
     }
+
+
 
 }
 /******************************************************
