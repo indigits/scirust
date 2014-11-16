@@ -331,6 +331,28 @@ pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
         self
     }
 
+    /// Row scaling by a factor over a slice of the row. [start, end)
+    #[inline]
+    fn ero_scale_slice(&mut self, 
+        r :  uint, 
+        scale : T,
+        start : uint,
+        end : uint,
+        )-> &mut Self {
+        debug_assert! (r  < self.num_rows());
+        debug_assert!(start <= end);
+        debug_assert!(end <= self.num_cols());
+        let ptr = self.as_mut_ptr();
+        for c in range(start, end){
+            let offset = self.cell_to_offset(r, c);
+            unsafe {
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale * v;
+            }
+        }
+        self
+    }
+
     /// Row scaling by a factor and adding to another row.
     /// r_i = r_i + k * r_j
     #[inline]
@@ -397,6 +419,29 @@ pub trait ECO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(0, c);
         for _ in range(0, self.num_rows()){
+            unsafe {
+                let v = *ptr.offset(offset);
+                *ptr.offset(offset) = scale * v;
+                offset += 1;
+            }
+        }
+        self
+    }
+
+    /// Column scaling by a factor over a slice
+    #[inline]
+    fn eco_scale_slice(&mut self, 
+        c :  uint, 
+        scale : T,
+        start : uint,
+        end : uint,
+        )-> &mut Self {
+        debug_assert! (c  < self.num_cols());
+        debug_assert!(start < end);
+        debug_assert!(end <= self.num_rows());
+        let ptr = self.as_mut_ptr();
+        let mut offset = self.cell_to_offset(start, c);
+        for _ in range(start, end){
             unsafe {
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale * v;

@@ -130,7 +130,8 @@ impl LUDecomposition{
     /// Crout's algorithm
     pub fn decompose_crout(&mut self) -> Result<(), SRError>{
         let a = &mut self.a;
-        let p = &mut self.perm_vector;
+        //let p = &mut self.perm_vector;
+        let d = &mut self.diag_vector;
         let n = a.num_cols();
         // Iterate
         for p in range(0, n){
@@ -155,6 +156,12 @@ impl LUDecomposition{
                 v = v / a.get(p, p);
                 a.set(p, c, v);
             }
+        }
+        for r in range(0, n){
+            let pivot = a.get(r, r);
+            d.set(r, 0, pivot);
+            // scale down the r-th column of lower triangular matrix
+            a.eco_scale_slice(r, 1./pivot, r, n);
         }
         /****
             Following example shows how the computations proceed
@@ -186,21 +193,23 @@ impl LUDecomposition{
 
     /// Finds the maximum absolute entry in a - ldu
     pub fn max_abs_diff(&self, a : &MatrixF64) -> f64 {
-        let d = self.d();
-        let p = self.p();
+        let d = &self.diag_vector;
+        let p = &self.perm_vector;
         let l = self.l();
-        let u = self.u();
+        let mut u = self.u();
         let a = if self.pre {
-            p * *a
+            a.permuted_rows(p)
         }
         else{
-            *a * p
+            a.permuted_cols(p)
         };
-        println!("p{}", a);
-        println!("p a {}", a);
-        let b = l * d * u;
-        println!("l d u {}", b);
+        u.scale_rows(d);
+        let b = l * u;
         let diff  = a  - b;
+        //println!("a {}", a);
+        //println!("p{}", p);
+        //println!("p a {}", a);
+        //println!("l d u {}", b);
         diff.max_abs_scalar_value()
     }
 
@@ -433,7 +442,6 @@ mod test{
     }
 
     #[test]
-    #[ignore]
     fn test_lu_crout_1(){
         let a = matrix_rw_f64(3, 3, [
             1., 1., 1.,
@@ -447,22 +455,21 @@ mod test{
     }
 
     #[test]
-    #[ignore]
     fn test_lu_crout_2(){
         let a = matrix_rw_f64(3, 3, [
             25., 5., 1.,
             64., 8., 1.,
             144., 12., 1.
             ]);
+        println!("a: {}", a);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_crout().unwrap();
         lu.print();
-        assert_eq!(lu.max_abs_diff(&a), 20.);
+        assert!(lu.max_abs_diff(&a) < 1e-7);
     }
 
 
     #[test]
-    #[ignore]
     fn test_lu_crout_tridiag(){
         // tri-diagonal matrix
         let a = matrix_rw_f64(4, 4, [
@@ -479,12 +486,19 @@ mod test{
     }
 
     #[test]
-    #[ignore]
     fn test_lu_crout_hadamard(){
         let a = hadamard(16).unwrap();
         let mut lus = LUDecomposition::new(a.clone());
         lus.decompose_crout().unwrap();
         assert_eq!(lus.max_abs_diff(&a), 0.);
+    }
+
+    #[test]
+    fn test_lu_crout_hilbert(){
+        let a = hilbert(64);
+        let mut lus = LUDecomposition::new(a.clone());
+        lus.decompose_crout().unwrap();
+        assert!(lus.max_abs_diff(&a) < 1e-10);
     }
 
 }

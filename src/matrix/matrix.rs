@@ -2318,6 +2318,20 @@ mod test {
     }
 
     #[test]
+    fn test_row_scale_slice_1(){
+        let mut m1 = matrix_rw_i64(3,3,[
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9]);
+        m1.ero_scale_slice(1, 2, 1, 3);
+        let m2 = matrix_rw_i64(3,3,[
+            1, 2, 3,
+            4, 10, 12,
+            7, 8, 9]);
+        assert_eq!(m1, m2);
+    }
+
+    #[test]
     fn test_row_scale_add(){
         let mut m1 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![
             2, 3, 9, 
@@ -2351,6 +2365,20 @@ mod test {
         m1.eco_scale(1, 2);
         m2.ero_scale(1, 2);
         assert_eq!(m1, m2.transpose());
+    }
+
+    #[test]
+    fn test_col_scale_slice_1(){
+        let mut m1 = matrix_rw_i64(3,3,[
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9]);
+        m1.eco_scale_slice(1, 2, 1, 3);
+        let m2 = matrix_rw_i64(3,3,[
+            1, 2, 3,
+            4, 10, 6,
+            7, 16, 9]);
+        assert_eq!(m1, m2);
     }
 
     #[test]
