@@ -63,14 +63,16 @@ pub mod matrix {
     pub use self::view_conversion::*;
     pub use self::view_minmax::*;
     pub use self::triangular_matrix::*;
+    pub use self::vector::*;
 
     mod constructors;
     mod iter;
-    mod matrix;
+    pub mod matrix;
     mod matrix_conversion;
     mod matrix_minmax;
     mod random;
     pub mod traits;
+    pub mod vector;
     mod view;
     mod view_conversion;
     mod view_minmax;
@@ -198,6 +200,7 @@ pub mod complex;
 pub mod util{
 
     pub mod memory;
+    pub mod slice_vec_conversion;
 }
 
 
