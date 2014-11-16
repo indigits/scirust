@@ -248,9 +248,9 @@ mod test{
 #[cfg(test)]
 mod bench{
     extern crate test;
+    use self::test::Bencher;
     use super::*;
     use matrix::*;
-    use self::test::Bencher;
 
     #[bench]
     fn bench_inverse_ero_hadamard_32 (b: &mut Bencher){
