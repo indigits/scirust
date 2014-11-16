@@ -3,6 +3,7 @@
 
 // std imports
 use std::fmt::Show;
+use std::num::Zero;
 
 // complex numbers
 pub use external::complex::{Complex32, Complex64};
@@ -12,7 +13,7 @@ pub use external::complex::{Complex32, Complex64};
 
 
 /// Defines basic requirements for a matrix entry
-pub trait Entry : Show {
+pub trait Entry : Show + Zero + Clone {
 
 }
 

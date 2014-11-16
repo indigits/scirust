@@ -5,11 +5,13 @@ use std::fmt;
 use std::num::{One, Zero};
 //use std::ptr;
 
-// srmat imports
+// local imports
+use entry::Entry;
 use number::{Number};
 use error::*;
 use matrix::matrix::{Matrix};
-use matrix::traits::{Shape, Introspection, 
+use matrix::traits::{Shape, NumberMatrix, 
+    Introspection, 
     MatrixBuffer, Extraction, ERO, ECO};
 
 //use discrete::*;
@@ -22,7 +24,7 @@ chosen rows and columns.
 
 
 "]
-pub struct MatrixView<'a, T:'a+Number>{
+pub struct MatrixView<'a, T:'a+Entry>{
     // Reference to the associated matrix
     m : &'a Matrix<T>,
     // start row
@@ -37,7 +39,7 @@ pub struct MatrixView<'a, T:'a+Number>{
 
 
 /// Static functions for creating  a view
-impl<'a, T:Number> MatrixView<'a, T> {
+impl<'a, T:Entry> MatrixView<'a, T> {
     pub fn new(m : &Matrix<T>, start_row : uint, start_col : uint , num_rows: uint, num_cols : uint) -> MatrixView<T> {
         debug_assert!(start_row + num_rows <= m.num_rows());
         debug_assert!(start_col + num_cols <= m.num_cols());
@@ -54,7 +56,7 @@ impl<'a, T:Number> MatrixView<'a, T> {
 }
 
 ///Basic methods for a view
-impl<'a, T:Number> MatrixView<'a, T> {
+impl<'a, T:Entry> MatrixView<'a, T> {
     /// Returns the start row
     pub fn start_row(&self) -> uint{
         self.start_row
@@ -62,7 +64,11 @@ impl<'a, T:Number> MatrixView<'a, T> {
     pub fn matrix(&self)-> &'a Matrix<T>{
         self.m
     }
+}
 
+
+///Basic methods for a view of a matrix of  numbers
+impl<'a, T:Number> MatrixView<'a, T> {
 
     /// Copies data from other view
     // TODO: write tests
@@ -114,7 +120,7 @@ impl<'a, T:Number> MatrixView<'a, T> {
 }
 
 /// Implement Buffer API for matrix view
-impl <'a, T:Number> MatrixBuffer<T> for MatrixView<'a, T> {
+impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     fn stride (&self)->uint {
@@ -156,7 +162,7 @@ impl <'a, T:Number> Extraction<T> for MatrixView<'a, T> {
 
 
 /// Implementation of common matrix methods
-impl <'a, T:Number> Shape<T> for MatrixView<'a, T> {
+impl <'a, T:Entry> Shape<T> for MatrixView<'a, T> {
     /// Returns the number of rows in the view
     fn num_rows(&self) -> uint {
         self.rows
@@ -178,6 +184,41 @@ impl <'a, T:Number> Shape<T> for MatrixView<'a, T> {
         self.rows * self.cols
     }
 
+
+    /// Gets an element in the view
+    #[inline]
+    fn get(&self, r : uint, c : uint) -> T  {
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
+        let ptr = self.m.as_ptr();
+        let offset = self.cell_to_offset(r, c);
+        debug_assert!((offset as uint) < self.m.capacity());
+        unsafe {
+            // TODO : Optimize this
+            ptr.offset(offset).as_ref().unwrap().clone()
+        }
+    }
+
+    /// Sets an element in the view
+    #[inline]
+    fn set(&mut self, r : uint, c : uint, value : T) {
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
+        let ptr = self.m.as_ptr();
+        // I know more than the compiler
+        // I am allowing modification of the underlying buffer
+        let ptr : *mut T = unsafe { mem::transmute(ptr) };
+        let offset = self.cell_to_offset(r, c);
+        debug_assert!((offset as uint) < self.m.capacity());
+        unsafe {
+            *ptr.offset(offset) = value;
+        }
+    }
+
+}
+
+/// Implementation of methods related to matrices of numbers
+impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool {
         let o : T = One::one();
@@ -250,37 +291,9 @@ impl <'a, T:Number> Shape<T> for MatrixView<'a, T> {
         } 
         true
     }
-
-    /// Gets an element in the view
-    #[inline]
-    fn get(&self, r : uint, c : uint) -> T  {
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        let ptr = self.m.as_ptr();
-        let offset = self.cell_to_offset(r, c);
-        debug_assert!((offset as uint) < self.m.capacity());
-        unsafe {
-            *ptr.offset(offset)
-        }
-    }
-
-    /// Sets an element in the view
-    #[inline]
-    fn set(&mut self, r : uint, c : uint, value : T) {
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        let ptr = self.m.as_ptr();
-        // I know more than the compiler
-        // I am allowing modification of the underlying buffer
-        let ptr : *mut T = unsafe { mem::transmute(ptr) };
-        let offset = self.cell_to_offset(r, c);
-        debug_assert!((offset as uint) < self.m.capacity());
-        unsafe {
-            *ptr.offset(offset) = value;
-        }
-    }
-
 }
+
+
 
 /// Functions to construct new views out of a view and other conversions
 impl<'a, T:Number> MatrixView<'a, T> {

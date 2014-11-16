@@ -4,6 +4,7 @@ use std::cmp;
 use std::num;
 
 // local imports
+use entry::Entry;
 use number::Number;
 use matrix::matrix::Matrix;
 use error::*;
@@ -11,14 +12,10 @@ use error::*;
 use discrete::{mod_n};
 
 
-#[doc="Defines the traits which all matrix types must implement.
-
-At the moment there are two matrix types. One is the `Matrix<T>` itself
-and another is `MatrixView<T>`. It so happens that they share
-a lot of methods in common.  This trait identifies a fundamental
-set of methods which every matrix type must implement.
+#[doc="Defines the features which all matrix types must implement.
+This API focuses only on the shape of the matrix.
 "] 
-pub trait Shape<T:Number> {
+pub trait Shape<T:Entry> {
     
     /// Returns the number of rows
     fn num_rows(&self) -> uint;
@@ -64,25 +61,6 @@ pub trait Shape<T:Number> {
         self.num_rows() == self.num_cols()
     }
 
-    /// Returns if the matrix is an identity matrix
-    fn is_identity(&self) -> bool;
-
-    /// Returns if the matrix is a diagonal matrix
-    fn is_diagonal(&self) -> bool;
-
-    /// Returns if the matrix is lower triangular 
-    fn is_lt(&self) -> bool;
-
-    /// Returns if the matrix is upper triangular 
-    fn is_ut(&self) -> bool;
-
-
-    /// Returns if the matrix is triangular
-    fn is_triangular(&self) -> bool{
-        self.is_lt() || self.is_ut()
-    }
-
-
 
     /// Gets an element by its row and column number
     fn get(&self, r : uint, c : uint) -> T;
@@ -113,11 +91,33 @@ pub trait Shape<T:Number> {
 }
 
 
+/// Defines a set of basic methods implemented by matrices of numbers
+pub trait NumberMatrix<T:Number> {
+    
+    /// Returns if the matrix is an identity matrix
+    fn is_identity(&self) -> bool;
+
+    /// Returns if the matrix is a diagonal matrix
+    fn is_diagonal(&self) -> bool;
+
+    /// Returns if the matrix is lower triangular 
+    fn is_lt(&self) -> bool;
+
+    /// Returns if the matrix is upper triangular 
+    fn is_ut(&self) -> bool;
+
+
+    /// Returns if the matrix is triangular
+    fn is_triangular(&self) -> bool{
+        self.is_lt() || self.is_ut()
+    }
+}
+
 #[doc=" Defines the low level interface to the internal
 memory buffer of a matrix implementation.  Use it with
 caution. 
 "]
-pub trait MatrixBuffer<T:Number> {
+pub trait MatrixBuffer<T:Entry> {
 
     /// Returns the number of actual memory elements 
     /// per column

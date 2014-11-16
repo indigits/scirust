@@ -11,12 +11,13 @@ use std::rt::heap::allocate;
 
 
 // local imports
-
+use entry::Entry;
 use number::{Number};
 use matrix::matrix::Matrix;
 //use matrix::error::*;
 
-use matrix::traits::{Shape, Introspection, 
+use matrix::traits::{Shape, NumberMatrix,
+    Introspection, 
     MatrixBuffer, Extraction};
 
 
@@ -53,7 +54,7 @@ This design is not too flexible. The memory allocation
 is done in the beginning and never changed afterwards.
 Thus, the size of the matrix remains same.
 "]
-pub struct TriangularMatrix<T:Number> {
+pub struct TriangularMatrix<T:Entry> {
     /// Number of rows and columns in the matrix
     size : uint,
     /// The pointer to raw data array of the matrix
@@ -146,7 +147,7 @@ impl<T:Number> TriangularMatrix<T> {
 
 
 /// Core methods for all matrix types
-impl<T:Number> Shape<T> for TriangularMatrix<T> {
+impl<T:Entry> Shape<T> for TriangularMatrix<T> {
 
     /// Returns the number of rows in the matrix
     fn num_rows(&self) -> uint {
@@ -168,6 +169,33 @@ impl<T:Number> Shape<T> for TriangularMatrix<T> {
         self.size * self.size
     }
 
+    fn get(&self, r : uint, c : uint) -> T  {
+        // These assertions help in checking matrix boundaries
+        debug_assert!(r < self.size);
+        debug_assert!(c < self.size);
+        if (self.ut_flag && r > c) || (!self.ut_flag && r < c) {
+            let v : T = Zero::zero();
+            return v;
+        }
+        unsafe {
+            // TODO : Optimize this
+            self.ptr.offset(self.cell_to_offset(r, c)).as_ref().unwrap().clone()
+        }
+    }
+
+    fn set(&mut self, r : uint, c : uint, value : T) {
+        // These assertions help in checking matrix boundaries
+        debug_assert!(r < self.size);
+        debug_assert!(c < self.size);
+        unsafe {
+            *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
+        }
+    }
+
+}
+
+/// Implementation of methods for matrices of numbers
+impl<T:Number> NumberMatrix<T> for TriangularMatrix<T> {
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool {
         let o : T = One::one();
@@ -235,30 +263,8 @@ impl<T:Number> Shape<T> for TriangularMatrix<T> {
     fn is_triangular(&self) -> bool {
         true
     }
-
-    fn get(&self, r : uint, c : uint) -> T  {
-        // These assertions help in checking matrix boundaries
-        debug_assert!(r < self.size);
-        debug_assert!(c < self.size);
-        if (self.ut_flag && r > c) || (!self.ut_flag && r < c) {
-            let v : T = Zero::zero();
-            return v;
-        }
-        unsafe {
-            *self.ptr.offset(self.cell_to_offset(r, c) as int)
-        }
-    }
-
-    fn set(&mut self, r : uint, c : uint, value : T) {
-        // These assertions help in checking matrix boundaries
-        debug_assert!(r < self.size);
-        debug_assert!(c < self.size);
-        unsafe {
-            *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
-        }
-    }
-
 }
+
 
 /// Introspection support
 impl<T:Number> Introspection for TriangularMatrix<T> {
@@ -269,7 +275,7 @@ impl<T:Number> Introspection for TriangularMatrix<T> {
 }
 
 /// Buffer access
-impl<T:Number> MatrixBuffer<T> for TriangularMatrix<T> {
+impl<T:Entry> MatrixBuffer<T> for TriangularMatrix<T> {
     /// Fake implementation
     fn stride (&self)->uint {
         -1 as uint

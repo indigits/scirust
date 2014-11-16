@@ -18,11 +18,13 @@ use std::raw::Slice as RawSlice;
 // local imports
 
 use discrete::{mod_n};
+use entry::Entry;
 use number::{Number};
 use error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
-use matrix::traits::{Shape, Introspection, 
+use matrix::traits::{Shape, NumberMatrix,
+    Introspection, 
     MatrixBuffer, Extraction, ERO, ECO, Updates,
     Transpose, Search};
 
@@ -44,7 +46,7 @@ The numbers are stored in column-major order.
 This is the standard in Fortran and MATLAB.
 
 "]
-pub struct Matrix<T:Number> {
+pub struct Matrix<T:Entry> {
     /// Number of rows in the matrix
     rows : uint,
     /// Number of columns in the matrix
@@ -366,7 +368,7 @@ by hand.
 }
 
 /// Core methods for all matrix types
-impl<T:Number> Shape<T> for Matrix<T> {
+impl<T:Entry> Shape<T> for Matrix<T> {
 
     /// Returns the number of rows in the matrix
     fn num_rows(&self) -> uint {
@@ -387,6 +389,32 @@ impl<T:Number> Shape<T> for Matrix<T> {
     fn num_cells(&self)->uint {
         self.rows * self.cols
     }
+
+
+    fn get(&self, r : uint, c : uint) -> T  {
+        // These assertions help in checking matrix boundaries
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
+        let offset = self.cell_to_offset(r, c);
+        unsafe {
+            let v = self.ptr.offset(offset);
+            // TODO : Optimize this
+            v.as_ref().unwrap().clone()
+        }
+    }
+
+    fn set(&mut self, r : uint, c : uint, value : T) {
+        // These assertions help in checking matrix boundaries
+        debug_assert!(r < self.rows);
+        debug_assert!(c < self.cols);
+        unsafe {
+            *self.ptr.offset(self.cell_to_offset(r, c)) = value;
+        }
+    }
+}
+
+/// Methods available to number matrices
+impl<T:Number> NumberMatrix<T> for Matrix<T> {
 
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool {
@@ -461,23 +489,6 @@ impl<T:Number> Shape<T> for Matrix<T> {
         true
     }
 
-    fn get(&self, r : uint, c : uint) -> T  {
-        // These assertions help in checking matrix boundaries
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        unsafe {
-            *self.ptr.offset(self.cell_to_offset(r, c) as int)
-        }
-    }
-
-    fn set(&mut self, r : uint, c : uint, value : T) {
-        // These assertions help in checking matrix boundaries
-        debug_assert!(r < self.rows);
-        debug_assert!(c < self.cols);
-        unsafe {
-            *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
-        }
-    }
 }
 
 /// Introspection support
@@ -490,7 +501,7 @@ impl<T:Number> Introspection for Matrix<T> {
 
 
 /// Buffer access
-impl<T:Number> MatrixBuffer<T> for Matrix<T> {
+impl<T:Entry> MatrixBuffer<T> for Matrix<T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     fn stride (&self)->uint {
@@ -520,7 +531,7 @@ impl<T:Number> MatrixBuffer<T> for Matrix<T> {
 }
 
 /// Main methods of a matrix
-impl<T:Number> Matrix<T> {
+impl<T:Entry> Matrix<T> {
 
     /// Returns the capacity of the matrix 
     /// i.e. the number of elements it can hold
