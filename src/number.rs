@@ -3,16 +3,18 @@ SciRust library works.
 "]
 
 
-// Imports
-use std::fmt::Show;
+// std imports
 
 
 // complex numbers
 pub use external::complex::{Complex32, Complex64};
 
+// local imports
+use entry::Entry;
 
-/// Defines all the traits which a matrix element must support
-pub trait Number : Num+Copy+Show {
+
+/// Defines basic requirements for a matrix of numbers
+pub trait Number : Num+Copy+Entry {
 
     #[inline]
     fn is_float(&self) -> bool {

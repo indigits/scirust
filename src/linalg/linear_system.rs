@@ -6,7 +6,7 @@
 
 // srmat imports
 //use error::*;
-use matrix::{MatrixF64, MatrixType, 
+use matrix::{MatrixF64, Shape, 
     MinMaxAbs, 
     ERO};
 use error::*;

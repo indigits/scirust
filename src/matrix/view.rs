@@ -9,7 +9,7 @@ use std::num::{One, Zero};
 use number::{Number};
 use error::*;
 use matrix::matrix::{Matrix};
-use matrix::traits::{MatrixType, Introspection, 
+use matrix::traits::{Shape, Introspection, 
     MatrixBuffer, Extraction, ERO, ECO};
 
 //use discrete::*;
@@ -156,7 +156,7 @@ impl <'a, T:Number> Extraction<T> for MatrixView<'a, T> {
 
 
 /// Implementation of common matrix methods
-impl <'a, T:Number> MatrixType<T> for MatrixView<'a, T> {
+impl <'a, T:Number> Shape<T> for MatrixView<'a, T> {
     /// Returns the number of rows in the view
     fn num_rows(&self) -> uint {
         self.rows

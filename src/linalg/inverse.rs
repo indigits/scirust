@@ -6,7 +6,7 @@
 // std imports
 
 // local imports
-use matrix::{MatrixF64, MatrixType, Matrix,  
+use matrix::{MatrixF64, Shape, Matrix,  
     ERO, ECO, Search};
 use error::*;
 

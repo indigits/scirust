@@ -31,6 +31,7 @@ C libraries like BLAS or LAPACK.
 
 
 
+pub mod entry;
 pub mod number;
 pub mod error;
 

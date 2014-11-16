@@ -5,7 +5,7 @@
 // std imports
 
 // local imports
-use matrix::{MatrixF64, MatrixType, ECO, Search};
+use matrix::{MatrixF64, Shape, ECO, Search};
 
 
 /// Computes the rank of a matrix using elementary column operations

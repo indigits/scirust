@@ -22,7 +22,7 @@ use number::{Number};
 use error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
-use matrix::traits::{MatrixType, Introspection, 
+use matrix::traits::{Shape, Introspection, 
     MatrixBuffer, Extraction, ERO, ECO, Updates,
     Transpose, Search};
 
@@ -366,7 +366,7 @@ by hand.
 }
 
 /// Core methods for all matrix types
-impl<T:Number> MatrixType<T> for Matrix<T> {
+impl<T:Number> Shape<T> for Matrix<T> {
 
     /// Returns the number of rows in the matrix
     fn num_rows(&self) -> uint {

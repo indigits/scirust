@@ -18,7 +18,7 @@ and another is `MatrixView<T>`. It so happens that they share
 a lot of methods in common.  This trait identifies a fundamental
 set of methods which every matrix type must implement.
 "] 
-pub trait MatrixType<T:Number> {
+pub trait Shape<T:Number> {
     
     /// Returns the number of rows
     fn num_rows(&self) -> uint;
@@ -141,7 +141,7 @@ about the properties of the type which is implementing
 the trait. 
 
 As an example, this API helps us decide if an object
-of type MatrixType is a real matrix or a view 
+of type Shape is a real matrix or a view 
 extracted from a matrix. 
 
 An implementing type needs to implement
@@ -169,7 +169,7 @@ pub trait Introspection {
 
 
 /// Matrix conversion API
-pub trait Conversion<T:Number> : MatrixType<T> {
+pub trait Conversion<T:Number> : Shape<T> {
     /// Converts the matrix to vector from standard library
     fn to_std_vec(&self) -> Vec<T>;
 
@@ -184,7 +184,7 @@ pub trait Conversion<T:Number> : MatrixType<T> {
 
 
 /// Matrix extraction API
-pub trait Extraction<T:Number> : MatrixType<T>+MatrixBuffer<T> {
+pub trait Extraction<T:Number> : Shape<T>+MatrixBuffer<T> {
 
     /// Returns the r'th row vector
     fn row(&self, r : int) -> Matrix<T> {
@@ -253,7 +253,7 @@ pub trait Extraction<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 }
 
 /// Matrix min-max API
-pub trait MinMax<T:Number+PartialOrd> : MatrixType<T> {
+pub trait MinMax<T:Number+PartialOrd> : Shape<T> {
 
     /// Returns a column vector consisting of maximum over each row
     fn max_row_wise(&self) -> Matrix<T>;
@@ -270,7 +270,7 @@ pub trait MinMax<T:Number+PartialOrd> : MatrixType<T> {
 
 
 /// Matrix min-max with absolute values API
-pub trait MinMaxAbs<T:Number+PartialOrd+Signed> : MatrixType<T> {
+pub trait MinMaxAbs<T:Number+PartialOrd+Signed> : Shape<T> {
 
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, uint, uint);
@@ -289,7 +289,7 @@ pub trait MinMaxAbs<T:Number+PartialOrd+Signed> : MatrixType<T> {
  *******************************************************/
 
 /// Elementary row operations on a matrix
-pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
+pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> {
 
     /// Row switching.
     #[inline]
@@ -386,7 +386,7 @@ pub trait ERO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 
 
 /// Elementary column operations on a matrix
-pub trait ECO<T:Number> : MatrixType<T>+MatrixBuffer<T> {
+pub trait ECO<T:Number> : Shape<T>+MatrixBuffer<T> {
 
     /// Column switching.
     #[inline]
@@ -500,7 +500,7 @@ are needed once in a while, hence the helper functions
 are provided to achieve them quickly.
 
 "]
-pub trait Updates<T:Number> : MatrixType<T>+MatrixBuffer<T> {
+pub trait Updates<T:Number> : Shape<T>+MatrixBuffer<T> {
 
     // Sets all the entries on the main diagonal to a particular value
     fn set_diagonal(&mut self, value : T)-> &mut Self{
@@ -587,7 +587,7 @@ pub trait Updates<T:Number> : MatrixType<T>+MatrixBuffer<T> {
 #[doc="Implemented by matrix types
 which support transpose operations.
 "]
-pub trait Transpose<T:Number> : MatrixType<T>{
+pub trait Transpose<T:Number> : Shape<T>{
 
     /// Returns a new matrix holding the transpose
     fn transpose(&self) -> Matrix <T>;
@@ -600,7 +600,7 @@ pub trait Transpose<T:Number> : MatrixType<T>{
 #[doc="Features for searching within the matrix
 "]
 
-pub trait Search<T:Number+PartialOrd+Signed> : MatrixType<T>+MatrixBuffer<T>{
+pub trait Search<T:Number+PartialOrd+Signed> : Shape<T>+MatrixBuffer<T>{
 
     /// Returns the largest entry (by magnitude) in the row between
     /// [start, end) columns

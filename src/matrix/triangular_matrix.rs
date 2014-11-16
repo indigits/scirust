@@ -16,7 +16,7 @@ use number::{Number};
 use matrix::matrix::Matrix;
 //use matrix::error::*;
 
-use matrix::traits::{MatrixType, Introspection, 
+use matrix::traits::{Shape, Introspection, 
     MatrixBuffer, Extraction};
 
 
@@ -146,7 +146,7 @@ impl<T:Number> TriangularMatrix<T> {
 
 
 /// Core methods for all matrix types
-impl<T:Number> MatrixType<T> for TriangularMatrix<T> {
+impl<T:Number> Shape<T> for TriangularMatrix<T> {
 
     /// Returns the number of rows in the matrix
     fn num_rows(&self) -> uint {

@@ -7,7 +7,7 @@ use std::num;
 // local imports
 use number::Number;
 use matrix::{Matrix, MatrixU8};
-use matrix::traits::MatrixType;
+use matrix::traits::Shape;
 
 /// Tells whether a vector is a permutation or not.
 pub fn is_permutation<T:Number+Int>(vector : &Matrix<T>)-> bool{
