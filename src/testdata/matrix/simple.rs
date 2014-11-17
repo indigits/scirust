@@ -2,7 +2,8 @@
 useful for testing purposes.
 "]
 
-use matrix::*;
+use matrix::matrix::MatrixF64;
+use matrix::constructors::{matrix_rw_f64};
 
 #[doc="Matrix properties:
  

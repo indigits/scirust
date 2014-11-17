@@ -25,11 +25,9 @@ use matrix::iter::*;
 use matrix::view::MatrixView;
 use matrix::traits::{Shape, NumberMatrix,
     Introspection, 
-    MatrixBuffer, Extraction, ERO, ECO, Updates,
+    MatrixBuffer, Extraction, Updates,
     Transpose, Search};
-
-// linear algebra
-use linalg;
+use matrix::eo::eo_traits::{ERO, ECO};
 
 // complex numbers
 use external::complex::Complex32;
@@ -1111,13 +1109,6 @@ impl<T:Number> Matrix<T> {
 
 }
 
-/// Implementation of Elementary row operations.
-impl<T:Number> ERO<T> for Matrix<T> {
-}
-
-/// Implementation of Elementary column operations.
-impl<T:Number> ECO<T> for Matrix<T> {
-}
 
 /// Implementation of Matrix general update operations.
 impl<T:Number> Updates<T> for Matrix<T> {
@@ -1397,14 +1388,6 @@ impl<T:Number+Float> Matrix<T> {
         m
     }
 }
-
-impl<T:Number+Signed> Matrix<T>{
-    /// Returns determinant of the matrix
-    pub fn det(&self) -> Result<T,SRError>{
-        linalg::det(self)
-    }
-}
-
 
 
 
@@ -1692,7 +1675,9 @@ impl<T:Number> Matrix<T> {
 mod test {
 
     use  super::{Matrix, MatrixI64, MatrixF64};
-    use matrix::*;
+    use matrix::constructors::*;
+    use matrix::traits::*;
+    use matrix::eo::eo_traits::*;
     use std::num::Float;
 
     #[test]
@@ -2633,7 +2618,8 @@ mod test {
 mod bench {
     extern crate test;
     use self::test::Bencher;
-    use matrix::*;
+    use matrix::eo::eo_traits::*;
+    use matrix::constructors::*;
 
     #[bench]
     fn bench_eo_col_switch(b: &mut Bencher){

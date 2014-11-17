@@ -7,7 +7,7 @@
 // local imports
 use entry::{One, Zero};
 use number::*;
-use matrix::*;
+use matrix::matrix::{Matrix, MatrixF64};
 
 pub struct Impulse<T:Number>{
     /// The location at which impulse will come
@@ -54,7 +54,7 @@ pub fn impulse_vector_f64(length: uint,
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::*;
+    use matrix::constructors::*;
 
     #[test]
     fn test_impulse_f64(){

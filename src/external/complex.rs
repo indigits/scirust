@@ -175,7 +175,7 @@ mod test {
 
     use super::{Complex64, Complex};
     use std::num::Float;
-    use number::{Number};
+    //use number::{Number};
     use entry::{Zero, One};
     use std::hash::hash;
 

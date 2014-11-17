@@ -4,7 +4,11 @@ use std::num::{Float};
 
 // local imports
 use entry::One;
-use matrix::*;
+pub use number::{Number, Signed};
+use matrix::matrix::{Matrix};
+use matrix::traits::{Shape, Extraction, MatrixBuffer, Search};
+use matrix::eo::eo_traits::ECO;
+use error::*;
 
 #[doc="Returns the determinant of a matrix.
 
@@ -142,9 +146,10 @@ pub fn det_ge<T:Number+Signed+Float>(a : &mut Matrix<T>)->T{
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::*;
-    use std::num;
+    use linalg::matrix::mat_traits::*;
     use testdata;
+    use matrix::matrix::*;
+    use matrix::constructors::*;
 
     #[test]
     fn test_det_0(){
@@ -226,7 +231,7 @@ mod bench{
     extern crate test;
     use self::test::Bencher;
     use super::*;
-    use matrix::*;
+    use matrix::constructors::*;
 
     #[bench]
     fn bench_det_naive_hadamard_8 (b: &mut Bencher){

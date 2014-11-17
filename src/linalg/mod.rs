@@ -1,16 +1,14 @@
 #![doc="Linear algebra algorithms
 "]
-pub use self::linear_system::*;
-pub use self::det::*;
-pub use self::lu::*;
-pub use super::error::*;
-pub use self::singularity::*;
-pub use self::inverse::*;
-pub use self::rank::*;
 
-mod linear_system;
-mod det;
-mod lu;
-mod singularity;
-mod inverse;
-mod rank;
+pub mod linear_system;
+pub mod det;
+pub mod lu;
+pub mod singularity;
+pub mod inverse;
+pub mod rank;
+
+pub mod matrix{
+    pub mod mat_impl;
+    pub mod mat_traits;
+}

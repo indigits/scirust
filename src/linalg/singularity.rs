@@ -7,9 +7,10 @@ use std::cmp;
 
 // local imports
 use entry::Zero;
-use number::*;
+use number::Number;
 //use error::*;
-use matrix::*;
+use matrix::matrix::Matrix;
+use matrix::traits::{Shape, NumberMatrix};
 
 /// Indicates if a lower triangular matrix is singular or not.
 pub fn is_singular_lt<T:Number>(m : &Matrix<T>) -> bool {
@@ -62,8 +63,10 @@ pub fn has_zero_on_diagonal<T:Number>(m : &Matrix<T>) -> bool {
 #[cfg(test)]
 mod test{
 
-    use matrix::*;
+    use matrix::constructors::*;
+    use matrix::traits::*;
     use super::*;
+    use linalg::matrix::mat_traits::*;
 
     #[test]
     fn test_triangular_singularity(){

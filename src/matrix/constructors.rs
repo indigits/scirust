@@ -8,8 +8,13 @@ use std::num::UnsignedInt;
 
 
 // local imports
-use matrix::matrix::*;
-use matrix::traits::*;
+pub use matrix::matrix::{Matrix, 
+    MatrixI8, MatrixI16, MatrixI32, MatrixI64,
+    MatrixU8, MatrixU16, MatrixU32, MatrixU64,
+    MatrixUInt,
+    MatrixF32, MatrixF64,
+    MatrixC32, MatrixC64};
+use matrix::traits::{Shape};
 use error::*;
 use entry::{One, Zero};
 use number::{Number, num_range};
@@ -94,7 +99,7 @@ in the range will not be used. They will also not be generated.
 
 Constructing a 4x4 matrix of floating point numbers:
 
-        use scirust::matrix::{MatrixF64, from_range_cw, Shape};
+        use scirust::api::{MatrixF64, from_range_cw, Shape};
         let start  = 0.0;
         let stop = 16.0;
         let m : MatrixF64 = from_range_cw(4, 4, start, stop);
@@ -160,7 +165,7 @@ See from_range_cw function  for further discussion.
 
 # Examples
 
-    use scirust::matrix::{from_range_cw_i64, Shape};
+    use scirust::api::{from_range_cw_i64, Shape};
 
     let m = from_range_cw_i64(4, 4, 0, 16);
     for i in range(0, 16){
@@ -212,7 +217,7 @@ See from_range_cw function  for further discussion.
 
 # Examples
 
-    use scirust::matrix::{from_range_cw_u64, Shape};
+    use scirust::api::{from_range_cw_u64, Shape};
 
     let m = from_range_cw_u64(4, 4, 0, 16);
     for i in range(0, 16){
@@ -287,7 +292,7 @@ See from_range_rw function  for further discussion.
 
 # Examples
 
-    use scirust::matrix::{from_range_rw_i64, Shape};
+    use scirust::api::{from_range_rw_i64, Shape};
 
     let m = from_range_rw_i64(4, 4, 0, 16);
     for i in range(0, 16){
@@ -339,7 +344,7 @@ See from_range_rw function  for further discussion.
 
 # Examples
 
-    use scirust::matrix::{from_range_rw_u64, Shape};
+    use scirust::api::{from_range_rw_u64, Shape};
 
     let m = from_range_rw_u64(4, 4, 0, 16);
     for i in range(0, 16){
@@ -769,7 +774,8 @@ pub fn ero_scale_add<T:Number>(n : uint,
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::*;
+    use matrix::traits::*;
+    use matrix::eo::eo_traits::*;
 
     #[test]
     fn test_hadamard(){

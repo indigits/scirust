@@ -24,7 +24,8 @@ impl <'a, T:Number> Conversion<T> for MatrixView<'a, T> {
 
 #[cfg(test)]
 mod test{
-    use matrix::*;
+    use matrix::traits::*;
+    use matrix::constructors::*;
 
     #[test]
     fn test_view_to_scalar(){

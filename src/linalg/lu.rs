@@ -8,10 +8,13 @@
 
 // local imports
 //use error::*;
-use matrix::*;
+use matrix::matrix::{Matrix, MatrixF64, MatrixU16};
+use matrix::constructors::from_range_rw_u16;
 use error::*;
 use discrete::permutations::*;
 use matrix::vector::*;
+use matrix::traits::{Shape, Search, Updates};
+use matrix::eo::eo_traits::{ECO, ERO};
 
 
 #[doc="LU factorization with partial
@@ -307,7 +310,8 @@ pub fn lup_eco(a : &MatrixF64) -> (MatrixF64, MatrixF64, MatrixF64){
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::*;
+    use matrix::constructors::*;
+    use linalg::matrix::mat_traits::*;
 
     #[test]
     fn test_lu_ero_0(){
@@ -531,7 +535,7 @@ mod test{
 mod bench {
     extern crate test;
     use super::*;
-    use matrix::*;
+    use matrix::constructors::*;
     use self::test::Bencher;
 
     #[bench]

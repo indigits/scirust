@@ -540,7 +540,8 @@ impl <T:Number> fmt::Show for TriangularMatrix<T> {
 mod tests {
 
     use super::*;
-    use matrix::*;
+    use matrix::traits::*;
+    use matrix::constructors::*;
 
     #[test]
     fn test_create_0(){

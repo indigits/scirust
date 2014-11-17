@@ -82,7 +82,9 @@ pub fn vec_reduce_product<T:Number>(v : &Matrix<T>) -> T{
 #[cfg(test)]
 mod test{
 
-    use matrix::*;
+    use super::*;
+    use matrix::traits::*;
+    use matrix::constructors::*;
 
     #[test]
     fn test_vec_iter(){

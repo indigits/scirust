@@ -34,7 +34,8 @@ pub fn rand_std_normal(rows: uint, cols : uint)-> MatrixF64 {
 mod tests {
 
     use matrix::*;
-
+    use matrix::*;
+    use matrix::traits::*;
     #[test]
     fn test_rand_std_normal(){
         let m1  = super::rand_std_normal(10, 10);

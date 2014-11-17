@@ -5,7 +5,9 @@
 // std imports
 
 // local imports
-use matrix::{MatrixF64, Shape, ECO, Search};
+use matrix::matrix::{MatrixF64};
+use matrix::traits::{Shape, Search};
+use matrix::eo::eo_traits::ECO;
 
 
 /// Computes the rank of a matrix using elementary column operations
@@ -55,7 +57,7 @@ pub fn rank(a : & MatrixF64) -> uint{
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::*;
+    use matrix::constructors::*;
 
     #[test]
     fn test_rank_eco_0(){

@@ -7,7 +7,7 @@ use std::num::Int;
 
 // local imports
 use number::Number;
-use matrix::{Matrix, MatrixU8};
+use matrix::matrix::{Matrix, MatrixU8};
 use matrix::traits::Shape;
 
 /// Tells whether a vector is a permutation or not.
@@ -57,7 +57,7 @@ pub fn inverse_permutation<T:Number+Int+FromPrimitive>(vector : &Matrix<T>)-> Ma
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::*;
+    use matrix::constructors::*;
 
     #[test]
     fn test_permutation(){

@@ -6,8 +6,9 @@
 // std imports
 
 // local imports
-use matrix::{MatrixF64, Shape, Matrix,  
-    ERO, ECO, Search};
+use matrix::matrix::{Matrix, MatrixF64};
+use matrix::traits::{Shape, Search};
+use matrix::eo::eo_traits::{ERO, ECO};
 use error::*;
 
 
@@ -130,7 +131,9 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::*;
+    use matrix::matrix::*;
+    use matrix::constructors::*;
+    use matrix::traits::*;
     use std::num;
 
     #[test]
@@ -250,7 +253,8 @@ mod bench{
     extern crate test;
     use self::test::Bencher;
     use super::*;
-    use matrix::*;
+    use matrix::traits::*;
+    use matrix::constructors::*;
 
     #[bench]
     fn bench_inverse_ero_hadamard_32 (b: &mut Bencher){

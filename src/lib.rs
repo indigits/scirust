@@ -36,14 +36,14 @@ pub mod number;
 pub mod error;
 
 // Main libraries
+pub mod external;
 pub mod discrete;
 pub mod matrix;
 pub mod linalg;
-pub mod stat;
-pub mod opt;
 pub mod signal;
-pub mod dx;
-pub mod external;
+// pub mod dx;
+// pub mod stat;
+// pub mod opt;
 pub mod image {
 #![doc="Image processing
 "]
@@ -58,4 +58,5 @@ pub mod audio {
 pub mod util;
 mod testdata;
 
-
+// Overall API of SciRust
+pub mod api;
