@@ -1,7 +1,7 @@
 // Standard library imports
 use std::ptr;
 use std::cmp;
-
+use std::num::{Int, SignedInt, Float};
 // local imports
 use entry::Entry;
 use number::{Number, Signed};
@@ -650,3 +650,22 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T>{
         (result, index + start_row)
     }
 }
+
+
+/// A matrix of integers
+pub trait IntMatrix<T:Number+Int> {
+
+}
+
+
+/// A matrix of floats
+pub trait FloatMatrix<T:Number+Float>{
+
+}
+
+
+/// A matrix of signed integers
+pub trait SignedMatrix<T:Number+SignedInt>{
+
+}
+
