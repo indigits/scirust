@@ -19,6 +19,38 @@ Current areas of focus
 For more details and examples, 
 see the [API Guide](http://indigits.github.io/scirust).
 
+
+# Features
+
+## General 
+
+* Pure Rust implementation
+* Focus on generic programming
+* Extensive unit tests for all features
+* Column major implementation
+
+## Matrices
+
+* Generic matrix class supporting various data-types 
+ (u8, i8, u16, i16, ... , f32, f64, Complex32, Complex64)
+* Views over parts of matrices
+* Comprehensive support for operations on matrices.
+* Views over sub-matrices with similar operations.
+* Special support for triangular matrices.
+
+
+
+## Linear algebra
+
+* Solving systems of linear equations
+* LDU factorization
+* Rank, Determinant, Inverse
+
+
+
+# About Rust and Building the project
+
+
 If you are unfamiliar with Rust, you are recommended to go through
 [The Rust Guide](http://doc.rust-lang.org/guide.html).
 
