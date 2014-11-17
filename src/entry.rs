@@ -42,7 +42,7 @@ impl Zero for i8{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -54,7 +54,7 @@ impl Zero for i16{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -66,7 +66,7 @@ impl Zero for i32{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -78,7 +78,7 @@ impl Zero for i64{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -90,7 +90,7 @@ impl Zero for int{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -102,7 +102,7 @@ impl Zero for u8{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -114,7 +114,7 @@ impl Zero for u16{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -126,7 +126,7 @@ impl Zero for u32{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -138,7 +138,7 @@ impl Zero for u64{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -150,7 +150,7 @@ impl Zero for uint{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0
     }
 }
 
@@ -162,7 +162,7 @@ impl Zero for f32{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0.
     }
 }
 
@@ -174,7 +174,7 @@ impl Zero for f64{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        *self == 0.
     }
 }
 
@@ -187,7 +187,7 @@ impl Zero for Complex32{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        self.re.is_zero() && self.im.is_zero()
     }
 }
 
@@ -199,7 +199,7 @@ impl Zero for Complex64{
 
     #[inline]
     fn is_zero(&self) -> bool{
-        self.is_zero()
+        self.re.is_zero() && self.im.is_zero()
     }
 }
 

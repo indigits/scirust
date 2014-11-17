@@ -193,9 +193,9 @@ mod test{
         for (size, expected_value) in sizes.iter().zip(determinants.iter()){
             let m = hilbert(*size);
             let d = det_naive(&m);
-            assert!((d - *expected_value).abs() < threshold);
+            assert!((d - *expected_value).abs_val() < threshold);
             let d = det_ge(&mut m.clone());
-            assert!((d - *expected_value).abs() < threshold);
+            assert!((d - *expected_value).abs_val() < threshold);
         }
     }
 

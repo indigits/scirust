@@ -612,11 +612,11 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T>{
         let p = self.as_ptr();
         let stride = self.stride();
         let mut offset = start_col * stride + row;
-        let mut result = unsafe{*p.offset(offset as int)}.abs();
+        let mut result = unsafe{*p.offset(offset as int)}.abs_val();
         let mut index  = 0;
         for i in range(1, end_col - start_col){
             offset += stride;
-            let s = unsafe{*p.offset(offset as int)}.abs();
+            let s = unsafe{*p.offset(offset as int)}.abs_val();
             if s > result {
                 index = i;
                 result = s;
@@ -637,11 +637,11 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T>{
         let p = self.as_ptr();
         let stride = self.stride();
         let mut offset = col * stride + start_row;
-        let mut result = unsafe{*p.offset(offset as int)}.abs();
+        let mut result = unsafe{*p.offset(offset as int)}.abs_val();
         let mut index  = 0;
         for i in range(1, end_row - start_row){
             offset += 1;
-            let s = unsafe{*p.offset(offset as int)}.abs();
+            let s = unsafe{*p.offset(offset as int)}.abs_val();
             if s > result {
                 index = i;
                 result = s;

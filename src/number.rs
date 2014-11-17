@@ -4,7 +4,7 @@ SciRust library works.
 
 
 // std imports
-use std::num::Int;
+use std::num::{Int, SignedInt, Float};
 
 // complex numbers
 pub use external::complex::{Complex32, Complex64};
@@ -45,8 +45,7 @@ pub trait Number : Entry
 
 
 pub trait Signed: Number + Neg<Self> {
-    fn abs(&self) -> Self;
-    fn abs_sub(&self, other: &Self) -> Self;
+    fn abs_val(&self) -> Self;
     fn signum(&self) -> Self;
     fn is_positive(&self) -> bool;
     fn is_negative(&self) -> bool;
@@ -72,15 +71,10 @@ impl Number for i8 {
 impl Signed for i8 {
 
     #[inline]
-    fn abs(&self) -> i8{
+    fn abs_val(&self) -> i8{
         self.abs()
     }
 
-    #[inline]
-    fn abs_sub(&self, other: &i8) -> i8{
-        self.abs_sub(other)
-    }
-    
     #[inline]
     fn signum(&self) -> i8{
         self.signum()
@@ -122,13 +116,8 @@ impl Number for i16 {
 impl Signed for i16 {
 
     #[inline]
-    fn abs(&self) -> i16{
+    fn abs_val(&self) -> i16{
         self.abs()
-    }
-    
-    #[inline]
-    fn abs_sub(&self, other: &i16) -> i16{
-        self.abs_sub(other)
     }
     
     #[inline]
@@ -170,13 +159,8 @@ impl Number for i32 {
 impl Signed for i32 {
 
     #[inline]
-    fn abs(&self) -> i32{
+    fn abs_val(&self) -> i32{
         self.abs()
-    }
-    
-    #[inline]
-    fn abs_sub(&self, other: &i32) -> i32{
-        self.abs_sub(other)
     }
     
     #[inline]
@@ -221,13 +205,8 @@ impl Number for i64 {
 impl Signed for i64 {
 
     #[inline]
-    fn abs(&self) -> i64{
+    fn abs_val(&self) -> i64{
         self.abs()
-    }
-    
-    #[inline]
-    fn abs_sub(&self, other: &i64) -> i64{
-        self.abs_sub(other)
     }
     
     #[inline]
@@ -269,13 +248,8 @@ impl Number for int {
 impl Signed for int {
 
     #[inline]
-    fn abs(&self) -> int{
+    fn abs_val(&self) -> int{
         self.abs()
-    }
-    
-    #[inline]
-    fn abs_sub(&self, other: &int) -> int{
-        self.abs_sub(other)
     }
     
     #[inline]
@@ -425,13 +399,8 @@ impl Number for f32 {
 impl Signed for f32 {
 
     #[inline]
-    fn abs(&self) -> f32{
+    fn abs_val(&self) -> f32{
         self.abs()
-    }
-    
-    #[inline]
-    fn abs_sub(&self, other: &f32) -> f32{
-        self.abs_sub(other)
     }
     
     #[inline]
@@ -474,13 +443,8 @@ impl Number for f64 {
 impl Signed for f64 {
 
     #[inline]
-    fn abs(&self) -> f64{
+    fn abs_val(&self) -> f64{
         self.abs()
-    }
-    
-    #[inline]
-    fn abs_sub(&self, other: &f64) -> f64{
-        self.abs_sub(other)
     }
     
     #[inline]

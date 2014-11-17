@@ -1286,7 +1286,7 @@ impl<T:Signed+PartialOrd> Matrix<T> {
         if self.is_empty(){
             panic!(EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs();
+        let mut v = self.get(0, 0).abs_val();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1294,7 +1294,7 @@ impl<T:Signed+PartialOrd> Matrix<T> {
         for c in range(0, self.cols){
             for r in range(0, self.rows){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = unsafe{*ps.offset(src_offset)}.abs();
+                let s = unsafe{*ps.offset(src_offset)}.abs_val();
                 if s < v { 
                     v = s;
                     rr = r;
@@ -1310,7 +1310,7 @@ impl<T:Signed+PartialOrd> Matrix<T> {
         if self.is_empty(){
             panic!(EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs();
+        let mut v = self.get(0, 0).abs_val();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1318,7 +1318,7 @@ impl<T:Signed+PartialOrd> Matrix<T> {
         for c in range(0, self.cols){
             for r in range(0, self.rows){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = unsafe{*ps.offset(src_offset)}.abs();
+                let s = unsafe{*ps.offset(src_offset)}.abs_val();
                 if s > v { 
                     v  = s;
                     rr = r;
