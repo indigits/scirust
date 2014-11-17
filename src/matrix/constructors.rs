@@ -3,13 +3,16 @@
 
 // std imports
 use std::num;
+use std::num::Int;
+use std::num::UnsignedInt;
 
 
 // local imports
 use matrix::matrix::*;
 use matrix::traits::*;
 use error::*;
-use number::Number;
+use entry::{One, Zero};
+use number::{Number, num_range};
 
 // complex numbers
 use external::complex::{Complex32, Complex64};
@@ -21,7 +24,7 @@ use external::complex::{Complex32, Complex64};
 n must be a power of 2.
 "] 
 pub fn hadamard(n : uint) -> Result<MatrixF64, SRError>{
-    if !num::is_power_of_two(n){
+    if !n.is_power_of_two(){
         return Err(IsNotPowerOfTwo);
     }
     let mut m : MatrixF64 = Matrix::new(n, n);
@@ -103,9 +106,9 @@ Constructing a 4x4 matrix of floating point numbers:
 
 
 "]
-pub fn from_range_cw<T:Number+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : uint, 
+pub fn from_range_cw<T:Number+PartialOrd+One+ToPrimitive>(rows : uint, cols : uint, 
     start : T, stop : T )-> Matrix<T> {
-    let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, range(start, stop));
+    let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, num_range(start, stop));
     m 
 }
 
@@ -240,9 +243,9 @@ pub fn from_range_cw_uint(rows : uint, cols : uint,
 #[doc="Returns a matrix whose entries are picked up from
 a range in row wise order.
 "]
-pub fn from_range_rw<T:Number+PartialOrd+Clone+ToPrimitive>(rows : uint, cols : uint, 
+pub fn from_range_rw<T:Number+PartialOrd+One+ToPrimitive>(rows : uint, cols : uint, 
     start : T, stop : T )-> Matrix<T> {
-    let m : Matrix<T> = Matrix::from_iter_rw(rows, cols, range(start, stop));
+    let m : Matrix<T> = Matrix::from_iter_rw(rows, cols, num_range(start, stop));
     m 
 }
 
@@ -714,8 +717,8 @@ pub fn ero_switch<T:Number>(n : uint,
     debug_assert! (i  < n);
     debug_assert! (j  < n);
     let mut m : Matrix<T> = Matrix::identity(n, n);
-    let z : T = num::Zero::zero();
-    let o : T = num::One::one();
+    let z : T = Zero::zero();
+    let o : T = One::one();
     m.set(i, i, z);
     m.set(j, j, z);
     m.set(i, j, o);

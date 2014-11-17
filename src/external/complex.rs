@@ -1,18 +1,12 @@
-// Copyright 2013 The Rust Project Developers. See the COPYRIGHT
-// file at the top-level directory of this distribution and at
-// http://rust-lang.org/COPYRIGHT.
-//
-// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-// option. This file may not be copied, modified, or distributed
-// except according to those terms.
-
-
 //! Complex numbers.
 
 use std::fmt;
-use std::num::{Zero, One};
+use std::num::FloatMath;
+
+
+// local imports
+use entry::{One, Zero};
+use number::Number;
 
 // FIXME #1284: handle complex NaN & infinity etc. This
 // probably doesn't map to C's _Complex correctly.
@@ -29,7 +23,7 @@ pub struct Complex<T> {
 pub type Complex32 = Complex<f32>;
 pub type Complex64 = Complex<f64>;
 
-impl<T: Clone + Num> Complex<T> {
+impl<T:Number+Zero> Complex<T> {
     /// Create a new Complex
     #[inline]
     pub fn new(re: T, im: T) -> Complex<T> {
@@ -44,12 +38,6 @@ impl<T: Clone + Num> Complex<T> {
     }
 
 
-    /// Returns the complex conjugate. i.e. `re - i im`
-    #[inline]
-    pub fn conj(&self) -> Complex<T> {
-        Complex::new(self.re.clone(), -self.im)
-    }
-
 
     /// Multiplies `self` by the scalar `t`.
     #[inline]
@@ -63,6 +51,30 @@ impl<T: Clone + Num> Complex<T> {
         Complex::new(self.re / t, self.im / t)
     }
 
+    #[inline]
+    pub fn zero() -> Complex<T> {
+        Complex::new(Zero::zero(), Zero::zero())
+    }
+
+    #[inline]
+    pub fn is_zero(&self) -> bool {
+        self.re.is_zero() && self.im.is_zero()
+    }
+
+    #[inline]
+    pub fn one() -> Complex<T> {
+        Complex::new(One::one(), Zero::zero())
+    }
+}
+
+impl<T:Number+Zero+Neg<T>> Complex<T> {
+
+    /// Returns the complex conjugate. i.e. `re - i im`
+    #[inline]
+    pub fn conj(&self) -> Complex<T> {
+        Complex::new(self.re.clone(), -self.im)
+    }
+
     /// Returns `1/self`
     #[inline]
     pub fn inv(&self) -> Complex<T> {
@@ -70,6 +82,7 @@ impl<T: Clone + Num> Complex<T> {
         Complex::new(self.re / norm_sqr,
                     -self.im / norm_sqr)
     }
+
 }
 
 impl<T: Clone + FloatMath> Complex<T> {
@@ -80,7 +93,7 @@ impl<T: Clone + FloatMath> Complex<T> {
     }
 }
 
-impl<T: Clone + FloatMath> Complex<T> {
+impl<T: Number + FloatMath + Zero> Complex<T> {
     /// Calculate the principal Arg of self.
     #[inline]
     pub fn arg(&self) -> T {
@@ -101,21 +114,21 @@ impl<T: Clone + FloatMath> Complex<T> {
 
 /* arithmetic */
 // (a + i b) + (c + i d) == (a + c) + i (b + d)
-impl<T: Clone + Num> Add<Complex<T>, Complex<T>> for Complex<T> {
+impl<T:Number + Zero> Add<Complex<T>, Complex<T>> for Complex<T> {
     #[inline]
     fn add(&self, other: &Complex<T>) -> Complex<T> {
         Complex::new(self.re + other.re, self.im + other.im)
     }
 }
 // (a + i b) - (c + i d) == (a - c) + i (b - d)
-impl<T: Clone + Num> Sub<Complex<T>, Complex<T>> for Complex<T> {
+impl<T: Number + Zero> Sub<Complex<T>, Complex<T>> for Complex<T> {
     #[inline]
     fn sub(&self, other: &Complex<T>) -> Complex<T> {
         Complex::new(self.re - other.re, self.im - other.im)
     }
 }
 // (a + i b) * (c + i d) == (a*c - b*d) + i (a*d + b*c)
-impl<T: Clone + Num> Mul<Complex<T>, Complex<T>> for Complex<T> {
+impl<T: Number + Zero> Mul<Complex<T>, Complex<T>> for Complex<T> {
     #[inline]
     fn mul(&self, other: &Complex<T>) -> Complex<T> {
         Complex::new(self.re*other.re - self.im*other.im,
@@ -125,7 +138,7 @@ impl<T: Clone + Num> Mul<Complex<T>, Complex<T>> for Complex<T> {
 
 // (a + i b) / (c + i d) == [(a + i b) * (c - i d)] / (c*c + d*d)
 //   == [(a*c + b*d) / (c*c + d*d)] + i [(b*c - a*d) / (c*c + d*d)]
-impl<T: Clone + Num> Div<Complex<T>, Complex<T>> for Complex<T> {
+impl<T: Number + Zero> Div<Complex<T>, Complex<T>> for Complex<T> {
     #[inline]
     fn div(&self, other: &Complex<T>) -> Complex<T> {
         let norm_sqr = other.norm_sqr();
@@ -134,35 +147,16 @@ impl<T: Clone + Num> Div<Complex<T>, Complex<T>> for Complex<T> {
     }
 }
 
-impl<T: Clone + Num> Neg<Complex<T>> for Complex<T> {
+impl<T: Number + Zero + Neg<T>> Neg<Complex<T>> for Complex<T> {
     #[inline]
     fn neg(&self) -> Complex<T> {
         Complex::new(-self.re, -self.im)
     }
 }
 
-/* constants */
-impl<T: Clone + Num> Zero for Complex<T> {
-    #[inline]
-    fn zero() -> Complex<T> {
-        Complex::new(Zero::zero(), Zero::zero())
-    }
-
-    #[inline]
-    fn is_zero(&self) -> bool {
-        self.re.is_zero() && self.im.is_zero()
-    }
-}
-
-impl<T: Clone + Num> One for Complex<T> {
-    #[inline]
-    fn one() -> Complex<T> {
-        Complex::new(One::one(), Zero::zero())
-    }
-}
 
 /* string conversions */
-impl<T: fmt::Show + Num + PartialOrd> fmt::Show for Complex<T> {
+impl<T: fmt::Show + Number + PartialOrd + Neg<T>> fmt::Show for Complex<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.im < Zero::zero() {
             write!(f, "{}-{}i", self.re, -self.im)
@@ -172,16 +166,7 @@ impl<T: fmt::Show + Num + PartialOrd> fmt::Show for Complex<T> {
     }
 }
 
-/// Dummy implementation 
-impl <T:Num+Clone> Rem<Complex<T>, Complex<T>> for Complex<T> {
-    fn rem(&self, _rhs: &Complex<T>) -> Complex<T> {
-        Complex::new(Zero::zero(), Zero::zero())
-    }
-}
 
-
-impl <T:Num+Clone> Num for Complex<T> {
-}
 
 
 #[cfg(test)]
@@ -189,7 +174,9 @@ mod test {
     #![allow(non_upper_case_globals)]
 
     use super::{Complex64, Complex};
-    use std::num::{Zero, One, Float};
+    use std::num::Float;
+    use number::{Number};
+    use entry::{Zero, One};
     use std::hash::hash;
 
     pub const _0_0i : Complex64 = Complex { re: 0.0, im: 0.0 };
@@ -292,7 +279,7 @@ mod test {
 
     mod arith {
         use super::{_0_0i, _1_0i, _1_1i, _0_1i, _neg1_1i, _05_05i, all_consts};
-        use std::num::Zero;
+        use entry::Zero;
 
         #[test]
         fn test_add() {

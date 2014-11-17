@@ -4,9 +4,9 @@
 
 // std imports
 use std::cmp;
-use std::num::Zero;
 
 // local imports
+use entry::Zero;
 use number::*;
 //use error::*;
 use matrix::*;

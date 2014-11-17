@@ -3,6 +3,7 @@
 
 // std imports
 use std::num;
+use std::num::Int;
 
 // local imports
 use number::Number;

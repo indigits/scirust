@@ -2,11 +2,10 @@
 use std::mem;
 use std::ops;
 use std::fmt;
-use std::num::{One, Zero};
 //use std::ptr;
 
 // local imports
-use entry::Entry;
+use entry::{Entry, One, Zero};
 use number::{Number};
 use error::*;
 use matrix::matrix::{Matrix};

@@ -4,17 +4,26 @@ SciRust library works.
 
 
 // std imports
-
+use std::num::Int;
 
 // complex numbers
 pub use external::complex::{Complex32, Complex64};
 
 // local imports
-use entry::Entry;
+use entry::{Entry, Zero, One};
 
 
 /// Defines basic requirements for a matrix of numbers
-pub trait Number : Num+Copy+Entry {
+pub trait Number : Entry
+    + Clone
+    + Copy
+    + Add<Self,Self>
+    + Sub<Self, Self> 
+    + Mul<Self, Self> 
+    + Div<Self, Self>
+    + PartialEq
+    + One
+    + Zero{
 
     #[inline]
     fn is_float(&self) -> bool {
@@ -34,6 +43,22 @@ pub trait Number : Num+Copy+Entry {
     fn is_signed(&self) -> bool;
 }
 
+
+pub trait Signed: Number + Neg<Self> {
+    fn abs(&self) -> Self;
+    fn abs_sub(&self, other: &Self) -> Self;
+    fn signum(&self) -> Self;
+    fn is_positive(&self) -> bool;
+    fn is_negative(&self) -> bool;
+}
+
+
+
+/******************************************************
+ *      i8 implementation
+ ******************************************************/
+
+
 /// Indicate that i8 fits all requirements for being a matrix element.
 impl Number for i8 {
 
@@ -43,6 +68,42 @@ impl Number for i8 {
     }
     
 }
+
+impl Signed for i8 {
+
+    #[inline]
+    fn abs(&self) -> i8{
+        self.abs()
+    }
+
+    #[inline]
+    fn abs_sub(&self, other: &i8) -> i8{
+        self.abs_sub(other)
+    }
+    
+    #[inline]
+    fn signum(&self) -> i8{
+        self.signum()
+    }
+    
+    #[inline]
+    fn is_positive(&self) -> bool{
+        self.is_positive()
+    }
+    
+    #[inline]
+    fn is_negative(&self) -> bool{
+        self.is_negative()
+    }
+}
+
+
+/******************************************************
+ *      i16 implementation
+ ******************************************************/
+
+
+
 /// Indicate that i16 fits all requirements for being a matrix element.
 impl Number for i16 {
 
@@ -57,6 +118,40 @@ impl Number for i16 {
     }
 
 }
+
+impl Signed for i16 {
+
+    #[inline]
+    fn abs(&self) -> i16{
+        self.abs()
+    }
+    
+    #[inline]
+    fn abs_sub(&self, other: &i16) -> i16{
+        self.abs_sub(other)
+    }
+    
+    #[inline]
+    fn signum(&self) -> i16{
+        self.signum()
+    }
+    
+    #[inline]
+    fn is_positive(&self) -> bool{
+        self.is_positive()
+    }
+    
+    #[inline]
+    fn is_negative(&self) -> bool{
+        self.is_negative()
+    }
+}
+    
+/******************************************************
+ *      i32 implementation
+ ******************************************************/
+
+
 /// Indicate that i32 fits all requirements for being a matrix element.
 impl Number for i32 {
     
@@ -71,6 +166,42 @@ impl Number for i32 {
     }
 
 }
+
+impl Signed for i32 {
+
+    #[inline]
+    fn abs(&self) -> i32{
+        self.abs()
+    }
+    
+    #[inline]
+    fn abs_sub(&self, other: &i32) -> i32{
+        self.abs_sub(other)
+    }
+    
+    #[inline]
+    fn signum(&self) -> i32{
+        self.signum()
+    }
+    
+    #[inline]
+    fn is_positive(&self) -> bool{
+        self.is_positive()
+    }
+    
+    #[inline]
+    fn is_negative(&self) -> bool{
+        self.is_negative()
+    }
+}
+    
+
+/******************************************************
+ *      i64 implementation
+ ******************************************************/
+
+
+
 /// Indicate that i64 fits all requirements for being a matrix element.
 impl Number for i64 {
     
@@ -86,6 +217,38 @@ impl Number for i64 {
     }
 
 }
+
+impl Signed for i64 {
+
+    #[inline]
+    fn abs(&self) -> i64{
+        self.abs()
+    }
+    
+    #[inline]
+    fn abs_sub(&self, other: &i64) -> i64{
+        self.abs_sub(other)
+    }
+    
+    #[inline]
+    fn signum(&self) -> i64{
+        self.signum()
+    }
+    
+    #[inline]
+    fn is_positive(&self) -> bool{
+        self.is_positive()
+    }
+    
+    #[inline]
+    fn is_negative(&self) -> bool{
+        self.is_negative()
+    }
+}
+    
+/******************************************************
+ *      int implementation
+ ******************************************************/
 
 /// Indicate that int fits all requirements for being a matrix element.
 impl Number for int {
@@ -103,6 +266,39 @@ impl Number for int {
 
 }
 
+impl Signed for int {
+
+    #[inline]
+    fn abs(&self) -> int{
+        self.abs()
+    }
+    
+    #[inline]
+    fn abs_sub(&self, other: &int) -> int{
+        self.abs_sub(other)
+    }
+    
+    #[inline]
+    fn signum(&self) -> int{
+        self.signum()
+    }
+    
+    #[inline]
+    fn is_positive(&self) -> bool{
+        self.is_positive()
+    }
+    
+    #[inline]
+    fn is_negative(&self) -> bool{
+        self.is_negative()
+    }
+}
+    
+
+/******************************************************
+ *      u8 implementation
+ ******************************************************/
+
 
 /// Indicate that u8 fits all requirements for being a matrix element.
 impl Number for u8 {
@@ -119,6 +315,12 @@ impl Number for u8 {
     }
 
 }
+
+/******************************************************
+ *      u16 implementation
+ ******************************************************/
+
+
 /// Indicate that u16 fits all requirements for being a matrix element.
 impl Number for u16 {
     
@@ -134,6 +336,12 @@ impl Number for u16 {
     }
 
 }
+
+/******************************************************
+ *      u32 implementation
+ ******************************************************/
+
+
 /// Indicate that u32 fits all requirements for being a matrix element.
 impl Number for u32 {
     
@@ -150,6 +358,12 @@ impl Number for u32 {
 
 }
 
+/******************************************************
+ *      u64 implementation
+ ******************************************************/
+
+
+
 /// Indicate that u64 fits all requirements for being a matrix element.
 impl Number for u64 {
     
@@ -165,6 +379,11 @@ impl Number for u64 {
     }
 
 }
+
+/******************************************************
+ *      uint implementation
+ ******************************************************/
+
 
 /// Indicate that uint fits all requirements for being a matrix element.
 impl Number for uint {
@@ -183,6 +402,9 @@ impl Number for uint {
 }
 
 
+/******************************************************
+ *      f32 implementation
+ ******************************************************/
 
 /// Indicate that f32 fits all requirements for being a matrix element.
 impl Number for f32 {
@@ -200,6 +422,38 @@ impl Number for f32 {
 
 }
 
+impl Signed for f32 {
+
+    #[inline]
+    fn abs(&self) -> f32{
+        self.abs()
+    }
+    
+    #[inline]
+    fn abs_sub(&self, other: &f32) -> f32{
+        self.abs_sub(other)
+    }
+    
+    #[inline]
+    fn signum(&self) -> f32{
+        self.signum()
+    }
+    
+    #[inline]
+    fn is_positive(&self) -> bool{
+        self.is_positive()
+    }
+    
+    #[inline]
+    fn is_negative(&self) -> bool{
+        self.is_negative()
+    }
+}
+
+
+/******************************************************
+ *      f64 implementation
+ ******************************************************/
 
 /// Indicate that f64 fits all requirements for being a matrix element.
 impl Number for f64 {
@@ -217,6 +471,37 @@ impl Number for f64 {
 
 }
 
+impl Signed for f64 {
+
+    #[inline]
+    fn abs(&self) -> f64{
+        self.abs()
+    }
+    
+    #[inline]
+    fn abs_sub(&self, other: &f64) -> f64{
+        self.abs_sub(other)
+    }
+    
+    #[inline]
+    fn signum(&self) -> f64{
+        self.signum()
+    }
+    
+    #[inline]
+    fn is_positive(&self) -> bool{
+        self.is_positive()
+    }
+    
+    #[inline]
+    fn is_negative(&self) -> bool{
+        self.is_negative()
+    }
+}
+
+/******************************************************
+ *      Complex32 implementation
+ ******************************************************/
 
 /// Indicate that Complex32 fits all requirements for being a matrix element.
 impl Number for Complex32 {
@@ -234,6 +519,9 @@ impl Number for Complex32 {
 
 }
 
+/******************************************************
+ *      Complex64 implementation
+ ******************************************************/
 
 /// Indicate that Complex64 fits all requirements for being a matrix element.
 impl Number for Complex64 {
@@ -257,6 +545,74 @@ pub fn describe<T: Number>(z : T){
      println!("Signed: {}", z.is_signed());
 }
 
+/******************************************************
+ *
+ *   Number range
+ *
+ *******************************************************/
+
+/// An iterator over the range [start, stop)
+#[deriving(Clone)]
+pub struct NumRange<A> {
+    state: A,
+    stop: A,
+    one: A
+}
+
+
+/// Returns an iterator over the given range [start, stop) (that is, starting
+/// at start (inclusive), and ending at stop (exclusive)).
+#[inline]
+pub fn num_range<A: Number + PartialOrd + One>(start: A, stop: A) -> NumRange<A> {
+    NumRange{state: start, stop: stop, one: One::one()}
+}
+
+impl<A: Number + PartialOrd + One + ToPrimitive> Iterator<A> for NumRange<A> {
+    #[inline]
+    fn next(&mut self) -> Option<A> {
+        if self.state < self.stop {
+            let result = self.state.clone();
+            self.state = self.state + self.one;
+            Some(result)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    fn size_hint(&self) -> (uint, Option<uint>) {
+        // This first checks if the elements are representable as i64. If they aren't, try u64 (to
+        // handle cases like range(huge, huger)). We don't use uint/int because the difference of
+        // the i64/u64 might lie within their range.
+        let bound = match self.state.to_i64() {
+            Some(a) => {
+                let sz = self.stop.to_i64().map(|b| b.checked_sub(a));
+                match sz {
+                    Some(Some(bound)) => bound.to_uint(),
+                    _ => None,
+                }
+            },
+            None => match self.state.to_u64() {
+                Some(a) => {
+                    let sz = self.stop.to_u64().map(|b| b.checked_sub(a));
+                    match sz {
+                        Some(Some(bound)) => bound.to_uint(),
+                        _ => None
+                    }
+                },
+                None => None
+            }
+        };
+
+        match bound {
+            Some(b) => (b, Some(b)),
+            // Standard fallback for unbounded/unrepresentable bounds
+            None => (0, None)
+        }
+    }
+}
+
+
 
 /******************************************************
  *
@@ -269,7 +625,7 @@ pub fn describe<T: Number>(z : T){
 mod tests {
 
     use super::*;
-    use std::num::Zero;
+    use entry::Zero;
 
 
 

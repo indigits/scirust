@@ -6,12 +6,11 @@
 use std::ptr;
 use std::mem;
 use std::fmt;
-use std::num::{Zero, One};
 use std::rt::heap::allocate;
 
 
 // local imports
-use entry::Entry;
+use entry::{Entry, Zero, One};
 use number::{Number};
 use matrix::matrix::Matrix;
 //use matrix::error::*;

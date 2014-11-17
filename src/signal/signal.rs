@@ -2,9 +2,10 @@
 "]
 
 // std imports
-use std::num::{One, Zero};
+
 
 // local imports
+use entry::{One, Zero};
 use number::*;
 use matrix::*;
 

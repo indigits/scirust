@@ -1,12 +1,15 @@
 /// This module provides useful discrete mathematics functions
 
-use std::num::abs;
+// std imports
+
+// local imports
+use number::Signed;
 
 #[inline]
 pub fn mod_n (x : int, n : int) -> uint {
     let x = x % n;
     if x < 0{
-        (x + abs(n)) as uint
+        (x + n.abs()) as uint
     }else{
         x as uint
     }

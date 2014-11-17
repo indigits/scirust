@@ -1,10 +1,9 @@
 
 // Std imports
-use std::num;
-use std::num::{One};
+use std::num::{Float};
 
 // local imports
-
+use entry::One;
 use matrix::*;
 
 #[doc="Returns the determinant of a matrix.
@@ -24,12 +23,12 @@ The determinant of an empty matrix is 1.
 See http://en.wikipedia.org/wiki/Matrix_(mathematics)#Empty_matrices.
 
 "]
-pub fn  det<T:Number+Signed>(m : &Matrix<T>)->Result<T,SRError>{
+pub fn  det<T:Signed>(m : &Matrix<T>)->Result<T,SRError>{
     if !m.is_square(){
         return Err(IsNotSquareMatrix);
     }
     if m.is_empty(){
-        return Ok(num::One::one());
+        return Ok(One::one());
     }
     Ok(det_naive(m))
 }
@@ -38,19 +37,19 @@ pub fn  det<T:Number+Signed>(m : &Matrix<T>)->Result<T,SRError>{
 
 # Remarks
 "]
-pub fn  det_float<T:Number+Signed+Float>(m : &Matrix<T>)->Result<T,SRError>{
+pub fn  det_float<T:Signed+Float>(m : &Matrix<T>)->Result<T,SRError>{
     if !m.is_square(){
         return Err(IsNotSquareMatrix);
     }
     if m.is_empty(){
-        return Ok(num::One::one());
+        return Ok(One::one());
     }
     Ok(det_ge(&mut m.clone()))
 }
 
 /// Private implementation of determinant
 /// Assumes that matrix is indeed square.
-pub fn det_naive<T:Number+Signed>(m : &Matrix<T>)->T{
+pub fn det_naive<T:Signed>(m : &Matrix<T>)->T{
     let a0 = m.get(0, 0);
     //debug!("m: {}", m);
     if m.is_scalar(){
@@ -60,7 +59,7 @@ pub fn det_naive<T:Number+Signed>(m : &Matrix<T>)->T{
     let mut m2 = m.sub_matrix(1,1, n-1, n-1);
     let ps = m.as_ptr();
     let pd = m2.as_mut_ptr();
-    let mut sign : T  = num::One::one();
+    let mut sign : T  = One::one();
     let mut result = sign * a0 * det_naive(&m2);
     sign = -sign;
     for c in range(0, n-1){
@@ -194,9 +193,9 @@ mod test{
         for (size, expected_value) in sizes.iter().zip(determinants.iter()){
             let m = hilbert(*size);
             let d = det_naive(&m);
-            assert!(num::abs(d - *expected_value) < threshold);
+            assert!((d - *expected_value).abs() < threshold);
             let d = det_ge(&mut m.clone());
-            assert!(num::abs(d - *expected_value) < threshold);
+            assert!((d - *expected_value).abs() < threshold);
         }
     }
 

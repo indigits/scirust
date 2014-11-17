@@ -2,13 +2,25 @@ env:
   global:
     - secure: KtwYx0jTcsRsvcOuNDxt1pFKo7S5NFEHHI7SxJS81xeOPlrPN4aIJ3b3vPAC/frq1FSyL/7cRrIqk4bxSvaOWJ/kr4Vd19BZopFCbtFf2qFnQVX6GmiAPAphfrHf34KJx9bGkzLyUFYizsmeYU8/5NePDNYzpyJ5D946mgozNH0=
 
+language: rust
+
 install:
   - curl https://static.rust-lang.org/rustup.sh | sudo sh -
 script:
+  - rustc --version
+  - cargo --version
   - cargo build --verbose && cargo test --verbose
   - cargo doc --verbose && mv target/doc doc
 
 after_script:
   - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
 
+
+notifications:
+  email:
+    recipients:
+        - shailesh@indigits.com
+        - shaileshk@gmail.com
+    on_success: [always] # always|never|[change]
+    on_failure: [always] # [always]|never|change
 

@@ -1,22 +1,21 @@
 // std imports
-use std::num;
 
 // local imports
 use error::*;
 use matrix::view::MatrixView;
 use matrix::traits::*;
-use number::Number;
+use number::Signed;
 
 
 /// Implementation of min-max with absolute values API for matrix view
-impl <'a, T:Number+PartialOrd+Signed> MinMaxAbs<T> for MatrixView<'a, T> {
+impl <'a, T:Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
 
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
             panic!(EmptyMatrix.to_string());
         }
-        let mut v = num::abs(self.get(0, 0));
+        let mut v = self.get(0, 0).abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -24,7 +23,7 @@ impl <'a, T:Number+PartialOrd+Signed> MinMaxAbs<T> for MatrixView<'a, T> {
         for c in range(0, self.num_cols()){
             for r in range(0, self.num_rows()){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = num::abs(unsafe{*ps.offset(src_offset)});
+                let s = unsafe{*ps.offset(src_offset)}.abs();
                 if s < v { 
                     v = s;
                     rr = r;
@@ -40,7 +39,7 @@ impl <'a, T:Number+PartialOrd+Signed> MinMaxAbs<T> for MatrixView<'a, T> {
         if self.is_empty(){
             panic!(EmptyMatrix.to_string());
         }
-        let mut v = num::abs(self.get(0, 0));
+        let mut v = self.get(0, 0).abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -48,7 +47,7 @@ impl <'a, T:Number+PartialOrd+Signed> MinMaxAbs<T> for MatrixView<'a, T> {
         for c in range(0, self.num_cols()){
             for r in range(0, self.num_rows()){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = num::abs(unsafe{*ps.offset(src_offset)});
+                let s = unsafe{*ps.offset(src_offset)}.abs();
                 if s > v { 
                     v  = s;
                     rr = r;

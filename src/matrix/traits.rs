@@ -1,11 +1,10 @@
 // Standard library imports
 use std::ptr;
 use std::cmp;
-use std::num;
 
 // local imports
 use entry::Entry;
-use number::Number;
+use number::{Number, Signed};
 use matrix::matrix::Matrix;
 use error::*;
 
@@ -270,7 +269,7 @@ pub trait MinMax<T:Number+PartialOrd> : Shape<T> {
 
 
 /// Matrix min-max with absolute values API
-pub trait MinMaxAbs<T:Number+PartialOrd+Signed> : Shape<T> {
+pub trait MinMaxAbs<T:Signed> : Shape<T> {
 
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, uint, uint);
@@ -600,7 +599,7 @@ pub trait Transpose<T:Number> : Shape<T>{
 #[doc="Features for searching within the matrix
 "]
 
-pub trait Search<T:Number+PartialOrd+Signed> : Shape<T>+MatrixBuffer<T>{
+pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T>{
 
     /// Returns the largest entry (by magnitude) in the row between
     /// [start, end) columns
@@ -613,11 +612,11 @@ pub trait Search<T:Number+PartialOrd+Signed> : Shape<T>+MatrixBuffer<T>{
         let p = self.as_ptr();
         let stride = self.stride();
         let mut offset = start_col * stride + row;
-        let mut result = num::abs(unsafe{*p.offset(offset as int)});
+        let mut result = unsafe{*p.offset(offset as int)}.abs();
         let mut index  = 0;
         for i in range(1, end_col - start_col){
             offset += stride;
-            let s = num::abs(unsafe{*p.offset(offset as int)});
+            let s = unsafe{*p.offset(offset as int)}.abs();
             if s > result {
                 index = i;
                 result = s;
@@ -638,11 +637,11 @@ pub trait Search<T:Number+PartialOrd+Signed> : Shape<T>+MatrixBuffer<T>{
         let p = self.as_ptr();
         let stride = self.stride();
         let mut offset = col * stride + start_row;
-        let mut result = num::abs(unsafe{*p.offset(offset as int)});
+        let mut result = unsafe{*p.offset(offset as int)}.abs();
         let mut index  = 0;
         for i in range(1, end_row - start_row){
             offset += 1;
-            let s = num::abs(unsafe{*p.offset(offset as int)});
+            let s = unsafe{*p.offset(offset as int)}.abs();
             if s > result {
                 index = i;
                 result = s;

@@ -7,19 +7,19 @@ use std::ptr;
 use std::ops;
 use std::cmp;
 use std::fmt;
-use std::num;
-use std::num::{One, Zero};
+use std::num::{Int, Float};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
-
+use std::num::UnsignedInt;
 
 
 // local imports
 
 use discrete::{mod_n};
 use entry::Entry;
-use number::{Number};
+use entry::{Zero, One};
+use number::{Number, Signed};
 use error::*;
 use matrix::iter::*;
 use matrix::view::MatrixView;
@@ -111,8 +111,8 @@ the matrix differently.
     "]
     pub fn new(rows: uint, cols : uint)-> Matrix<T> {
         debug_assert! (mem::size_of::<T>() != 0);
-        let xrows = num::next_power_of_two(rows);
-        let xcols = num::next_power_of_two(cols);
+        let xrows = rows.next_power_of_two();
+        let xcols = cols.next_power_of_two();
         let capacity = xrows *  xcols;
 
         // Support for empty  matrices
@@ -785,21 +785,6 @@ impl<T:Number> Matrix<T> {
         result
     }
 
-    /// Computes the unary minus of a matrix
-    pub fn unary_minus(&self)-> Matrix<T> {
-        let result : Matrix<T> = Matrix::new(self.cols, self.rows);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let offset = self.cell_to_offset(r, c);
-                unsafe {
-                    *pc.offset(offset) = -*pa.offset(offset);
-                }
-            }
-        }
-        result
-    }
 
     /// Inner product or dot product of two vectors
     /// Both must be column vectors
@@ -849,6 +834,23 @@ impl<T:Number> Matrix<T> {
 
 }
 
+impl<T:Number+Neg<T>> Matrix<T> {
+    /// Computes the unary minus of a matrix
+    pub fn unary_minus(&self)-> Matrix<T> {
+        let result : Matrix<T> = Matrix::new(self.cols, self.rows);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        for r in range(0, self.rows){
+            for c in range(0, self.cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = -*pa.offset(offset);
+                }
+            }
+        }
+        result
+    }
+}
 
 impl <T:Number> Transpose<T> for Matrix<T> {
     /// Computes the transpose of a matrix.
@@ -994,8 +996,8 @@ impl<T:Number> Matrix<T> {
     Thus, the matrix elements need to be moved around.
     "] 
     fn reallocate(&mut self, rows : uint, cols : uint){
-        let new_xrows = num::next_power_of_two(rows);
-        let new_xcols = num::next_power_of_two(cols);
+        let new_xrows = rows.next_power_of_two();
+        let new_xcols = cols.next_power_of_two();
         let old_capacity = self.xrows * self.xcols;
         let new_capacity = new_xrows *  new_xcols;
         if old_capacity >= new_capacity{
@@ -1196,7 +1198,7 @@ impl<T:Number> Updates<T> for Matrix<T> {
 
 
 /// Implementation of Matrix search operations.
-impl<T:Number+PartialOrd+Signed> Search<T> for Matrix<T> {
+impl<T:Signed+PartialOrd> Search<T> for Matrix<T> {
 }
 
 
@@ -1277,14 +1279,14 @@ impl<T:Number+PartialOrd> Matrix<T> {
     }    
 }
 
-impl<T:Number+PartialOrd+Signed> Matrix<T> {
+impl<T:Signed+PartialOrd> Matrix<T> {
 
     // Returns the absolute minimum scalar value
     pub fn min_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
             panic!(EmptyMatrix.to_string());
         }
-        let mut v = num::abs(self.get(0, 0));
+        let mut v = self.get(0, 0).abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1292,7 +1294,7 @@ impl<T:Number+PartialOrd+Signed> Matrix<T> {
         for c in range(0, self.cols){
             for r in range(0, self.rows){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = num::abs(unsafe{*ps.offset(src_offset)});
+                let s = unsafe{*ps.offset(src_offset)}.abs();
                 if s < v { 
                     v = s;
                     rr = r;
@@ -1308,7 +1310,7 @@ impl<T:Number+PartialOrd+Signed> Matrix<T> {
         if self.is_empty(){
             panic!(EmptyMatrix.to_string());
         }
-        let mut v = num::abs(self.get(0, 0));
+        let mut v = self.get(0, 0).abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1316,7 +1318,7 @@ impl<T:Number+PartialOrd+Signed> Matrix<T> {
         for c in range(0, self.cols){
             for r in range(0, self.rows){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = num::abs(unsafe{*ps.offset(src_offset)});
+                let s = unsafe{*ps.offset(src_offset)}.abs();
                 if s > v { 
                     v  = s;
                     rr = r;
@@ -1340,7 +1342,7 @@ impl<T:Number+PartialOrd+Signed> Matrix<T> {
 }
 
 /// These functions are available only for integer matrices
-impl<T:Number+Int> Matrix<T> {
+impl<T:Signed+Int> Matrix<T> {
 
     /// Returns if an integer matrix is a logical matrix
     //// i.e. all cells are either 0s or 1s.
@@ -1691,6 +1693,7 @@ mod test {
 
     use  super::{Matrix, MatrixI64, MatrixF64};
     use matrix::*;
+    use std::num::Float;
 
     #[test]
     fn  test_create_mat0(){

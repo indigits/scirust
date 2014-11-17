@@ -1,0 +1,24 @@
+   Compiling scirust v0.0.2 (file:///I:/work/projects/scirust/srmat)
+I:\work\projects\scirust\srmat\src\linalg\det.rs:146:9: 146:17 warning: unused import, #[warn(unused_imports)] on by default
+I:\work\projects\scirust\srmat\src\linalg\det.rs:146     use std::num;
+                                                             ^~~~~~~~
+I:\work\projects\scirust\srmat\src\external\complex.rs:178:18: 178:24 warning: unused import, #[warn(unused_imports)] on by default
+I:\work\projects\scirust\srmat\src\external\complex.rs:178     use number::{Number};
+                                                                            ^~~~~~
+     Running target\scirust-ea4a2091bf8a0bb7.exe
+
+task 'discrete::modular::test::test_modulo_n' has overflowed its stack
+
+task 'linalg::det::test::test_det_0' has overflowed its stack
+
+task 'linalg::det::test::test_det_hilbert' has overflowed its stack
+
+task 'linalg::det::test::test_det_hadamard' has overflowed its stack
+
+task 'linalg::det::test::test_det_1' has overflowed its stack
+
+task 'linalg::inverse::test::test_inv_eco_0' has overflowed its stack
+
+task '
+task 'linalg::inverse::test::test_inv_eco_hilbertlinalg::inverse::test::test_inv_eco_hadamard' has overflowed its stack
+' has overflowed its stack
