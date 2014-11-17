@@ -30,109 +30,20 @@ C libraries like BLAS or LAPACK.
 #[phase(plugin, link)] extern crate log;
 
 
-
+// Common modules
 pub mod entry;
 pub mod number;
 pub mod error;
 
-pub mod discrete{
-    #![doc="Discrete mathematics
-    "]
-
-    pub use self::modular::*;
-    //pub use self::permutations::*;
-
-    mod modular;
-    pub mod permutations;
-
-}
-
-pub mod matrix {
-    #![doc="Fundamental matrix structures
-    "]
-    pub use super::number::*;
-    pub use super::error::*;
-    pub use self::constructors::*;
-    pub use self::iter::*;
-    pub use self::matrix::*;
-    pub use self::matrix_conversion::*;
-    pub use self::matrix_minmax::*;
-    pub use self::random::*;
-    pub use self::traits::*;
-    pub use self::view::*;
-    pub use self::view_conversion::*;
-    pub use self::view_minmax::*;
-    pub use self::triangular_matrix::*;
-    pub use self::vector::*;
-
-    mod constructors;
-    mod iter;
-    pub mod matrix;
-    mod matrix_conversion;
-    mod matrix_minmax;
-    mod random;
-    pub mod traits;
-    pub mod vector;
-    mod view;
-    mod view_conversion;
-    mod view_minmax;
-    mod triangular_matrix;
-}
-
-
-pub mod linalg {
-    #![doc="Linear algebra algorithms
-    "]
-    pub use self::linear_system::*;
-    pub use self::det::*;
-    pub use self::lu::*;
-    pub use super::error::*;
-    pub use self::singularity::*;
-    pub use self::inverse::*;
-    pub use self::rank::*;
-
-    mod linear_system;
-    mod det;
-    mod lu;
-    mod singularity;
-    mod inverse;
-    mod rank;
-
-}
-
-
-pub mod stat {
-    #![doc="Statistics
-    "]
-}
-
-pub mod opt {
-    #![doc="Optimization
-    "]
-    pub mod lp {
-    #![doc="Linear programming
-    "]
-    }
-    pub mod ls {
-    #![doc="Least squares
-    "]
-    }
-    pub mod cvx {
-    #![doc="Convex optimization
-    "]
-    }
-}
-
-
-
-pub mod signal {
-    #![doc="Signal processing
-    "]
-    pub use self::signal::*;
-    mod signal;
-}
-
-
+// Main libraries
+pub mod discrete;
+pub mod matrix;
+pub mod linalg;
+pub mod stat;
+pub mod opt;
+pub mod signal;
+pub mod dx;
+pub mod external;
 pub mod image {
 #![doc="Image processing
 "]
@@ -143,77 +54,8 @@ pub mod audio {
 "]
 }
 
-
-pub mod dx {
-#![doc="Data exchange
-
-This module and its submodules intend to provide
-functions for exchanging scientific data in different
-formats.
-
-Initial targets are:
-
-* HDF (Hierarchical Data Format)
-* MAT (MATLAB format)
-
-
-# Remarks
-
-At the moment, the graphics capabilities 
-do not exist within SciRust. In order
-to create graphics, one needs to write
-data generated in a SciRust program
-and save it in a suitable format 
-so that it can be imported in systems like
-SciPy etc. The graphics facilities of those
-systems can then be used. 
-
-"]
-
-}
-
-
-pub mod external{
-#![doc="External code.
-
-This module holds external code picked up from outside
-sources till a more formal solution is found.
-
-
-# Contents
-
-## complex.rs
-
-Rust code base has a complex.rs file but it is not yet
-part of Standard Library. Using the file as it is 
-in the code base. When Rust provides built-in support
-for complex numbers, then this library will be removed.
-
-
-"]
-
-pub mod complex;
-
-}
-
 // for internal use only
-pub mod util{
-
-    pub mod memory;
-    pub mod slice_vec_conversion;
-}
+pub mod util;
+mod testdata;
 
 
-
-// for internal use only
-mod testdata{
-
-    #[cfg(test)]
-    pub mod matrix {
-
-        pub use self::simple::*;
-
-        mod simple;
-
-    }
-}
