@@ -487,6 +487,20 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
         true
     }
 
+    fn trace(&self) -> T{
+        if self.is_empty() {
+            return Zero::zero()
+        }
+        let mut result = self.get(0, 0);
+        let stride = self.stride() as int;
+        let mut offset = stride;
+        let ptr = self.as_ptr();
+        for i in range(1, self.smaller_dim()){
+            result = result + unsafe{*ptr.offset(offset + i as int)};
+            offset += stride;
+        }
+        result
+    }
 }
 
 /// Introspection support
@@ -610,7 +624,7 @@ impl<T:Number> Matrix<T> {
 
     /// Extracts the primary diagonal from the matrix as a vector
     pub fn diagonal_vector(&self) -> Matrix<T> {
-        let m  = cmp::min(self.rows, self.cols);
+        let m  = self.smaller_dim();
         let result : Matrix<T> = Matrix::new(m, 1);
         let src = self.ptr;
         let dst = result.ptr;
@@ -1684,6 +1698,8 @@ mod test {
         let m : MatrixI64 = Matrix::new(3, 4);
         assert_eq!(m.num_cells(), 12);
         assert_eq!(m.size(), (3, 4));
+        assert_eq!(m.smaller_dim(), 3);
+        assert_eq!(m.larger_dim(), 4);
         // NOTE: we cannot use the contents of the
         // matrix as they are uninitialized.
         let m : MatrixI64 = Matrix::zeros(3, 4);
@@ -2120,6 +2136,14 @@ mod test {
         assert!(!m.is_ut());
         assert!(m.is_lt());
         assert!(m.is_triangular());
+    }
+
+    #[test]
+    fn test_trace(){
+        let m = matrix_cw_f64(3, 3, &[1., 0., 0., 
+            4., 5., 0.,
+            6., 2., 3.]);
+        assert_eq!(m.trace(), 9.);
     }
 
     #[test]

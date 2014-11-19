@@ -71,6 +71,11 @@ impl<'a, T:Entry> MatrixView<'a, T> {
     pub fn matrix(&self)-> &'a Matrix<T>{
         self.m
     }
+    /// Returns the offset of the first cell in the view
+    #[inline]
+    pub fn start_offset(&self) -> int {
+        (self.start_col() * self.stride() + self.start_row()) as int
+    }
 }
 
 
@@ -298,7 +303,24 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
         } 
         true
     }
+
+    fn trace(&self) -> T{
+        if self.is_empty() {
+            return Zero::zero()
+        }
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        let ptr = self.as_ptr();
+        let mut result = unsafe {*ptr.offset(offset)};
+        for i in range(1, self.smaller_dim()){
+            offset += stride;
+            result = result + unsafe{*ptr.offset(offset + i as int)};
+        }
+        result
+    }
+
 }
+
 
 
 
@@ -646,5 +668,16 @@ mod test{
         assert_eq!(m1, m2.transpose());
     }
 
+    #[test]
+    fn test_trace(){
+        let m = matrix_cw_f64(3, 3, &[1., 0., 0., 
+            4., 5., 0.,
+            6., 2., 3.]);
+        let v = m.view(0, 0, 2, 2);
+        assert_eq!(v.trace(), 6.);
+        let v = m.view(1, 1, 2, 2);
+        println!("{}", v);
+        assert_eq!(v.trace(), 8.);
+    }
 }
 

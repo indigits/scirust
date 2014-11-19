@@ -262,6 +262,20 @@ impl<T:Number> NumberMatrix<T> for TriangularMatrix<T> {
     fn is_triangular(&self) -> bool {
         true
     }
+
+    fn trace(&self) -> T{
+        if self.is_empty() {
+            return Zero::zero()
+        }
+        let mut offset = 0i;
+        let ptr = self.as_ptr();
+        let mut result = unsafe{*ptr};
+        for i in range(1, self.smaller_dim()){
+            offset += (i + 1) as int;
+            result = result + unsafe{*ptr.offset(offset)};
+        }
+        result
+    }
 }
 
 
@@ -680,6 +694,15 @@ mod tests {
             1, 0,
             1, 1].as_slice()));
     }
+
+    #[test]
+    fn test_trace(){
+        let n = 4;
+        // lower triangular
+        let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
+        assert_eq!(m.trace(), 4);
+    }
+
 }
 
 

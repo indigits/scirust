@@ -86,6 +86,16 @@ pub trait Shape<T:Entry> {
         c * rows + r
     }
 
+    /// Returns the minimum of rows and columns
+    fn smaller_dim(&self) -> uint {
+        cmp::min(self.num_rows(), self.num_cols())
+    }
+
+    /// Returns the larger of rows and columns
+    fn larger_dim(&self)-> uint {
+        cmp::max(self.num_rows(), self.num_cols())
+    }
+
 }
 
 
@@ -109,6 +119,9 @@ pub trait NumberMatrix<T:Number> {
     fn is_triangular(&self) -> bool{
         self.is_lt() || self.is_ut()
     }
+
+    /// Returns the trace of the matrix
+    fn trace(&self) -> T ;
 }
 
 #[doc=" Defines the low level interface to the internal
