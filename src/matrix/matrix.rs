@@ -1693,11 +1693,11 @@ mod test {
 
     #[test]
     fn test_from_slice_rw0(){
-        let  m : MatrixI64 = Matrix::from_slice_rw(3, 3, [
+        let  m : MatrixI64 = Matrix::from_slice_rw(3, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ].as_slice());
+            ]);
         assert_eq!(m.get(0, 0), 1);
         assert_eq!(m.get(0, 1), 2);
         assert_eq!(m.get(0, 2), 3);

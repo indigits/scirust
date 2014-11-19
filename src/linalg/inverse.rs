@@ -134,7 +134,7 @@ mod test{
     use matrix::matrix::*;
     use matrix::constructors::*;
     use matrix::traits::*;
-    use std::num;
+    use std::num::Int;
 
     #[test]
     fn test_inv_ero_0(){
@@ -161,7 +161,7 @@ mod test{
     #[test]
     fn test_inv_ero_hadamard(){
         for i in range(2, 6){
-            let n = num::pow(2,i);
+            let n = Int::pow(2,i);
             let a = hadamard(n).unwrap();
             println!("n: {}", n);
             println!("a: {}", a);
@@ -178,7 +178,7 @@ mod test{
     #[test]
     fn test_inv_eco_hadamard(){
         for i in range(2, 6){
-            let n = num::pow(2,i);
+            let n = Int::pow(2,i);
             let a = hadamard(n).unwrap();
             println!("n: {}", n);
             println!("a: {}", a);

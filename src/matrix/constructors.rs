@@ -2,7 +2,6 @@
 "]
 
 // std imports
-use std::num;
 use std::num::Int;
 use std::num::UnsignedInt;
 
