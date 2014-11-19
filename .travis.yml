@@ -19,6 +19,4 @@ notifications:
     recipients:
         - shailesh@indigits.com
         - shaileshk@gmail.com
-    on_success: [always] # always|never|[change]
-    on_failure: [always] # [always]|never|change
 
