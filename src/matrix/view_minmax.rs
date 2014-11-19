@@ -1,7 +1,7 @@
 // std imports
 
 // local imports
-use error::*;
+use error::SRError;
 use matrix::view::MatrixView;
 use matrix::traits::*;
 use number::Signed;
@@ -13,7 +13,7 @@ impl <'a, T:Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            panic!(EmptyMatrix.to_string());
+            panic!(SRError::EmptyMatrix.to_string());
         }
         let mut v = self.get(0, 0).abs_val();
         // The location
@@ -37,7 +37,7 @@ impl <'a, T:Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
     // Returns the maximum scalar value
     fn max_abs_scalar(&self) -> (T, uint, uint){
         if self.is_empty(){
-            panic!(EmptyMatrix.to_string());
+            panic!(SRError::EmptyMatrix.to_string());
         }
         let mut v = self.get(0, 0).abs_val();
         // The location

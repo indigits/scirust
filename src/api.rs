@@ -1,7 +1,7 @@
 #![doc="SciRust API
 "]
 
-pub use error::*;
+pub use error::SRError;
 
 // Matrix library
 pub use matrix::*;
@@ -11,7 +11,7 @@ pub use matrix::constructors::*;
 pub use matrix::view::*;
 pub use matrix::eo::eo_traits::*;
 // pub use super::number::*;
-// pub use super::error::*;
+// pub use super::error::SRError;
 // pub use self::constructors::*;
 // pub use self::iter::*;
 // pub use self::matrix::*;

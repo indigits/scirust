@@ -13,7 +13,7 @@ use std::rt::heap::allocate;
 use entry::{Entry, Zero, One};
 use number::{Number};
 use matrix::matrix::Matrix;
-//use matrix::error::*;
+//use matrix::error::SRError;
 
 use matrix::traits::{Shape, NumberMatrix,
     Introspection, 

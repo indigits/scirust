@@ -8,7 +8,7 @@ pub use number::{Number, Signed};
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, Extraction, MatrixBuffer, Search};
 use matrix::eo::eo_traits::ECO;
-use error::*;
+use error::SRError;
 
 #[doc="Returns the determinant of a matrix.
 
@@ -29,7 +29,7 @@ See http://en.wikipedia.org/wiki/Matrix_(mathematics)#Empty_matrices.
 "]
 pub fn  det<T:Signed>(m : &Matrix<T>)->Result<T,SRError>{
     if !m.is_square(){
-        return Err(IsNotSquareMatrix);
+        return Err(SRError::IsNotSquareMatrix);
     }
     if m.is_empty(){
         return Ok(One::one());
@@ -43,7 +43,7 @@ pub fn  det<T:Signed>(m : &Matrix<T>)->Result<T,SRError>{
 "]
 pub fn  det_float<T:Signed+Float>(m : &Matrix<T>)->Result<T,SRError>{
     if !m.is_square(){
-        return Err(IsNotSquareMatrix);
+        return Err(SRError::IsNotSquareMatrix);
     }
     if m.is_empty(){
         return Ok(One::one());

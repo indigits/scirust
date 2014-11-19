@@ -9,13 +9,13 @@
 use matrix::matrix::{Matrix, MatrixF64};
 use matrix::traits::{Shape, Search};
 use matrix::eo::eo_traits::{ERO, ECO};
-use error::*;
+use error::SRError;
 
 
 /// Computes the inverse of a matrix using elementary row operations
 pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     if !a.is_square(){
-        return Err(IsNotSquareMatrix);
+        return Err(SRError::IsNotSquareMatrix);
     }
     let n = a.num_rows();
     let mut result  : MatrixF64 = Matrix::identity(n, n);
@@ -31,7 +31,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         // Pick the pivot
         let pivot  = v.get(0, 0);
         if pivot == 0. {
-            return Err(IsSingular);
+            return Err(SRError::IsSingular);
         }
         // bring 1 in the diagonal 
         v.ero_scale(0, 1./pivot);
@@ -70,7 +70,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
 /// Computes the inverse of a matrix using elementary column operations
 pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     if !a.is_square(){
-        return Err(IsNotSquareMatrix);
+        return Err(SRError::IsNotSquareMatrix);
     }
     let n = a.num_rows();
     let mut result  : MatrixF64 = Matrix::identity(n, n);
@@ -86,7 +86,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         // Pick the pivot
         let pivot  = v.get(0, 0);
         if pivot == 0. {
-            return Err(IsSingular);
+            return Err(SRError::IsSingular);
         }
         // bring 1 in the diagonal 
         v.eco_scale(0, 1./pivot);

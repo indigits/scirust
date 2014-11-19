@@ -6,7 +6,7 @@ use number::{Number, Signed};
 use super::mat_traits::LANumberMatrix;
 use linalg;
 use matrix::matrix::Matrix;
-use error::*;
+use error::SRError;
 
 impl<T:Number+Signed> LANumberMatrix<T> for Matrix<T>{
     /// Returns determinant of the matrix

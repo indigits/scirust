@@ -5,7 +5,7 @@ use std::num::{Int, SignedInt, Float};
 use entry::Entry;
 use number::{Number, Signed};
 use matrix::matrix::Matrix;
-use error::*;
+use error::SRError;
 
 use discrete::{mod_n};
 
@@ -174,7 +174,7 @@ pub trait Conversion<T:Number> : Shape<T> {
     /// Converts the matrix to a scalar 
     fn to_scalar(&self) -> T {
         if !self.is_scalar() {
-            panic! (DimensionsMismatch.to_string());
+            panic! (SRError::DimensionsMismatch.to_string());
         }
         self.get(0, 0)
     }

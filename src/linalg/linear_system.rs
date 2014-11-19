@@ -5,11 +5,11 @@
 // std imports
 
 // srmat imports
-//use error::*;
+//use error::SRError;
 use matrix::matrix::{MatrixF64};
 use matrix::traits::{Shape, NumberMatrix,
     MinMaxAbs};
-use error::*;
+use error::SRError;
 use linalg::singularity::*;
 use matrix::eo::eo_traits::ERO;
 
@@ -82,7 +82,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
             if pivot == 0. {
                 // We have a problem here. We cannot find a solution.
                 // TODO: make it more robust for under-determined systems.
-                return Err(NoSolution);
+                return Err(SRError::NoSolution);
             }
             b.ero_scale(r, 1.0/pivot);
             for j in range(r+1, m.num_rows()){
@@ -108,11 +108,11 @@ solving a lower triangular linear system. L X = B
 pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) -> 
     Result<MatrixF64, SRError>{
     if !l.is_square() {
-        return Err(IsNotSquareMatrix);
+        return Err(SRError::IsNotSquareMatrix);
     }
     let n = l.num_rows();
     if n != b.num_rows() {
-        return Err(LRDimensionMismatch);
+        return Err(SRError::LRDimensionMismatch);
     }
     debug_assert!(l.is_lt());
     // Create a copy for the result
@@ -122,7 +122,7 @@ pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) ->
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
-            return Err(IsSingular);
+            return Err(SRError::IsSingular);
         }
         for k in range(0,  r){
             b.ero_scale_add(r, k as int, -l.get(r, k));
@@ -150,7 +150,7 @@ pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) ->
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
-            return Err(IsSingular);
+            return Err(SRError::IsSingular);
         }
         b.ero_scale(r, 1.0/pivot);
         for j in range(r+1, u.num_rows()){
@@ -194,7 +194,7 @@ pub fn ldu_solve(l : &MatrixF64,
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
-            return Err(IsSingular);
+            return Err(SRError::IsSingular);
         }
         for k in range(0,  r){
             b.ero_scale_add(r, k as int, -l.get(r, k));
@@ -215,7 +215,7 @@ pub fn ldu_solve(l : &MatrixF64,
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
-            return Err(IsSingular);
+            return Err(SRError::IsSingular);
         }
         b.ero_scale(r, 1.0/pivot);
         for j in range(r+1, u.num_rows()){

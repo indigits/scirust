@@ -8,7 +8,7 @@ use std::cmp;
 // local imports
 use entry::Zero;
 use number::Number;
-//use error::*;
+//use error::SRError;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, NumberMatrix};
 

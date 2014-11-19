@@ -26,7 +26,7 @@ pub enum SRError{
     /// The matrix is not a square matrix
     IsNotSquareMatrix,
     /// The matrix is not a vector
-    NotAVector,
+    IsNotAVector,
     /// Indicates that a matrix is not full rank
     IsNotFullRankMatrix,
     /// Indicates that the matrix is full rank
@@ -53,8 +53,8 @@ pub enum SRError{
      *
      *******************************************************/
 
-     /// The dimensions of left and right hand side don't match
-     LRDimensionMismatch,
+    /// The dimensions of left and right hand side don't match
+    LRDimensionMismatch,
     /// There is no solution to the system of equations
     NoSolution,
     /// There are infinite solutions to the system of equations.
@@ -79,25 +79,25 @@ impl SRError{
     pub fn to_string(&self) -> String {
         match *self{
             //  Matrices
-            EmptyMatrix => format!("Matrix is empty"),
-            DimensionsMismatch => format!("Dimensions don't match"),
-            IsNotSquareMatrix => format!("Matrix is not square"),
-            NotAVector => format!("Matrix is not a vector"),
-            IsNotFullRankMatrix => format!("Matrix is not full rank"),
-            IsFullRankMatrix => format!("Matrix is full rank"),
-            IsSingular => format!("Matrix is singular"),
-            IsNonSingular => format!("Matrix is not singular"),
-            IsPositiveDefinite => format!("Matrix is positive definite"),
-            IsPositiveSemiDefinite => format!("Matrix is positive semi-definite"),
-            IsNegativeDefinite => format!("Matrix is negative definite"),
-            IsNegativeSemiDefinite => format!("Matrix is negative semi-definite"),
-            IsNonDefinite => format!("Matrix is non-definite"),
+            SRError::EmptyMatrix => format!("Matrix is empty"),
+            SRError::DimensionsMismatch => format!("Dimensions don't match"),
+            SRError::IsNotSquareMatrix => format!("Matrix is not square"),
+            SRError::IsNotAVector => format!("Matrix is not a vector"),
+            SRError::IsNotFullRankMatrix => format!("Matrix is not full rank"),
+            SRError::IsFullRankMatrix => format!("Matrix is full rank"),
+            SRError::IsSingular => format!("Matrix is singular"),
+            SRError::IsNonSingular => format!("Matrix is not singular"),
+            SRError::IsPositiveDefinite => format!("Matrix is positive definite"),
+            SRError::IsPositiveSemiDefinite => format!("Matrix is positive semi-definite"),
+            SRError::IsNegativeDefinite => format!("Matrix is negative definite"),
+            SRError::IsNegativeSemiDefinite => format!("Matrix is negative semi-definite"),
+            SRError::IsNonDefinite => format!("Matrix is non-definite"),
             // Linear systems
-            LRDimensionMismatch => format!("The dimensions of LHS and RHS don't match"),
-            NoSolution => format!("No solution"),
-            InfiniteSolutions => format!("Infinite solutions"),
+            SRError::LRDimensionMismatch => format!("The dimensions of LHS and RHS don't match"),
+            SRError::NoSolution => format!("No solution"),
+            SRError::InfiniteSolutions => format!("Infinite solutions"),
             // Discrete numbers
-            IsNotPowerOfTwo => format!("Number is not power of two"),
+            SRError::IsNotPowerOfTwo => format!("Number is not power of two"),
 
 
         }

@@ -15,7 +15,7 @@ pub use matrix::matrix::{Matrix,
     MatrixF32, MatrixF64,
     MatrixC32, MatrixC64};
 use matrix::traits::{Shape};
-use error::*;
+use error::SRError;
 use entry::{One, Zero};
 use number::{Number, num_range};
 
@@ -30,7 +30,7 @@ n must be a power of 2.
 "] 
 pub fn hadamard(n : uint) -> Result<MatrixF64, SRError>{
     if !n.is_power_of_two(){
-        return Err(IsNotPowerOfTwo);
+        return Err(SRError::IsNotPowerOfTwo);
     }
     let mut m : MatrixF64 = Matrix::new(n, n);
     // Take the log of n with respect to 2.

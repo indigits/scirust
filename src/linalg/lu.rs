@@ -7,10 +7,10 @@
 
 
 // local imports
-//use error::*;
+//use error::SRError;
 use matrix::matrix::{Matrix, MatrixF64, MatrixU16};
 use matrix::constructors::from_range_rw_u16;
-use error::*;
+use error::SRError;
 use discrete::permutations::*;
 use matrix::vector::*;
 use matrix::traits::{Shape, Search, Updates};
