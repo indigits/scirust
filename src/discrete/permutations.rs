@@ -61,26 +61,26 @@ mod test{
 
     #[test]
     fn test_permutation(){
-        let v = vector_i64([0, 1, 2]);
+        let v = vector_i64([0, 1, 2].as_slice());
         assert!(is_permutation(&v));
-        let v = vector_i64([2, 1, 0]);
+        let v = vector_i64([2, 1, 0].as_slice());
         assert!(is_permutation(&v));
-        let v = vector_i64([3, 1, 0]);
+        let v = vector_i64([3, 1, 0].as_slice());
         assert!(!is_permutation(&v));
-        let v = vector_i64([2, 0, 1]);
+        let v = vector_i64([2, 0, 1].as_slice());
         assert!(is_permutation(&v));
-        let v = vector_i64([2, 1, 1]);
+        let v = vector_i64([2, 1, 1].as_slice());
         assert!(!is_permutation(&v));
     }
 
     #[test]
     fn test_inverse_permutation(){
-        let v = vector_i64([0, 3, 2, 1]);
+        let v = vector_i64([0, 3, 2, 1].as_slice());
         let v2 = inverse_permutation(&v);
-        assert_eq!(v2, vector_i64([0, 3, 2, 1]));
-        let v = vector_i64([0, 2, 3, 1, 4]);
+        assert_eq!(v2, vector_i64([0, 3, 2, 1].as_slice()));
+        let v = vector_i64([0, 2, 3, 1, 4].as_slice());
         let v2 = inverse_permutation(&v);
-        assert_eq!(v2, vector_i64([0, 3, 1, 2, 4]));
+        assert_eq!(v2, vector_i64([0, 3, 1, 2, 4].as_slice()));
     }
 }
 

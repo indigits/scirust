@@ -296,12 +296,12 @@ mod test{
 
     #[test]
     fn test_ge_0(){
-        let a = matrix_cw_f64(2,2, [1., 4., 2., 5.]);
+        let a = matrix_cw_f64(2,2, [1., 4., 2., 5.].as_slice());
         println!("{}", a);
-        let b = vector_f64([3.0, 6.0]);
+        let b = vector_f64([3.0, 6.0].as_slice());
         let x = GaussElimination::new(&a, &b).solve().unwrap();
         println!("{}", x);
-        assert_eq!(x, vector_f64([-1., 2.]));
+        assert_eq!(x, vector_f64([-1., 2.].as_slice()));
         let lsv = LinearSystemValidator::new(&a, &x, &b);
         assert!(lsv.is_max_abs_val_below_threshold(1e-6));
     }
@@ -333,8 +333,8 @@ mod test{
     fn test_ge_2(){
         let a = matrix_cw_f64(3,3, [1., 0., 0., 
             -1., 1., 0., 
-            1., 1., 1.]);
-        let b = vector_f64([1., 1., 1.]);
+            1., 1., 1.].as_slice());
+        let b = vector_f64([1., 1., 1.].as_slice());
         let ge = GaussElimination::new(&a, &b);
         let x  = ge.solve().unwrap();
         println!("a: {}, x: {}, b: {}", a, x, b);
@@ -347,8 +347,8 @@ mod test{
     fn test_ge_3(){
         let a = matrix_cw_f64(3,3, [2., 4., -2., 
             1., -6., 7., 
-            1., 0., 2.]);
-        let b = vector_f64([5., -2., 9.]);
+            1., 0., 2.].as_slice());
+        let b = vector_f64([5., -2., 9.].as_slice());
         let ge = GaussElimination::new(&a, &b);
         let x  = ge.solve().unwrap();
         println!("a: {}, x: {}, b: {}", a, x, b);
@@ -360,9 +360,9 @@ mod test{
 
     #[test]
     fn test_ge_no_solution(){
-        let a = matrix_cw_f64(2,2, [1., 4., 2., 8.]);
+        let a = matrix_cw_f64(2,2, [1., 4., 2., 8.].as_slice());
         println!("{}", a);
-        let b = vector_f64([3.0, 6.0]);
+        let b = vector_f64([3.0, 6.0].as_slice());
         let result = GaussElimination::new(&a, &b).solve();
         match result {
             Ok(x) => {
@@ -378,8 +378,8 @@ mod test{
     fn test_ut_0(){
         let l = matrix_rw_f64(2, 2, [
             1., 1.,
-            0., 1.]);
-        let x = vector_f64([1., 2.]);
+            0., 1.].as_slice());
+        let x = vector_f64([1., 2.].as_slice());
         let b = l * x;
         let x = ut_solve(&l, &b).unwrap();
         let lsv = LinearSystemValidator::new(&l, &x, &b);
@@ -391,8 +391,8 @@ mod test{
     fn test_lt_0(){
         let l = matrix_rw_f64(2, 2, [
             1., 0.,
-            1., 1.]);
-        let x = vector_f64([1., 2.]);
+            1., 1.].as_slice());
+        let x = vector_f64([1., 2.].as_slice());
         let b = l * x;
         let x = lt_solve(&l, &b).unwrap();
         let lsv = LinearSystemValidator::new(&l, &x, &b);
@@ -408,8 +408,8 @@ mod test{
         2.0, 1.0, 0.0, 0.0,
         3.0, 1.0, 2.0, 0.0,
         1.0, 1.0, 1.0, 1.0
-        ]);
-        let x = vector_f64([1., 2., 3., 4.]);
+        ].as_slice());
+        let x = vector_f64([1., 2., 3., 4.].as_slice());
         let b = l * x;
         let x = lt_solve(&l, &b).unwrap();
         let lsv = LinearSystemValidator::new(&l, &x, &b);
@@ -421,7 +421,7 @@ mod test{
     #[test]
     fn test_lt_2(){
         let m = from_range_rw_f64(10, 10, 1., 200.);
-        let x = vector_f64([1., 2., 3., 4., 5., 6., 7., 8., 9., 10.]);
+        let x = vector_f64([1., 2., 3., 4., 5., 6., 7., 8., 9., 10.].as_slice());
         let l = m.lt();
         let b = l * x;
         let x = lt_solve(&l, &b).unwrap();

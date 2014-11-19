@@ -61,12 +61,12 @@ mod test{
         let mut m1 = matrix_rw_i64(3,3,[
             1, 2, 3,
             4, 5, 6,
-            7, 8, 9]);
+            7, 8, 9].as_slice());
         m1.ero_scale_slice(1, 2, 1, 3);
         let m2 = matrix_rw_i64(3,3,[
             1, 2, 3,
             4, 10, 12,
-            7, 8, 9]);
+            7, 8, 9].as_slice());
         assert_eq!(m1, m2);
     }
 
@@ -111,12 +111,12 @@ mod test{
         let mut m1 = matrix_rw_i64(3,3,[
             1, 2, 3,
             4, 5, 6,
-            7, 8, 9]);
+            7, 8, 9].as_slice());
         m1.eco_scale_slice(1, 2, 1, 3);
         let m2 = matrix_rw_i64(3,3,[
             1, 2, 3,
             4, 10, 6,
-            7, 16, 9]);
+            7, 16, 9].as_slice());
         assert_eq!(m1, m2);
     }
 

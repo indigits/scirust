@@ -155,7 +155,7 @@ mod test{
     fn test_det_0(){
         let m = matrix_rw_f64(2,2, [
             1., 2., 
-            3., 4.]);
+            3., 4.].as_slice());
         let d = det_naive(&m);
         assert_eq!(d, -2.);
         let d = det_ge(&mut m.clone());
@@ -167,7 +167,7 @@ mod test{
     fn test_det_1(){
         let m = matrix_rw_f64(3, 3, [1., 2., 3., 
             4., 5., 6., 
-            7., 8., 9.]);
+            7., 8., 9.].as_slice());
         let d = det_naive(&m);
         assert_eq!(d, 0.);
         let d = det_ge(&mut m.clone());

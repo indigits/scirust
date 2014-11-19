@@ -1697,7 +1697,7 @@ mod test {
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ]);
+            ].as_slice());
         assert_eq!(m.get(0, 0), 1);
         assert_eq!(m.get(0, 1), 2);
         assert_eq!(m.get(0, 2), 3);
@@ -2111,7 +2111,7 @@ mod test {
     fn test_triangular(){
         let m = matrix_cw_f64(3, 3, [1., 0., 0., 
             4., 5., 0.,
-            6., 2., 3.]);
+            6., 2., 3.].as_slice());
         println!("m: {}", m);
         assert!(m.is_ut());
         assert!(!m.is_lt());
@@ -2128,17 +2128,17 @@ mod test {
             1, 2, 3,
             4, 5, 6,
             7, 8, 9
-            ]);
+            ].as_slice());
         let mu = matrix_rw_i64(3,3,[
             1, 2, 3,
             0, 5, 6,
             0, 0, 9
-            ]);
+            ].as_slice());
         let ml = matrix_rw_i64(3,3,[
             1, 0, 0,
             4, 5, 0,
             7, 8, 9
-            ]);
+            ].as_slice());
         assert_eq!(m.ut(), mu);
         assert_eq!(m.lt(), ml);
     }
@@ -2149,42 +2149,42 @@ mod test {
             1, 2, 3,
             4, 5, 6,
             7, 8, 9
-            ]);
+            ].as_slice());
         let md = matrix_rw_i64(3,3,[
             1, 0, 0,
             0, 5, 0,
             0, 0, 9
-            ]);
+            ].as_slice());
         assert_eq!(m.diagonal_matrix(), md);
-        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9]));
+        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9].as_slice()));
         // More columns than rows
         let m = matrix_rw_i64(3,4,[
             1, 2, 3, 11,
             4, 5, 6, 12,
             7, 8, 9, 19
-            ]);
+            ].as_slice());
         let md = matrix_rw_i64(3,4,[
             1, 0, 0, 0,
             0, 5, 0, 0,
             0, 0, 9, 0
-            ]);
+            ].as_slice());
         assert_eq!(m.diagonal_matrix(), md);
-        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9]));
+        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9].as_slice()));
         // More rows than columns
         let m = matrix_rw_i64(4,3,[
             1, 2, 3,
             4, 5, 6,
             7, 8, 9,
             10, 11, 12
-            ]);
+            ].as_slice());
         let md = matrix_rw_i64(4,3,[
             1, 0, 0,
             0, 5, 0,
             0, 0, 9,
             0, 0, 0
-            ]);
+            ].as_slice());
         assert_eq!(m.diagonal_matrix(), md);
-        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9]));
+        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9].as_slice()));
     }
 
     #[test]
@@ -2296,7 +2296,7 @@ mod test {
             5., 0., 7., 8.,
             9., 10., 0., 12.,
             13., 14., 15., 0.,
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
         m.set_row(0, 1.);
         let m2 = matrix_rw_f64(4, 4, [
@@ -2304,7 +2304,7 @@ mod test {
             5., 0., 7., 8.,
             9., 10., 0., 12.,
             13., 14., 15., 0.,
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
         m.set_col(2, 20.);
         let m2 = matrix_rw_f64(4, 4, [
@@ -2312,7 +2312,7 @@ mod test {
             5., 0., 20., 8.,
             9., 10., 20., 12.,
             13., 14., 20., 0.,
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
         m.set_block(2, 2, 2, 2, 30.);
         let m2 = matrix_rw_f64(4, 4, [
@@ -2320,7 +2320,7 @@ mod test {
             5., 0., 20., 8.,
             9., 10., 30., 30.,
             13., 14., 30., 30.,
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
     }
 
@@ -2329,7 +2329,7 @@ mod test {
         let m = matrix_rw_i64(3, 3, [
             2, 93, 9, 
             2, 71, -79, 
-            -83, 62, 6]);
+            -83, 62, 6].as_slice());
         assert_eq!(m.max_abs_scalar_in_row(0, 0, 3), (93, 1));
         assert_eq!(m.max_abs_scalar_in_row(1, 0, 3), (79, 2));
         assert_eq!(m.max_abs_scalar_in_row(2, 0, 3), (83, 0));
@@ -2342,7 +2342,7 @@ mod test {
         let m = matrix_cw_i64(3, 3, [
             2, 93, 9, 
             2, 71, -79, 
-            -83, 62, 6]);
+            -83, 62, 6].as_slice());
         assert_eq!(m.max_abs_scalar_in_col(0, 0, 3), (93, 1));
         assert_eq!(m.max_abs_scalar_in_col(1, 0, 3), (79, 2));
         assert_eq!(m.max_abs_scalar_in_col(2, 0, 3), (83, 0));
@@ -2356,12 +2356,12 @@ mod test {
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ]);
+            ].as_slice());
         let m2 = matrix_rw_i64(3, 3, [
             1, 2, 3, 
             4, 5, 6,
             21, 24, 27
-            ]);
+            ].as_slice());
         m.scale_row_lt(2, 3);
         assert_eq!(m, m2);
     }
@@ -2371,19 +2371,19 @@ mod test {
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ]);
+            ].as_slice());
         let m2 = matrix_rw_i64(3, 3, [
             1, 2, 3, 
             4, 5, 6,
             7, 8, 27
-            ]);
+            ].as_slice());
         m.scale_col_lt(2, 3);
         assert_eq!(m, m2);
         let m2 = matrix_rw_i64(3, 3, [
             1, 2, 3, 
             4, 10, 6,
             7, 16, 27
-            ]);
+            ].as_slice());
         m.scale_col_lt(1, 2);
         assert_eq!(m, m2);
     }
@@ -2394,12 +2394,12 @@ mod test {
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ]);
+            ].as_slice());
         let m2 = matrix_rw_i64(3, 3, [
             1, 2, 3, 
             4, 5, 6,
             7, 8, 27
-            ]);
+            ].as_slice());
         m.scale_row_ut(2, 3);
         assert_eq!(m, m2);
         m.scale_row_ut(1, 2);
@@ -2407,7 +2407,7 @@ mod test {
             1, 2, 3, 
             4, 10, 12,
             7, 8, 27
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
     }
     #[test]
@@ -2416,19 +2416,19 @@ mod test {
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ]);
+            ].as_slice());
         let m2 = matrix_rw_i64(3, 3, [
             1, 2, 9, 
             4, 5, 18,
             7, 8, 27
-            ]);
+            ].as_slice());
         m.scale_col_ut(2, 3);
         assert_eq!(m, m2);
         let m2 = matrix_rw_i64(3, 3, [
             1, 4, 9, 
             4, 10, 18,
             7, 8, 27
-            ]);
+            ].as_slice());
         m.scale_col_ut(1, 2);
         assert_eq!(m, m2);
     }
@@ -2440,15 +2440,15 @@ mod test {
             4, 5, 6,
             7, 8, 9,
             10, 11, 12
-            ]);
-        let factors = vector_i64([1, 2, 3, 4]);
+            ].as_slice());
+        let factors = vector_i64([1, 2, 3, 4].as_slice());
         m.scale_rows(&factors);
         let m2 = matrix_rw_i64(4, 3, [
             1, 2, 3, 
             8, 10, 12,
             21, 24, 27,
             40, 44, 48
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
     }
     #[test]
@@ -2456,13 +2456,13 @@ mod test {
         let mut m = matrix_rw_i64(2, 3, [
             1, 2, 3, 
             4, 5, 6,
-            ]);
-        let factors = vector_i64([1, 2, 3]);
+            ].as_slice());
+        let factors = vector_i64([1, 2, 3].as_slice());
         m.scale_cols(&factors);
         let m2 = matrix_rw_i64(2, 3, [
             1, 4, 9, 
             4, 10, 18,
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
     }
 
@@ -2473,15 +2473,15 @@ mod test {
             4, 5, 6,
             7, 8, 9,
             10, 11, 12
-            ]);
-        let permutation = vector_u16([0, 3, 1, 2]);
+            ].as_slice());
+        let permutation = vector_u16([0, 3, 1, 2].as_slice());
         let m = m.permuted_rows(&permutation);
         let m2 = matrix_rw_i64(4, 3, [
             1, 2, 3, 
             10, 11, 12,
             4, 5, 6,
             7, 8, 9,
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
     }
 
@@ -2492,15 +2492,15 @@ mod test {
             4, 5, 6,
             7, 8, 9,
             10, 11, 12
-            ]);
-        let permutation = vector_u16([2, 0, 1]);
+            ].as_slice());
+        let permutation = vector_u16([2, 0, 1].as_slice());
         let m = m.permuted_cols(&permutation);
         let m2 = matrix_rw_i64(4, 3, [
             3, 1, 2,
             6, 4, 5,
             9, 7, 8,
             12, 10, 11,
-            ]);
+            ].as_slice());
         assert_eq!(m, m2);
     }
 }

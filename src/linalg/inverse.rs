@@ -140,7 +140,7 @@ mod test{
     fn test_inv_ero_0(){
         let a = matrix_rw_f64(2, 2, [
             1., 0.,
-            1., 1.]);
+            1., 1.].as_slice());
         let b = inverse_ero(&mut a.clone()).unwrap();
         let c = a * b;
         assert!(c.is_identity());
@@ -151,7 +151,7 @@ mod test{
     fn test_inv_eco_0(){
         let a = matrix_rw_f64(2, 2, [
             1., 0.,
-            1., 1.]);
+            1., 1.].as_slice());
         let b = inverse_eco(&mut a.clone()).unwrap();
         let c = a * b;
         assert!(c.is_identity());

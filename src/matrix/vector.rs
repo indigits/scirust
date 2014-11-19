@@ -89,7 +89,7 @@ mod test{
     #[test]
     fn test_vec_iter(){
         // A column vector
-        let v = vector_i64([1, 2, 3, 4]);
+        let v = vector_i64([1, 2, 3, 4].as_slice());
         assert!(v.is_col());
         let mut i = vec_iter(&v);
         assert_eq!(i.next(), Some(1));
@@ -111,7 +111,7 @@ mod test{
     #[test]
     fn test_vec_reduce_sum(){
         // A column vector
-        let v = vector_i64([1, 2, 3, 4]);
+        let v = vector_i64([1, 2, 3, 4].as_slice());
         assert_eq!(vec_reduce_sum(&v), 10);
         // A row vector
         let v = v.transpose();
@@ -121,7 +121,7 @@ mod test{
     #[test]
     fn test_vec_reduce_prod(){
         // A column vector
-        let v = vector_i64([1, 2, 3, 4]);
+        let v = vector_i64([1, 2, 3, 4].as_slice());
         assert_eq!(vec_reduce_product(&v), 24);
         // A row vector
         let v = v.transpose();

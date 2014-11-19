@@ -75,7 +75,7 @@ mod test{
     fn test_impulse_vector(){
         let  v1 = impulse_vector_f64(10, 2);
         let v2 = vector_f64([0., 0., 1., 0., 0.,
-            0., 0., 0., 0., 0.]);
+            0., 0., 0., 0., 0.].as_slice());
         assert_eq!(v1, v2);
     }
 

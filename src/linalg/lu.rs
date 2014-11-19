@@ -317,7 +317,7 @@ mod test{
     fn test_lu_ero_0(){
         let a = matrix_rw_f64(2, 2, [
             1., 2.,
-            3., 8.]);
+            3., 8.].as_slice());
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_ero();
         lu.print();
@@ -330,7 +330,7 @@ mod test{
     fn test_lu_eco_0(){
         let a = matrix_rw_f64(2, 2, [
             1., 2.,
-            3., 8.]);
+            3., 8.].as_slice());
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_eco();
         lu.print();
@@ -344,7 +344,7 @@ mod test{
             1., 1., 1.,
             1., 2., 2.,
             1., 2., 3.
-            ]);
+            ].as_slice());
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_ero();
         lu.print();
@@ -357,7 +357,7 @@ mod test{
             1., 1., 1.,
             1., 2., 2.,
             1., 2., 3.
-            ]);
+            ].as_slice());
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_eco();
         lu.print();
@@ -373,7 +373,7 @@ mod test{
             -1.,  2., -1., 0.,
              0., -1.,  2., -1.,
              0.,  0., -1., 2.,
-            ]);
+            ].as_slice());
         println!("a {}", a);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_ero();
@@ -390,7 +390,7 @@ mod test{
             -1.,  2., -1., 0.,
              0., -1.,  2., -1.,
              0.,  0., -1., 2.,
-            ]);
+            ].as_slice());
         println!("a {}", a);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_eco();
@@ -469,7 +469,7 @@ mod test{
             1., 1., 1.,
             1., 2., 2.,
             1., 2., 3.
-            ]);
+            ].as_slice());
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_crout().unwrap();
         lu.print();
@@ -482,7 +482,7 @@ mod test{
             25., 5., 1.,
             64., 8., 1.,
             144., 12., 1.
-            ]);
+            ].as_slice());
         println!("a: {}", a);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_crout().unwrap();
@@ -499,7 +499,7 @@ mod test{
             -1.,  2., -1., 0.,
              0., -1.,  2., -1.,
              0.,  0., -1., 2.,
-            ]);
+            ].as_slice());
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_crout().unwrap();
         lu.print();

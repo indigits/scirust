@@ -626,23 +626,23 @@ mod tests {
         // upper triangular 
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
         let r = m.row(0);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 1]));
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 1].as_slice()));
         let r = m.row(1);
-        assert_eq!(r, matrix_cw_i64(1,4, [0, 1, 1, 1]));
+        assert_eq!(r, matrix_cw_i64(1,4, [0, 1, 1, 1].as_slice()));
         let r = m.row(2);
-        assert_eq!(r, matrix_cw_i64(1,4, [0, 0, 1, 1]));
+        assert_eq!(r, matrix_cw_i64(1,4, [0, 0, 1, 1].as_slice()));
         let r = m.row(3);
-        assert_eq!(r, matrix_cw_i64(1,4, [0, 0, 0, 1]));
+        assert_eq!(r, matrix_cw_i64(1,4, [0, 0, 0, 1].as_slice()));
         // lower triangular 
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
         let r = m.row(0);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 0, 0, 0]));
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 0, 0, 0].as_slice()));
         let r = m.row(1);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 0, 0]));
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 0, 0].as_slice()));
         let r = m.row(2);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 0]));
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 0].as_slice()));
         let r = m.row(3);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 1]));
+        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 1].as_slice()));
     }
 
     #[test]
@@ -651,23 +651,23 @@ mod tests {
         // lower triangular
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
         let r = m.col(0);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 1]));
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 1].as_slice()));
         let r = m.col(1);
-        assert_eq!(r, matrix_cw_i64(4,1, [0, 1, 1, 1]));
+        assert_eq!(r, matrix_cw_i64(4,1, [0, 1, 1, 1].as_slice()));
         let r = m.col(2);
-        assert_eq!(r, matrix_cw_i64(4,1, [0, 0, 1, 1]));
+        assert_eq!(r, matrix_cw_i64(4,1, [0, 0, 1, 1].as_slice()));
         let r = m.col(3);
-        assert_eq!(r, matrix_cw_i64(4,1, [0, 0, 0, 1]));
+        assert_eq!(r, matrix_cw_i64(4,1, [0, 0, 0, 1].as_slice()));
         // upper triangular 
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
         let r = m.col(0);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 0, 0, 0]));
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 0, 0, 0].as_slice()));
         let r = m.col(1);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 0, 0]));
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 0, 0].as_slice()));
         let r = m.col(2);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 0]));
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 0].as_slice()));
         let r = m.col(3);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 1]));
+        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 1].as_slice()));
     }
 
     #[test]
@@ -678,7 +678,7 @@ mod tests {
         let m2 = m.sub_matrix(0, 0, 2, 2);
         assert_eq!(m2, matrix_rw_i64(2,2, [
             1, 0,
-            1, 1]));
+            1, 1].as_slice()));
     }
 }
 
