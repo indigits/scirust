@@ -1,12 +1,16 @@
 #![doc="Statistical moments
 "]
 
+// std imports
+use std::num::Float;
+
 // local imports
 use entry::Zero;
 use number::Number;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer, Strided, 
- StridedNumberMatrix};
+ StridedNumberMatrix,
+ StridedFloatMatrix};
 
 
 /// Computes sum over columns and returns a row vector
@@ -90,6 +94,50 @@ pub fn sum_sqr_rw<T:Number>(m : & StridedNumberMatrix<T>) -> Matrix<T> {
     }
     result
 }
+
+
+/// Computes mean over columns and returns a row vector
+pub fn mean_cw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Matrix<T> {
+    let cols = m.num_cols();
+    let rows = m.num_rows();
+    let rows_t : T = FromPrimitive::from_uint(rows).unwrap();
+    let mut result = Matrix::new(1, cols);
+    let ptr = m.as_ptr();
+    let stride = m.stride() as int;
+    let mut offset = m.start_offset();
+    for c in range(0, cols) {
+        let mut sum : T = Zero::zero(); 
+        for r in range(0, rows){
+            sum = sum + unsafe{*ptr.offset(offset + r as int)};
+        }
+        offset += stride;
+        result.set(0, c, sum / rows_t);
+    }
+    result
+}
+
+/// Computes mean over rows and returns a column vector
+pub fn mean_rw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Matrix<T> {
+    let cols = m.num_cols();
+    let rows = m.num_rows();
+    let rows_t : T = FromPrimitive::from_uint(rows).unwrap();
+    let mut result = Matrix::new(rows, 1);
+    let ptr = m.as_ptr();
+    let stride = m.stride() as int;
+    let mut offset = m.start_offset();
+    for r in range(0, rows) {
+        let mut sum : T = Zero::zero();
+        let mut src_offset  = offset; 
+        for _ in range(0, cols){
+            sum = sum + unsafe{*ptr.offset(src_offset)};
+            src_offset += stride;
+        }
+        offset += 1;
+        result.set(r, 0, sum / rows_t);
+    }
+    result
+}
+
 
 
 /******************************************************
@@ -188,4 +236,48 @@ mod test{
         let s = sum_sqr_rw(&v);
         assert_eq!(s, matrix_cw_i32(2,1, &[5, 8]));
     }
+
+    #[test]
+    fn test_moment_mean_cw_1(){
+        let m = matrix_rw_f32(3, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let s = mean_cw(&m);
+        assert_eq!(s, matrix_cw_f32(1,3, &[12./3., 15./3., 18./3.]));
+    }
+
+
+    #[test]
+    fn test_moment_mean_cw_2(){
+        let m = matrix_rw_f32(3, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let v = m.view(1, 1, 2, 2);
+        let s = mean_cw(&v);
+        assert_eq!(s, matrix_cw_f32(1,2, &[13./2., 15./2.]));
+    }
+
+    #[test]
+    fn test_moment_mean_rw_1(){
+        let m = matrix_rw_f32(3, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let s = mean_rw(&m);
+        assert_eq!(s, matrix_rw_f32(3,1, &[6./3., 15./3., 24./3.]));
+    }
+
+    #[test]
+    fn test_moment_mean_rw_2(){
+        let m = matrix_rw_f32(3, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let v = m.view(1, 1, 2, 2);
+        let s = mean_rw(&v);
+        assert_eq!(s, matrix_rw_f32(2,1, &[11./2., 17./2.]));
+    }
+
 }
