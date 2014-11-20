@@ -5,7 +5,7 @@
 use std::num::Float;
 
 // local imports
-use entry::Zero;
+use entry::{Zero, One};
 use number::Number;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer, Strided, 
@@ -186,6 +186,87 @@ pub fn mean_sqr_rw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) ->
     result.eco_scale(0, cols_t.powi(-1));
     result
 }
+
+
+/// Computes sample variance over columns and returns a row vector
+/// sum((m - repmat(mean(m), r, 1)).^2 ) / (r - 1)
+pub fn var_cw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Matrix<T> {
+    let cols = m.num_cols();
+    let rows = m.num_rows();
+    let mut sum_vec = Matrix::new(1, cols);
+    let ptr = m.as_ptr();
+    let stride = m.stride() as int;
+    let mut offset = m.start_offset();
+    for c in range(0, cols) {
+        let mut sum : T = Zero::zero(); 
+        for r in range(0, rows){
+            let v  = unsafe{*ptr.offset(offset + r as int)};
+            sum = sum + v;
+        }
+        offset += stride;
+        sum_vec.set(0, c, sum);
+    }
+    let rows_t : T = FromPrimitive::from_uint(m.num_rows()).unwrap();
+    // get the mean.
+    sum_vec.ero_scale(0, rows_t.powi(-1));
+    // now subtract and square.
+    let mut sum_sqr_vec = Matrix::new(1, cols);
+    offset = m.start_offset();
+    for c in range(0, cols){
+        let mut sum_sqr : T = Zero::zero(); 
+        let mean = sum_vec.get(0, c);
+        for r in range(0, rows){
+            let v  = unsafe{*ptr.offset(offset + r as int)} - mean;
+            sum_sqr = sum_sqr + v * v;
+        }
+        offset += stride;
+        sum_sqr_vec.set(0, c, sum_sqr);
+    }
+    let denom = rows_t - One::one();
+    sum_sqr_vec.ero_scale(0, denom.powi(-1));
+    sum_sqr_vec
+}
+
+
+/// Computes sample variance over rows and returns a column vector
+pub fn var_rw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Matrix<T> {
+    let cols = m.num_cols();
+    let rows = m.num_rows();
+    let mut result = Matrix::new(rows, 1);
+    let ptr = m.as_ptr();
+    let stride = m.stride() as int;
+    let mut offset = m.start_offset();
+    // convert to type T
+    let cols_t : T = FromPrimitive::from_uint(cols).unwrap();
+    for r in range(0, rows) {
+        let mut sum : T = Zero::zero();
+        let mut src_offset  = offset; 
+        for _ in range(0, cols){
+            sum = sum + unsafe{*ptr.offset(src_offset)};
+            src_offset += stride;
+        }
+        offset += 1;
+        result.set(r, 0, sum / cols_t);
+    }
+    // now subtract and square.
+    let mut var_vec = Matrix::new(rows, 1);
+    offset = m.start_offset();
+    let denom = cols_t - One::one();
+    for r in range(0, rows) {
+        let mut sum_sqr : T = Zero::zero(); 
+        let mut src_offset  = offset; 
+        let mean = result.get(r, 0);
+        for _ in range(0, cols){
+            let v  = unsafe{*ptr.offset(src_offset)} - mean;
+            sum_sqr = sum_sqr + v * v;
+            src_offset += stride;
+        }
+        offset += 1;
+        var_vec.set(r, 0, sum_sqr / denom);
+    }
+    var_vec
+}
+
 
 
 /******************************************************
@@ -378,6 +459,44 @@ mod test{
         let v = m.view(1, 1, 2, 2);
         let s = mean_sqr_rw(&v);
         assert_eq!(s, matrix_cw_f32(2,1, &[30.5, 30.5]));
+    }
+
+
+    #[test]
+    fn test_moment_var_cw_1(){
+        let m = matrix_rw_f32(4, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let s = var_cw(&m);
+        let e = matrix_cw_f32(1,3, &[6., 
+            6. , 
+            6.
+            ]);
+        let d = s - e;
+        println!("{}", s);
+        println!("{:e}", d.max_abs_scalar_value());
+        assert!(d.max_abs_scalar_value() < 1e-12);
+        // for 64-bit floating point, we can be more accurate.
+        //assert!(d.max_abs_scalar_value() < 1e-13);
+    }
+
+    #[test]
+    fn test_moment_var_rw_1(){
+        let m = matrix_rw_f32(4, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let s = var_rw(&m);
+        let e = matrix_cw_f32(4,1, &[1., 1., 1., 1.]);
+        println!("{}", s);
+        let d = s - e;
+        println!("{:e}", d.max_abs_scalar_value());
+        assert!(d.max_abs_scalar_value() < 1e-12);
+        // for 64-bit floating point, we can be more accurate.
+        //assert!(d.max_abs_scalar_value() < 1e-13);
     }
 
 }
