@@ -33,3 +33,8 @@ pub use linalg::lu::*;
 pub use linalg::singularity::*;
 pub use linalg::inverse::*;
 pub use linalg::rank::*;
+
+
+// Statistics library
+pub use stat::*;
+pub use stat::moments::*;
