@@ -506,3 +506,9 @@ pub trait SignedMatrix<T:Number+SignedInt>{
 
 }
 
+
+/// A strided buffer matrix of floats
+pub trait StridedFloatMatrix <T:Number+Float> 
+    : StridedNumberMatrix<T> {
+
+}

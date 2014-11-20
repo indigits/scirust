@@ -26,6 +26,7 @@ use matrix::view::MatrixView;
 use matrix::traits::{Shape, NumberMatrix,
     Strided,
     StridedNumberMatrix,
+    StridedFloatMatrix,
     Introspection, 
     MatrixBuffer, Extraction, Updates,
     Transpose, Search};
@@ -526,6 +527,10 @@ impl<T:Entry> Strided for Matrix<T> {
 
 impl<T:Number> StridedNumberMatrix<T> for Matrix<T> {
 }
+
+impl<T:Number+Float> StridedFloatMatrix<T> for Matrix<T> {
+}
+
 
 
 /// Buffer access

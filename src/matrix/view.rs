@@ -2,6 +2,7 @@
 use std::mem;
 use std::ops;
 use std::fmt;
+use std::num::Float;
 //use std::ptr;
 
 // local imports
@@ -12,6 +13,7 @@ use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, NumberMatrix, 
     Strided,
     StridedNumberMatrix,
+    StridedFloatMatrix,
     Introspection, 
     MatrixBuffer, Extraction};
 
@@ -332,6 +334,9 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
 impl<'a, T:Number> StridedNumberMatrix<T> for MatrixView<'a, T> {
 }
 
+
+impl<'a, T:Number+Float> StridedFloatMatrix<T> for MatrixView<'a, T> {
+}
 
 
 /// Functions to construct new views out of a view and other conversions
