@@ -121,6 +121,11 @@ pub trait MatrixBuffer<T:Entry> {
     /// Maps a cell index to actual offset in buffer
     fn cell_to_offset(&self, r : uint,  c: uint)-> int;
 
+    /// Returns the offset of the first cell in the buffer
+    #[inline]
+    fn start_offset(&self) -> int {
+        0
+    }
 }
 
 #[doc="A matrix structure whose storage is in terms

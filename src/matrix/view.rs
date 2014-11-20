@@ -73,11 +73,6 @@ impl<'a, T:Entry> MatrixView<'a, T> {
     pub fn matrix(&self)-> &'a Matrix<T>{
         self.m
     }
-    /// Returns the offset of the first cell in the view
-    #[inline]
-    pub fn start_offset(&self) -> int {
-        (self.start_col() * self.stride() + self.start_row()) as int
-    }
 }
 
 
@@ -168,6 +163,13 @@ impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
         let c = self.start_col + c;
         (c * self.m.stride() + r) as int
     } 
+
+    /// Returns the offset of the first cell in the buffer
+    #[inline]
+    fn start_offset(&self) -> int {
+        (self.start_col() * self.stride() + self.start_row()) as int
+    }
+
 }
 
 
