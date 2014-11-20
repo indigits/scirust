@@ -41,6 +41,17 @@ pub trait Number : Entry
     }
 
     fn is_signed(&self) -> bool;
+
+    fn power(&self, n : uint)-> Self{
+        if n == 0 {
+            return One::one();
+        }
+        let mut result = *self;
+        for _ in range(0, n - 1){
+            result = result.mul(self);
+        }
+        result
+    }
 }
 
 
