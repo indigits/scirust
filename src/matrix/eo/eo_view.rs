@@ -6,7 +6,7 @@ use std::mem;
 use number::Number;
 use super::eo_traits::{ERO, ECO};
 use matrix::view::MatrixView;
-use matrix::traits::{Shape, MatrixBuffer};
+use matrix::traits::{Shape, MatrixBuffer, Strided};
 
 
 /// Implementation of Elementary row operations.

@@ -24,6 +24,8 @@ use error::SRError;
 use matrix::iter::*;
 use matrix::view::MatrixView;
 use matrix::traits::{Shape, NumberMatrix,
+    Strided,
+    StridedNumberMatrix,
     Introspection, 
     MatrixBuffer, Extraction, Updates,
     Transpose, Search};
@@ -511,14 +513,23 @@ impl<T:Number> Introspection for Matrix<T> {
     }
 }
 
+/// Strided buffer
+impl<T:Entry> Strided for Matrix<T> {
 
-/// Buffer access
-impl<T:Entry> MatrixBuffer<T> for Matrix<T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     fn stride (&self)->uint {
         self.xrows
     }
+
+}
+
+impl<T:Number> StridedNumberMatrix<T> for Matrix<T> {
+}
+
+
+/// Buffer access
+impl<T:Entry> MatrixBuffer<T> for Matrix<T> {
 
     /// Returns an unsafe pointer to the matrix's 
     /// buffer.

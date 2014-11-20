@@ -10,6 +10,8 @@ use number::{Number};
 use error::SRError;
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, NumberMatrix, 
+    Strided,
+    StridedNumberMatrix,
     Introspection, 
     MatrixBuffer, Extraction};
 
@@ -131,13 +133,17 @@ impl<'a, T:Number> MatrixView<'a, T> {
 
 }
 
-/// Implement Buffer API for matrix view
-impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
+/// Strided buffer 
+impl <'a, T:Entry> Strided for MatrixView<'a, T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     fn stride (&self)->uint {
         self.matrix().stride()
     }
+}
+
+/// Implement Buffer API for matrix view
+impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
 
     /// Returns an unsafe pointer to the matrix's 
     /// buffer.
@@ -321,6 +327,8 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
 
 }
 
+impl<'a, T:Number> StridedNumberMatrix<T> for MatrixView<'a, T> {
+}
 
 
 

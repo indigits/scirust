@@ -289,10 +289,6 @@ impl<T:Number> Introspection for TriangularMatrix<T> {
 
 /// Buffer access
 impl<T:Entry> MatrixBuffer<T> for TriangularMatrix<T> {
-    /// Fake implementation
-    fn stride (&self)->uint {
-        -1 as uint
-    }
 
     /// Returns an unsafe pointer to the matrix's 
     /// buffer.

@@ -10,12 +10,12 @@ use std::ptr;
 /// local imports
 use discrete::mod_n;
 use number::Number;
-use matrix::traits::{Shape, MatrixBuffer};
+use matrix::traits::{Shape, MatrixBuffer, Strided};
 
 
 
 /// Elementary row operations on a matrix
-pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> {
+pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
 
     /// Row switching.
     #[inline]
@@ -112,7 +112,7 @@ pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> {
 
 
 /// Elementary column operations on a matrix
-pub trait ECO<T:Number> : Shape<T>+MatrixBuffer<T> {
+pub trait ECO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
 
     /// Column switching.
     #[inline]

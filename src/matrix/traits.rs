@@ -1,3 +1,9 @@
+#![doc="Traits for matrices
+"]
+
+
+
+
 // Standard library imports
 use std::cmp;
 use std::num::{Int, SignedInt, Float};
@@ -99,8 +105,40 @@ pub trait Shape<T:Entry> {
 }
 
 
+#[doc=" Defines the low level interface to the internal
+memory buffer of a matrix implementation.  Use it with
+caution. 
+"]
+pub trait MatrixBuffer<T:Entry> {
+
+    /// Returns a constant pointer to matrix's buffer
+    fn as_ptr(&self)-> *const T;
+
+    /// Returns a mutable pointer to matrix's buffer
+    fn as_mut_ptr(&mut self) -> *mut T;
+
+
+    /// Maps a cell index to actual offset in buffer
+    fn cell_to_offset(&self, r : uint,  c: uint)-> int;
+
+}
+
+#[doc="A matrix structure whose storage is in terms
+of columns with a fixed number of storage elements
+per column given by its stride. 
+"]
+pub trait Strided {
+
+    /// Returns the number of actual memory elements 
+    /// per column
+    fn stride (&self)->uint;
+
+
+}
+
+
 /// Defines a set of basic methods implemented by matrices of numbers
-pub trait NumberMatrix<T:Number> {
+pub trait NumberMatrix<T:Number> : Shape<T> + MatrixBuffer<T>{
     
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool;
@@ -124,26 +162,9 @@ pub trait NumberMatrix<T:Number> {
     fn trace(&self) -> T ;
 }
 
-#[doc=" Defines the low level interface to the internal
-memory buffer of a matrix implementation.  Use it with
-caution. 
-"]
-pub trait MatrixBuffer<T:Entry> {
-
-    /// Returns the number of actual memory elements 
-    /// per column
-    fn stride (&self)->uint;
-
-
-    /// Returns a constant pointer to matrix's buffer
-    fn as_ptr(&self)-> *const T;
-
-    /// Returns a mutable pointer to matrix's buffer
-    fn as_mut_ptr(&mut self) -> *mut T;
-
-
-    /// Maps a cell index to actual offset in buffer
-    fn cell_to_offset(&self, r : uint,  c: uint)-> int;
+/// A matrix which is both a number matrix and is strided.
+pub trait StridedNumberMatrix<T:Number> : 
+NumberMatrix<T>+Strided{
 
 }
 
@@ -410,7 +431,7 @@ pub trait Transpose<T:Number> : Shape<T>{
 #[doc="Features for searching within the matrix
 "]
 
-pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T>{
+pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
 
     /// Returns the largest entry (by magnitude) in the row between
     /// [start, end) columns
