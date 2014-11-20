@@ -8,6 +8,10 @@ The objective is to design a generic library which can be used as a backbone for
 
 Current emphasis is less on performance and more on providing a comprehensive API.
 
+
+[![Build Status](https://travis-ci.org/indigits/scirust.svg?branch=master)](https://travis-ci.org/indigits/scirust)
+
+
 Current areas of focus
 
 * Matrices
@@ -17,7 +21,8 @@ Current areas of focus
 
 
 For more details and examples, 
-see the [API Guide](http://indigits.github.io/scirust).
+see the 
+[API Documentation ](http://www.rust-ci.org/indigits/scirust/doc/scirust/).
 
 
 # Features
