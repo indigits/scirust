@@ -42,7 +42,7 @@ pub mod matrix;
 pub mod linalg;
 pub mod signal;
 // pub mod dx;
-// pub mod stat;
+pub mod stat;
 // pub mod opt;
 pub mod image {
 #![doc="Image processing
