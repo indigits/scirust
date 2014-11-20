@@ -23,10 +23,18 @@ pub enum SRError{
     EmptyMatrix,
     /// The dimensions of two matrices mismatch
     DimensionsMismatch,
+    /// Number of rows don't match
+    RowsMismatch,
+    /// Number of columns don't match
+    ColsMismatch,
     /// The matrix is not a square matrix
     IsNotSquareMatrix,
     /// The matrix is not a vector
     IsNotAVector,
+    // The matrix is not a column vector
+    IsNotAColVector,
+    // The matrix is not a row vector
+    IsNotARowVector,
     /// Indicates that a matrix is not full rank
     IsNotFullRankMatrix,
     /// Indicates that the matrix is full rank
@@ -74,7 +82,7 @@ pub enum SRError{
 
 ///A convenient typedef of the return value of SciRust API
 /// whenever applicable.
-type SRResult<T> = Result<T, SRError>;
+pub type SRResult<T> = Result<T, SRError>;
 
 
 
@@ -86,8 +94,12 @@ impl SRError{
             //  Matrices
             SRError::EmptyMatrix => format!("Matrix is empty"),
             SRError::DimensionsMismatch => format!("Dimensions don't match"),
+            SRError::RowsMismatch => format!("Number of rows don't match"),
+            SRError::ColsMismatch => format!("Number of columns don't match"),
             SRError::IsNotSquareMatrix => format!("Matrix is not square"),
             SRError::IsNotAVector => format!("Matrix is not a vector"),
+            SRError::IsNotAColVector => format!("Matrix is not a column vector"),
+            SRError::IsNotARowVector => format!("Matrix is not a row vector"),
             SRError::IsNotFullRankMatrix => format!("Matrix is not full rank"),
             SRError::IsFullRankMatrix => format!("Matrix is full rank"),
             SRError::IsSingular => format!("Matrix is singular"),

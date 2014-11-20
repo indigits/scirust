@@ -6,6 +6,7 @@ use std::cmp;
 
 
 /// local imports
+use error::SRResult;
 use discrete::mod_n;
 use number::Number;
 use matrix::matrix::Matrix;
@@ -106,6 +107,18 @@ pub trait Updates<T:Number> : Shape<T>+MatrixBuffer<T> {
     fn scale_rows(&mut self, scale_factors : &Matrix<T>)-> &mut Self;
     /// Scale all columns as per the scale factors
     fn scale_cols(&mut self, scale_factors : &Matrix<T>)-> &mut Self;
+    /// Subtract a vector from each column
+    fn sub_vec_from_cols(&mut self, vec: &Matrix<T>)->SRResult<()>;
+    /// Subtract a vector from each row
+    fn sub_vec_from_rows(&mut self, vec: &Matrix<T>)->SRResult<()>;
+    /// Subtract a vector from each column
+    fn add_vec_to_cols(&mut self, vec: &Matrix<T>)->SRResult<()>;
+    /// Subtract a vector from each row
+    fn add_vec_to_rows(&mut self, vec: &Matrix<T>)->SRResult<()>;
+    /// Subtract a vector from each column
+    fn mul_vec_to_cols(&mut self, vec: &Matrix<T>)->SRResult<()>;
+    /// Subtract a vector from each row
+    fn mul_vec_to_rows(&mut self, vec: &Matrix<T>)->SRResult<()>;
 }
 
 

@@ -2,6 +2,8 @@
 
 /// local imports
 use number::Number;
+use error::SRResult;
+use error::SRError;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 use matrix::update::traits::Updates;
 use matrix::eo::eo_traits::{ERO, ECO};
@@ -82,6 +84,164 @@ impl<T:Number> Updates<T> for Matrix<T> {
         }
         self
     }
+
+    /// Subtract a vector from each column
+    fn sub_vec_from_cols(&mut self, vec: &Matrix<T>)->SRResult<()>{
+        if ! vec.is_col() {
+            return Err(SRError::IsNotAColVector);
+        }
+        let rows = self.num_rows();
+        if vec.num_rows() != rows {
+            return Err(SRError::RowsMismatch);
+        }
+        let cols = self.num_cols();
+        let pd = self.as_mut_ptr();
+        let ps = vec.as_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for _ in range(0, cols){
+            for r in range(0i, rows as int){
+                unsafe{
+                    let v1 = *pd.offset(offset + r);
+                    let v2 = *ps.offset(r);
+                    *pd.offset(offset + r) = v1  - v2;
+                }
+            }
+            offset += stride;
+        }
+        Ok(())
+    }
+    /// Subtract a vector from each row
+    fn sub_vec_from_rows(&mut self, vec: &Matrix<T>)->SRResult<()>{
+        if ! vec.is_row() {
+            return Err(SRError::IsNotARowVector);
+        }
+        let cols = self.num_cols();
+        if vec.num_cols() != cols {
+            return Err(SRError::ColsMismatch);
+        }
+        let rows = self.num_rows();
+        let pd = self.as_mut_ptr();
+        let ps = vec.as_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for c in range(0, cols){
+            let v2 = unsafe{*ps.offset(c as int)};
+            for r in range(0i, rows as int){
+                unsafe{
+                    let v1 = *pd.offset(offset + r);
+                    *pd.offset(offset + r) = v1  - v2;
+                }
+            }
+            offset += stride;
+        }
+        Ok(())
+    }
+    /// Subtract a vector from each column
+    fn add_vec_to_cols(&mut self, vec: &Matrix<T>)->SRResult<()>{
+        if ! vec.is_col() {
+            return Err(SRError::IsNotAColVector);
+        }
+        let rows = self.num_rows();
+        if vec.num_rows() != rows {
+            return Err(SRError::RowsMismatch);
+        }
+        let cols = self.num_cols();
+        let pd = self.as_mut_ptr();
+        let ps = vec.as_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for _ in range(0, cols){
+            for r in range(0i, rows as int){
+                unsafe{
+                    let v1 = *pd.offset(offset + r);
+                    let v2 = *ps.offset(r);
+                    *pd.offset(offset + r) = v1  + v2;
+                }
+            }
+            offset += stride;
+        }
+        Ok(())
+    }
+    /// Subtract a vector from each row
+    fn add_vec_to_rows(&mut self, vec: &Matrix<T>)->SRResult<()>{
+        if ! vec.is_row() {
+            return Err(SRError::IsNotARowVector);
+        }
+        let cols = self.num_cols();
+        if vec.num_cols() != cols {
+            return Err(SRError::ColsMismatch);
+        }
+        let rows = self.num_rows();
+        let pd = self.as_mut_ptr();
+        let ps = vec.as_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for c in range(0, cols){
+            let v2 = unsafe{*ps.offset(c as int)};
+            for r in range(0i, rows as int){
+                unsafe{
+                    let v1 = *pd.offset(offset + r);
+                    *pd.offset(offset + r) = v1  + v2;
+                }
+            }
+            offset += stride;
+        }
+        Ok(())
+    }
+    /// Subtract a vector from each column
+    fn mul_vec_to_cols(&mut self, vec: &Matrix<T>)->SRResult<()>{
+        if ! vec.is_col() {
+            return Err(SRError::IsNotAColVector);
+        }
+        let rows = self.num_rows();
+        if vec.num_rows() != rows {
+            return Err(SRError::RowsMismatch);
+        }
+        let cols = self.num_cols();
+        let pd = self.as_mut_ptr();
+        let ps = vec.as_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for _ in range(0, cols){
+            for r in range(0i, rows as int){
+                unsafe{
+                    let v1 = *pd.offset(offset + r);
+                    let v2 = *ps.offset(r);
+                    *pd.offset(offset + r) = v1  * v2;
+                }
+            }
+            offset += stride;
+        }
+        Ok(())
+    }
+    /// Subtract a vector from each row
+    fn mul_vec_to_rows(&mut self, vec: &Matrix<T>)->SRResult<()>{
+        if ! vec.is_row() {
+            return Err(SRError::IsNotARowVector);
+        }
+        let cols = self.num_cols();
+        if vec.num_cols() != cols {
+            return Err(SRError::ColsMismatch);
+        }
+        let rows = self.num_rows();
+        let pd = self.as_mut_ptr();
+        let ps = vec.as_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for c in range(0, cols){
+            let v2 = unsafe{*ps.offset(c as int)};
+            for r in range(0i, rows as int){
+                unsafe{
+                    let v1 = *pd.offset(offset + r);
+                    *pd.offset(offset + r) = v1  * v2;
+                }
+            }
+            offset += stride;
+        }
+        Ok(())
+    }
+
 }
 
 
@@ -97,6 +257,7 @@ mod test{
 
     use matrix::constructors::*;
     use matrix::update::traits::Updates;
+    use matrix::traits::Transpose;
 
     #[test]
     fn test_set_diag(){
@@ -251,6 +412,96 @@ mod test{
         assert_eq!(m, m2);
     }
 
+    #[test]
+    fn test_sub_vec_from_cols(){
+        let mut m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[1, 2]);
+        assert!(m.sub_vec_from_cols(&v).is_ok());
+        let m2 = matrix_rw_i64(2, 3, &[
+            0, 1, 2, 
+            2, 3, 4,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_sub_vec_from_rows(){
+        let mut m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2, 3]);
+        assert!(m.sub_vec_from_rows(&v.transpose()).is_ok());
+        let m2 = matrix_rw_i64(2, 3, &[
+            2, 4, 0, 
+            5, 7, 3,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_add_vec_to_cols(){
+        let mut m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2]);
+        assert!(m.add_vec_to_cols(&v).is_ok());
+        let m2 = matrix_rw_i64(2, 3, &[
+            0, 1, 2, 
+            2, 3, 4,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_add_vec_to_rows(){
+        let mut m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2, 3]);
+        assert!(m.add_vec_to_rows(&v.transpose()).is_ok());
+        let m2 = matrix_rw_i64(2, 3, &[
+            0, 0, 6, 
+            3, 3, 9,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+
+    #[test]
+    fn test_mul_vec_to_cols(){
+        let mut m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2]);
+        assert!(m.mul_vec_to_cols(&v).is_ok());
+        let m2 = matrix_rw_i64(2, 3, &[
+            -1, -2, -3, 
+            -8, -10, -12,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_mul_vec_to_rows(){
+        let mut m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2, 3]);
+        assert!(m.mul_vec_to_rows(&v.transpose()).is_ok());
+        let m2 = matrix_rw_i64(2, 3, &[
+            -1, -4, 9,
+            -4, -10, 18
+            ]);
+        assert_eq!(m, m2);
+    }
 }
 
 
