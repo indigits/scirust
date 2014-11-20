@@ -268,6 +268,25 @@ pub fn var_rw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Matr
 }
 
 
+#[doc="Computes the sample covariance from a set of example vectors.
+Each column in x is a sample vector from the population.
+
+If x is a vector, then we return the variance of the vector.
+"]
+pub fn cov<T:Number+Float+FromPrimitive>(x : & Matrix<T>) -> Matrix<T> {
+    if x.is_row(){
+        return var_rw(x);
+    }
+    if x.is_col(){
+        return var_cw(x);
+    }
+    // We have got a full matrix of column vectors
+    // The dimension of covariance matrix
+    let n = x.num_rows();
+    let result = Matrix::new(n, n);
+    result
+}
+
 
 /******************************************************
  *

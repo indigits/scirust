@@ -20,3 +20,11 @@ pub mod eo {
     pub mod eo_matrix;
     pub mod eo_view;
 }
+
+
+pub mod update{
+
+    pub mod traits;
+    pub mod matrix_updates;
+}
+

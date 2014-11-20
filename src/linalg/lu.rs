@@ -13,7 +13,8 @@ use matrix::constructors::from_range_rw_u16;
 use error::SRError;
 use discrete::permutations::*;
 use matrix::vector::*;
-use matrix::traits::{Shape, Search, Updates};
+use matrix::traits::{Shape, Search};
+use matrix::update::traits::Updates;
 use matrix::eo::eo_traits::{ECO, ERO};
 
 

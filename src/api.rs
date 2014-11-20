@@ -38,3 +38,4 @@ pub use linalg::rank::*;
 // Statistics library
 pub use stat::*;
 pub use stat::moments::*;
+
