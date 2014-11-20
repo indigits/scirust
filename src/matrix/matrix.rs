@@ -1606,6 +1606,45 @@ impl<T:Number> cmp::PartialEq for Matrix<T>{
 
 // Element wise operations.
 impl<T:Number> Matrix<T> {
+    /// Adds matrices element by element
+    pub fn add_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            panic!(SRError::DimensionsMismatch.to_string());
+        }
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pb = rhs.ptr;
+        let pc = result.ptr;
+        let n = self.capacity();
+        unsafe{
+            for i_ in range(0, n){
+                let i = i_ as int;
+                *pc.offset(i) = *pa.offset(i) + *pb.offset(i);
+            }
+        }
+        result
+    }
+
+    /// Subtracts matrices element by element
+    pub fn sub_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            panic!(SRError::DimensionsMismatch.to_string());
+        }
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pb = rhs.ptr;
+        let pc = result.ptr;
+        let n = self.capacity();
+        unsafe{
+            for i_ in range(0, n){
+                let i = i_ as int;
+                *pc.offset(i) = *pa.offset(i) - *pb.offset(i);
+            }
+        }
+        result
+    }
     /// Multiplies matrices element by element
     pub fn mul_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1641,6 +1680,22 @@ impl<T:Number> Matrix<T> {
             for i_ in range(0, n){
                 let i = i_ as int;
                 *pc.offset(i) = *pa.offset(i) / *pb.offset(i);
+            }
+        }
+        result
+    }
+
+    /// Computs power of matrix elements
+    pub fn pow_elt(&self, n : uint) -> Matrix<T> {
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        let cap = self.capacity();
+        unsafe{
+            for i_ in range(0, cap){
+                let i = i_ as int;
+                let v = *pa.offset(i);
+                *pc.offset(i) = v.power(n);
             }
         }
         result
