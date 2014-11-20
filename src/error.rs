@@ -72,6 +72,11 @@ pub enum SRError{
 
 }
 
+///A convenient typedef of the return value of SciRust API
+/// whenever applicable.
+type SRResult<T> = Result<T, SRError>;
+
+
 
 impl SRError{
 
