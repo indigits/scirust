@@ -11,6 +11,7 @@ use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer, Strided, 
  StridedNumberMatrix,
  StridedFloatMatrix};
+ use matrix::eo::eo_traits::{ERO, ECO};
 
 
 /// Computes sum over columns and returns a row vector
@@ -120,7 +121,7 @@ pub fn mean_cw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Mat
 pub fn mean_rw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Matrix<T> {
     let cols = m.num_cols();
     let rows = m.num_rows();
-    let rows_t : T = FromPrimitive::from_uint(rows).unwrap();
+    let cols_t : T = FromPrimitive::from_uint(cols).unwrap();
     let mut result = Matrix::new(rows, 1);
     let ptr = m.as_ptr();
     let stride = m.stride() as int;
@@ -133,11 +134,58 @@ pub fn mean_rw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Mat
             src_offset += stride;
         }
         offset += 1;
-        result.set(r, 0, sum / rows_t);
+        result.set(r, 0, sum / cols_t);
     }
     result
 }
 
+
+/// Computes mean square over columns and returns a row vector
+pub fn mean_sqr_cw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Matrix<T> {
+    let cols = m.num_cols();
+    let rows = m.num_rows();
+    let mut result = Matrix::new(1, cols);
+    let ptr = m.as_ptr();
+    let stride = m.stride() as int;
+    let mut offset = m.start_offset();
+    for c in range(0, cols) {
+        let mut sum : T = Zero::zero(); 
+        for r in range(0, rows){
+            let v  = unsafe{*ptr.offset(offset + r as int)};
+            sum = sum + v * v;
+        }
+        offset += stride;
+        result.set(0, c, sum);
+    }
+    let rows_t : T = FromPrimitive::from_uint(m.num_rows()).unwrap();
+    result.ero_scale(0, rows_t.powi(-1));
+    result
+}
+
+/// Computes mean square over rows and returns a column vector
+pub fn mean_sqr_rw<T:Number+Float+FromPrimitive>(m : & StridedFloatMatrix<T>) -> Matrix<T> {
+    let cols = m.num_cols();
+    let rows = m.num_rows();
+    let mut result = Matrix::new(rows, 1);
+    let ptr = m.as_ptr();
+    let stride = m.stride() as int;
+    let mut offset = m.start_offset();
+    for r in range(0, rows) {
+        let mut sum : T = Zero::zero();
+        let mut src_offset  = offset; 
+        for _ in range(0, cols){
+            let v = unsafe{*ptr.offset(src_offset)};
+            // sum = sum + sum + v * v;
+            sum = v.mul_add(v, sum);
+            src_offset += stride;
+        }
+        offset += 1;
+        result.set(r, 0, sum);
+    }
+    let cols_t : T = FromPrimitive::from_uint(m.num_cols()).unwrap();
+    result.eco_scale(0, cols_t.powi(-1));
+    result
+}
 
 
 /******************************************************
@@ -278,6 +326,58 @@ mod test{
         let v = m.view(1, 1, 2, 2);
         let s = mean_rw(&v);
         assert_eq!(s, matrix_rw_f32(2,1, &[11./2., 17./2.]));
+    }
+
+    #[test]
+    fn test_moment_mean_sqr_cw_1(){
+        let m = matrix_rw_f32(3, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let s = mean_sqr_cw(&m);
+        assert_eq!(s, matrix_cw_f32(1,3, &[22., 31., 42.]));
+    }
+
+    #[test]
+    fn test_moment_mean_sqr_cw_2(){
+        let m = matrix_rw_f32(3, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let v = m.view(1, 1, 2, 2);
+        let s = mean_sqr_cw(&v);
+        assert_eq!(s, matrix_cw_f32(1,2, &[44.5, 58.5]));
+    }
+
+    #[test]
+    fn test_moment_mean_sqr_rw_1(){
+        let m = matrix_rw_f32(4, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let s = mean_sqr_rw(&m);
+        let d = s - matrix_cw_f32(4,1, &[14./3., 
+            77. / 3., 
+            77. / 3., 
+            194.0 / 3.0
+            ]);
+        println!("{:e}", d.max_abs_scalar_value());
+        assert!(d.max_abs_scalar_value() < 1e-5);
+        // for 64-bit floating point, we can be more accurate.
+        //assert!(d.max_abs_scalar_value() < 1e-13);
+    }
+
+    #[test]
+    fn test_moment_mean_sqr_rw_2(){
+        let m = matrix_rw_f32(4, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let v = m.view(1, 1, 2, 2);
+        let s = mean_sqr_rw(&v);
+        assert_eq!(s, matrix_cw_f32(2,1, &[30.5, 30.5]));
     }
 
 }
