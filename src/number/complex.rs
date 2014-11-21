@@ -201,6 +201,21 @@ impl<T : Number+Neg<T>+PartialOrd> Entry for Complex<T>{
 }
 
 
+/// Indicate that Complex<T> fits all requirements 
+/// for being a matrix element.
+impl<T:Number+Neg<T>+PartialOrd> Number for Complex<T> {
+    
+    
+    #[inline]
+    fn is_signed(&self) -> bool {
+        true
+    }
+
+    #[inline]
+    fn is_complex(&self) -> bool {
+        true
+    }
+}
 
 
 #[cfg(test)]

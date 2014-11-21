@@ -4,10 +4,8 @@ SciRust library works.
 
 
 // std imports
-use std::num::{Int, SignedInt, Float};
+use std::num::{Int, Float};
 
-// complex numbers
-pub use number::{Complex32, Complex64};
 
 // local imports
 use number::entry::Entry;
@@ -57,12 +55,6 @@ pub trait Number : Entry
 }
 
 
-pub trait Signed: Number + Neg<Self> {
-    fn abs_val(&self) -> Self;
-    fn signum(&self) -> Self;
-    fn is_positive(&self) -> bool;
-    fn is_negative(&self) -> bool;
-}
 
 
 
@@ -81,28 +73,6 @@ impl Number for i8 {
     
 }
 
-impl Signed for i8 {
-
-    #[inline]
-    fn abs_val(&self) -> i8{
-        self.abs()
-    }
-
-    #[inline]
-    fn signum(&self) -> i8{
-        self.signum()
-    }
-    
-    #[inline]
-    fn is_positive(&self) -> bool{
-        self.is_positive()
-    }
-    
-    #[inline]
-    fn is_negative(&self) -> bool{
-        self.is_negative()
-    }
-}
 
 
 /******************************************************
@@ -126,28 +96,6 @@ impl Number for i16 {
 
 }
 
-impl Signed for i16 {
-
-    #[inline]
-    fn abs_val(&self) -> i16{
-        self.abs()
-    }
-    
-    #[inline]
-    fn signum(&self) -> i16{
-        self.signum()
-    }
-    
-    #[inline]
-    fn is_positive(&self) -> bool{
-        self.is_positive()
-    }
-    
-    #[inline]
-    fn is_negative(&self) -> bool{
-        self.is_negative()
-    }
-}
     
 /******************************************************
  *      i32 implementation
@@ -169,29 +117,6 @@ impl Number for i32 {
 
 }
 
-impl Signed for i32 {
-
-    #[inline]
-    fn abs_val(&self) -> i32{
-        self.abs()
-    }
-    
-    #[inline]
-    fn signum(&self) -> i32{
-        self.signum()
-    }
-    
-    #[inline]
-    fn is_positive(&self) -> bool{
-        self.is_positive()
-    }
-    
-    #[inline]
-    fn is_negative(&self) -> bool{
-        self.is_negative()
-    }
-}
-    
 
 /******************************************************
  *      i64 implementation
@@ -215,29 +140,7 @@ impl Number for i64 {
 
 }
 
-impl Signed for i64 {
-
-    #[inline]
-    fn abs_val(&self) -> i64{
-        self.abs()
-    }
-    
-    #[inline]
-    fn signum(&self) -> i64{
-        self.signum()
-    }
-    
-    #[inline]
-    fn is_positive(&self) -> bool{
-        self.is_positive()
-    }
-    
-    #[inline]
-    fn is_negative(&self) -> bool{
-        self.is_negative()
-    }
-}
-    
+ 
 /******************************************************
  *      int implementation
  ******************************************************/
@@ -258,29 +161,6 @@ impl Number for int {
 
 }
 
-impl Signed for int {
-
-    #[inline]
-    fn abs_val(&self) -> int{
-        self.abs()
-    }
-    
-    #[inline]
-    fn signum(&self) -> int{
-        self.signum()
-    }
-    
-    #[inline]
-    fn is_positive(&self) -> bool{
-        self.is_positive()
-    }
-    
-    #[inline]
-    fn is_negative(&self) -> bool{
-        self.is_negative()
-    }
-}
-    
 
 /******************************************************
  *      u8 implementation
@@ -409,28 +289,6 @@ impl Number for f32 {
 
 }
 
-impl Signed for f32 {
-
-    #[inline]
-    fn abs_val(&self) -> f32{
-        self.abs()
-    }
-    
-    #[inline]
-    fn signum(&self) -> f32{
-        self.signum()
-    }
-    
-    #[inline]
-    fn is_positive(&self) -> bool{
-        self.is_positive()
-    }
-    
-    #[inline]
-    fn is_negative(&self) -> bool{
-        self.is_negative()
-    }
-}
 
 
 /******************************************************
@@ -453,68 +311,6 @@ impl Number for f64 {
 
 }
 
-impl Signed for f64 {
-
-    #[inline]
-    fn abs_val(&self) -> f64{
-        self.abs()
-    }
-    
-    #[inline]
-    fn signum(&self) -> f64{
-        self.signum()
-    }
-    
-    #[inline]
-    fn is_positive(&self) -> bool{
-        self.is_positive()
-    }
-    
-    #[inline]
-    fn is_negative(&self) -> bool{
-        self.is_negative()
-    }
-}
-
-/******************************************************
- *      Complex32 implementation
- ******************************************************/
-
-/// Indicate that Complex32 fits all requirements for being a matrix element.
-impl Number for Complex32 {
-    
-    
-    #[inline]
-    fn is_signed(&self) -> bool {
-        true
-    }
-
-    #[inline]
-    fn is_complex(&self) -> bool {
-        true
-    }
-
-}
-
-/******************************************************
- *      Complex64 implementation
- ******************************************************/
-
-/// Indicate that Complex64 fits all requirements for being a matrix element.
-impl Number for Complex64 {
-    
-    
-    #[inline]
-    fn is_signed(&self) -> bool {
-        true
-    }
-
-    #[inline]
-    fn is_complex(&self) -> bool {
-        true
-    }
-
-}
 
 
 //TODO: figure out how to make this work.
@@ -603,6 +399,7 @@ mod tests {
 
     use super::*;
     use number::Zero;
+    use number::Complex64;
 
 
 
