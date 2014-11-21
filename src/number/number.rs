@@ -10,7 +10,9 @@ use std::num::{Int, SignedInt, Float};
 pub use number::{Complex32, Complex64};
 
 // local imports
-use number::entry::{Entry, Zero, One};
+use number::entry::Entry;
+use number::zero::Zero;
+use number::one::One;
 
 
 /// Defines basic requirements for a matrix of numbers

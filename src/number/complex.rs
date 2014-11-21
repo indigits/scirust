@@ -13,8 +13,10 @@ use std::num::FloatMath;
 
 
 // local imports
-use number::entry::{One, Zero};
 use number::number::Number;
+use number::zero::Zero;
+use number::one::One;
+use number::entry::Entry;
 
 // FIXME #1284: handle complex NaN & infinity etc. This
 // probably doesn't map to C's _Complex correctly.
@@ -59,20 +61,6 @@ impl<T:Number+Zero> Complex<T> {
         Complex::new(self.re / t, self.im / t)
     }
 
-    #[inline]
-    pub fn zero() -> Complex<T> {
-        Complex::new(Zero::zero(), Zero::zero())
-    }
-
-    #[inline]
-    pub fn is_zero(&self) -> bool {
-        self.re.is_zero() && self.im.is_zero()
-    }
-
-    #[inline]
-    pub fn one() -> Complex<T> {
-        Complex::new(One::one(), Zero::zero())
-    }
 }
 
 impl<T:Number+Zero+Neg<T>> Complex<T> {
@@ -172,6 +160,44 @@ impl<T: fmt::Show + Number + PartialOrd + Neg<T>> fmt::Show for Complex<T> {
             write!(f, "{}+{}i", self.re, self.im)
         }
     }
+}
+
+
+impl<T : Number> Zero for Complex<T>{
+    #[inline]
+    fn zero() -> Complex<T> {
+        Complex::new(Zero::zero(), Zero::zero())
+    }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        self.re.is_zero() && self.im.is_zero()
+    }
+
+}
+
+
+impl<T: Number> One for Complex<T>{
+
+    #[inline]
+    fn one() -> Complex<T> {
+        Complex::new(One::one(), Zero::zero())
+    }
+}
+
+
+
+#[doc="Entry trait implementation for complex numbers.
+
+Entry requires : Show + Clone + Zero
+
+Complex<T> implements Show when T supports 
+fmt::Show + Number + PartialOrd + Neg<T>. Thus, these
+dependencies get added. 
+
+"]
+impl<T : Number+Neg<T>+PartialOrd> Entry for Complex<T>{
+
 }
 
 
