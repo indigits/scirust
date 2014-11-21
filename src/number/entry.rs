@@ -5,7 +5,7 @@
 use std::fmt::Show;
 
 // complex numbers
-pub use external::complex::{Complex, Complex32, Complex64};
+pub use number::{Complex, Complex32, Complex64};
 
 
 // local imports

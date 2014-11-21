@@ -8,7 +8,7 @@
 use std::cmp;
 use std::num::{Int, SignedInt, Float};
 // local imports
-use entry::Entry;
+use number::Entry;
 use number::{Number, Signed};
 use matrix::matrix::Matrix;
 use error::SRError;

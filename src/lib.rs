@@ -31,7 +31,6 @@ C libraries like BLAS or LAPACK.
 
 
 // Common modules
-pub mod entry;
 pub mod number;
 pub mod error;
 

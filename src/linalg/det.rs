@@ -3,7 +3,7 @@
 use std::num::{Float};
 
 // local imports
-use entry::One;
+use number::One;
 pub use number::{Number, Signed};
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, Extraction, MatrixBuffer, Search};

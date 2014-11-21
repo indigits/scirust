@@ -15,11 +15,11 @@ pub use matrix::matrix::{Matrix,
     MatrixC32, MatrixC64};
 use matrix::traits::{Shape};
 use error::SRError;
-use entry::{One, Zero};
+use number::{One, Zero};
 use number::{Number, num_range};
 
 // complex numbers
-use external::complex::{Complex32, Complex64};
+use number::{Complex32, Complex64};
 
 
 #[doc="Returns a Hadamard matrix of size n x n

@@ -7,10 +7,10 @@ SciRust library works.
 use std::num::{Int, SignedInt, Float};
 
 // complex numbers
-pub use external::complex::{Complex32, Complex64};
+pub use number::{Complex32, Complex64};
 
 // local imports
-use entry::{Entry, Zero, One};
+use number::entry::{Entry, Zero, One};
 
 
 /// Defines basic requirements for a matrix of numbers
@@ -600,7 +600,7 @@ impl<A: Number + PartialOrd + One + ToPrimitive> Iterator<A> for NumRange<A> {
 mod tests {
 
     use super::*;
-    use entry::Zero;
+    use number::Zero;
 
 
 

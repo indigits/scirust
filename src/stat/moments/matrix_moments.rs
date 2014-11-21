@@ -5,7 +5,7 @@
 use std::num::Float;
 
 // local imports
-use entry::{Zero, One};
+use number::{Zero, One};
 use number::Number;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer, Strided};

@@ -1,12 +1,20 @@
-//! Complex numbers.
+#![doc="Complex numbers.
+
+## Remarks
+
+This file was originally picked up from Rust code base.
+Rust code base has a complex.rs file but it is not
+part of Standard Library. The code is since being
+enhanced to fit the needs of sci-rust.
+"]
 
 use std::fmt;
 use std::num::FloatMath;
 
 
 // local imports
-use entry::{One, Zero};
-use number::Number;
+use number::entry::{One, Zero};
+use number::number::Number;
 
 // FIXME #1284: handle complex NaN & infinity etc. This
 // probably doesn't map to C's _Complex correctly.
@@ -176,7 +184,7 @@ mod test {
     use super::{Complex64, Complex};
     use std::num::Float;
     //use number::{Number};
-    use entry::{Zero, One};
+    use number::{Zero, One};
     use std::hash::hash;
 
     pub const _0_0i : Complex64 = Complex { re: 0.0, im: 0.0 };
@@ -279,7 +287,7 @@ mod test {
 
     mod arith {
         use super::{_0_0i, _1_0i, _1_1i, _0_1i, _neg1_1i, _05_05i, all_consts};
-        use entry::Zero;
+        use number::Zero;
 
         #[test]
         fn test_add() {

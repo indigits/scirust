@@ -6,7 +6,7 @@
 use std::cmp;
 
 // local imports
-use entry::Zero;
+use number::Zero;
 use number::Number;
 //use error::SRError;
 use matrix::matrix::Matrix;

@@ -5,7 +5,7 @@
 
 
 // local imports
-use entry::{One, Zero};
+use number::{One, Zero};
 use number::*;
 use matrix::matrix::{Matrix, MatrixF64};
 

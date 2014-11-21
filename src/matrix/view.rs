@@ -6,7 +6,7 @@ use std::num::Float;
 //use std::ptr;
 
 // local imports
-use entry::{Entry, One, Zero};
+use number::{Entry, One, Zero};
 use number::{Number};
 use error::SRError;
 use matrix::matrix::{Matrix};

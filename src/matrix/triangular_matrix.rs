@@ -10,7 +10,7 @@ use std::rt::heap::allocate;
 
 
 // local imports
-use entry::{Entry, Zero, One};
+use number::{Entry, Zero, One};
 use number::{Number};
 use matrix::matrix::Matrix;
 //use matrix::error::SRError;
@@ -21,8 +21,8 @@ use matrix::traits::{Shape, NumberMatrix,
 
 
 // complex numbers
-use external::complex::Complex32;
-use external::complex::Complex64;
+use number::Complex32;
+use number::Complex64;
 
 use util;
 use discrete::mod_n;

@@ -17,8 +17,8 @@ use std::num::UnsignedInt;
 // local imports
 
 use discrete::{mod_n};
-use entry::Entry;
-use entry::{Zero, One};
+use number::Entry;
+use number::{Zero, One};
 use number::{Number, Signed};
 use error::SRError;
 use matrix::iter::*;
@@ -32,8 +32,8 @@ use matrix::traits::{Shape, NumberMatrix,
     Transpose, Search};
 
 // complex numbers
-use external::complex::Complex32;
-use external::complex::Complex64;
+use number::Complex32;
+use number::Complex64;
 
 use util;
 
