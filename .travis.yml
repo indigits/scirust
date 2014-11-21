@@ -20,3 +20,8 @@ notifications:
         - shailesh@indigits.com
         - shaileshk@gmail.com
 
+# whitelist of branches
+branches:
+  only:
+    - master
+    #- stable
