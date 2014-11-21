@@ -68,6 +68,14 @@ pub enum SRError{
     /// There are infinite solutions to the system of equations.
     InfiniteSolutions,
 
+    /******************************************************
+     *
+     *   Arithmetic related stuff
+     *
+     *******************************************************/
+    //  Divide by zero
+    DivideByZero,
+
 
     /******************************************************
      *
@@ -113,6 +121,8 @@ impl SRError{
             SRError::LRDimensionMismatch => format!("The dimensions of LHS and RHS don't match"),
             SRError::NoSolution => format!("No solution"),
             SRError::InfiniteSolutions => format!("Infinite solutions"),
+            // Arithmetic
+            SRError::DivideByZero => format!("Attempt to divide by zero"),
             // Discrete numbers
             SRError::IsNotPowerOfTwo => format!("Number is not power of two"),
 
