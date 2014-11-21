@@ -28,3 +28,8 @@ pub mod update{
     pub mod matrix_updates;
 }
 
+
+pub mod transpose{
+    pub mod traits;
+    pub mod matrix_transpose;
+}

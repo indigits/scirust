@@ -97,6 +97,12 @@ pub trait InPlaceUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
         }
         self
     }
+     /// Add the matrix by a scalar
+    fn add_scalar(&mut self, rhs: T) -> &mut Self;
+     /// Multiply the matrix by a scalar
+    fn mul_scalar(&mut self, rhs: T) -> &mut Self;
+     /// Divide the matrix by a scalar
+    fn div_scalar(&mut self, rhs: T) -> SRResult<&mut Self>;
     /// Scales a specific row in lower triangular part 
     fn scale_row_lt(&mut self, r :  uint, scale_factor : T)-> &mut Self;
     /// Scales a specific column in lower triangular part
@@ -139,6 +145,12 @@ These methods require immutable reference to the
 matrix being updated.
 "]
 pub trait CopyUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
+     /// Add the matrix by a scalar
+    fn copy_add_scalar(&self, rhs: T) -> Self;
+     /// Multiply the matrix by a scalar
+    fn copy_mul_scalar(&self, rhs: T) -> Self;
+     /// Divide the matrix by a scalar
+    fn copy_div_scalar(&self, rhs: T) -> Self;
     /// Subtract a vector from each column
     fn copy_sub_vec_from_cols(&self, vec: &Matrix<T>)->SRResult<Self>;
     /// Subtract a vector from each row

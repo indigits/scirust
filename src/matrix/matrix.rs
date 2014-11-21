@@ -29,7 +29,7 @@ use matrix::traits::{Shape, NumberMatrix,
     StridedFloatMatrix,
     Introspection, 
     MatrixBuffer, Extraction,
-    Transpose, Search};
+    Search};
 
 // complex numbers
 use number::Complex32;
@@ -744,58 +744,6 @@ impl<T:Number> Matrix<T> {
         result
     }
 
-    /// Add the matrix by a scalar
-    /// Returns a new matrix
-    pub fn add_scalar(&self, rhs: T) -> Matrix<T> {
-        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let offset = self.cell_to_offset(r, c);
-                unsafe {
-                    *pc.offset(offset) = *pa.offset(offset) + rhs;
-                }
-            }
-        }
-        result
-    }
-
-
-    /// Multiply the matrix by a scalar
-    /// Returns a new matrix
-    pub fn mul_scalar(&self, rhs: T) -> Matrix<T> {
-        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let offset = self.cell_to_offset(r, c);
-                unsafe {
-                    *pc.offset(offset) = *pa.offset(offset) * rhs;
-                }
-            }
-        }
-        result
-    }
-
-    /// Divide the matrix by a scalar
-    /// Returns a new matrix
-    pub fn div_scalar(&self, rhs: T) -> Matrix<T> {
-        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let offset = self.cell_to_offset(r, c);
-                unsafe {
-                    *pc.offset(offset) = *pa.offset(offset) / rhs;
-                }
-            }
-        }
-        result
-    }
-
     /// Computes power of a matrix
     /// Returns a new matrix
     pub fn pow(&self, exp : uint) -> Matrix<T>{
@@ -811,6 +759,8 @@ impl<T:Number> Matrix<T> {
         }
         result
     }
+
+
 
 
     /// Inner product or dot product of two vectors
@@ -877,28 +827,6 @@ impl<T:Number+Neg<T>> Matrix<T> {
         }
         result
     }
-}
-
-impl <T:Number> Transpose<T> for Matrix<T> {
-    /// Computes the transpose of a matrix.
-    /// This doesn't involve complex conjugation.
-    /// Returns a new matrix
-    fn transpose(&self) -> Matrix <T>{
-        let result : Matrix<T> = Matrix::new(self.cols, self.rows);
-        let pa = self.ptr;
-        let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
-                let src_offset = self.cell_to_offset(r, c);
-                let dst_offset = result.cell_to_offset(c, r);
-                unsafe {
-                    *pc.offset(dst_offset) = *pa.offset(src_offset);
-                }
-            }
-        }
-        result
-    }
-
 }
 
 
@@ -1996,26 +1924,6 @@ mod test {
         assert_eq!(m3.to_std_vec(), vec![2,2,2,2]);
     }
 
-    #[test]
-    fn test_add_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
-        let m2 = m.add_scalar(2);
-        assert_eq!(m2.to_std_vec(), vec![2, 3, 4, 5]);
-    }
-
-    #[test]
-    fn test_mul_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
-        let m2 = m.mul_scalar(2);
-        assert_eq!(m2.to_std_vec(), vec![0, 2, 4, 6]);
-    }
-
-    #[test]
-    fn test_div_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4).map(|x| x * 3));
-        let m2 = m.div_scalar(3);
-        assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
-    }
 
     #[test]
     fn test_identity(){
@@ -2043,10 +1951,10 @@ mod test {
     #[test]
     fn test_pow(){
         let m : MatrixI64  = Matrix::identity(4, 4);
-        let m2 = m.mul_scalar(2);
+        let m2 = m.copy_mul_scalar(2);
         assert!(m.is_square());
         let m4 = m2.pow(4);
-        let m16 = m.mul_scalar(16);
+        let m16 = m.copy_mul_scalar(16);
         assert_eq!(m4, m16); 
         let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         assert!(m.is_square());
@@ -2056,22 +1964,6 @@ mod test {
         assert_eq!(m.pow(1).to_std_vec(), vec![0, 1, 2, 3]);
         assert_eq!(m.pow(2), m * m);
         assert_eq!(m.pow(10), m * m * m * m * m * m * m * m * m * m);
-    }
-
-    #[test]
-    fn test_transpose(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
-        assert_eq!(m.to_std_vec(), vec![0, 1, 2, 3]);
-        assert_eq!(m.transpose().to_std_vec(), vec![0, 2, 1, 3]);
-        assert_eq!(m.transpose().transpose().to_std_vec(), vec![0, 1, 2, 3]);
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 3,  range(0, 10));
-        assert_eq!(m.transpose().to_std_vec(), vec![
-            0, 2, 4, 1, 3, 5]);
-        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, range(9, 100));
-        let m5 = m4.transpose();
-        println!("m4: {}", m4);
-        println!("m5: {}", m5);
-        assert_eq!(m5.transpose(), m4);
     }
 
     #[test]

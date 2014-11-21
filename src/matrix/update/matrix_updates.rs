@@ -11,6 +11,66 @@ use matrix::matrix::Matrix;
 
 /// Implementation of Matrix general update operations.
 impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
+
+
+    fn add_scalar(&mut self, rhs: T) -> &mut Matrix<T> {
+        let rows = self.num_rows();
+        let cols = self.num_cols();
+        let pa = self.as_mut_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for _ in range(0, cols){
+            for r in range(0i, rows as int){
+                unsafe {
+                    let v = *pa.offset(offset + r);
+                    *pa.offset(offset + r) = v + rhs;
+                }
+            }
+            offset += stride;
+        }
+        self
+    }
+
+    fn mul_scalar(&mut self, rhs: T) -> &mut Matrix<T> {
+        let rows = self.num_rows();
+        let cols = self.num_cols();
+        let pa = self.as_mut_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for _ in range(0, cols){
+            for r in range(0i, rows as int){
+                unsafe {
+                    let v = *pa.offset(offset + r);
+                    *pa.offset(offset + r) = v * rhs;
+                }
+            }
+            offset += stride;
+        }
+        self
+    }
+
+    fn div_scalar(&mut self, rhs: T) -> SRResult<&mut Matrix<T>> {
+        if rhs.is_zero(){
+            return Err(SRError::DivideByZero);
+        }
+        let rows = self.num_rows();
+        let cols = self.num_cols();
+        let pa = self.as_mut_ptr();
+        let stride = self.stride() as int;
+        let mut offset = self.start_offset();
+        for _ in range(0, cols){
+            for r in range(0i, rows as int){
+                unsafe {
+                    let v = *pa.offset(offset + r);
+                    *pa.offset(offset + r) = v / rhs;
+                }
+            }
+            offset += stride;
+        }
+        Ok(self)
+    }
+
+
     fn scale_row_lt(&mut self, r :  uint, scale_factor : T)-> &mut Matrix<T>{
         debug_assert!(r < self.num_rows());
         let stride = self.stride() as int;
@@ -249,6 +309,64 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
 /// TODO Optimize implementations.
 impl<T:Number> CopyUpdates<T> for Matrix<T> {
 
+    /// Add the matrix by a scalar
+    /// Returns a new matrix
+    fn copy_add_scalar(&self, rhs: T) -> Matrix<T> {
+        let rows = self.num_rows();
+        let cols = self.num_cols();
+        let mut result : Matrix<T> = Matrix::new(rows, cols);
+        let pa = self.as_ptr();
+        let pc = result.as_mut_ptr();
+        for r in range(0, rows){
+            for c in range(0, cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) + rhs;
+                }
+            }
+        }
+        result
+    }
+
+
+    /// Multiply the matrix by a scalar
+    /// Returns a new matrix
+    fn copy_mul_scalar(&self, rhs: T) -> Matrix<T> {
+        let rows = self.num_rows();
+        let cols = self.num_cols();
+        let mut result : Matrix<T> = Matrix::new(rows, cols);
+        let pa = self.as_ptr();
+        let pc = result.as_mut_ptr();
+        for r in range(0, rows){
+            for c in range(0, cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) * rhs;
+                }
+            }
+        }
+        result
+    }
+
+    /// Divide the matrix by a scalar
+    /// Returns a new matrix
+    fn copy_div_scalar(&self, rhs: T) -> Matrix<T> {
+        let rows = self.num_rows();
+        let cols = self.num_cols();
+        let mut result : Matrix<T> = Matrix::new(rows, cols);
+        let pa = self.as_ptr();
+        let pc = result.as_mut_ptr();
+        for r in range(0, rows){
+            for c in range(0, cols){
+                let offset = self.cell_to_offset(r, c);
+                unsafe {
+                    *pc.offset(offset) = *pa.offset(offset) / rhs;
+                }
+            }
+        }
+        result
+    }
+
     /// Subtract a vector from each column
     fn copy_sub_vec_from_cols(&self, vec: &Matrix<T>)->SRResult<Matrix<T>>{
         let mut m = self.clone();
@@ -320,7 +438,7 @@ mod test{
 
     use matrix::constructors::*;
     use matrix::update::traits::*;
-    use matrix::traits::Transpose;
+    use matrix::traits::*;
 
     #[test]
     fn test_set_diag(){
@@ -473,6 +591,35 @@ mod test{
             4, 10, 18,
             ].as_slice());
         assert_eq!(m, m2);
+    }
+
+
+    #[test]
+    fn test_add_scalar (){
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let mut m2 = m.copy_add_scalar(2);
+        assert_eq!(m2.to_std_vec(), vec![2, 3, 4, 5]);
+        m2.add_scalar(3);
+        assert_eq!(m2.to_std_vec(), vec![5, 6, 7, 8]);
+    }
+
+    #[test]
+    fn test_mul_scalar (){
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let mut m2 = m.copy_mul_scalar(2);
+        assert_eq!(m2.to_std_vec(), vec![0, 2, 4, 6]);
+        m2.mul_scalar(3);
+        assert_eq!(m2.to_std_vec(), vec![0, 6, 12, 18]);
+    }
+
+    #[test]
+    fn test_div_scalar (){
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4).map(|x| x * 3));
+        let mut m2 = m.copy_div_scalar(3);
+        assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
+        m2.mul_scalar(3);
+        m2.div_scalar(3).unwrap();
+        assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
     }
 
     #[test]

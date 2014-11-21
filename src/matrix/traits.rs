@@ -20,6 +20,7 @@ use discrete::{mod_n};
 pub use matrix::eo::eo_traits::{ERO, ECO};
 pub use matrix::update::traits::{
     InPlaceUpdates, CopyUpdates};
+pub use matrix::transpose::traits::{Transpose};
 
 
 #[doc="Defines the features which all matrix types must implement.
@@ -324,28 +325,8 @@ pub trait MinMaxAbs<T:Signed> : Shape<T> {
 
 }
 
-
-
-
-
-
-
-#[doc="Implemented by matrix types
-which support transpose operations.
-"]
-pub trait Transpose<T:Number> : Shape<T>{
-
-    /// Returns a new matrix holding the transpose
-    fn transpose(&self) -> Matrix <T>;
-
-    // Performs transpose operation within the matrix itself
-    //fn transpose_self(&mut self)->&mut Self;
-}
-
-
 #[doc="Features for searching within the matrix
 "]
-
 pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
 
     /// Returns the largest entry (by magnitude) in the row between
