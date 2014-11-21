@@ -8,8 +8,10 @@ use std::num::Float;
 use number::{Zero, One};
 use number::Number;
 use matrix::matrix::Matrix;
-use matrix::traits::{Shape, MatrixBuffer, Strided};
- use matrix::eo::eo_traits::{ERO, ECO};
+use matrix::traits::{Shape, 
+    MatrixBuffer, Strided,
+    CopyUpdates, InPlaceUpdates, Transpose, 
+    ERO, ECO};
 use stat::moments::traits::{Sums, Moments};
 
 impl <T:Number> Sums<T> for Matrix<T> {
@@ -279,11 +281,18 @@ If x is a vector, then we return the variance of the vector.
         if self.is_col(){
             return self.var_cw();
         }
-        // We have got a full matrix of column vectors
+        // We have got a full matrix of rows of observations
         // The dimension of covariance matrix
-        let n = self.num_rows();
-        let result = Matrix::new(n, n);
-        result
+        // compute the mean over observation rows.
+        let mean = self.mean_cw();
+        // subtract the mean from each row
+        let y = self.copy_sub_vec_from_rows(&mean).unwrap();
+        // Compute the gram matrix of y
+        let mut g = y.gram();
+        // scale the entries in g
+        let rows_t : T = FromPrimitive::from_uint(self.num_rows()).unwrap();
+        assert!(g.div_scalar(rows_t - One::one()).is_ok());
+        g
     }
 
 
@@ -439,4 +448,23 @@ mod test{
         //assert!(d.max_abs_scalar_value() < 1e-13);
     }
 
+    #[test]
+    fn test_moment_cov_1(){
+        let m = matrix_rw_f32(4, 3, &[
+            1., 2., 3.,
+            4., 5., 6.,
+            4., 5., 6.,
+            7., 8., 9.]);
+        let s = m.cov();
+        let e = matrix_cw_f32(3, 3, &[
+            6., 6., 6., 
+            6., 6., 6.,
+            6., 6., 6.]);
+        println!("{}", s);
+        let d = s - e;
+        println!("{:e}", d.max_abs_scalar_value());
+        assert!(d.max_abs_scalar_value() < 1e-12);
+        // for 64-bit floating point, we can be more accurate.
+        //assert!(d.max_abs_scalar_value() < 1e-13);
+    }
 }

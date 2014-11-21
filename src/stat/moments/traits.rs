@@ -48,7 +48,8 @@ pub trait Moments <T: Number + Float + FromPrimitive> {
 
 
 #[doc="Computes the sample covariance from a set of example vectors.
-Each column in x is a sample vector from the population.
+When self is a proper matrix, then we consider each row as an observation
+and each column as a random variable. 
 
 If x is a vector, then we return the variance of the vector.
 "]
