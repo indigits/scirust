@@ -1,0 +1,2 @@
+#![doc="Insertion sort algorithms
+"]

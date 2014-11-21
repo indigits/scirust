@@ -1,0 +1,3 @@
+#![doc="Insertion sort algorithms
+"]
+
