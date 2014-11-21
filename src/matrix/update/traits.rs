@@ -13,21 +13,23 @@ use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer};
 
 
-#[doc="Various kind of updates to the matrix
+#[doc="Matrix In Place Updates API
 
-Such updates include: 
+This trait defines various updates to the contents
+of a matrix in-place. Such updates include: 
 
 - Setting all the entries on a diagonal
 - Setting all the entries on a row
 - Setting all the entries on a column 
 - etc.
 
-These are not standard operations, but since they
+These are not standard linear algebra operations, but since they
 are needed once in a while, hence the helper functions
-are provided to achieve them quickly.
-
+are provided to achieve them quickly. Further,
+optimizing the low level code can help a lot in improving performance
+of higher level functions.
 "]
-pub trait Updates<T:Number> : Shape<T>+MatrixBuffer<T> {
+pub trait InPlaceUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
 
     // Sets all the entries on the main diagonal to a particular value
     fn set_diagonal(&mut self, value : T)-> &mut Self{
@@ -119,6 +121,34 @@ pub trait Updates<T:Number> : Shape<T>+MatrixBuffer<T> {
     fn mul_vec_to_cols(&mut self, vec: &Matrix<T>)->SRResult<()>;
     /// Subtract a vector from each row
     fn mul_vec_to_rows(&mut self, vec: &Matrix<T>)->SRResult<()>;
+
 }
 
 
+#[doc=" Matrix Copy and Update API 
+
+These methods create a new copy of the matrix
+and apply changes to it. Care is taken to
+avoid extra operations.  The copying process
+and update process are merged together to 
+save processing cycles.
+
+# Remarks
+
+These methods require immutable reference to the
+matrix being updated.
+"]
+pub trait CopyUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
+    /// Subtract a vector from each column
+    fn copy_sub_vec_from_cols(&self, vec: &Matrix<T>)->SRResult<Self>;
+    /// Subtract a vector from each row
+    fn copy_sub_vec_from_rows(&self, vec: &Matrix<T>)->SRResult<Self>;
+    /// Subtract a vector from each column
+    fn copy_add_vec_to_cols(&self, vec: &Matrix<T>)->SRResult<Self>;
+    /// Subtract a vector from each row
+    fn copy_add_vec_to_rows(&self, vec: &Matrix<T>)->SRResult<Self>;
+    /// Subtract a vector from each column
+    fn copy_mul_vec_to_cols(&self, vec: &Matrix<T>)->SRResult<Self>;
+    /// Subtract a vector from each row
+    fn copy_mul_vec_to_rows(&self, vec: &Matrix<T>)->SRResult<Self>;
+}

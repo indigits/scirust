@@ -5,12 +5,12 @@ use number::Number;
 use error::SRResult;
 use error::SRError;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
-use matrix::update::traits::Updates;
+use matrix::update::traits::{InPlaceUpdates, CopyUpdates};
 use matrix::eo::eo_traits::{ERO, ECO};
 use matrix::matrix::Matrix;
 
 /// Implementation of Matrix general update operations.
-impl<T:Number> Updates<T> for Matrix<T> {
+impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
     fn scale_row_lt(&mut self, r :  uint, scale_factor : T)-> &mut Matrix<T>{
         debug_assert!(r < self.num_rows());
         let stride = self.stride() as int;
@@ -245,6 +245,69 @@ impl<T:Number> Updates<T> for Matrix<T> {
 }
 
 
+/// Implementation of Matrix general copy and update operations.
+/// TODO Optimize implementations.
+impl<T:Number> CopyUpdates<T> for Matrix<T> {
+
+    /// Subtract a vector from each column
+    fn copy_sub_vec_from_cols(&self, vec: &Matrix<T>)->SRResult<Matrix<T>>{
+        let mut m = self.clone();
+        let result = m.sub_vec_from_cols(vec);
+        match result {
+            Err(code) => Err(code),
+            Ok(_) => Ok(m)
+        }
+    }
+    /// Subtract a vector from each row
+    fn copy_sub_vec_from_rows(&self, vec: &Matrix<T>)->SRResult<Matrix<T>>{
+        let mut m = self.clone();
+        let result = m.sub_vec_from_rows(vec);
+        match result {
+            Err(code) => Err(code),
+            Ok(_) => Ok(m)
+        }
+    }
+    /// Subtract a vector from each column
+    fn copy_add_vec_to_cols(&self, vec: &Matrix<T>)->SRResult<Matrix<T>>{
+        let mut m = self.clone();
+        let result = m.add_vec_to_cols(vec);
+        match result {
+            Err(code) => Err(code),
+            Ok(_) => Ok(m)
+        }
+    }
+    /// Subtract a vector from each row
+    fn copy_add_vec_to_rows(&self, vec: &Matrix<T>)->SRResult<Matrix<T>>{
+        let mut m = self.clone();
+        let result = m.add_vec_to_rows(vec);
+        match result {
+            Err(code) => Err(code),
+            Ok(_) => Ok(m)
+        }
+    }
+    /// Subtract a vector from each column
+    fn copy_mul_vec_to_cols(&self, vec: &Matrix<T>)->SRResult<Matrix<T>>{
+        let mut m = self.clone();
+        let result = m.mul_vec_to_cols(vec);
+        match result {
+            Err(code) => Err(code),
+            Ok(_) => Ok(m)
+        }
+    }
+    /// Subtract a vector from each row
+    fn copy_mul_vec_to_rows(&self, vec: &Matrix<T>)->SRResult<Matrix<T>>{
+        let mut m = self.clone();
+        let result = m.mul_vec_to_rows(vec);
+        match result {
+            Err(code) => Err(code),
+            Ok(_) => Ok(m)
+        }
+    }
+
+
+}
+
+
 /******************************************************
  *
  *   Unit tests
@@ -256,7 +319,7 @@ impl<T:Number> Updates<T> for Matrix<T> {
 mod test{
 
     use matrix::constructors::*;
-    use matrix::update::traits::Updates;
+    use matrix::update::traits::*;
     use matrix::traits::Transpose;
 
     #[test]
@@ -428,6 +491,21 @@ mod test{
     }
 
     #[test]
+    fn test_copy_sub_vec_from_cols(){
+        let m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[1, 2]);
+        let m = m.copy_sub_vec_from_cols(&v).unwrap();
+        let m2 = matrix_rw_i64(2, 3, &[
+            0, 1, 2, 
+            2, 3, 4,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
     fn test_sub_vec_from_rows(){
         let mut m = matrix_rw_i64(2, 3, &[
             1, 2, 3, 
@@ -443,6 +521,21 @@ mod test{
     }
 
     #[test]
+    fn test_copy_sub_vec_from_rows(){
+        let m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2, 3]);
+        let m = m.copy_sub_vec_from_rows(&v.transpose()).unwrap();
+        let m2 = matrix_rw_i64(2, 3, &[
+            2, 4, 0, 
+            5, 7, 3,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
     fn test_add_vec_to_cols(){
         let mut m = matrix_rw_i64(2, 3, &[
             1, 2, 3, 
@@ -450,6 +543,21 @@ mod test{
             ]);
         let v = vector_i64(&[-1, -2]);
         assert!(m.add_vec_to_cols(&v).is_ok());
+        let m2 = matrix_rw_i64(2, 3, &[
+            0, 1, 2, 
+            2, 3, 4,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_copy_add_vec_to_cols(){
+        let m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2]);
+        let m = m.copy_add_vec_to_cols(&v).unwrap();
         let m2 = matrix_rw_i64(2, 3, &[
             0, 1, 2, 
             2, 3, 4,
@@ -474,6 +582,21 @@ mod test{
 
 
     #[test]
+    fn test_copy_add_vec_to_rows(){
+        let m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2, 3]);
+        let m = m.copy_add_vec_to_rows(&v.transpose()).unwrap();
+        let m2 = matrix_rw_i64(2, 3, &[
+            0, 0, 6, 
+            3, 3, 9,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
     fn test_mul_vec_to_cols(){
         let mut m = matrix_rw_i64(2, 3, &[
             1, 2, 3, 
@@ -481,6 +604,21 @@ mod test{
             ]);
         let v = vector_i64(&[-1, -2]);
         assert!(m.mul_vec_to_cols(&v).is_ok());
+        let m2 = matrix_rw_i64(2, 3, &[
+            -1, -2, -3, 
+            -8, -10, -12,
+            ]);
+        assert_eq!(m, m2);
+    }
+
+    #[test]
+    fn test_copy_mul_vec_to_cols(){
+        let m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2]);
+        let m = m.copy_mul_vec_to_cols(&v).unwrap();
         let m2 = matrix_rw_i64(2, 3, &[
             -1, -2, -3, 
             -8, -10, -12,
@@ -502,6 +640,22 @@ mod test{
             ]);
         assert_eq!(m, m2);
     }
+
+    #[test]
+    fn test_copy_mul_vec_to_rows(){
+        let m = matrix_rw_i64(2, 3, &[
+            1, 2, 3, 
+            4, 5, 6,
+            ]);
+        let v = vector_i64(&[-1, -2, 3]);
+        let m = m.copy_mul_vec_to_rows(&v.transpose()).unwrap();
+        let m2 = matrix_rw_i64(2, 3, &[
+            -1, -4, 9,
+            -4, -10, 18
+            ]);
+        assert_eq!(m, m2);
+    }
+
 }
 
 

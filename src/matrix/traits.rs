@@ -4,6 +4,7 @@
 
 
 
+
 // Standard library imports
 use std::cmp;
 use std::num::{Int, SignedInt, Float};
@@ -14,6 +15,11 @@ use matrix::matrix::Matrix;
 use error::SRError;
 
 use discrete::{mod_n};
+
+// Reexports
+pub use matrix::eo::eo_traits::{ERO, ECO};
+pub use matrix::update::traits::{
+    InPlaceUpdates, CopyUpdates};
 
 
 #[doc="Defines the features which all matrix types must implement.

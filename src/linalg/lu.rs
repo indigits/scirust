@@ -14,7 +14,7 @@ use error::SRError;
 use discrete::permutations::*;
 use matrix::vector::*;
 use matrix::traits::{Shape, Search};
-use matrix::update::traits::Updates;
+use matrix::update::traits::InPlaceUpdates;
 use matrix::eo::eo_traits::{ECO, ERO};
 
 
