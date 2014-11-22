@@ -172,28 +172,28 @@ mod bench{
     use super::*;
     #[bench]
     fn bench_is_ascending_slice(b: &mut Bencher){
-        let v = Vec::from_fn(1000, |idx| idx * 2);        
+        let v = Vec::from_fn(10000, |idx| idx * 2);        
         b.iter(|| {
             assert!(is_ascending_slice(v.as_slice()));
                 });
     }
     #[bench]
     fn bench_is_ascending_buffer(b: &mut Bencher){
-        let v = Vec::from_fn(1000, |idx| idx * 2);        
+        let v = Vec::from_fn(10000, |idx| idx * 2);        
         b.iter(|| {
             assert!(is_ascending_buffer(v.as_ptr(), v.len()));
                 });
     }
     #[bench]
     fn bench_is_descending_slice(b: &mut Bencher){
-        let v = Vec::from_fn(1000, |idx| -(idx as int) * 2i);        
+        let v = Vec::from_fn(10000, |idx| -(idx as int) * 2i);        
         b.iter(|| {
             assert!(is_descending_slice(v.as_slice()));
                 });
     }
     #[bench]
     fn bench_is_descending_buffer(b: &mut Bencher){
-        let v = Vec::from_fn(1000, |idx| -(idx as int) * 2i);        
+        let v = Vec::from_fn(10000, |idx| -(idx as int) * 2i);        
         b.iter(|| {
             assert!(is_descending_buffer(v.as_ptr(), v.len()));
                 });
