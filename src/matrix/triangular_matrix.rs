@@ -249,20 +249,31 @@ impl<T:Number> NumberMatrix<T> for TriangularMatrix<T> {
     }
 
     /// Returns if the matrix is lower triangular 
+    #[inline]
     fn is_lt(&self) -> bool {
         ! self.ut_flag 
     }
 
     /// Returns if the matrix is upper triangular 
+    #[inline]
     fn is_ut(&self) -> bool {
         self.ut_flag
     }
 
+    /// A triangular matrix is never symmetric
+    #[inline]
+    fn is_symmetric(&self) -> bool{
+        false
+    }
+
+
     /// Returns if the matrix is triangular
+    #[inline]
     fn is_triangular(&self) -> bool {
         true
     }
 
+    /// Computes the trace of the matrix
     fn trace(&self) -> T{
         if self.is_empty() {
             return Zero::zero()
@@ -477,6 +488,15 @@ impl <T:Number> Extraction<T> for TriangularMatrix<T> {
         result
     }
 
+    /// Returns the upper triangular part of the matrix
+    fn ut_matrix(&self)->Matrix<T>{
+        unimplemented!();
+    }
+
+    /// Returns the lower triangular part of the matrix
+    fn lt_matrix(&self)->Matrix<T>{
+        unimplemented!();
+    }
 }
 
 

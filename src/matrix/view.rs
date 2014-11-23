@@ -15,7 +15,7 @@ use matrix::traits::{Shape, NumberMatrix,
     StridedNumberMatrix,
     StridedFloatMatrix,
     Introspection, 
-    MatrixBuffer, Extraction};
+    MatrixBuffer};
 
 //use discrete::*;
 
@@ -175,14 +175,6 @@ impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
 }
 
 
-/// Implement extraction API for matrix view 
-impl <'a, T:Number> Extraction<T> for MatrixView<'a, T> {
-
-}
-
-
-
-
 /// Implementation of common matrix methods
 impl <'a, T:Entry> Shape<T> for MatrixView<'a, T> {
     /// Returns the number of rows in the view
@@ -311,6 +303,24 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
                 }
             }
         } 
+        true
+    }
+
+    /// Returns if the view is symmetric
+    fn is_symmetric(&self) -> bool{
+        if !self.is_square(){
+            // Only square matrices can be symmetric
+            return false;
+        }
+        // size of the square matrix
+        let n = self.num_rows();
+        for i in range(0, n){
+            for j in range(i + 1, n){
+                if self.get(i, j) != self.get(j, i) {
+                    return false;
+                }
+            }
+        }
         true
     }
 
@@ -586,37 +596,6 @@ mod test{
         let (abs_min, rr, cc) = v1.min_abs_scalar();
         assert_eq!(abs_min, 2);
         assert_eq!((rr, cc), (0, 3));
-    }
-
-
-    #[test]
-    fn test_extract_row(){
-        let m :  MatrixI64 = Matrix::from_iter_cw(20, 20, range(-100, 400));
-        let v1   = m.view(2, 2, 6, 6);
-        println!("v1 : {}", v1);
-        let r1 = v1.row(0);
-        let v2 = m.view(2,2, 1, 6);
-        assert_eq!(v2.to_matrix(), r1);
-    }
-
-    #[test]
-    fn test_extract_col(){
-        let m :  MatrixI64 = from_range_rw_i64(20, 20, -100, 400);
-        let v1   = m.view(2, 2, 6, 6);
-        println!("v1 : {}", v1);
-        let c1 = v1.col(0);
-        let v2 = m.view(2,2, 6, 1);
-        assert_eq!(v2.to_matrix(), c1);
-    }
-
-    #[test]
-    fn test_extract_sub_matrix(){
-        let m :  MatrixI64 = from_range_rw_i64(20, 20, -100, 400);
-        let v1   = m.view(2, 2, 6, 6);
-        let m2  = v1.sub_matrix(2, 2, 4, 4);
-        let m3 = m.sub_matrix(4,4, 4, 4);
-        println!("m2 : {}", m2);
-        assert_eq!(m2, m3);
     }
 
 

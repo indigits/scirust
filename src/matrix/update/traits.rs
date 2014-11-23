@@ -128,6 +128,8 @@ pub trait InPlaceUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
     /// Subtract a vector from each row
     fn mul_vec_to_rows(&mut self, vec: &Matrix<T>)->SRResult<()>;
 
+    /// Copies data from upper triangular part to lower triangular part
+    fn ut_to_lt(&mut self)->&mut Self;
 }
 
 

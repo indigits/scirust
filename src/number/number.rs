@@ -1,5 +1,4 @@
-#![doc="Defines generic traits for numbers on which
-SciRust library works.
+#![doc="Numbers: integers, floats, complex numbers,  
 "]
 
 

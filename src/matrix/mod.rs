@@ -33,3 +33,12 @@ pub mod transpose{
     pub mod traits;
     pub mod matrix_transpose;
 }
+
+
+pub mod extract{
+    pub mod traits;
+    pub mod matrix_extract;
+    pub mod view_extract;
+}
+
+

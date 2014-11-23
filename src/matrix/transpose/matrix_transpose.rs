@@ -16,15 +16,25 @@ impl <T:Number> Transpose<T> for Matrix<T> {
         let rows = self.num_rows();
         let cols = self.num_cols();
         let mut result : Matrix<T> = Matrix::new(cols, rows);
-        let pa = self.as_ptr();
-        let pc = result.as_mut_ptr();
-        for r in range(0, rows){
-            for c in range(0, cols){
-                let src_offset = self.cell_to_offset(r, c);
-                let dst_offset = result.cell_to_offset(c, r);
+        let mut psrc_col = self.as_ptr();
+        let mut pdst_row = result.as_mut_ptr();
+        let src_stride = self.stride() as int;
+        let dst_stride = result.stride() as int;
+        for _ in range(0, cols){
+            let mut psrc = psrc_col;
+            let mut pdst = pdst_row;
+            for _ in range(0, rows){
                 unsafe {
-                    *pc.offset(dst_offset) = *pa.offset(src_offset);
+                    *pdst = *psrc;
+                    psrc = psrc.offset(1i);
+                    pdst = pdst.offset(dst_stride);
                 }
+            }
+            unsafe{
+                // Move to next column in source
+                psrc_col = psrc_col.offset(src_stride);
+                // Move to next row in destination
+                pdst_row = pdst_row.offset(1i);
             }
         }
         result
@@ -128,6 +138,14 @@ mod bench {
     use self::test::Bencher;
     use matrix::constructors::*;
     use matrix::traits::*;
+
+    #[bench]
+    fn bench_transpose(b: &mut Bencher){
+        let a = hadamard(1024).unwrap();
+        b.iter(|| {
+                    a.transpose();
+                });
+    }
 
 
     #[bench]

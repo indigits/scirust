@@ -1,4 +1,6 @@
-
+#![doc="Defines generic traits for numbers on which
+SciRust library works.
+"]
 // Re-exporting symbols
 pub use self::number::Number;
 pub use self::number::num_range;

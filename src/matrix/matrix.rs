@@ -28,7 +28,7 @@ use matrix::traits::{Shape, NumberMatrix,
     StridedNumberMatrix,
     StridedFloatMatrix,
     Introspection, 
-    MatrixBuffer, Extraction,
+    MatrixBuffer,
     Search};
 
 // complex numbers
@@ -90,16 +90,9 @@ pub type MatrixC64 = Matrix<Complex64>;
 
 
 /// Static functions for creating  a matrix
-impl<T:Number> Matrix<T> {
+impl<T:Entry> Matrix<T> {
 
-    /// Constructs a scalar matrix
-    pub fn from_scalar (scalar : T) -> Matrix <T>{
-        let m : Matrix<T> = Matrix::new(1, 1);
-        unsafe {*m.ptr = scalar;}
-        m
-    }
-
-    #[doc = "Constructs a new matrix of given size (uninitialized).
+#[doc = "Constructs a new matrix of given size (uninitialized).
 
 # Remarks 
 
@@ -108,7 +101,7 @@ it doesn't make sense to use this function liberally.
 Still the function is internally useful since
 different constructor functions need to initialize
 the matrix differently.
-    "]
+"]
     pub fn new(rows: uint, cols : uint)-> Matrix<T> {
         debug_assert! (mem::size_of::<T>() != 0);
         let xrows = rows.next_power_of_two();
@@ -137,6 +130,19 @@ the matrix differently.
                 xcols : xcols, 
                 ptr : ptr}
     }
+
+}
+
+/// Static functions for creating  a matrix of numbers
+impl<T:Number> Matrix<T> {
+
+    /// Constructs a scalar matrix
+    pub fn from_scalar (scalar : T) -> Matrix <T>{
+        let m : Matrix<T> = Matrix::new(1, 1);
+        unsafe {*m.ptr = scalar;}
+        m
+    }
+
 
     /// Constructs a matrix of all zeros
     pub fn zeros(rows: uint, cols : uint)-> Matrix<T> {
@@ -480,7 +486,6 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
             for r in range (c+1, self.rows){
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
-                println!("r: {}, c: {}, v: {}", r, c, v);
                 if v != z {
                     return false;
                 }
@@ -489,6 +494,25 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
         true
     }
 
+    /// Returns if the matrix is symmetric
+    fn is_symmetric(&self) -> bool{
+        if !self.is_square(){
+            // Only square matrices can be symmetric
+            return false;
+        }
+        // size of the square matrix
+        let n = self.num_rows();
+        for i in range(0, n){
+            for j in range(i + 1, n){
+                if self.get(i, j) != self.get(j, i) {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+
+    /// Returns the trace of the matrix
     fn trace(&self) -> T{
         if self.is_empty() {
             return Zero::zero()
@@ -566,12 +590,6 @@ impl<T:Entry> Matrix<T> {
         self.xrows * self.xcols
     }
 
-
-
-}
-
-/// Implements matrix extraction API
-impl <T:Number> Extraction<T> for Matrix<T> {
 
 
 }
@@ -1553,7 +1571,7 @@ impl<T:Number> Matrix<T> {
 }
 
 #[unsafe_destructor]
-impl<T:Number> Drop for Matrix<T> {
+impl<T:Entry> Drop for Matrix<T> {
     fn drop(&mut self) {
         if self.num_cells() != 0 {
             unsafe {
@@ -1759,62 +1777,12 @@ mod test {
     }
 
     #[test]
-    fn test_extract_row(){
-        let m1 : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
-        let m2  = m1.row(0);
-        assert_eq!(m2.to_std_vec(), vec![0, 4, 8, 12]);
-        assert_eq!(m2.num_rows() , 1);
-        assert!(m2.is_row());
-        assert_eq!(m2.num_cols() , m1.num_cols());
-        assert_eq!(m2.num_cells() , m1.num_cols());
-        assert_eq!(m1.row(1).to_std_vec(), vec![1, 5, 9, 13]);
-        assert_eq!(m1.row(2).to_std_vec(), vec![2, 6, 10, 14]);
-        assert_eq!(m1.row(3).to_std_vec(), vec![3, 7, 11, 15]);
-        assert_eq!(m1.row(-1).to_std_vec(), vec![3, 7, 11, 15]);
-        assert_eq!(m1.row(-2).to_std_vec(), vec![2, 6, 10, 14]);
-        assert_eq!(m1.row(-6).to_std_vec(), vec![2, 6, 10, 14]);
-    }
-
-
-    #[test]
-    fn test_extract_col(){
-        let m1 : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
-        let m2  = m1.col(0);
-        assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
-        assert!(!m2.is_row());
-        assert!(m2.is_col());
-        assert!(!m2.is_scalar());
-        assert_eq!(m2.num_rows() , m1.num_rows());
-        assert_eq!(m2.num_cells() , m1.num_rows());
-        assert_eq!(m1.col(1).to_std_vec(), vec![4, 5, 6, 7]);
-        assert_eq!(m1.col(2).to_std_vec(), vec![8, 9, 10, 11]);
-        assert_eq!(m1.col(3).to_std_vec(), vec![12, 13, 14, 15]);
-        assert_eq!(m1.col(-1).to_std_vec(), vec![12, 13, 14, 15]);
-        assert_eq!(m1.col(-2).to_std_vec(), vec![8, 9, 10, 11]);
-        assert_eq!(m1.col(-6).to_std_vec(), vec![8, 9, 10, 11]);
-    }
-
-    #[test]
     fn test_from_scalar(){
         let  m : MatrixI64  = Matrix::from_scalar(2);
         assert!(m.is_scalar());
         assert_eq!(m.to_std_vec(), vec![2]);
         assert_eq!(m.to_scalar(), 2);
     }
-    #[test]
-    fn test_sub_matrix(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
-        let m1 = m.sub_matrix(0, 0, 2, 2);
-        assert_eq!(m1.num_cells(), 4);
-        assert_eq!(m1.num_rows(), 2);
-        assert_eq!(m1.num_cols(), 2);
-        assert_eq!(m1.to_std_vec(), vec![0, 1, 4, 5]);
-        assert_eq!(m.sub_matrix(1, 0, 2, 2).to_std_vec(), vec![1, 2, 5, 6]);
-        assert_eq!(m.sub_matrix(4, 4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
-        assert_eq!(m.sub_matrix(-1, -1, 2, 2).to_std_vec(), vec![15, 12, 3, 0]);
-        assert_eq!(m.sub_matrix(-4, -4, 2, 2).to_std_vec(), vec![0, 1, 4, 5]);
-    }
-
     #[test]
     fn test_rep_mat(){
         let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));

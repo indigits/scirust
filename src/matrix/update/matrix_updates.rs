@@ -302,6 +302,25 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         Ok(())
     }
 
+
+    fn ut_to_lt(&mut self)->&mut Matrix<T>{
+        let p = self.smaller_dim();
+        let ptr = self.as_mut_ptr();
+        let stride = self.stride() as int;
+        let mut psrc_col  =  ptr;
+        unsafe{
+            for c in range(1, p){
+                psrc_col = psrc_col.offset(stride);
+                let mut pdst_row = ptr.offset(c as int);
+                for r in range(0, c){
+                    *pdst_row = *psrc_col.offset(r as int);
+                    pdst_row = pdst_row.offset(stride);
+                }
+            }
+        }
+        self
+    }
+
 }
 
 
@@ -803,6 +822,19 @@ mod test{
         assert_eq!(m, m2);
     }
 
+    #[test]
+    fn test_ut_to_lt(){
+        let mut m = matrix_rw_i64(3, 3, &[
+            1, 2, 3,
+            0, 4, 5,
+            0, 0, 6
+            ]);
+        println!("{}", m);
+        m.ut_to_lt();
+        println!("{}", m);
+        assert!(m.is_symmetric());
+    }
+
 }
 
 
@@ -815,7 +847,19 @@ mod test{
 
 #[cfg(test)]
 mod bench{
+    extern crate test;
+    use self::test::Bencher;
+    use matrix::constructors::*;
+    use matrix::traits::*;
 
+    #[bench]
+    fn bench_ut_to_lt(b: &mut Bencher){
+        let a = hadamard(4096).unwrap();
+        let mut ut = a.ut_matrix(); 
+        b.iter(|| {
+                    ut.ut_to_lt();
+                });
+    }
 }
 
 
