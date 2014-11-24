@@ -1,3 +1,6 @@
+#![doc="Implementation of matrix updates
+"]
+
 /// std imports
 
 /// local imports

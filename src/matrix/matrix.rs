@@ -1419,37 +1419,6 @@ impl<T:Number> ops::Sub<Matrix<T>, Matrix<T>> for Matrix<T>{
 
 
 
-/// Matrix multiplication support
-impl<T:Number> ops::Mul<Matrix<T>, Matrix<T>> for Matrix<T>{
-    fn mul(&self, rhs: &Matrix<T>) -> Matrix<T> {
-        // Validate dimensions match for multiplication
-        if self.cols != rhs.rows{
-            panic!(SRError::DimensionsMismatch.to_string());
-        }
-        let result : Matrix<T> = Matrix::new(self.rows, rhs.cols);
-        let pa = self.ptr;
-        let pb = rhs.ptr;
-        let pc = result.ptr;
-        let zero : T = Zero::zero();
-        unsafe {
-            for r in range(0, self.rows){
-                for c in range(0, rhs.cols){
-                    let mut sum = zero;
-                    for j in range(0, self.cols){
-                        let lhs_offset = self.cell_to_offset(r, j);
-                        let rhs_offset = rhs.cell_to_offset(j, c);
-                        let term = *pa.offset(lhs_offset) * *pb.offset(rhs_offset);
-                        sum = sum + term;
-                    }
-                    let dst_offset = result.cell_to_offset(r, c);
-                    *pc.offset(dst_offset)  = sum;
-                }
-            }
-        }
-        result
-    }
-}
-
 
 /// Matrix equality check support
 impl<T:Number> cmp::PartialEq for Matrix<T>{
@@ -1755,15 +1724,6 @@ mod test {
         m1 - m2;
     }
 
-
-    #[test]
-    fn test_mult(){
-        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
-        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
-        let m3 = m1 * m2;
-        let v = vec![2i64, 3, 6, 11];
-        assert_eq!(m3.to_std_vec(), v);
-    }
 
     #[test]
     fn test_eq(){

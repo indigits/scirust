@@ -1,13 +1,17 @@
+#![doc="Matrix transpose and multiplication implementations
+"]
 
 // std imports
 use std::iter::range_step;
 use std::cmp::min;
+use std::ops;
 
 // local imports
 use number::{Number, Zero};
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 use matrix::matrix::Matrix;
 use matrix::transpose::traits::Transpose;
+use error::{SRError, SRResult};
 
 
 /// Checks if the matrices are transpose of each other
@@ -158,6 +162,99 @@ impl <T:Number> Transpose<T> for Matrix<T> {
 
 }
 
+/******************************************************
+ *
+ *   Matrix multiplication
+ *
+ *******************************************************/
+
+ pub fn multiply_simple<T:Number>(lhs : &Matrix<T>, 
+    rhs: &Matrix<T>)->SRResult<Matrix<T>>{
+    // Validate dimensions match for multiplication
+    if lhs.num_cols() != rhs.num_rows(){
+        return Err(SRError::DimensionsMismatch);
+    }
+    let mut result : Matrix<T> = Matrix::new(lhs.num_rows(), rhs.num_cols());
+    let pa = lhs.as_ptr();
+    let pb = rhs.as_ptr();
+    let pc = result.as_mut_ptr();
+    let zero : T = Zero::zero();
+    unsafe {
+        for r in range(0, lhs.num_rows()){
+            for c in range(0, rhs.num_cols()){
+                let mut sum = zero;
+                for j in range(0, lhs.num_cols()){
+                    let lhs_offset = lhs.cell_to_offset(r, j);
+                    let rhs_offset = rhs.cell_to_offset(j, c);
+                    let term = *pa.offset(lhs_offset) * *pb.offset(rhs_offset);
+                    sum = sum + term;
+                }
+                let dst_offset = result.cell_to_offset(r, c);
+                *pc.offset(dst_offset)  = sum;
+            }
+        }
+    }
+    Ok(result)
+}
+
+
+#[doc="Computes A' * B. (transpose of lhs multiplied with rhs)
+
+# Remarks
+
+We don't have to compute the transpose directly. We note that this
+essentially means taking the inner product of columns of A with
+columns of B. We carry out the same. This is highly advantageous. 
+Since the matrix is stored in column major order, hence multiplying
+columns with each other is highly efficient from locality of data
+perspective. This benefit shows up more as the matrix size increases.
+"]
+pub fn multiply_transpose_simple<T:Number>(lhs : &Matrix<T>, 
+    rhs: &Matrix<T>)->SRResult<Matrix<T>>{
+    // Validate dimensions match for multiplication
+    if lhs.num_rows() != rhs.num_rows(){
+        return Err(SRError::DimensionsMismatch);
+    }
+    let mut result : Matrix<T> = Matrix::new(lhs.num_cols(), rhs.num_cols());
+    let pa = lhs.as_ptr();
+    let pb = rhs.as_ptr();
+    let pc = result.as_mut_ptr();
+    let zero : T = Zero::zero();
+    unsafe {
+        for r in range(0, lhs.num_cols()){
+            for c in range(0, rhs.num_cols()){
+                let mut sum = zero;
+                // Go to beginning of corresponding columns in lhs and rhs.
+                let mut pl = pa.offset(lhs.cell_to_offset(0, r));
+                let mut pr = pb.offset(rhs.cell_to_offset(0, c));
+                for _ in range(0, lhs.num_rows()){
+                    let term = *pl * *pr;
+                    sum = sum + term;
+                    // Move to next entry in column
+                    pl = pl.offset(1i);
+                    pr = pr.offset(1i);
+                }
+                // Write the inner product to destination
+                let dst_offset = result.cell_to_offset(r, c);
+                *pc.offset(dst_offset)  = sum;
+            }
+        }
+    }
+    Ok(result)
+}
+
+
+/// Matrix multiplication support
+impl<T:Number> ops::Mul<Matrix<T>, Matrix<T>> for Matrix<T>{
+    fn mul(&self, rhs: &Matrix<T>) -> Matrix<T> {
+        let result = multiply_simple(self, rhs);
+        match result {
+            Ok(m) => m,
+            Err(e) => panic!(e.to_string())
+        }
+    }
+}
+
 
 /******************************************************
  *
@@ -218,6 +315,27 @@ mod test{
         assert_eq!(g, m.transpose() * m);
     }
 
+    #[test]
+    fn test_mult_1(){
+        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
+        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
+        let m3 = m1 * m2;
+        let v = vec![2i64, 3, 6, 11];
+        assert_eq!(m3.to_std_vec(), v);
+        let m3 = multiply_simple(&m1, &m2).unwrap();
+        let m4 = multiply_transpose_simple(&m1.transpose(), &m2).unwrap();
+        assert_eq!(m3, m4);
+    }
+
+
+    #[test]
+    fn test_mult_4(){
+        let m1 : MatrixI64 = Matrix::from_iter_cw(10, 20, range(0, 400));
+        let m2 : MatrixI64 = Matrix::from_iter_cw(20, 5, range(0, 400));
+        let m3 = multiply_simple(&m1, &m2).unwrap();
+        let m4 = multiply_transpose_simple(&m1.transpose(), &m2).unwrap();
+        assert_eq!(m3, m4);
+    }
 
 }
 
@@ -275,5 +393,35 @@ mod bench {
                     m.gram();
                 });
 
+    }
+
+    static MULTIPLY_MATRIX_SIZE : uint = 512;
+
+    #[bench]
+    fn bench_transpose_block_mult_mat_size(b: &mut Bencher){
+        let a = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
+        b.iter(|| {
+                    transpose_block(&a);
+                });
+    }
+
+    #[bench]
+    fn bench_multiply_simple(b: &mut Bencher){
+        let m = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
+        b.iter(|| {
+                    // Matrix multiplication
+                    multiply_simple(&m, &m).is_ok();
+                });
+    }
+
+    #[bench]
+    fn bench_multiply_transpose_simple(b: &mut Bencher){
+        let m = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
+        b.iter(|| {
+                    // take transpose
+                    let m2 = m.transpose();
+                    // Matrix multiplication with transpose
+                    multiply_transpose_simple(&m2, &m).is_ok();
+                });
     }
 }
