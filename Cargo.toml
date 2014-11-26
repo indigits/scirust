@@ -6,8 +6,8 @@ authors = ["Shailesh Kumar <shailesh@indigits.com>"]
 description="A scientific computing library"
 documentation="http://www.rust-ci.org/indigits/scirust/doc/scirust/"
 readme="./README.md"
-keywords=["math", "linear algebra", "statistics", "matrix"]
-license="Apache License 2.0"
+keywords=["math", "linear-algebra", "statistics", "matrix"]
+license="Apache-2.0"
 
 [[bin]]
 
