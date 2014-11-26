@@ -50,7 +50,6 @@ pub unsafe fn insertion_sort_buffer<T : PartialOrd>(data : *mut T, n : uint){
 
 #[cfg(test)]
 mod test{
-    extern crate quickcheck_macros;
     use super::*;
     use alg::sort::*; 
 

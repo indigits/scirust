@@ -30,8 +30,8 @@ C libraries like BLAS or LAPACK.
 #[phase(plugin, link)] 
 extern crate log;
 extern crate collections;
-extern crate quickcheck_macros;
-extern crate quickcheck;
+//extern crate quickcheck_macros;
+//extern crate quickcheck;
 
 
 // Common modules

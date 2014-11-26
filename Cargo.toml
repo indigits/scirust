@@ -3,16 +3,11 @@
 name = "scirust"
 version = "0.0.2"
 authors = ["Shailesh Kumar <shailesh@indigits.com>"]
-
-
-[dependencies.quickcheck]
-git = "https://github.com/BurntSushi/quickcheck"
-
-[dependencies.quickcheck_macros]
-git = "https://github.com/BurntSushi/quickcheck"
-
-
-
+description="A scientific computing library"
+documentation="http://www.rust-ci.org/indigits/scirust/doc/scirust/"
+readme="./README.md"
+keywords=["math", "linear algebra", "statistics", "matrix"]
+license="Apache License 2.0"
 
 [[bin]]
 
