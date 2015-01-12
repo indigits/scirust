@@ -25,10 +25,9 @@ C libraries like BLAS or LAPACK.
 
 "]
 
-#![feature(unsafe_destructor, globs)]
-#![feature(phase, macro_rules)]
-#[phase(plugin, link)] 
-extern crate log;
+#![feature(unsafe_destructor)]
+#[macro_use(plugin, link)] 
+#[macro_use] extern crate log;
 extern crate collections;
 //extern crate quickcheck_macros;
 //extern crate quickcheck;

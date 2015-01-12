@@ -55,21 +55,21 @@ mod test{
 
     #[test]
     fn test_insertion_sort_slice_1() {
-        let mut x : [int, ..5] = [1, 2, 3, 4, 5];
+        let mut x : [int; 5] = [1, 2, 3, 4, 5];
         insertion_sort_slice(&mut x);
         assert!(is_ascending_slice(&x));
     }
 
     #[test]
     fn test_insertion_sort_slice_2() {
-        let mut x : [int, ..5] = [5,4,3,2,1];
+        let mut x : [int; 5] = [5,4,3,2,1];
         insertion_sort_slice(&mut x);
         assert!(is_ascending_slice(&x));
     }
 
     #[test]
     fn test_insertion_sort_buffer_1() {
-        let mut x : [int, ..5] = [5,5,3,3,1];
+        let mut x : [int; 5] = [5,5,3,3,1];
         unsafe {
             insertion_sort_buffer(&mut x[0], x.len());
         }
