@@ -4,10 +4,11 @@
 // std imports
 use std::num::Int;
 use std::num::UnsignedInt;
+use std::num::{ToPrimitive};
 
 
 // local imports
-pub use matrix::matrix::{Matrix, 
+use matrix::matrix::{Matrix, 
     MatrixI8, MatrixI16, MatrixI32, MatrixI64,
     MatrixU8, MatrixU16, MatrixU32, MatrixU64,
     MatrixUInt,
@@ -612,7 +613,7 @@ pub fn col_vector<T:Number>(values: &[T])-> Matrix<T> {
 #[doc="Returns a column vector with entries from an iterator.
 "]
 #[inline]
-pub fn col_vector_from_iter<T:Number, A : Iterator<T>>(
+pub fn col_vector_from_iter<T:Number, A : Iterator>(
     values: A,
     len : uint)-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_rw(len, 1, values);

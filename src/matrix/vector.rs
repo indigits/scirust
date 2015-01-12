@@ -27,7 +27,7 @@ impl <T:Number> VecIterator<T> {
 }
 
 /// Implementation of iterator trait
-impl<T:Number> Iterator<T> for VecIterator<T>{
+impl<T:Number> Iterator for VecIterator<T>{
 
     /// Next element in the vector
     fn next(&mut self)->Option<T> {

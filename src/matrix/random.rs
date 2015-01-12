@@ -10,7 +10,7 @@ use matrix::traits::*;
 /// Generate a random matrix of uniformly distributed numbers
 pub fn rand_std_normal(rows: uint, cols : uint)-> MatrixF64 {
     let mut m : Matrix<f64> = Matrix::new(rows, cols);
-    let mut rng = rand::task_rng();
+    let mut rng = rand::thread_rng();
     for c in range(0, cols){
         for r in range (0, rows){
             let StandardNormal(n) = rng.gen::<StandardNormal>();

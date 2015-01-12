@@ -3,7 +3,7 @@
 
 // std imports
 use std::num;
-use std::num::Int;
+use std::num::{Int, FromPrimitive};
 
 // local imports
 use number::Number;

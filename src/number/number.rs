@@ -3,7 +3,9 @@
 
 
 // std imports
+use std::ops::{Add, Sub, Mul, Div};
 use std::num::{Int, Float};
+use std::num::{ToPrimitive};
 
 
 // local imports
@@ -16,10 +18,10 @@ use number::one::One;
 pub trait Number : Entry
     + Clone
     + Copy
-    + Add<Self,Self>
-    + Sub<Self, Self> 
-    + Mul<Self, Self> 
-    + Div<Self, Self>
+    + Add<Self>
+    + Sub<Self> 
+    + Mul<Self> 
+    + Div<Self>
     + PartialEq
     + One
     + Zero{
@@ -339,7 +341,7 @@ pub fn num_range<A: Number + PartialOrd + One>(start: A, stop: A) -> NumRange<A>
     NumRange{state: start, stop: stop, one: One::one()}
 }
 
-impl<A: Number + PartialOrd + One + ToPrimitive> Iterator<A> for NumRange<A> {
+impl<A: Number + PartialOrd + One + ToPrimitive> Iterator for NumRange<A> {
     #[inline]
     fn next(&mut self) -> Option<A> {
         if self.state < self.stop {

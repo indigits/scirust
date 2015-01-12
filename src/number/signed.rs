@@ -3,12 +3,13 @@
 
 
 // std imports
+use std::ops::{Neg};
 use std::num::{SignedInt, Float};
 
 // local imports
 use number::number::Number;
 
-pub trait Signed: Number + Neg<Self> {
+pub trait Signed: Number + Neg {
     fn abs_val(&self) -> Self;
     fn signum(&self) -> Self;
     fn is_positive(&self) -> bool;

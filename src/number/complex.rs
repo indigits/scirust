@@ -9,8 +9,8 @@ enhanced to fit the needs of sci-rust.
 "]
 
 use std::fmt;
-use std::num::FloatMath;
-
+use std::ops::{Neg, Add, Sub, Mul, Div};
+use std::num::Float;
 
 // local imports
 use number::number::Number;
@@ -22,7 +22,7 @@ use number::entry::Entry;
 // probably doesn't map to C's _Complex correctly.
 
 /// A complex number in Cartesian form.
-#[deriving(PartialEq, Clone, Hash)]
+#[derive(PartialEq, Clone, Copy, Hash)]
 pub struct Complex<T> {
     /// Real portion of the complex number
     pub re: T,
@@ -63,7 +63,7 @@ impl<T:Number+Zero> Complex<T> {
 
 }
 
-impl<T:Number+Zero+Neg<T>> Complex<T> {
+impl<T:Number+Zero+Neg> Complex<T> {
 
     /// Returns the complex conjugate. i.e. `re - i im`
     #[inline]
@@ -81,7 +81,7 @@ impl<T:Number+Zero+Neg<T>> Complex<T> {
 
 }
 
-impl<T: Clone + FloatMath> Complex<T> {
+impl<T: Clone + Float> Complex<T> {
     /// Calculate |self|
     #[inline]
     pub fn norm(&self) -> T {
@@ -89,7 +89,7 @@ impl<T: Clone + FloatMath> Complex<T> {
     }
 }
 
-impl<T: Number + FloatMath + Zero> Complex<T> {
+impl<T: Number + Float + Zero> Complex<T> {
     /// Calculate the principal Arg of self.
     #[inline]
     pub fn arg(&self) -> T {
@@ -110,21 +110,21 @@ impl<T: Number + FloatMath + Zero> Complex<T> {
 
 /* arithmetic */
 // (a + i b) + (c + i d) == (a + c) + i (b + d)
-impl<T:Number + Zero> Add<Complex<T>, Complex<T>> for Complex<T> {
+impl<T:Number + Zero> Add<Complex<T>> for Complex<T> {
     #[inline]
     fn add(&self, other: &Complex<T>) -> Complex<T> {
         Complex::new(self.re + other.re, self.im + other.im)
     }
 }
 // (a + i b) - (c + i d) == (a - c) + i (b - d)
-impl<T: Number + Zero> Sub<Complex<T>, Complex<T>> for Complex<T> {
+impl<T: Number + Zero> Sub<Complex<T>> for Complex<T> {
     #[inline]
     fn sub(&self, other: &Complex<T>) -> Complex<T> {
         Complex::new(self.re - other.re, self.im - other.im)
     }
 }
 // (a + i b) * (c + i d) == (a*c - b*d) + i (a*d + b*c)
-impl<T: Number + Zero> Mul<Complex<T>, Complex<T>> for Complex<T> {
+impl<T: Number + Zero> Mul<Complex<T>> for Complex<T> {
     #[inline]
     fn mul(&self, other: &Complex<T>) -> Complex<T> {
         Complex::new(self.re*other.re - self.im*other.im,
@@ -134,7 +134,7 @@ impl<T: Number + Zero> Mul<Complex<T>, Complex<T>> for Complex<T> {
 
 // (a + i b) / (c + i d) == [(a + i b) * (c - i d)] / (c*c + d*d)
 //   == [(a*c + b*d) / (c*c + d*d)] + i [(b*c - a*d) / (c*c + d*d)]
-impl<T: Number + Zero> Div<Complex<T>, Complex<T>> for Complex<T> {
+impl<T: Number + Zero> Div<Complex<T>> for Complex<T> {
     #[inline]
     fn div(&self, other: &Complex<T>) -> Complex<T> {
         let norm_sqr = other.norm_sqr();
@@ -143,7 +143,7 @@ impl<T: Number + Zero> Div<Complex<T>, Complex<T>> for Complex<T> {
     }
 }
 
-impl<T: Number + Zero + Neg<T>> Neg<Complex<T>> for Complex<T> {
+impl<T: Number + Zero + Neg> Neg for Complex<T> {
     #[inline]
     fn neg(&self) -> Complex<T> {
         Complex::new(-self.re, -self.im)
@@ -152,7 +152,7 @@ impl<T: Number + Zero + Neg<T>> Neg<Complex<T>> for Complex<T> {
 
 
 /* string conversions */
-impl<T: fmt::Show + Number + PartialOrd + Neg<T>> fmt::Show for Complex<T> {
+impl<T: fmt::Show + Number + PartialOrd + Neg> fmt::Show for Complex<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.im < Zero::zero() {
             write!(f, "{}-{}i", self.re, -self.im)
@@ -196,14 +196,14 @@ fmt::Show + Number + PartialOrd + Neg<T>. Thus, these
 dependencies get added. 
 
 "]
-impl<T : Number+Neg<T>+PartialOrd> Entry for Complex<T>{
+impl<T : Number+Neg+PartialOrd> Entry for Complex<T>{
 
 }
 
 
 /// Indicate that Complex<T> fits all requirements 
 /// for being a matrix element.
-impl<T:Number+Neg<T>+PartialOrd> Number for Complex<T> {
+impl<T:Number+Neg+PartialOrd> Number for Complex<T> {
     
     
     #[inline]

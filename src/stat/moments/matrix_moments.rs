@@ -2,7 +2,7 @@
 "]
 
 // std imports
-use std::num::Float;
+use std::num::{Float, FromPrimitive};
 
 // local imports
 use number::{Zero, One};

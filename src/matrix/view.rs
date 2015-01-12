@@ -444,7 +444,7 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
 
 
 /// View + View =  Matrix addition
-impl<'a, 'b, T:Number> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<'a, T> {
+impl<'a, 'b, T:Number> ops::Add<Matrix<T>> for MatrixView<'a, T> {
     fn add(&self, rhs: &MatrixView<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
