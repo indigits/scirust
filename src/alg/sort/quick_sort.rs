@@ -126,21 +126,21 @@ mod test{
 
     #[test]
     fn test_quick_sort_slice_1() {
-        let mut x : [int, ..5] = [1, 2, 3, 4, 5];
+        let mut x : [int] = [1, 2, 3, 4, 5];
         quick_sort_slice(&mut x);
         assert!(is_ascending_slice(&x));
     }
 
     #[test]
     fn test_quick_sort_slice_2() {
-        let mut x : [int, ..5] = [5,4,3,2,1];
+        let mut x : [int] = [5,4,3,2,1];
         quick_sort_slice(&mut x);
         assert!(is_ascending_slice(&x));
     }
 
     #[test]
     fn test_quick_sort_buffer_1() {
-        let mut x : [int, ..5] = [1, 2, 3, 4, 5];
+        let mut x : [int] = [1, 2, 3, 4, 5];
         println!("{}", x);
         unsafe {quick_sort_buffer(&mut x[0], x.len());}
         println!("{}", x);
@@ -149,7 +149,7 @@ mod test{
 
     #[test]
     fn test_quick_sort_buffer_2() {
-        let mut x : [int, ..5] = [5,4,3,2,1];
+        let mut x : [int] = [5,4,3,2,1];
         unsafe { quick_sort_buffer(&mut x[0], x.len());}
         assert!(is_ascending_slice(&x));
     }
@@ -171,7 +171,7 @@ mod test{
 
     // #[test]
     // fn test_insertion_sort_buffer_1() {
-    //     let mut x : [int, ..5] = [5,5,3,3,1];
+    //     let mut x : [int] = [5,5,3,3,1];
     //     unsafe {
     //         quick_sort_buffer(&mut x[0], x.len());
     //     }

@@ -324,7 +324,7 @@ pub fn describe<T: Number>(z : T){
  *******************************************************/
 
 /// An iterator over the range [start, stop)
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct NumRange<A> {
     state: A,
     stop: A,

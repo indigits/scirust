@@ -68,7 +68,7 @@ pub fn det_naive<T:Signed>(m : &Matrix<T>)->T{
     sign = -sign;
     for c in range(0, n-1){
         for r in range(1, n){
-            debug!("r : {}, c : {}", r , c);
+            //debug!("r : {}, c : {}", r , c);
             let src_offset = m.cell_to_offset(r, c);
             let dst_offset = m2.cell_to_offset(r - 1, c);
             //debug_assert!(src_offset < m.capacity() as int);
