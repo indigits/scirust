@@ -14,12 +14,12 @@ pub trait LANumberMatrix<T:Number+Signed> {
 }
 
 
-/// Linear algebra methods for integer matrix
+/// Linear algebra methods for isizeeger matrix
 pub trait LAIntMatrix{
 
 }
 
-/// Linear algebra methods for signed integer matrix
+/// Linear algebra methods for signed isizeeger matrix
 pub trait LASignedMatrix{
 
 }

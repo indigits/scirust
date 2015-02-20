@@ -1,6 +1,6 @@
 #![doc="Data exchange
 
-This module and its submodules intend to provide
+This module and its submodules isizeend to provide
 functions for exchanging scientific data in different
 formats.
 

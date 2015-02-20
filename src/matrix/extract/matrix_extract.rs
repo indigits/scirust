@@ -13,10 +13,10 @@ use discrete::{mod_n};
 impl <T:Number> Extraction<T> for Matrix<T> {
 
     /// Returns the r'th row vector
-    fn row(&self, r : int) -> Matrix<T> {
+    fn row(&self, r : isize) -> Matrix<T> {
         // Lets ensure that the row value is mapped to
         // a value in the range [0, rows - 1]
-        let r = mod_n(r, self.num_rows() as int);        
+        let r = mod_n(r, self.num_rows() as isize);        
         let mut result : Matrix<T> = Matrix::new(1, self.num_cols());
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
@@ -31,10 +31,10 @@ impl <T:Number> Extraction<T> for Matrix<T> {
     }
 
     /// Returns the c'th column vector
-    fn col(&self, c : int) -> Matrix<T>{
+    fn col(&self, c : isize) -> Matrix<T>{
         // Lets ensure that the col value is mapped to
         // a value in the range [0, cols - 1]
-        let c = mod_n(c, self.num_cols() as int);        
+        let c = mod_n(c, self.num_cols() as isize);        
         let mut result : Matrix<T> = Matrix::new(self.num_rows(), 1);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
@@ -51,12 +51,12 @@ impl <T:Number> Extraction<T> for Matrix<T> {
     /// Extract a submatrix from the matrix
     /// rows can easily repeat if the number of requested rows is higher than actual rows
     /// cols can easily repeat if the number of requested cols is higher than actual cols
-    fn sub_matrix(&self, start_row : int, 
-        start_col : int , 
-        num_rows: uint, 
-        num_cols : uint) -> Matrix<T>{
-        let r = mod_n(start_row, self.num_rows() as int);        
-        let c = mod_n(start_col, self.num_cols() as int);
+    fn sub_matrix(&self, start_row : isize, 
+        start_col : isize , 
+        num_rows: usize, 
+        num_cols : usize) -> Matrix<T>{
+        let r = mod_n(start_row, self.num_rows() as isize);        
+        let c = mod_n(start_col, self.num_cols() as isize);
         let mut result : Matrix<T> = Matrix::new(num_rows, num_cols);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
@@ -84,16 +84,16 @@ impl <T:Number> Extraction<T> for Matrix<T> {
         let z  : T = Zero::zero();
         let mut ps = self.as_ptr();
         let mut pd = result.as_mut_ptr();
-        let src_stride = self.stride() as int;
-        let dst_stride = result.stride() as int;
+        let src_stride = self.stride() as isize;
+        let dst_stride = result.stride() as isize;
         for c in range(0, n){
             for r in range(0, c){
                 unsafe{
-                    *pd.offset(r as int) = z;
+                    *pd.offset(r as isize) = z;
                 }
             }
             for r in range (c, n){
-                let r  = r as int;
+                let r  = r as isize;
                 unsafe {
                     *pd.offset(r) = *ps.offset(r);
                 }
@@ -114,18 +114,18 @@ impl <T:Number> Extraction<T> for Matrix<T> {
         let z  : T = Zero::zero();
         let mut ps = self.as_ptr();
         let mut pd = result.as_mut_ptr();
-        let src_stride = self.stride() as int;
-        let dst_stride = result.stride() as int;
+        let src_stride = self.stride() as isize;
+        let dst_stride = result.stride() as isize;
         for c in range(0, n){
             for r in range(0, c + 1){
-                let r  = r as int;
+                let r  = r as isize;
                 unsafe {
                     *pd.offset(r) = *ps.offset(r);
                 }
             }
             for r in range (c + 1, n){
                 unsafe{
-                    *pd.offset(r as int) = z;
+                    *pd.offset(r as isize) = z;
                 }
             }
             unsafe

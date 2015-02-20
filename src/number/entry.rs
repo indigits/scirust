@@ -2,7 +2,7 @@
 "]
 
 // std imports
-use std::fmt::Show;
+use std::fmt::Debug;
 
 
 
@@ -10,7 +10,7 @@ use std::fmt::Show;
 use number::zero::Zero;
 
 /// Defines basic requirements for a matrix entry
-pub trait Entry : Show + Clone + Zero {
+pub trait Entry : Debug + Clone + Zero {
 
 }
 
@@ -41,7 +41,7 @@ impl Entry for i64{
 
 }
 
-impl Entry for int{
+impl Entry for isize{
 
 }
 
@@ -61,7 +61,7 @@ impl Entry for u64{
 
 }
 
-impl Entry for uint{
+impl Entry for usize{
 
 }
 

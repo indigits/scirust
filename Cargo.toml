@@ -13,3 +13,6 @@ license="Apache-2.0"
 
 name = "scirust_main"
 doc = false
+
+[dependencies]
+rand = "0.1.2"

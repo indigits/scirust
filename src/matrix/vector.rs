@@ -16,18 +16,18 @@ use matrix::traits::{Shape, MatrixBuffer};
 
 pub struct VecIterator<T:Number> {
     ptr : *const T,
-    pos : uint,
-    len : uint
+    pos : usize,
+    len : usize
 }
 
 impl <T:Number> VecIterator<T> {
-    pub fn new (ptr: *const T, len : uint)->VecIterator<T>{
+    pub fn new (ptr: *const T, len : usize)->VecIterator<T>{
         VecIterator{ptr: ptr, pos : 0, len : len}
     } 
 }
 
 /// Implementation of iterator trait
-impl<T:Number> Iterator<T> for VecIterator<T>{
+impl<T:Number> Iterator for VecIterator<T>{
 
     /// Next element in the vector
     fn next(&mut self)->Option<T> {
@@ -36,12 +36,12 @@ impl<T:Number> Iterator<T> for VecIterator<T>{
         }
         let offset = self.pos;
         self.pos += 1;
-        Some(unsafe{*self.ptr.offset(offset as int)})
+        Some(unsafe{*self.ptr.offset(offset as isize)})
     }
 
     /// Returns the upper and lower bound on the remaining length
     #[inline]
-    fn size_hint(&self) -> (uint, Option<uint>) { 
+    fn size_hint(&self) -> (usize, Option<usize>) { 
         let n = self.len  - self.pos;
         (n, Some(n)) 
     }    

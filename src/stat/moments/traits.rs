@@ -3,6 +3,8 @@
 
 // std imports
 use std::num::Float;
+use std::num::FromPrimitive;
+use std::num::ToPrimitive;
 
 // local imports
 use matrix::matrix::Matrix;

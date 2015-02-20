@@ -40,8 +40,8 @@ pub fn transpose_simple<T:Number>(src: & Matrix<T>)->Matrix <T>{
     let mut result : Matrix<T> = Matrix::new(cols, rows);
     let mut psrc_col = src.as_ptr();
     let mut pdst_row = result.as_mut_ptr();
-    let src_stride = src.stride() as int;
-    let dst_stride = result.stride() as int;
+    let src_stride = src.stride() as isize;
+    let dst_stride = result.stride() as isize;
     for _ in range(0, cols){
         let mut psrc = psrc_col;
         let mut pdst = pdst_row;
@@ -73,8 +73,8 @@ pub fn transpose_block<T:Number>(src: & Matrix<T>)->Matrix <T>{
     let mut result : Matrix<T> = Matrix::new(cols, rows);
     let psrc = src.as_ptr();
     let pdst = result.as_mut_ptr();
-    let src_stride = src.stride() as int;
-    let dst_stride = result.stride() as int;
+    let src_stride = src.stride() as isize;
+    let dst_stride = result.stride() as isize;
 
 
     for cc in range_step(0, cols, block_size){
@@ -132,7 +132,7 @@ impl <T:Number> Transpose<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(cols, cols);
         let ps = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let z : T = Zero::zero();
         // We take advantage of the fact that the gram matrix
         // is symmetric. 
@@ -140,8 +140,8 @@ impl <T:Number> Transpose<T> for Matrix<T> {
         for i in range(0, cols){
             for j in range(i, cols){
                 unsafe{
-                    let mut pi  = ps.offset((i as int)*stride);
-                    let mut pj  = ps.offset((j as int)*stride);
+                    let mut pi  = ps.offset((i as isize)*stride);
+                    let mut pj  = ps.offset((j as isize)*stride);
                     let mut sum = z;
                     for _ in range(0, rows){
                         sum = sum + *pi * *pj;
@@ -245,7 +245,7 @@ pub fn multiply_transpose_simple<T:Number>(lhs : &Matrix<T>,
 
 
 /// Matrix multiplication support
-impl<T:Number> ops::Mul<Matrix<T>, Matrix<T>> for Matrix<T>{
+impl<T:Number> ops::Mul<Matrix<T>> for Matrix<T>{
     fn mul(&self, rhs: &Matrix<T>) -> Matrix<T> {
         let result = multiply_simple(self, rhs);
         match result {
@@ -395,7 +395,7 @@ mod bench {
 
     }
 
-    static MULTIPLY_MATRIX_SIZE : uint = 512;
+    static MULTIPLY_MATRIX_SIZE : usize = 512;
 
     #[bench]
     fn bench_transpose_block_mult_mat_size(b: &mut Bencher){

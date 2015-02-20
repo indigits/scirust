@@ -4,11 +4,12 @@
 
 // std imports
 use std::num::{SignedInt, Float};
+use std::ops::Neg;
 
 // local imports
 use number::number::Number;
 
-pub trait Signed: Number + Neg<Self> {
+pub trait Signed: Number + Neg<> {
     fn abs_val(&self) -> Self;
     fn signum(&self) -> Self;
     fn is_positive(&self) -> bool;
@@ -115,15 +116,15 @@ impl Signed for i64 {
 }
    
 
-impl Signed for int {
+impl Signed for isize {
 
     #[inline]
-    fn abs_val(&self) -> int{
+    fn abs_val(&self) -> isize{
         self.abs()
     }
     
     #[inline]
-    fn signum(&self) -> int{
+    fn signum(&self) -> isize{
         self.signum()
     }
     

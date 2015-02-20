@@ -3,6 +3,8 @@
 
 // std imports
 use std::num::Float;
+use std::num::FromPrimitive;
+use std::num::ToPrimitive;
 
 // local imports
 use number::{Zero, One};
@@ -22,12 +24,12 @@ impl <T:Number> Sums<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(1, cols);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for c in range(0, cols) {
             let mut sum : T = Zero::zero(); 
             for r in range(0, rows){
-                sum = sum + unsafe{*ptr.offset(offset + r as int)};
+                sum = sum + unsafe{*ptr.offset(offset + r as isize)};
             }
             offset += stride;
             result.set(0, c, sum);
@@ -40,7 +42,7 @@ impl <T:Number> Sums<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(rows, 1);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for r in range(0, rows) {
             let mut sum : T = Zero::zero();
@@ -61,12 +63,12 @@ impl <T:Number> Sums<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(1, cols);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for c in range(0, cols) {
             let mut sum : T = Zero::zero(); 
             for r in range(0, rows){
-                let v  = unsafe{*ptr.offset(offset + r as int)};
+                let v  = unsafe{*ptr.offset(offset + r as isize)};
                 sum = sum + v * v;
             }
             offset += stride;
@@ -81,7 +83,7 @@ impl <T:Number> Sums<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(rows, 1);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for r in range(0, rows) {
             let mut sum : T = Zero::zero();
@@ -107,12 +109,12 @@ impl <T:Number + Float + FromPrimitive> Moments<T> for Matrix<T> {
         let rows_t : T = FromPrimitive::from_uint(rows).unwrap();
         let mut result = Matrix::new(1, cols);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for c in range(0, cols) {
             let mut sum : T = Zero::zero(); 
             for r in range(0, rows){
-                sum = sum + unsafe{*ptr.offset(offset + r as int)};
+                sum = sum + unsafe{*ptr.offset(offset + r as isize)};
             }
             offset += stride;
             result.set(0, c, sum / rows_t);
@@ -127,7 +129,7 @@ impl <T:Number + Float + FromPrimitive> Moments<T> for Matrix<T> {
         let cols_t : T = FromPrimitive::from_uint(cols).unwrap();
         let mut result = Matrix::new(rows, 1);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for r in range(0, rows) {
             let mut sum : T = Zero::zero();
@@ -147,12 +149,12 @@ impl <T:Number + Float + FromPrimitive> Moments<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(1, cols);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for c in range(0, cols) {
             let mut sum : T = Zero::zero(); 
             for r in range(0, rows){
-                let v  = unsafe{*ptr.offset(offset + r as int)};
+                let v  = unsafe{*ptr.offset(offset + r as isize)};
                 sum = sum + v * v;
             }
             offset += stride;
@@ -169,7 +171,7 @@ impl <T:Number + Float + FromPrimitive> Moments<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(rows, 1);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for r in range(0, rows) {
             let mut sum : T = Zero::zero();
@@ -195,12 +197,12 @@ impl <T:Number + Float + FromPrimitive> Moments<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut sum_vec = Matrix::new(1, cols);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for c in range(0, cols) {
             let mut sum : T = Zero::zero(); 
             for r in range(0, rows){
-                let v  = unsafe{*ptr.offset(offset + r as int)};
+                let v  = unsafe{*ptr.offset(offset + r as isize)};
                 sum = sum + v;
             }
             offset += stride;
@@ -216,7 +218,7 @@ impl <T:Number + Float + FromPrimitive> Moments<T> for Matrix<T> {
             let mut sum_sqr : T = Zero::zero(); 
             let mean = sum_vec.get(0, c);
             for r in range(0, rows){
-                let v  = unsafe{*ptr.offset(offset + r as int)} - mean;
+                let v  = unsafe{*ptr.offset(offset + r as isize)} - mean;
                 sum_sqr = sum_sqr + v * v;
             }
             offset += stride;
@@ -234,7 +236,7 @@ impl <T:Number + Float + FromPrimitive> Moments<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(rows, 1);
         let ptr = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         // convert to type T
         let cols_t : T = FromPrimitive::from_uint(cols).unwrap();

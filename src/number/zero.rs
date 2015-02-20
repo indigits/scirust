@@ -62,9 +62,9 @@ impl Zero for i64{
     }
 }
 
-impl Zero for int{
+impl Zero for isize{
     #[inline]
-    fn zero() -> int{
+    fn zero() -> isize{
         0
     }
 
@@ -122,9 +122,9 @@ impl Zero for u64{
     }
 }
 
-impl Zero for uint{
+impl Zero for usize{
     #[inline]
-    fn zero() -> uint{
+    fn zero() -> usize{
         0
     }
 

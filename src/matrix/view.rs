@@ -14,7 +14,7 @@ use matrix::traits::{Shape, NumberMatrix,
     Strided,
     StridedNumberMatrix,
     StridedFloatMatrix,
-    Introspection, 
+    isizerospection, 
     MatrixBuffer};
 
 //use discrete::*;
@@ -31,19 +31,19 @@ pub struct MatrixView<'a, T:'a+Entry>{
     // Reference to the associated matrix
     m : &'a Matrix<T>,
     // start row
-    start_row : uint,
+    start_row : usize,
     // number or rows
-    rows  : uint, 
+    rows  : usize, 
     // start column
-    start_col : uint,
+    start_col : usize,
     // Number of columns 
-    cols : uint,
+    cols : usize,
 }
 
 
 /// Static functions for creating  a view
 impl<'a, T:Entry> MatrixView<'a, T> {
-    pub fn new(m : &Matrix<T>, start_row : uint, start_col : uint , num_rows: uint, num_cols : uint) -> MatrixView<T> {
+    pub fn new(m : &Matrix<T>, start_row : usize, start_col : usize , num_rows: usize, num_cols : usize) -> MatrixView<T> {
         debug_assert!(start_row + num_rows <= m.num_rows());
         debug_assert!(start_col + num_cols <= m.num_cols());
         let result : MatrixView<T> = MatrixView{
@@ -62,12 +62,12 @@ impl<'a, T:Entry> MatrixView<'a, T> {
 impl<'a, T:Entry> MatrixView<'a, T> {
     /// Returns the start row
     #[inline]
-    pub fn start_row(&self) -> uint{
+    pub fn start_row(&self) -> usize{
         self.start_row
     } 
     /// Returns the start column
     #[inline]
-    pub fn start_col(&self) -> uint{
+    pub fn start_col(&self) -> usize{
         self.start_col
     }
     /// Returns the underlying matrix reference 
@@ -134,7 +134,7 @@ impl<'a, T:Number> MatrixView<'a, T> {
 impl <'a, T:Entry> Strided for MatrixView<'a, T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
-    fn stride (&self)->uint {
+    fn stride (&self)->usize {
         self.matrix().stride()
     }
 }
@@ -158,18 +158,18 @@ impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
         ptr
     }
 
-    /// Maps a cell index to actual offset in the internal buffer
+    /// Maps a cell index to actual offset in the isizeernal buffer
     #[inline]
-    fn cell_to_offset(&self, r : uint,  c: uint)-> int {
+    fn cell_to_offset(&self, r : usize,  c: usize)-> isize {
         let r = self.start_row + r;
         let c = self.start_col + c;
-        (c * self.m.stride() + r) as int
+        (c * self.m.stride() + r) as isize
     } 
 
     /// Returns the offset of the first cell in the buffer
     #[inline]
-    fn start_offset(&self) -> int {
-        (self.start_col() * self.stride() + self.start_row()) as int
+    fn start_offset(&self) -> isize {
+        (self.start_col() * self.stride() + self.start_row()) as isize
     }
 
 }
@@ -178,35 +178,35 @@ impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
 /// Implementation of common matrix methods
 impl <'a, T:Entry> Shape<T> for MatrixView<'a, T> {
     /// Returns the number of rows in the view
-    fn num_rows(&self) -> uint {
+    fn num_rows(&self) -> usize {
         self.rows
     }
 
     /// Returns the number of columns in the view
-    fn num_cols(&self) -> uint {
+    fn num_cols(&self) -> usize {
         self.cols
     }
 
 
     /// Returns the size of view in an (r, c) tuple
-    fn size (&self)-> (uint, uint){
+    fn size (&self)-> (usize, usize){
         (self.rows, self.cols)
     }
 
     /// Returns the number of cells in view
-    fn num_cells(&self)->uint {
+    fn num_cells(&self)->usize {
         self.rows * self.cols
     }
 
 
     /// Gets an element in the view
     #[inline]
-    fn get(&self, r : uint, c : uint) -> T  {
+    fn get(&self, r : usize, c : usize) -> T  {
         debug_assert!(r < self.rows);
         debug_assert!(c < self.cols);
         let ptr = self.m.as_ptr();
         let offset = self.cell_to_offset(r, c);
-        debug_assert!((offset as uint) < self.m.capacity());
+        debug_assert!((offset as usize) < self.m.capacity());
         unsafe {
             // TODO : Optimize this
             ptr.offset(offset).as_ref().unwrap().clone()
@@ -215,7 +215,7 @@ impl <'a, T:Entry> Shape<T> for MatrixView<'a, T> {
 
     /// Sets an element in the view
     #[inline]
-    fn set(&mut self, r : uint, c : uint, value : T) {
+    fn set(&mut self, r : usize, c : usize, value : T) {
         debug_assert!(r < self.rows);
         debug_assert!(c < self.cols);
         let ptr = self.m.as_ptr();
@@ -223,7 +223,7 @@ impl <'a, T:Entry> Shape<T> for MatrixView<'a, T> {
         // I am allowing modification of the underlying buffer
         let ptr : *mut T = unsafe { mem::transmute(ptr) };
         let offset = self.cell_to_offset(r, c);
-        debug_assert!((offset as uint) < self.m.capacity());
+        debug_assert!((offset as usize) < self.m.capacity());
         unsafe {
             *ptr.offset(offset) = value;
         }
@@ -328,13 +328,13 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
         if self.is_empty() {
             return Zero::zero()
         }
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         let ptr = self.as_ptr();
         let mut result = unsafe {*ptr.offset(offset)};
         for i in range(1, self.smaller_dim()){
             offset += stride;
-            result = result + unsafe{*ptr.offset(offset + i as int)};
+            result = result + unsafe{*ptr.offset(offset + i as isize)};
         }
         result
     }
@@ -372,8 +372,8 @@ impl<'a, T:Number> MatrixView<'a, T> {
 
 }
 
-/// Introspection support
-impl<'a, T:Number> Introspection for MatrixView<'a, T> {
+/// isizerospection support
+impl<'a, T:Number> isizerospection for MatrixView<'a, T> {
     /// This is a view inside a matrix
     fn is_matrix_view_type(&self) -> bool {
         true
@@ -383,7 +383,7 @@ impl<'a, T:Number> Introspection for MatrixView<'a, T> {
 
 impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
     // Returns the minimum scalar value
-    pub fn min_scalar(&self) -> (T, uint, uint){
+    pub fn min_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
@@ -407,7 +407,7 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
     }
 
     // Returns the maximum scalar value
-    pub fn max_scalar(&self) -> (T, uint, uint){
+    pub fn max_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
@@ -444,7 +444,7 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
 
 
 /// View + View =  Matrix addition
-impl<'a, 'b, T:Number> ops::Add<MatrixView<'b, T>, Matrix<T>> for MatrixView<'a, T> {
+impl<'a, 'b, T:Number> ops::Add<Matrix<T>> for MatrixView<'a, T> {
     fn add(&self, rhs: &MatrixView<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
