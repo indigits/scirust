@@ -1,6 +1,6 @@
 #![doc="Utility software
 
-These modules are used internally, but they
+These modules are used isizeernally, but they
 are not part of public API.
 "]
 pub mod memory;

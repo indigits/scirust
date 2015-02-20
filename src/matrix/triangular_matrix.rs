@@ -16,7 +16,7 @@ use matrix::matrix::Matrix;
 //use matrix::error::SRError;
 
 use matrix::traits::{Shape, NumberMatrix,
-    Introspection, 
+    isizerospection, 
     MatrixBuffer, Extraction};
 
 
@@ -55,7 +55,7 @@ Thus, the size of the matrix remains same.
 "]
 pub struct TriangularMatrix<T:Entry> {
     /// Number of rows and columns in the matrix
-    size : uint,
+    size : usize,
     /// The pointer to raw data array of the matrix
     ptr : *mut T,
     /// Indicates whether the matrix is upper or lower triangular
@@ -63,24 +63,24 @@ pub struct TriangularMatrix<T:Entry> {
 }
 
 
-/// A matrix of 8-bit signed integers
+/// A matrix of 8-bit signed isizeegers
 pub type TriangularMatrixI8 = TriangularMatrix<i8>;
-/// A matrix of 16-bit signed integers
+/// A matrix of 16-bit signed isizeegers
 pub type TriangularMatrixI16 = TriangularMatrix<i16>;
-/// A matrix of 32-bit signed integers
+/// A matrix of 32-bit signed isizeegers
 pub type TriangularMatrixI32 = TriangularMatrix<i32>;
-/// A matrix of 64-bit signed integers
+/// A matrix of 64-bit signed isizeegers
 pub type TriangularMatrixI64 = TriangularMatrix<i64>;
-/// A matrix of 8-bit unsigned integers
+/// A matrix of 8-bit unsigned isizeegers
 pub type TriangularMatrixU8 = TriangularMatrix<u8>;
-/// A matrix of 16-bit unsigned integers
+/// A matrix of 16-bit unsigned isizeegers
 pub type TriangularMatrixU16 = TriangularMatrix<u16>;
-/// A matrix of 32-bit unsigned integers
+/// A matrix of 32-bit unsigned isizeegers
 pub type TriangularMatrixU32 = TriangularMatrix<u32>;
-/// A matrix of 64-bit unsigned integers
+/// A matrix of 64-bit unsigned isizeegers
 pub type TriangularMatrixU64 = TriangularMatrix<u64>;
-/// A matrix of  unsigned integers
-pub type TriangularMatrixUInt = TriangularMatrix<uint>;
+/// A matrix of  unsigned isizeegers
+pub type TriangularMatrixUInt = TriangularMatrix<usize>;
 /// A matrix of 32-bit floating point numbers.
 pub type TriangularMatrixF32 = TriangularMatrix<f32>;
 /// A matrix of 64-bit floating point numbers.
@@ -97,7 +97,7 @@ impl<T:Number> TriangularMatrix<T> {
 
 #[doc = "Constructs a new matrix of given size (uninitialized).
 "]
-    pub fn new(size: uint,
+    pub fn new(size: usize,
         ut_flag : bool )-> TriangularMatrix<T> {
         let capacity = size * (size + 1) / 2;
         if capacity == 0 {
@@ -120,7 +120,7 @@ impl<T:Number> TriangularMatrix<T> {
     }    
 
     /// Constructs a triangular matrix of all zeros
-    pub fn zeros(size: uint, 
+    pub fn zeros(size: usize, 
         ut : bool)-> TriangularMatrix<T> {
         let m : TriangularMatrix<T> = TriangularMatrix::new(size, ut);
         // zero out the memory
@@ -129,12 +129,12 @@ impl<T:Number> TriangularMatrix<T> {
     }
 
     /// Constructs a matrix of all ones.
-    pub fn ones(size: uint, ut : bool)-> TriangularMatrix<T> {
+    pub fn ones(size: usize, ut : bool)-> TriangularMatrix<T> {
         let m : TriangularMatrix<T> = TriangularMatrix::new(size, ut);
         // fill with ones
         let ptr = m.ptr;
         let o : T = One::one();
-        let n = m.capacity() as int;
+        let n = m.capacity() as isize;
         for i in range(0i, n){
             unsafe{
                 *ptr.offset(i) = o;
@@ -149,26 +149,26 @@ impl<T:Number> TriangularMatrix<T> {
 impl<T:Entry> Shape<T> for TriangularMatrix<T> {
 
     /// Returns the number of rows in the matrix
-    fn num_rows(&self) -> uint {
+    fn num_rows(&self) -> usize {
         self.size
     }
 
     /// Returns the number of columns in the matrix
-    fn num_cols(&self) -> uint {
+    fn num_cols(&self) -> usize {
         self.size
     }
 
     /// Returns the size of matrix in an (r, c) tuple
-    fn size (&self)-> (uint, uint){
+    fn size (&self)-> (usize, usize){
         (self.size, self.size)
     }
 
     /// Returns the number of cells in matrix
-    fn num_cells(&self)->uint {
+    fn num_cells(&self)->usize {
         self.size * self.size
     }
 
-    fn get(&self, r : uint, c : uint) -> T  {
+    fn get(&self, r : usize, c : usize) -> T  {
         // These assertions help in checking matrix boundaries
         debug_assert!(r < self.size);
         debug_assert!(c < self.size);
@@ -182,12 +182,12 @@ impl<T:Entry> Shape<T> for TriangularMatrix<T> {
         }
     }
 
-    fn set(&mut self, r : uint, c : uint, value : T) {
+    fn set(&mut self, r : usize, c : usize, value : T) {
         // These assertions help in checking matrix boundaries
         debug_assert!(r < self.size);
         debug_assert!(c < self.size);
         unsafe {
-            *self.ptr.offset(self.cell_to_offset(r, c) as int) = value;
+            *self.ptr.offset(self.cell_to_offset(r, c) as isize) = value;
         }
     }
 
@@ -282,7 +282,7 @@ impl<T:Number> NumberMatrix<T> for TriangularMatrix<T> {
         let ptr = self.as_ptr();
         let mut result = unsafe{*ptr};
         for i in range(1, self.smaller_dim()){
-            offset += (i + 1) as int;
+            offset += (i + 1) as isize;
             result = result + unsafe{*ptr.offset(offset)};
         }
         result
@@ -290,8 +290,8 @@ impl<T:Number> NumberMatrix<T> for TriangularMatrix<T> {
 }
 
 
-/// Introspection support
-impl<T:Number> Introspection for TriangularMatrix<T> {
+/// isizerospection support
+impl<T:Number> isizerospection for TriangularMatrix<T> {
     /// Indicates if the matrix is a triangular matrix
     fn is_triangular_matrix_type(&self) -> bool {
         true
@@ -315,9 +315,9 @@ impl<T:Entry> MatrixBuffer<T> for TriangularMatrix<T> {
         self.ptr
     }
 
-    /// Maps a cell index to actual offset in the internal buffer
+    /// Maps a cell index to actual offset in the isizeernal buffer
     #[inline]
-    fn cell_to_offset(&self, r : uint,  c: uint)-> int {
+    fn cell_to_offset(&self, r : usize,  c: usize)-> isize {
         debug_assert!(if self.ut_flag { 
             r <= c && c < self.size 
         } 
@@ -331,7 +331,7 @@ impl<T:Entry> MatrixBuffer<T> for TriangularMatrix<T> {
         else {
             r * (r + 1) /2 + c
         };
-        offset as int
+        offset as isize
     } 
 
 }
@@ -342,7 +342,7 @@ impl<T:Number> TriangularMatrix<T> {
 
     /// Returns the capacity of the matrix 
     /// i.e. the number of elements it can hold
-    pub fn capacity(&self)-> uint {
+    pub fn capacity(&self)-> usize {
         let n = self.size;
         n * (n + 1) / 2
     }
@@ -366,10 +366,10 @@ impl<T:Number> Drop for TriangularMatrix<T> {
 impl <T:Number> Extraction<T> for TriangularMatrix<T> {
 
     /// Returns the r'th row vector
-    fn row(&self, r : int) -> Matrix<T> {
+    fn row(&self, r : isize) -> Matrix<T> {
         // Lets ensure that the row value is mapped to
         // a value in the range [0, rows - 1]
-        let r = mod_n(r, self.num_rows() as int);        
+        let r = mod_n(r, self.num_rows() as isize);        
         let mut result : Matrix<T> = Matrix::new(1, self.num_cols());
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
@@ -414,10 +414,10 @@ impl <T:Number> Extraction<T> for TriangularMatrix<T> {
     }
 
     /// Returns the c'th column vector
-    fn col(&self, c : int) -> Matrix<T>{
+    fn col(&self, c : isize) -> Matrix<T>{
         // Lets ensure that the col value is mapped to
         // a value in the range [0, cols - 1]
-        let c = mod_n(c, self.num_cols() as int);        
+        let c = mod_n(c, self.num_cols() as isize);        
         let mut result : Matrix<T> = Matrix::new(self.num_rows(), 1);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
@@ -464,12 +464,12 @@ impl <T:Number> Extraction<T> for TriangularMatrix<T> {
     /// Extract a submatrix from the matrix
     /// rows can easily repeat if the number of requested rows is higher than actual rows
     /// cols can easily repeat if the number of requested cols is higher than actual cols
-    fn sub_matrix(&self, start_row : int, 
-        start_col : int , 
-        num_rows: uint, 
-        num_cols : uint) -> Matrix<T>{
-        let r = mod_n(start_row, self.num_rows() as int);        
-        let c = mod_n(start_col, self.num_cols() as int);
+    fn sub_matrix(&self, start_row : isize, 
+        start_col : isize , 
+        num_rows: usize, 
+        num_cols : usize) -> Matrix<T>{
+        let r = mod_n(start_row, self.num_rows() as isize);        
+        let c = mod_n(start_col, self.num_cols() as isize);
         let mut result : Matrix<T> = Matrix::new(num_rows, num_cols);
         let pd = result.as_mut_ptr();
         let mut dc = 0;
@@ -508,9 +508,9 @@ impl <T:Number> fmt::Show for TriangularMatrix<T> {
         // maximum value
         let cap = self.capacity();
         let mut strings : Vec<String> = Vec::with_capacity(cap);
-        let mut max_len : uint = 0;
+        let mut max_len : usize = 0;
         let ptr = self.ptr;
-        for i in range(0i, cap as int){
+        for i in range(0i, cap as isize){
             let v = unsafe {*ptr.offset(i)};
             let s = v.to_string();
             let slen = s.len();
@@ -545,7 +545,7 @@ impl <T:Number> fmt::Show for TriangularMatrix<T> {
                 }
                 // This is something from within the matrix.
                 let offset = self.cell_to_offset(r, c);
-                let ref s = strings[offset as uint];
+                let ref s = strings[offset as usize];
                 let extra = max_len + 2 - s.len();
                 for _ in range(0, extra){
                     try!(write!(f, " "));

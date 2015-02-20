@@ -115,15 +115,15 @@ impl Signed for i64 {
 }
    
 
-impl Signed for int {
+impl Signed for isize {
 
     #[inline]
-    fn abs_val(&self) -> int{
+    fn abs_val(&self) -> isize{
         self.abs()
     }
     
     #[inline]
-    fn signum(&self) -> int{
+    fn signum(&self) -> isize{
         self.signum()
     }
     

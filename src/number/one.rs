@@ -47,10 +47,10 @@ impl One for i64{
     }
 }
 
-impl One for int{
+impl One for isize{
 
     #[inline]
-    fn one() -> int {
+    fn one() -> isize {
         1
     }
 }
@@ -87,10 +87,10 @@ impl One for u64{
     }
 }
 
-impl One for uint{
+impl One for usize{
 
     #[inline]
-    fn one() -> uint {
+    fn one() -> usize {
         1
     }
 }

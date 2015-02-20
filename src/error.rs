@@ -10,7 +10,7 @@
 
 
 /// Enum for errors related to SciRust library
-#[derive(Show)]
+#[derive(Debug)]
 pub enum SRError{
 
     /******************************************************

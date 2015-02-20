@@ -27,7 +27,7 @@ use matrix::traits::{Shape, NumberMatrix,
     Strided,
     StridedNumberMatrix,
     StridedFloatMatrix,
-    Introspection, 
+    isizerospection, 
     MatrixBuffer,
     Search};
 
@@ -48,35 +48,35 @@ This is the standard in Fortran and MATLAB.
 "]
 pub struct Matrix<T:Entry> {
     /// Number of rows in the matrix
-    rows : uint,
+    rows : usize,
     /// Number of columns in the matrix
-    cols : uint, 
+    cols : usize, 
     /// Number of allocated rows 
-    xrows : uint, 
+    xrows : usize, 
     /// Number of allocated columns
-    xcols : uint,
+    xcols : usize,
     /// The pointer to raw data array of the matrix
     ptr : *mut T
 }
 
-/// A matrix of 8-bit signed integers
+/// A matrix of 8-bit signed isizeegers
 pub type MatrixI8 = Matrix<i8>;
-/// A matrix of 16-bit signed integers
+/// A matrix of 16-bit signed isizeegers
 pub type MatrixI16 = Matrix<i16>;
-/// A matrix of 32-bit signed integers
+/// A matrix of 32-bit signed isizeegers
 pub type MatrixI32 = Matrix<i32>;
-/// A matrix of 64-bit signed integers
+/// A matrix of 64-bit signed isizeegers
 pub type MatrixI64 = Matrix<i64>;
-/// A matrix of 8-bit unsigned integers
+/// A matrix of 8-bit unsigned isizeegers
 pub type MatrixU8 = Matrix<u8>;
-/// A matrix of 16-bit unsigned integers
+/// A matrix of 16-bit unsigned isizeegers
 pub type MatrixU16 = Matrix<u16>;
-/// A matrix of 32-bit unsigned integers
+/// A matrix of 32-bit unsigned isizeegers
 pub type MatrixU32 = Matrix<u32>;
-/// A matrix of 64-bit unsigned integers
+/// A matrix of 64-bit unsigned isizeegers
 pub type MatrixU64 = Matrix<u64>;
-/// A matrix of  unsigned integers
-pub type MatrixUInt = Matrix<uint>;
+/// A matrix of  unsigned isizeegers
+pub type MatrixUSize = Matrix<usize>;
 /// A matrix of 32-bit floating point numbers.
 pub type MatrixF32 = Matrix<f32>;
 /// A matrix of 64-bit floating point numbers.
@@ -98,11 +98,11 @@ impl<T:Entry> Matrix<T> {
 
 The contents of the matrix are not initialized. Hence, 
 it doesn't make sense to use this function liberally.
-Still the function is internally useful since
+Still the function is isizeernally useful since
 different constructor functions need to initialize
 the matrix differently.
 "]
-    pub fn new(rows: uint, cols : uint)-> Matrix<T> {
+    pub fn new(rows: usize, cols : usize)-> Matrix<T> {
         debug_assert! (mem::size_of::<T>() != 0);
         let xrows = rows.next_power_of_two();
         let xcols = cols.next_power_of_two();
@@ -145,7 +145,7 @@ impl<T:Number> Matrix<T> {
 
 
     /// Constructs a matrix of all zeros
-    pub fn zeros(rows: uint, cols : uint)-> Matrix<T> {
+    pub fn zeros(rows: usize, cols : usize)-> Matrix<T> {
         let m : Matrix<T> = Matrix::new(rows, cols);
         // zero out the memory
         unsafe { ptr::zero_memory(m.ptr, m.capacity())};
@@ -154,7 +154,7 @@ impl<T:Number> Matrix<T> {
 
 
     /// Constructs a matrix of all ones.
-    pub fn ones(rows: uint, cols : uint)-> Matrix<T> {
+    pub fn ones(rows: usize, cols : usize)-> Matrix<T> {
         let m : Matrix<T> = Matrix::new(rows, cols);
         // fill with ones
         let ptr = m.ptr;
@@ -163,7 +163,7 @@ impl<T:Number> Matrix<T> {
             for c in range(0, cols){
                 for r in range (0, rows){
                     let offset = m.cell_to_offset(r, c);
-                    let p  = ptr.offset(offset as int);
+                    let p  = ptr.offset(offset as isize);
                     *p = o;
                 }
             } 
@@ -173,7 +173,7 @@ impl<T:Number> Matrix<T> {
 
 
     /// Constructs an identity matrix
-    pub fn identity(rows: uint, cols : uint) -> Matrix<T> {
+    pub fn identity(rows: usize, cols : usize) -> Matrix<T> {
         let m : Matrix<T> = Matrix::zeros(rows, cols);
         // fill with ones
         let ptr = m.ptr;
@@ -192,7 +192,7 @@ impl<T:Number> Matrix<T> {
     #[doc = "Constructs a matrix from a slice of data reading
     data in column wise order.
     "]
-    pub fn from_slice_cw(rows: uint, cols : uint, values: &[T]) -> Matrix<T>{
+    pub fn from_slice_cw(rows: usize, cols : usize, values: &[T]) -> Matrix<T>{
         let mut mat : Matrix<T> = Matrix::new(rows, cols);
         // stride of new matrix
         let stride = mat.stride();
@@ -230,7 +230,7 @@ slice looks easier to read in row wise order. Thus, this
 function should be more useful in constructing matrices
 by hand.
 "]
-    pub fn from_slice_rw(rows: uint, cols : uint, values: &[T]) -> Matrix<T>{
+    pub fn from_slice_rw(rows: usize, cols : usize, values: &[T]) -> Matrix<T>{
         let mat : Matrix<T> = Matrix::new(rows, cols);
         // get a mutable slice from m
         {
@@ -258,7 +258,7 @@ by hand.
         mat
     }
 
-    pub fn from_iter_cw< A : Iterator<T>>(rows: uint, cols : uint, mut iter: A) -> Matrix<T>{
+    pub fn from_iter_cw< A : Iterator<T>>(rows: usize, cols : usize, mut iter: A) -> Matrix<T>{
         let mut mat : Matrix<T> = Matrix::new(rows, cols);
         let stride = mat.stride();
         // get a mutable slice from m
@@ -304,7 +304,7 @@ by hand.
 
     /// Builds a matrix from an iterator reading numbers in a 
     /// row-wise order
-    pub fn from_iter_rw< A : Iterator<T>>(rows: uint, cols : uint, 
+    pub fn from_iter_rw< A : Iterator<T>>(rows: usize, cols : usize, 
         mut iter: A) -> Matrix<T>{
         let m : Matrix<T> = Matrix::new(rows, cols);
         let ptr = m.ptr;
@@ -358,7 +358,7 @@ by hand.
         for r in range(0, n){
             let offset = m.cell_to_offset(r, r);
             unsafe{
-                *dst.offset(offset) =  *src.offset(r as int);
+                *dst.offset(offset) =  *src.offset(r as isize);
             }
         }
         m
@@ -366,7 +366,7 @@ by hand.
 
     /// Constructs a unit vector
     /// (1, 0, 0), (0, 1, 0), (0, 0, 1), etc.
-    pub fn unit_vector( length : uint, dim : uint) -> Matrix<T> {
+    pub fn unit_vector( length : usize, dim : usize) -> Matrix<T> {
         let mut m : Matrix<T> = Matrix::zeros(length, 1);
         m.set(dim, 0, One::one());
         m
@@ -377,27 +377,27 @@ by hand.
 impl<T:Entry> Shape<T> for Matrix<T> {
 
     /// Returns the number of rows in the matrix
-    fn num_rows(&self) -> uint {
+    fn num_rows(&self) -> usize {
         self.rows
     }
 
     /// Returns the number of columns in the matrix
-    fn num_cols(&self) -> uint {
+    fn num_cols(&self) -> usize {
         self.cols
     }
 
     /// Returns the size of matrix in an (r, c) tuple
-    fn size (&self)-> (uint, uint){
+    fn size (&self)-> (usize, usize){
         (self.rows, self.cols)
     }
 
     /// Returns the number of cells in matrix
-    fn num_cells(&self)->uint {
+    fn num_cells(&self)->usize {
         self.rows * self.cols
     }
 
 
-    fn get(&self, r : uint, c : uint) -> T  {
+    fn get(&self, r : usize, c : usize) -> T  {
         // These assertions help in checking matrix boundaries
         debug_assert!(r < self.rows);
         debug_assert!(c < self.cols);
@@ -409,7 +409,7 @@ impl<T:Entry> Shape<T> for Matrix<T> {
         }
     }
 
-    fn set(&mut self, r : uint, c : uint, value : T) {
+    fn set(&mut self, r : usize, c : usize, value : T) {
         // These assertions help in checking matrix boundaries
         debug_assert!(r < self.rows);
         debug_assert!(c < self.cols);
@@ -518,19 +518,19 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
             return Zero::zero()
         }
         let mut result = self.get(0, 0);
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = stride;
         let ptr = self.as_ptr();
         for i in range(1, self.smaller_dim()){
-            result = result + unsafe{*ptr.offset(offset + i as int)};
+            result = result + unsafe{*ptr.offset(offset + i as isize)};
             offset += stride;
         }
         result
     }
 }
 
-/// Introspection support
-impl<T:Number> Introspection for Matrix<T> {
+/// isizerospection support
+impl<T:Number> isizerospection for Matrix<T> {
     /// This is a standard matrix object
     fn is_standard_matrix_type(&self) -> bool {
         true
@@ -542,7 +542,7 @@ impl<T:Entry> Strided for Matrix<T> {
 
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
-    fn stride (&self)->uint {
+    fn stride (&self)->usize {
         self.xrows
     }
 
@@ -573,10 +573,10 @@ impl<T:Entry> MatrixBuffer<T> for Matrix<T> {
         self.ptr
     }
 
-    /// Maps a cell index to actual offset in the internal buffer
+    /// Maps a cell index to actual offset in the isizeernal buffer
     #[inline]
-    fn cell_to_offset(&self, r : uint,  c: uint)-> int {
-        (c * self.stride() + r) as int
+    fn cell_to_offset(&self, r : usize,  c: usize)-> isize {
+        (c * self.stride() + r) as isize
     } 
 
 }
@@ -586,7 +586,7 @@ impl<T:Entry> Matrix<T> {
 
     /// Returns the capacity of the matrix 
     /// i.e. the number of elements it can hold
-    pub fn capacity(&self)-> uint {
+    pub fn capacity(&self)-> usize {
         self.xrows * self.xcols
     }
 
@@ -601,8 +601,8 @@ impl<T:Number> Matrix<T> {
 
 
     /// Returns an iterator over a specific row of matrix
-    pub fn row_iter(&self, r : int) -> RowIterator<T>{
-        let r = mod_n(r, self.rows as int);        
+    pub fn row_iter(&self, r : isize) -> RowIterator<T>{
+        let r = mod_n(r, self.rows as isize);        
         // Lets find the offset of the begging of the row
         let offset = self.cell_to_offset(r, 0);
         let iter : RowIterator<T> = RowIterator::new(self.cols,
@@ -611,8 +611,8 @@ impl<T:Number> Matrix<T> {
     }
 
     /// Returns an iterator over a specific column of the matrix
-    pub fn col_iter(&self, c : int) -> ColIterator<T>{
-        let c = mod_n(c, self.cols as int);        
+    pub fn col_iter(&self, c : isize) -> ColIterator<T>{
+        let c = mod_n(c, self.cols as isize);        
         // Lets find the offset of the begging of the column
         let offset = self.cell_to_offset(0, c);
         let iter : ColIterator<T> = ColIterator::new(self.rows,
@@ -630,7 +630,7 @@ impl<T:Number> Matrix<T> {
 
 
     // Repeats this matrix in both horizontal and vertical directions 
-    pub fn repeat_matrix(&self, num_rows : uint, num_cols : uint) -> Matrix<T> {
+    pub fn repeat_matrix(&self, num_rows : usize, num_cols : usize) -> Matrix<T> {
         let rows = self.rows * num_rows;
         let cols = self.cols * num_cols;
         let result : Matrix<T> = Matrix::new(rows, cols);
@@ -664,7 +664,7 @@ impl<T:Number> Matrix<T> {
         for i in range(0, m){
             let offset = self.cell_to_offset(i, i);
             unsafe{
-                *dst.offset(i as int) = *src.offset(offset);
+                *dst.offset(i as isize) = *src.offset(offset);
             } 
         }
         result        
@@ -734,8 +734,8 @@ impl<T:Number> Matrix<T> {
             let src_start = self.cell_to_offset(0, c);
             let dst_start = result.cell_to_offset(0, c);
             for r in range (0, self.num_rows()){
-                let src_offset = src_start + permutation[r] as int;
-                let dst_offset = dst_start +  r as int;
+                let src_offset = src_start + permutation[r] as isize;
+                let dst_offset = dst_start +  r as isize;
                 unsafe {*dst.offset(dst_offset) = *src.offset(src_offset);}
             }
         }
@@ -750,8 +750,8 @@ impl<T:Number> Matrix<T> {
         let src = self.ptr;
         let dst = result.ptr;
         for c in range(0, self.cols){
-            debug_assert!((permutation[c] as uint) < self.num_cols());
-            let mut src_offset = self.cell_to_offset(0, permutation[c] as uint);
+            debug_assert!((permutation[c] as usize) < self.num_cols());
+            let mut src_offset = self.cell_to_offset(0, permutation[c] as usize);
             let mut dst_offset = result.cell_to_offset(0, c);
             for _ in range (0, self.num_rows()){
                 unsafe {*dst.offset(dst_offset) = *src.offset(src_offset);}
@@ -764,7 +764,7 @@ impl<T:Number> Matrix<T> {
 
     /// Computes power of a matrix
     /// Returns a new matrix
-    pub fn pow(&self, exp : uint) -> Matrix<T>{
+    pub fn pow(&self, exp : usize) -> Matrix<T>{
         if !self.is_square() {
             panic!(SRError::IsNotSquareMatrix.to_string());
         }
@@ -793,7 +793,7 @@ impl<T:Number> Matrix<T> {
         let pa = self.ptr;
         let pb = other.ptr;
         for i in range(0, self.num_rows()){
-            let ii = i as int;
+            let ii = i as isize;
             let va = unsafe{*pa.offset(ii)};
             let vb = unsafe{*pb.offset(ii)};
             result = result + va * vb;
@@ -816,8 +816,8 @@ impl<T:Number> Matrix<T> {
         let pc = result.ptr;
         for r in range(0, n){
             for c in range(0, n){
-                let va = unsafe{*pa.offset(r as int)};
-                let vb = unsafe{*pb.offset(c as int)};
+                let va = unsafe{*pa.offset(r as isize)};
+                let vb = unsafe{*pb.offset(c as isize)};
                 let offset = result.cell_to_offset(r, c);
                 unsafe{
                     *pc.offset(offset) = va * vb;
@@ -868,7 +868,7 @@ impl<T:Number> Matrix<T> {
 
     /// Inserts columns at the specified location
     pub fn insert_columns(&mut self,
-        index  : uint,
+        index  : usize,
         other : &Matrix<T> 
         )-> &mut Matrix<T> {
         debug_assert_eq!(self.num_rows() , other.num_rows());
@@ -890,7 +890,7 @@ impl<T:Number> Matrix<T> {
             let src_offset = other.cell_to_offset(0, i);
             let dst_offset = self.cell_to_offset(0, i + index);
             for j in range(0, self.rows){
-                let jj = j as int;
+                let jj = j as isize;
                 unsafe {
                     *dst_ptr.offset(dst_offset + jj) = *src_ptr.offset(src_offset + jj);
                 }
@@ -919,7 +919,7 @@ impl<T:Number> Matrix<T> {
 
     /// Inserts rows at the specified location
     pub fn insert_rows(&mut self,
-        index  : uint,
+        index  : usize,
         other : &Matrix<T> 
         )-> &mut Matrix<T> {
         // Make sure that the dimensions are compatible.
@@ -946,8 +946,8 @@ impl<T:Number> Matrix<T> {
             let dst_offset = self.cell_to_offset(i + index, 0);
             for j in range(0, self.cols){
                 unsafe {
-                    *dst_ptr.offset(dst_offset + (j*dst_stride) as int) = 
-                    *src_ptr.offset(src_offset + (j*src_stride) as int);
+                    *dst_ptr.offset(dst_offset + (j*dst_stride) as isize) = 
+                    *src_ptr.offset(src_offset + (j*src_stride) as isize);
                 }
             }
         }
@@ -968,7 +968,7 @@ impl<T:Number> Matrix<T> {
     number of rows changes, the stride also changes.
     Thus, the matrix elements need to be moved around.
     "] 
-    fn reallocate(&mut self, rows : uint, cols : uint){
+    fn reallocate(&mut self, rows : usize, cols : usize){
         let new_xrows = rows.next_power_of_two();
         let new_xcols = cols.next_power_of_two();
         let old_capacity = self.xrows * self.xcols;
@@ -990,8 +990,8 @@ impl<T:Number> Matrix<T> {
         let dst_stride = new_xrows;
         for c in range(0, self.cols){
             for r in range(0, self.rows){
-                let src_offset = (c * src_stride + r) as int;
-                let dst_offset = (c * dst_stride + r) as int;
+                let src_offset = (c * src_stride + r) as isize;
+                let dst_offset = (c * dst_stride + r) as isize;
                 unsafe{
                     *dst_ptr.offset(dst_offset) = *src_ptr.offset(src_offset);
                 }
@@ -1013,14 +1013,14 @@ impl<T:Number> Matrix<T> {
     }
 
     //// Moves column data around and creates space for new columns
-    fn create_column_space(&mut self, start: uint, count :uint){
+    fn create_column_space(&mut self, start: usize, count :usize){
         // The end must not be beyond capacity
         assert!(start + count <= self.xcols);
         if start >= self.cols {
             // Nothing to move.
             return;
         }
-        let capacity = self.capacity() as int;
+        let capacity = self.capacity() as isize;
         // count columns starting from start column need to be
         // shifted by count.
         let mut cur_col = self.cols - 1;
@@ -1034,7 +1034,7 @@ impl<T:Number> Matrix<T> {
             debug_assert!(src_offset < capacity);
             debug_assert!(dst_offset < capacity);
             for i in range(0, self.rows){
-                let ii = i as int;
+                let ii = i as isize;
                 // Some validations
                 debug_assert!(src_offset + ii < capacity);
                 debug_assert!(dst_offset + ii < capacity);
@@ -1047,14 +1047,14 @@ impl<T:Number> Matrix<T> {
     }
 
     //// Moves rows around and creates space for new rows
-    fn create_row_space(&mut self, start: uint, count :uint){
+    fn create_row_space(&mut self, start: usize, count :usize){
         // The end must not be beyond capacity
         assert!(start + count <= self.xrows);
         if start >= self.rows {
             // Nothing to move.
             return;
         }
-        let capacity = self.capacity() as int;
+        let capacity = self.capacity() as isize;
         // count rows starting from start row need to be
         // shifted by count.
         let mut cur_row = self.rows - 1;
@@ -1069,7 +1069,7 @@ impl<T:Number> Matrix<T> {
             debug_assert!(src_offset < capacity);
             debug_assert!(dst_offset < capacity);
             for i in range(0, self.cols){
-                let ii = (i*stride) as int;
+                let ii = (i*stride) as isize;
                 // Some validations
                 debug_assert!(src_offset + ii < capacity);
                 debug_assert!(dst_offset + ii < capacity);
@@ -1095,7 +1095,7 @@ impl<T:Signed+PartialOrd> Search<T> for Matrix<T> {
 /// Views of a matrix
 impl<T:Number> Matrix<T> {
     /// Creates a view on the matrix
-    pub fn view(&self, start_row : uint, start_col : uint , num_rows: uint, num_cols : uint) -> MatrixView<T> {
+    pub fn view(&self, start_row : usize, start_col : usize , num_rows: usize, num_cols : usize) -> MatrixView<T> {
         let result : MatrixView<T> = MatrixView::new(self, start_row, start_col, num_rows, num_cols);
         result
     }
@@ -1110,7 +1110,7 @@ impl<T:Number+PartialOrd> Matrix<T> {
 
 
     // Returns the minimum scalar value with location
-    pub fn min_scalar(&self) -> (T, uint, uint){
+    pub fn min_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
@@ -1134,7 +1134,7 @@ impl<T:Number+PartialOrd> Matrix<T> {
     }
 
     // Returns the maximum scalar value with location
-    pub fn max_scalar(&self) -> (T, uint, uint){
+    pub fn max_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
@@ -1171,7 +1171,7 @@ impl<T:Number+PartialOrd> Matrix<T> {
 impl<T:Signed+PartialOrd> Matrix<T> {
 
     // Returns the absolute minimum scalar value
-    pub fn min_abs_scalar(&self) -> (T, uint, uint){
+    pub fn min_abs_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
@@ -1195,7 +1195,7 @@ impl<T:Signed+PartialOrd> Matrix<T> {
     }
 
     // Returns the maximum scalar value
-    pub fn max_abs_scalar(&self) -> (T, uint, uint){
+    pub fn max_abs_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
@@ -1230,10 +1230,10 @@ impl<T:Signed+PartialOrd> Matrix<T> {
     }    
 }
 
-/// These functions are available only for integer matrices
+/// These functions are available only for isizeeger matrices
 impl<T:Signed+Int> Matrix<T> {
 
-    /// Returns if an integer matrix is a logical matrix
+    /// Returns if an isizeeger matrix is a logical matrix
     //// i.e. all cells are either 0s or 1s.
     pub fn is_logical(&self) -> bool {
         let z : T = Zero::zero();
@@ -1289,14 +1289,14 @@ impl<T:Number+Float> Matrix<T> {
 
 
 
-impl<T:Number> Index<uint,T> for Matrix<T> {
+impl<T:Number> Index<usize,T> for Matrix<T> {
     #[inline]
-    fn index<'a>(&'a self, index: &uint) -> &'a T {
+    fn index<'a>(&'a self, index: &usize) -> &'a T {
         // The matrix is column major order
         let (r, c) = self.index_to_cell(*index);
         let offset = c * self.stride() + r;
         unsafe {
-            &*self.ptr.offset(offset as int)
+            &*self.ptr.offset(offset as isize)
         }
     }
 }
@@ -1304,7 +1304,7 @@ impl<T:Number> Index<uint,T> for Matrix<T> {
 
 
 impl<T:Number> Matrix<T>{
-    /// This function is for internal use only.
+    /// This function is for isizeernal use only.
     #[inline]
     fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         unsafe {
@@ -1318,7 +1318,7 @@ impl<T:Number> Matrix<T>{
 
 
 
-/// Implementation of Clone interface
+/// Implementation of Clone isizeerface
 impl <T:Number> Clone for Matrix<T> {
 
     /// Creates a clone of the matrix
@@ -1338,7 +1338,7 @@ impl <T:Number> fmt::Show for Matrix<T> {
         // to show each value.
         // maximum value
         let mut strings : Vec<String> = Vec::with_capacity(self.num_cells());
-        let mut n : uint = 0;
+        let mut n : usize = 0;
         let ptr = self.ptr;
         for r in range(0, self.rows){
             for c in range(0, self.cols){
@@ -1386,7 +1386,7 @@ impl<T:Number> ops::Add<Matrix<T>, Matrix<T>> for Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) + *pb.offset(i);
             }
         }
@@ -1409,7 +1409,7 @@ impl<T:Number> ops::Sub<Matrix<T>, Matrix<T>> for Matrix<T>{
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) - *pb.offset(i);
             }
         }
@@ -1456,7 +1456,7 @@ impl<T:Number> Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) + *pb.offset(i);
             }
         }
@@ -1476,7 +1476,7 @@ impl<T:Number> Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) - *pb.offset(i);
             }
         }
@@ -1495,7 +1495,7 @@ impl<T:Number> Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) * *pb.offset(i);
             }
         }
@@ -1515,7 +1515,7 @@ impl<T:Number> Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) / *pb.offset(i);
             }
         }
@@ -1523,14 +1523,14 @@ impl<T:Number> Matrix<T> {
     }
 
     /// Computs power of matrix elements
-    pub fn pow_elt(&self, n : uint) -> Matrix<T> {
+    pub fn pow_elt(&self, n : usize) -> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pc = result.ptr;
         let cap = self.capacity();
         unsafe{
             for i_ in range(0, cap){
-                let i = i_ as int;
+                let i = i_ as isize;
                 let v = *pa.offset(i);
                 *pc.offset(i) = v.power(n);
             }
@@ -1563,7 +1563,7 @@ impl<T:Number> Matrix<T> {
         println!("Rows: {}, Cols: {}, XRows : {}, XCols {} , Capacity: {}, Bytes; {}, Buffer: {:p}, End : {:p}", 
             self.rows, self.cols, self.xrows, self.xcols, 
             capacity, bytes, self.ptr, unsafe {
-                self.ptr.offset(capacity as int)
+                self.ptr.offset(capacity as isize)
             });
     }
 }
@@ -1576,7 +1576,7 @@ impl<T:Number> Matrix<T> {
  *******************************************************/
 
 impl<T:Number> Matrix<T> {
-    /// Returns a slice into `self`.
+    /// Returns a slice isizeo `self`.
     //#[inline]
     pub fn as_slice_<'a>(&'a self) -> &'a [T] {
         unsafe { mem::transmute(RawSlice { data: self.as_ptr(), len: self.capacity() }) }

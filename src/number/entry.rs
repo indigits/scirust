@@ -41,7 +41,7 @@ impl Entry for i64{
 
 }
 
-impl Entry for int{
+impl Entry for isize{
 
 }
 
@@ -61,7 +61,7 @@ impl Entry for u64{
 
 }
 
-impl Entry for uint{
+impl Entry for usize{
 
 }
 

@@ -2,7 +2,7 @@
 #![doc="A generics based scientific computing library for Rust
 
 
-# Introduction
+# isizeroduction
 
 This library aims to provide scientific computing functionality in Rust.
 Current focus is to provide a comprehensive API with simple straight-forward
@@ -14,12 +14,12 @@ covering matrices, linear algebra, signal processing and statistics.
 # Implementation
 
 The implementation's aim to take the best advantage
-of language features in Rust, yet avoid getting too much into
+of language features in Rust, yet avoid getting too much isizeo
 heavy degree of performance optimization. We do take 
 advantage of Rust features like generic programming, 
 immutable by default approach, type traits, iterators,
 amongst others. This is a pure Rust implementation. 
-There is no integration planned at the moment with
+There is no isizeegration planned at the moment with
 C libraries like BLAS or LAPACK.  
 
 
@@ -27,6 +27,8 @@ C libraries like BLAS or LAPACK.
 
 #![feature(unsafe_destructor, globs)]
 #![feature(macro_rules)]
+#![feature(int_uint)]
+
 extern crate log;
 extern crate collections;
 //extern crate quickcheck_macros;
@@ -57,7 +59,7 @@ pub mod audio {
 "]
 }
 
-// for internal use only
+// for isizeernal use only
 pub mod util;
 mod testdata;
 

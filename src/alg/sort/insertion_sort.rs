@@ -8,7 +8,7 @@ use std::ptr;
 pub fn insertion_sort_slice<T : PartialOrd>(data : &mut [T]){
     let n  = data.len();
     for j in range(1, n){
-        // we insert data[j] into the sorted sequence 
+        // we insert data[j] isizeo the sorted sequence 
         //data[0...j-1]
         let mut i = j -1;
         while data[i] > data[i+1]{
@@ -22,11 +22,11 @@ pub fn insertion_sort_slice<T : PartialOrd>(data : &mut [T]){
 }
 
 /// Performs insertion sort on a buffer of data
-pub unsafe fn insertion_sort_buffer<T : PartialOrd>(data : *mut T, n : uint){
+pub unsafe fn insertion_sort_buffer<T : PartialOrd>(data : *mut T, n : usize){
     for j in range(1, n){
-        // we insert data[j] into the sorted sequence 
+        // we insert data[j] isizeo the sorted sequence 
         //data[0...j-1]
-        let mut i = (j -1) as int;
+        let mut i = (j -1) as isize;
         let mut di = data.offset(i);
         let mut dj = data.offset(i+1);
         while *di > *dj {
@@ -112,7 +112,7 @@ mod bench{
     fn bench_insertion_sort_slice_random_data(b: &mut Bencher){
         // create a task-local Random Number Generator
         let mut rng = rand::task_rng();
-        let mut v: Vec<uint> = rng.gen_iter::<uint>().take(10000).collect();
+        let mut v: Vec<usize> = rng.gen_iter::<usize>().take(10000).collect();
         b.iter(|| {
             insertion_sort_slice(v.as_mut_slice());
         });

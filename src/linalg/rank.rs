@@ -11,7 +11,7 @@ use matrix::eo::eo_traits::ECO;
 
 
 /// Computes the rank of a matrix using elementary column operations
-pub fn rank_eco(a : & MatrixF64) -> uint {
+pub fn rank_eco(a : & MatrixF64) -> usize {
     let mut a = a.clone();
     let mut rank  = 0;
     let m = a.num_rows();
@@ -43,7 +43,7 @@ pub fn rank_eco(a : & MatrixF64) -> uint {
 }
 
 
-pub fn rank(a : & MatrixF64) -> uint{
+pub fn rank(a : & MatrixF64) -> usize{
     rank_eco(a)
 }
 

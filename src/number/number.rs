@@ -1,4 +1,4 @@
-#![doc="Numbers: integers, floats, complex numbers,  
+#![doc="Numbers: isizeegers, floats, complex numbers,  
 "]
 
 
@@ -41,7 +41,7 @@ pub trait Number : Entry
 
     fn is_signed(&self) -> bool;
 
-    fn power(&self, n : uint)-> Self{
+    fn power(&self, n : usize)-> Self{
         if n == 0 {
             return One::one();
         }
@@ -141,11 +141,11 @@ impl Number for i64 {
 
  
 /******************************************************
- *      int implementation
+ *      isize implementation
  ******************************************************/
 
-/// Indicate that int fits all requirements for being a matrix element.
-impl Number for int {
+/// Indicate that isize fits all requirements for being a matrix element.
+impl Number for isize {
     
     
     #[inline]
@@ -247,12 +247,12 @@ impl Number for u64 {
 }
 
 /******************************************************
- *      uint implementation
+ *      usize implementation
  ******************************************************/
 
 
-/// Indicate that uint fits all requirements for being a matrix element.
-impl Number for uint {
+/// Indicate that usize fits all requirements for being a matrix element.
+impl Number for usize {
     
     
     #[inline]
@@ -352,9 +352,9 @@ impl<A: Number + PartialOrd + One + ToPrimitive> Iterator<A> for NumRange<A> {
     }
 
     #[inline]
-    fn size_hint(&self) -> (uint, Option<uint>) {
+    fn size_hint(&self) -> (usize, Option<usize>) {
         // This first checks if the elements are representable as i64. If they aren't, try u64 (to
-        // handle cases like range(huge, huger)). We don't use uint/int because the difference of
+        // handle cases like range(huge, huger)). We don't use usize/int because the difference of
         // the i64/u64 might lie within their range.
         let bound = match self.state.to_i64() {
             Some(a) => {

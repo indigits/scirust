@@ -19,16 +19,16 @@ impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
     /// This is the row relative to the start of the view.
     #[inline]
     fn ero_scale_add(&mut self, 
-        i :  uint, 
-        j :  int, 
+        i :  usize, 
+        j :  isize, 
         scale : T
         )-> &mut MatrixView<'a, T> {
         debug_assert! (i  < self.num_rows());
         let m = self.matrix();
         // Compute j-th row in m (by doing offset)
-        let j = j + (self.start_row() as int);
+        let j = j + (self.start_row() as isize);
         debug_assert! (j  >= 0);
-        let j = j as uint;
+        let j = j as usize;
         debug_assert!(j < m.num_rows());
         let ptr = m.as_ptr();
         // I am allowing modification of the underlying buffer
@@ -37,8 +37,8 @@ impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
         // Compute initial offsets
         let mut offset_a = self.cell_to_offset(i, 0);
         let mut offset_b = m.cell_to_offset(j, sc);
-        let stride_a = self.stride() as int;
-        let stride_b = m.stride() as int;
+        let stride_a = self.stride() as isize;
+        let stride_b = m.stride() as isize;
         for _ in range(0, self.num_cols()){
             unsafe {
                 let va = *ptr.offset(offset_a);
@@ -61,16 +61,16 @@ impl<'a, T:Number> ECO<T> for MatrixView<'a, T> {
     /// This is the column relative to the start of the view.
     #[inline]
     fn eco_scale_add(&mut self, 
-        i :  uint, 
-        j :  int, 
+        i :  usize, 
+        j :  isize, 
         scale : T
         )-> &mut MatrixView<'a, T> {
         debug_assert! (i  < self.num_cols());
         let m = self.matrix();
         // Compute j-th column in m (by doing offset)
-        let j = j + (self.start_col() as int);
+        let j = j + (self.start_col() as isize);
         debug_assert! (j  >= 0);
-        let j = j as uint;
+        let j = j as usize;
         debug_assert!(j < m.num_cols());
         let ptr = m.as_ptr();
         // I am allowing modification of the underlying buffer

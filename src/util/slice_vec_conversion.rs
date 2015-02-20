@@ -18,7 +18,7 @@ impl SliceTypeConversions for RawSlice<int>{
         let mut result = Vec::new();
         let p = self.data;
         for i in range(0, self.len){
-            let v = unsafe {*p.offset(i as int)};
+            let v = unsafe {*p.offset(i as isize)};
             result.push(v as f64);
         }
         result
@@ -26,7 +26,7 @@ impl SliceTypeConversions for RawSlice<int>{
 }
 
 
-impl<'a> SliceTypeConversions for Items<'a, int> {
+impl<'a> SliceTypeConversions for Items<'a, isize> {
 
     fn as_f64_vector(&mut self) -> Vec<f64>{
         let mut result = Vec::new();

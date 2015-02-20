@@ -11,18 +11,18 @@ use matrix::traits::{Shape};
 pub trait Extraction<T:Number> : Shape<T>{
 
     /// Returns the r'th row vector
-    fn row(&self, r : int) -> Matrix<T>;
+    fn row(&self, r : isize) -> Matrix<T>;
 
     /// Returns the c'th column vector
-    fn col(&self, c : int) -> Matrix<T>;
+    fn col(&self, c : isize) -> Matrix<T>;
 
     /// Extract a submatrix from the matrix
     /// rows can easily repeat if the number of requested rows is higher than actual rows
     /// cols can easily repeat if the number of requested cols is higher than actual cols
-    fn sub_matrix(&self, start_row : int, 
-        start_col : int , 
-        num_rows: uint, 
-        num_cols : uint) -> Matrix<T>;
+    fn sub_matrix(&self, start_row : isize, 
+        start_col : isize , 
+        num_rows: usize, 
+        num_cols : usize) -> Matrix<T>;
 
     /// Returns the upper triangular part of the matrix
     fn ut_matrix(&self)->Matrix<T>;

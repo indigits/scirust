@@ -34,7 +34,7 @@ pub fn is_descending_slice<T : PartialOrd>(data : & [T]) -> bool {
 }
 
 /// Returns whether the data in buffer is sorted in ascending order or not.
-pub unsafe fn is_ascending_buffer<T : PartialOrd>(data : *const T, n : uint) -> bool {    
+pub unsafe fn is_ascending_buffer<T : PartialOrd>(data : *const T, n : usize) -> bool {    
     if n == 0 {
         return true;
     }
@@ -49,7 +49,7 @@ pub unsafe fn is_ascending_buffer<T : PartialOrd>(data : *const T, n : uint) -> 
 }
 
 /// Returns whether the data in buffer is sorted in descending order or not.
-pub unsafe fn is_descending_buffer<T : PartialOrd>(data : *const T, n : uint) -> bool {    
+pub unsafe fn is_descending_buffer<T : PartialOrd>(data : *const T, n : usize) -> bool {    
     if n == 0 {
         return true;
     }
@@ -68,13 +68,13 @@ pub unsafe fn is_descending_buffer<T : PartialOrd>(data : *const T, n : uint) ->
 /// every stride-th entry is considered in the buffer
 /// assumes that the buffer as at least n* stride entries
 pub unsafe fn is_ascending_buffer_strided<T : PartialOrd>(data : *const T, 
-    n : uint, 
-    stride : uint) -> bool {    
+    n : usize, 
+    stride : usize) -> bool {    
     if n == 0 {
         return true;
     }
     let mut ptr = data;
-    let stride = stride as int;
+    let stride = stride as isize;
     for _ in range(0, n-1){
         if *ptr > *ptr.offset(stride){
             return false;
@@ -88,13 +88,13 @@ pub unsafe fn is_ascending_buffer_strided<T : PartialOrd>(data : *const T,
 /// every stride-th entry is considered in the buffer
 /// assumes that the buffer as at least n* stride entries
 pub unsafe fn is_descending_buffer_strided<T : PartialOrd>(data : *const T, 
-    n : uint, 
-    stride : uint) -> bool {    
+    n : usize, 
+    stride : usize) -> bool {    
     if n == 0 {
         return true;
     }
     let mut ptr = data;
-    let stride = stride as int;
+    let stride = stride as isize;
     for _ in range(0, n-1){
         if *ptr < *ptr.offset(stride){
             return false;
@@ -239,14 +239,14 @@ mod bench{
     }
     #[bench]
     fn bench_is_descending_slice(b: &mut Bencher){
-        let v = Vec::from_fn(10000, |idx| -(idx as int) * 2i);        
+        let v = Vec::from_fn(10000, |idx| -(idx as isize) * 2i);        
         b.iter(|| {
             assert!(is_descending_slice(v.as_slice()));
                 });
     }
     #[bench]
     fn bench_is_descending_buffer(b: &mut Bencher){
-        let v = Vec::from_fn(10000, |idx| -(idx as int) * 2i);        
+        let v = Vec::from_fn(10000, |idx| -(idx as isize) * 2i);        
         b.iter(|| unsafe {
             assert!(is_descending_buffer(v.as_ptr(), v.len()));
                 });

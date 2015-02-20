@@ -8,7 +8,7 @@ use matrix::traits::*;
 
 
 /// Generate a random matrix of uniformly distributed numbers
-pub fn rand_std_normal(rows: uint, cols : uint)-> MatrixF64 {
+pub fn rand_std_normal(rows: usize, cols : usize)-> MatrixF64 {
     let mut m : Matrix<f64> = Matrix::new(rows, cols);
     let mut rng = rand::task_rng();
     for c in range(0, cols){

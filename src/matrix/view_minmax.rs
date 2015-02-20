@@ -11,7 +11,7 @@ use number::Signed;
 impl <'a, T:Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
 
     // Returns the absolute minimum scalar value
-    fn min_abs_scalar(&self) -> (T, uint, uint){
+    fn min_abs_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
@@ -35,7 +35,7 @@ impl <'a, T:Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
     }
 
     // Returns the maximum scalar value
-    fn max_abs_scalar(&self) -> (T, uint, uint){
+    fn max_abs_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }

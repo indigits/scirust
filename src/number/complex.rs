@@ -101,7 +101,7 @@ impl<T: Number + FloatMath + Zero> Complex<T> {
     pub fn to_polar(&self) -> (T, T) {
         (self.norm(), self.arg())
     }
-    /// Convert a polar representation into a complex number.
+    /// Convert a polar representation isizeo a complex number.
     #[inline]
     pub fn from_polar(r: &T, theta: &T) -> Complex<T> {
         Complex::new(*r * theta.cos(), *r * theta.sin())
