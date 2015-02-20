@@ -4,6 +4,8 @@
 // std imports
 use std::num;
 use std::num::Int;
+use std::num::FromPrimitive;
+use std::num::ToPrimitive;
 
 // local imports
 use number::Number;

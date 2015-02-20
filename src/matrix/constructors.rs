@@ -4,6 +4,8 @@
 // std imports
 use std::num::Int;
 use std::num::UnsignedInt;
+use std::num::FromPrimitive;
+use std::num::ToPrimitive;
 
 
 // local imports
@@ -233,7 +235,7 @@ pub fn from_range_cw_u64(rows : usize, cols : usize,
 
 #[inline]
 pub fn from_range_cw_uint(rows : usize, cols : usize, 
-    start : usize, stop : usize)->MatrixUInt {
+    start : usize, stop : usize)->MatrixUSize {
     from_range_cw(rows, cols, start, stop)
 }
 
@@ -385,7 +387,7 @@ picked up from a range in row wise order.
 "]
 #[inline]
 pub fn from_range_rw_uint(rows : usize, cols : usize, 
-    start : usize, stop : usize)->MatrixUInt {
+    start : usize, stop : usize)->MatrixUSize {
     from_range_rw(rows, cols, start, stop)
 }
 
@@ -612,7 +614,7 @@ pub fn col_vector<T:Number>(values: &[T])-> Matrix<T> {
 #[doc="Returns a column vector with entries from an iterator.
 "]
 #[inline]
-pub fn col_vector_from_iter<T:Number, A : Iterator<T>>(
+pub fn col_vector_from_iter<T:Number, A : Iterator >(
     values: A,
     len : usize)-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_rw(len, 1, values);

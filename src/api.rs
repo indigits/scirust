@@ -7,9 +7,9 @@ pub use error::SRError;
 pub use matrix::*;
 pub use matrix::traits::*;
 pub use matrix::matrix::*;
-pub use matrix::constructors::*;
+//pub use matrix::constructors::*;
 pub use matrix::view::*;
-pub use matrix::eo::eo_traits::*;
+//pub use matrix::eo::eo_traits::*;
 // pub use super::number::*;
 // pub use super::error::SRError;
 // pub use self::constructors::*;
@@ -37,5 +37,5 @@ pub use linalg::rank::*;
 
 // Statistics library
 pub use stat::*;
-pub use stat::moments::*;
+//pub use stat::moments::*;
 

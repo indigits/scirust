@@ -4,7 +4,7 @@ of numbers from one type to another
 
 // std imports
 pub use std::raw::Slice as RawSlice;
-use std::slice::Items;
+use std::slice::Iter;
 
 pub trait SliceTypeConversions{
 
@@ -26,7 +26,7 @@ impl SliceTypeConversions for RawSlice<int>{
 }
 
 
-impl<'a> SliceTypeConversions for Items<'a, isize> {
+impl<'a> SliceTypeConversions for Iter<'a, isize> {
 
     fn as_f64_vector(&mut self) -> Vec<f64>{
         let mut result = Vec::new();

@@ -5,6 +5,8 @@
 use std::mem;
 use std::ptr;
 use std::ops;
+use std::ops::Neg;
+use std::ops::Index;
 use std::cmp;
 use std::fmt;
 use std::num::{Int, Float};
@@ -258,7 +260,7 @@ by hand.
         mat
     }
 
-    pub fn from_iter_cw< A : Iterator<T>>(rows: usize, cols : usize, mut iter: A) -> Matrix<T>{
+    pub fn from_iter_cw< A : Iterator>(rows: usize, cols : usize, mut iter: A) -> Matrix<T>{
         let mut mat : Matrix<T> = Matrix::new(rows, cols);
         let stride = mat.stride();
         // get a mutable slice from m
@@ -304,7 +306,7 @@ by hand.
 
     /// Builds a matrix from an iterator reading numbers in a 
     /// row-wise order
-    pub fn from_iter_rw< A : Iterator<T>>(rows: usize, cols : usize, 
+    pub fn from_iter_rw< A : Iterator>(rows: usize, cols : usize, 
         mut iter: A) -> Matrix<T>{
         let m : Matrix<T> = Matrix::new(rows, cols);
         let ptr = m.ptr;
@@ -829,7 +831,7 @@ impl<T:Number> Matrix<T> {
 
 }
 
-impl<T:Number+Neg<T>> Matrix<T> {
+impl<T:Number+Neg> Matrix<T> {
     /// Computes the unary minus of a matrix
     pub fn unary_minus(&self)-> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.cols, self.rows);
@@ -1289,7 +1291,7 @@ impl<T:Number+Float> Matrix<T> {
 
 
 
-impl<T:Number> Index<usize,T> for Matrix<T> {
+impl<T:Number> Index<T> for Matrix<T> {
     #[inline]
     fn index<'a>(&'a self, index: &usize) -> &'a T {
         // The matrix is column major order
@@ -1373,7 +1375,7 @@ impl <T:Number> fmt::Show for Matrix<T> {
 }
 
 /// Matrix addition support
-impl<T:Number> ops::Add<Matrix<T>, Matrix<T>> for Matrix<T> {
+impl<T:Number> ops::Add<Matrix<T>> for Matrix<T> {
     fn add(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
@@ -1396,7 +1398,7 @@ impl<T:Number> ops::Add<Matrix<T>, Matrix<T>> for Matrix<T> {
 
 
 /// Matrix subtraction support
-impl<T:Number> ops::Sub<Matrix<T>, Matrix<T>> for Matrix<T>{
+impl<T:Number> ops::Sub<Matrix<T>> for Matrix<T>{
     fn sub(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){

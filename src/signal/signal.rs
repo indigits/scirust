@@ -5,7 +5,7 @@
 
 
 // local imports
-use number::{One, Zero};
+use number::{One, Zero, Number};
 //use number::*;
 use matrix::matrix::{Matrix, MatrixF64};
 
@@ -22,7 +22,7 @@ impl <T:Number> Impulse<T> {
     }
 }
 
-impl <T:Number> Iterator<T> for Impulse<T> {
+impl <T:Number> Iterator for Impulse<T> {
     fn next(&mut self) -> Option<T> {
         let v : T = if self.index == self.location {
             One::one()
