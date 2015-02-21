@@ -7,12 +7,12 @@ use std::num::SignedInt;
 
 
 #[inline]
-pub fn mod_n (x : int, n : int) -> uint {
+pub fn mod_n (x : i64, n : i64) -> u64 {
     let x = x % n;
     if x < 0{
-        (x + n.abs()) as uint
+        (x + n.abs()) as u64
     }else{
-        x as uint
+        x as u64
     }
 }
 

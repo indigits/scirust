@@ -62,17 +62,6 @@ impl Zero for i64{
     }
 }
 
-impl Zero for int{
-    #[inline]
-    fn zero() -> int{
-        0
-    }
-
-    #[inline]
-    fn is_zero(&self) -> bool{
-        *self == 0
-    }
-}
 
 impl Zero for u8{
     #[inline]
@@ -113,18 +102,6 @@ impl Zero for u32{
 impl Zero for u64{
     #[inline]
     fn zero() -> u64{
-        0
-    }
-
-    #[inline]
-    fn is_zero(&self) -> bool{
-        *self == 0
-    }
-}
-
-impl Zero for uint{
-    #[inline]
-    fn zero() -> uint{
         0
     }
 

@@ -9,6 +9,11 @@ readme="./README.md"
 keywords=["math", "linear-algebra", "statistics", "matrix"]
 license="Apache-2.0"
 
+
+[dependencies]
+log = "0.2.4"
+
+
 [[bin]]
 
 name = "scirust_main"

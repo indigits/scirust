@@ -18,10 +18,10 @@ use number::one::One;
 pub trait Number : Entry
     + Clone
     + Copy
-    + Add<Self>
-    + Sub<Self> 
-    + Mul<Self> 
-    + Div<Self>
+    + Add<Output=Self>
+    + Sub<Output=Self> 
+    + Mul<Output=Self> 
+    + Div<Output=Self>
     + PartialEq
     + One
     + Zero{
@@ -43,18 +43,17 @@ pub trait Number : Entry
 
     fn is_signed(&self) -> bool;
 
-    fn power(&self, n : uint)-> Self{
+    fn power(&self, n : usize)-> Self{
         if n == 0 {
             return One::one();
         }
         let mut result = *self;
-        for _ in range(0, n - 1){
-            result = result.mul(self);
+        for _ in 0..(n - 1){
+            result = self.mul(result);
         }
         result
     }
 }
-
 
 
 
@@ -141,26 +140,6 @@ impl Number for i64 {
 
 }
 
- 
-/******************************************************
- *      int implementation
- ******************************************************/
-
-/// Indicate that int fits all requirements for being a matrix element.
-impl Number for int {
-    
-    
-    #[inline]
-    fn is_signed(&self) -> bool {
-        true
-    }
-
-    #[inline]
-    fn is_int(&self) -> bool {
-        true
-    }
-
-}
 
 
 /******************************************************
@@ -248,26 +227,6 @@ impl Number for u64 {
 
 }
 
-/******************************************************
- *      uint implementation
- ******************************************************/
-
-
-/// Indicate that uint fits all requirements for being a matrix element.
-impl Number for uint {
-    
-    
-    #[inline]
-    fn is_signed(&self) -> bool {
-        false
-    }
-
-    #[inline]
-    fn is_int(&self) -> bool {
-        true
-    }
-
-}
 
 
 /******************************************************
@@ -326,7 +285,7 @@ pub fn describe<T: Number>(z : T){
  *******************************************************/
 
 /// An iterator over the range [start, stop)
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct NumRange<A> {
     state: A,
     stop: A,
@@ -342,6 +301,7 @@ pub fn num_range<A: Number + PartialOrd + One>(start: A, stop: A) -> NumRange<A>
 }
 
 impl<A: Number + PartialOrd + One + ToPrimitive> Iterator for NumRange<A> {
+    type Item = A;
     #[inline]
     fn next(&mut self) -> Option<A> {
         if self.state < self.stop {
@@ -354,7 +314,7 @@ impl<A: Number + PartialOrd + One + ToPrimitive> Iterator for NumRange<A> {
     }
 
     #[inline]
-    fn size_hint(&self) -> (uint, Option<uint>) {
+    fn size_hint(&self) -> (usize, Option<usize>) {
         // This first checks if the elements are representable as i64. If they aren't, try u64 (to
         // handle cases like range(huge, huger)). We don't use uint/int because the difference of
         // the i64/u64 might lie within their range.

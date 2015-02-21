@@ -1,7 +1,7 @@
-#![feature(globs)]
 extern crate scirust;
 #[cfg(not(test))]
 fn main(){
+    /*
     use scirust::api::*;
     let a = matrix_cw_f64(2,2, [1., 4., 2., 8.].as_slice());
     println!("{}", a);
@@ -13,4 +13,5 @@ fn main(){
     }
     let m = matrix_cw_c64(2,2, [].as_slice());
     println!("{}", m);
+    */
 }

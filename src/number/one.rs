@@ -47,13 +47,6 @@ impl One for i64{
     }
 }
 
-impl One for int{
-
-    #[inline]
-    fn one() -> int {
-        1
-    }
-}
 
 impl One for u8{
 
@@ -83,14 +76,6 @@ impl One for u64{
 
     #[inline]
     fn one() -> u64 {
-        1
-    }
-}
-
-impl One for uint{
-
-    #[inline]
-    fn one() -> uint {
         1
     }
 }

@@ -31,17 +31,17 @@ impl Signed for i8 {
 
     #[inline]
     fn signum(&self) -> i8{
-        self.signum()
+        SignedInt::signum(*self)
     }
     
     #[inline]
     fn is_positive(&self) -> bool{
-        self.is_positive()
+        SignedInt::is_positive(*self)
     }
     
     #[inline]
     fn is_negative(&self) -> bool{
-        self.is_negative()
+        SignedInt::is_negative(*self)
     }
 }
 
@@ -55,17 +55,17 @@ impl Signed for i16 {
     
     #[inline]
     fn signum(&self) -> i16{
-        self.signum()
+        SignedInt::signum(*self)
     }
     
     #[inline]
     fn is_positive(&self) -> bool{
-        self.is_positive()
+        SignedInt::is_positive(*self)
     }
     
     #[inline]
     fn is_negative(&self) -> bool{
-        self.is_negative()
+        SignedInt::is_negative(*self)
     }
 }
 
@@ -78,17 +78,17 @@ impl Signed for i32 {
     
     #[inline]
     fn signum(&self) -> i32{
-        self.signum()
+        SignedInt::signum(*self)
     }
     
     #[inline]
     fn is_positive(&self) -> bool{
-        self.is_positive()
+        SignedInt::is_positive(*self)
     }
     
     #[inline]
     fn is_negative(&self) -> bool{
-        self.is_negative()
+        SignedInt::is_negative(*self)
     }
 }
     
@@ -101,44 +101,19 @@ impl Signed for i64 {
     
     #[inline]
     fn signum(&self) -> i64{
-        self.signum()
+        SignedInt::signum(*self)
     }
     
     #[inline]
     fn is_positive(&self) -> bool{
-        self.is_positive()
+        SignedInt::is_positive(*self)
     }
     
     #[inline]
     fn is_negative(&self) -> bool{
-        self.is_negative()
+        SignedInt::is_negative(*self)
     }
-}
-   
-
-impl Signed for int {
-
-    #[inline]
-    fn abs_val(&self) -> int{
-        self.abs()
-    }
-    
-    #[inline]
-    fn signum(&self) -> int{
-        self.signum()
-    }
-    
-    #[inline]
-    fn is_positive(&self) -> bool{
-        self.is_positive()
-    }
-    
-    #[inline]
-    fn is_negative(&self) -> bool{
-        self.is_negative()
-    }
-}
-    
+}  
 
 impl Signed for f32 {
 
@@ -149,17 +124,17 @@ impl Signed for f32 {
     
     #[inline]
     fn signum(&self) -> f32{
-        self.signum()
+        Float::signum(*self)
     }
     
     #[inline]
     fn is_positive(&self) -> bool{
-        self.is_positive()
+        Float::is_positive(*self)
     }
     
     #[inline]
     fn is_negative(&self) -> bool{
-        self.is_negative()
+        Float::is_negative(*self)
     }
 }
 
@@ -172,17 +147,17 @@ impl Signed for f64 {
     
     #[inline]
     fn signum(&self) -> f64{
-        self.signum()
+        Float::signum(*self)
     }
     
     #[inline]
     fn is_positive(&self) -> bool{
-        self.is_positive()
+        Float::is_positive(*self)
     }
     
     #[inline]
     fn is_negative(&self) -> bool{
-        self.is_negative()
+        Float::is_negative(*self)
     }
 }
 

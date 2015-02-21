@@ -63,7 +63,7 @@ impl<T:Number+Zero> Complex<T> {
 
 }
 
-impl<T:Number+Zero+Neg> Complex<T> {
+impl<T:Number+Zero+Neg<Output=T>> Complex<T> {
 
     /// Returns the complex conjugate. i.e. `re - i im`
     #[inline]
@@ -110,7 +110,8 @@ impl<T: Number + Float + Zero> Complex<T> {
 
 /* arithmetic */
 // (a + i b) + (c + i d) == (a + c) + i (b + d)
-impl<T:Number + Zero> Add<Complex<T>> for Complex<T> {
+impl<T:Number + Zero> Add for Complex<T> {
+    type Output=Self;
     #[inline]
     fn add(&self, other: &Complex<T>) -> Complex<T> {
         Complex::new(self.re + other.re, self.im + other.im)
