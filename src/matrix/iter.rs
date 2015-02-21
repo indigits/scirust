@@ -29,6 +29,7 @@ impl <T:Number> RowIterator<T> {
 }
 
 impl <T:Number> Iterator for RowIterator<T> {
+    type Item = T;
     fn next(&mut self) -> Option<T> {
         if self.cols == self.pos{
             // No more data
@@ -58,6 +59,7 @@ impl <T:Number> ColIterator<T> {
 
 
 impl <T:Number> Iterator for ColIterator<T> {
+    type Item = T;
     fn next(&mut self) -> Option<T> {
         if self.rows == self.pos{
             // No more data
@@ -92,6 +94,7 @@ impl <T:Number> CellIterator<T> {
 
 
 impl <T:Number> Iterator for CellIterator<T> {
+    type Item = T;
     fn next(&mut self) -> Option<T> {
         if self.cols == self.c{
             // No more data

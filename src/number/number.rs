@@ -53,6 +53,9 @@ pub trait Number : Entry
         }
         result
     }
+
+    /// Converts a number to string
+    fn to_str(&self) -> String;
 }
 
 
@@ -71,6 +74,10 @@ impl Number for i8 {
         true
     }
     
+    fn to_str(&self) -> String{
+         format!("{}", *self)
+    }
+
 }
 
 
@@ -94,6 +101,10 @@ impl Number for i16 {
         true
     }
 
+    fn to_str(&self) -> String{
+         format!("{}", *self)
+    }
+
 }
 
     
@@ -113,6 +124,10 @@ impl Number for i32 {
     #[inline]
     fn is_int(&self) -> bool {
         true
+    }
+
+    fn to_str(&self) -> String{
+         format!("{}", *self)
     }
 
 }
@@ -138,6 +153,10 @@ impl Number for i64 {
         true
     }
 
+    fn to_str(&self) -> String{
+         format!("{}", *self)
+    }
+
 }
 
 
@@ -161,6 +180,10 @@ impl Number for u8 {
         true
     }
 
+    fn to_str(&self) -> String{
+         format!("{}", *self)
+    }
+
 }
 
 /******************************************************
@@ -182,6 +205,10 @@ impl Number for u16 {
         true
     }
 
+    fn to_str(&self) -> String{
+         format!("{}", *self)
+    }
+
 }
 
 /******************************************************
@@ -201,6 +228,10 @@ impl Number for u32 {
     #[inline]
     fn is_int(&self) -> bool {
         true
+    }
+
+    fn to_str(&self) -> String{
+         format!("{}", *self)
     }
 
 }
@@ -225,6 +256,10 @@ impl Number for u64 {
         true
     }
 
+    fn to_str(&self) -> String{
+         format!("{}", *self)
+    }
+
 }
 
 
@@ -247,6 +282,10 @@ impl Number for f32 {
         true
     }
 
+    fn to_str(&self) -> String{
+         format!("{}", *self)
+    }
+
 }
 
 
@@ -267,6 +306,10 @@ impl Number for f64 {
     #[inline]
     fn is_float(&self) -> bool {
         true
+    }
+
+    fn to_str(&self) -> String{
+         format!("{}", *self)
     }
 
 }

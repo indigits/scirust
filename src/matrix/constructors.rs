@@ -11,16 +11,14 @@ use std::num::{ToPrimitive};
 use matrix::matrix::{Matrix, 
     MatrixI8, MatrixI16, MatrixI32, MatrixI64,
     MatrixU8, MatrixU16, MatrixU32, MatrixU64,
-    MatrixUInt,
-    MatrixF32, MatrixF64,
-    MatrixC32, MatrixC64};
+    MatrixF32, MatrixF64};
 use matrix::traits::{Shape};
 use error::SRError;
 use number::{One, Zero};
 use number::{Number, num_range};
 
 // complex numbers
-use number::{Complex32, Complex64};
+//use number::{Complex32, Complex64};
 
 
 #[doc="Returns a Hadamard matrix of size n x n
@@ -232,12 +230,6 @@ pub fn from_range_cw_u64(rows : uint, cols : uint,
     from_range_cw(rows, cols, start, stop)
 }
 
-#[inline]
-pub fn from_range_cw_uint(rows : uint, cols : uint, 
-    start : uint, stop : uint)->MatrixUInt {
-    from_range_cw(rows, cols, start, stop)
-}
-
 
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -381,16 +373,6 @@ pub fn from_range_rw_f32(rows : uint, cols : uint,
 
 
 
-#[doc="Returns a unsigned int matrix whose entries are
-picked up from a range in row wise order.
-"]
-#[inline]
-pub fn from_range_rw_uint(rows : uint, cols : uint, 
-    start : uint, stop : uint)->MatrixUInt {
-    from_range_rw(rows, cols, start, stop)
-}
-
-
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -480,6 +462,7 @@ pub fn matrix_cw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
 }
 
 
+/*
 #[doc="Returns a 32-bit complex matrix whose entries are
 picked up from a slice in column wise order.
 "]
@@ -496,7 +479,7 @@ picked up from a slice in column wise order.
 pub fn matrix_cw_c64(rows : uint, cols : uint, values: &[Complex64])->MatrixC64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
-
+*/
 
 #[doc="Returns an 8-bit unsigned integer matrix whose entries are
 picked up from a slice in row wise order.
@@ -579,6 +562,7 @@ pub fn matrix_rw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
+/*
 #[doc="Returns a 32-bit complex matrix whose entries are
 picked up from a slice in row wise order.
 "]
@@ -595,6 +579,7 @@ picked up from a slice in row wise order.
 pub fn matrix_rw_c64(rows : uint, cols : uint, values: &[Complex64])->MatrixC64 {
     Matrix::from_slice_rw(rows, cols, values)
 }
+*/
 
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -613,7 +598,7 @@ pub fn col_vector<T:Number>(values: &[T])-> Matrix<T> {
 #[doc="Returns a column vector with entries from an iterator.
 "]
 #[inline]
-pub fn col_vector_from_iter<T:Number, A : Iterator>(
+pub fn col_vector_from_iter<T:Number, A : Iterator<Item=T>>(
     values: A,
     len : uint)-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_rw(len, 1, values);

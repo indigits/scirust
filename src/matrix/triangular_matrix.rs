@@ -21,8 +21,8 @@ use matrix::traits::{Shape, NumberMatrix,
 
 
 // complex numbers
-use number::Complex32;
-use number::Complex64;
+//use number::Complex32;
+//use number::Complex64;
 
 use util;
 use discrete::mod_n;
@@ -86,9 +86,9 @@ pub type TriangularMatrixF32 = TriangularMatrix<f32>;
 /// A matrix of 64-bit floating point numbers.
 pub type TriangularMatrixF64 = TriangularMatrix<f64>;
 /// A matrix of 32-bit complex numbers numbers.
-pub type TriangularMatrixC32 = TriangularMatrix<Complex32>;
+//pub type TriangularMatrixC32 = TriangularMatrix<Complex32>;
 /// A matrix of 64-bit complex numbers numbers.
-pub type TriangularMatrixC64 = TriangularMatrix<Complex64>;
+//pub type TriangularMatrixC64 = TriangularMatrix<Complex64>;
 
 
 /// Static functions for creating  a triangular matrix
@@ -501,7 +501,7 @@ impl <T:Number> Extraction<T> for TriangularMatrix<T> {
 
 
 /// Formatting of the triangular matrix on screen
-impl <T:Number> fmt::Show for TriangularMatrix<T> {
+impl <T:Number> fmt::Debug for TriangularMatrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // We need to find out the number of characters needed
         // to show each value.

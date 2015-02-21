@@ -1,5 +1,10 @@
 #![feature(collections)]
 #![feature(core)]
+#![feature(int_uint)]
+#![feature(unsafe_destructor)]
+#![feature(alloc)]
+#![feature(std_misc)]
+#![feature(rand)]
 
 #![doc="A generics based scientific computing library for Rust
 
@@ -32,7 +37,7 @@ C libraries like BLAS or LAPACK.
 extern crate collections;
 //extern crate quickcheck_macros;
 //extern crate quickcheck;
-
+//extern crate rand;
 
 // Common modules
 pub mod error;
@@ -40,8 +45,8 @@ pub mod number;
 
 // Main libraries
 pub mod external;
-//pub mod discrete;
-//pub mod matrix;
+pub mod discrete;
+pub mod matrix;
 //pub mod linalg;
 // pub mod signal;
 // pub mod dx;
@@ -59,7 +64,7 @@ pub mod audio {
 }
 
 // for internal use only
-//pub mod util;
+pub mod util;
 //mod testdata;
 
 // Overall API of SciRust

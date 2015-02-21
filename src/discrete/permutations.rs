@@ -13,18 +13,19 @@ use matrix::traits::Shape;
 /// Tells whether a vector is a permutation or not.
 pub fn is_permutation<T:Number+Int>(vector : &Matrix<T>)-> bool{
     assert!(vector.is_vector());
-    let n = vector.num_cells();
+    let n: usize = vector.num_cells();
     let mut flags : MatrixU8 = Matrix::zeros(n, 1);
     for i in range(0, n){
         let v = vector[i];
-        let v = v.to_uint().unwrap();
-        if v >= n{
+        let v2 : u64 = v.to_u64().unwrap();
+        let v3 = v2 as usize;
+        if v2 >= (n  as u64) {
             return false;
         }
-        flags.set(v, 0, 1);
+        flags.set(v3, 0, 1);
     }
-    for i in range(0, n){
-        if flags[i] == 0 {
+    for v in flags.cell_iter(){
+        if v == 0u8 {
             return false;
         }
     }

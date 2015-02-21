@@ -297,7 +297,7 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
             for r in range (c+1, self.rows){
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
-                println!("r: {}, c: {}, v: {}", r, c, v);
+                //println!("r: {}, c: {}, v: {}", r, c, v);
                 if v != z {
                     return false;
                 }
@@ -444,8 +444,9 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
 
 
 /// View + View =  Matrix addition
-impl<'a, 'b, T:Number> ops::Add<Matrix<T>> for MatrixView<'a, T> {
-    fn add(&self, rhs: &MatrixView<T>) -> Matrix<T> {
+impl<'a, 'b, 'c, 'd, T:Number> ops::Add<&'b MatrixView<'d, T>> for &'a MatrixView<'c, T> {
+    type Output = Matrix<T>;
+    fn add(self, rhs: &'b MatrixView<T>) -> Matrix<T> {
         // Validate dimensions are same.
         if self.size() != rhs.size(){
             panic!(SRError::DimensionsMismatch.to_string());
@@ -469,7 +470,7 @@ impl<'a, 'b, T:Number> ops::Add<Matrix<T>> for MatrixView<'a, T> {
 }
 
 
-impl <'a, T:Number> fmt::Show for MatrixView<'a, T> {
+impl <'a, T:Number> fmt::Debug for MatrixView<'a, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let ptr = self.m.as_ptr();
         try!(write!(f, "["));

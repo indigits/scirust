@@ -28,7 +28,7 @@ impl <T:Number> VecIterator<T> {
 
 /// Implementation of iterator trait
 impl<T:Number> Iterator for VecIterator<T>{
-
+    type Item = T;
     /// Next element in the vector
     fn next(&mut self)->Option<T> {
         if self.pos == self.len {

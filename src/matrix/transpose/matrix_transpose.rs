@@ -245,8 +245,9 @@ pub fn multiply_transpose_simple<T:Number>(lhs : &Matrix<T>,
 
 
 /// Matrix multiplication support
-impl<T:Number> ops::Mul<Matrix<T>> for Matrix<T>{
-    fn mul(&self, rhs: &Matrix<T>) -> Matrix<T> {
+impl<'a, 'b, T:Number> ops::Mul<&'b Matrix<T>> for &'a Matrix<T>{
+    type Output = Matrix<T>;
+    fn mul(self, rhs: &Matrix<T>) -> Matrix<T> {
         let result = multiply_simple(self, rhs);
         match result {
             Ok(m) => m,

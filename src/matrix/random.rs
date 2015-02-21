@@ -6,7 +6,7 @@ use super::matrix::*;
 use matrix::traits::*;
 
 
-
+#[allow(deprecated)]
 /// Generate a random matrix of uniformly distributed numbers
 pub fn rand_std_normal(rows: uint, cols : uint)-> MatrixF64 {
     let mut m : Matrix<f64> = Matrix::new(rows, cols);
