@@ -2,30 +2,36 @@
 "]
 
 // std imports
-
+//use core::marker::PhantomData;
 
 // local imports
-use number::{One, Zero};
 use number::*;
 use matrix::matrix::{Matrix, MatrixF64};
 
-pub struct Impulse<T:Number>{
+pub struct Impulse<T:Number> {
     /// The location at which impulse will come
     location : uint,
     // Current iteration index
     index : uint,
+    #[allow(dead_code)]
+    dummy : T
 }
 
 impl <T:Number> Impulse<T> {
     pub fn new(location: uint) -> Impulse<T>{
-        Impulse{location : location, index : 0}
+        Impulse{location : location, index : 0, dummy : Zero::zero()}
+    }
+
+    pub fn one(&self) -> T {
+        One::one()
     }
 }
 
-impl <T:Number> Iterator<T> for Impulse<T> {
+impl <T:Number> Iterator for Impulse<T> {
+    type Item = T;
     fn next(&mut self) -> Option<T> {
         let v : T = if self.index == self.location {
-            One::one()
+            self.one()
         }
         else{
             Zero::zero()
