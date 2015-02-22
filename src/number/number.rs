@@ -403,7 +403,6 @@ mod tests {
 
     use super::*;
     use number::Zero;
-    use number::Complex64;
 
 
 
@@ -428,14 +427,14 @@ mod tests {
     }
 
 
-    #[test]
-    fn  test_introspection_c64(){
-       let z : Complex64 = Zero::zero();
-        describe(z);
-        assert!(z.is_signed());
-        assert!(!z.is_float());
-        assert!(z.is_complex());
-        assert!(!z.is_int());
-    }
+    // #[test]
+    // fn  test_introspection_c64(){
+    //    let z : Complex64 = Zero::zero();
+    //     describe(z);
+    //     assert!(z.is_signed());
+    //     assert!(!z.is_float());
+    //     assert!(z.is_complex());
+    //     assert!(!z.is_int());
+    // }
 
 }

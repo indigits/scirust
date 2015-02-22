@@ -758,9 +758,7 @@ pub fn ero_scale_add<T:Number>(n : uint,
 
 #[cfg(test)]
 mod test{
-    use super::*;
-    use matrix::traits::*;
-    use matrix::eo::eo_traits::*;
+    use api::*;
 
     #[test]
     fn test_hadamard(){
@@ -1080,15 +1078,15 @@ mod test{
             12., 13., 14., 15.].as_slice());
         // Carry out transformation through multiplying
         // elementary matrices 
-        let m2 = eswitch * m;
-        let m3 = escale * m2;
+        let m2 = &eswitch * &m;
+        let m3 = &escale * &m2;
         // Do ERO operations directly.
         m.ero_switch(1, 3);
         m.ero_scale(2, 2.0);
-        println!("eswitch: {}", eswitch);
-        println!("escale: {}", escale);
-        println!("m2: {}", m2);
-        println!("m3: {}", m3);
+        println!("eswitch: {:?}", eswitch);
+        println!("escale: {:?}", escale);
+        println!("m2: {:?}", m2);
+        println!("m3: {:?}", m3);
         assert_eq!(m3, m);
     }
 
@@ -1100,9 +1098,9 @@ mod test{
             8., 9., 10., 11.,
             12., 13., 14., 15.].as_slice());
         let esa : MatrixF64 = ero_scale_add(4, 1, 2, 3.0);
-        println!("esa: {}", esa);
-        let m2 = esa * m;
-        println!("m2: {}", m2);
+        println!("esa: {:?}", esa);
+        let m2 = &esa * &m;
+        println!("m2: {:?}", m2);
         m.ero_scale_add(1, 2, 3.);
         assert_eq!(m2, m);
     }

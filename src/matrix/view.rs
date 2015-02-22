@@ -498,10 +498,7 @@ impl <'a, T:Number> fmt::Debug for MatrixView<'a, T> {
 
 #[cfg(test)]
 mod test{
-    use matrix::traits::*;
-    use matrix::eo::eo_traits::*;
-    use matrix::matrix::*;
-    use matrix::constructors::*;
+    use api::*;
 
     #[test]
     fn test_basic(){

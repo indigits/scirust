@@ -458,9 +458,7 @@ impl<T:Number> CopyUpdates<T> for Matrix<T> {
 #[cfg(test)]
 mod test{
 
-    use matrix::constructors::*;
-    use matrix::update::traits::*;
-    use matrix::traits::*;
+    use api::*;
 
     #[test]
     fn test_set_diag(){

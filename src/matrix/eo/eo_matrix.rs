@@ -25,9 +25,8 @@ impl<T:Number> ECO<T> for Matrix<T> {
 
 #[cfg(test)]
 mod test{
-    use matrix::eo::eo_traits::*;
-    use matrix::constructors::*;
-    use matrix::traits::*;
+    use api::*;
+
     #[test]
     fn test_row_switch(){
         let mut m1 : MatrixI64 = Matrix::from_slice_cw(3, 3, vec![2, 3, 9, 2, 1, 7, 4, 2, 6].as_slice());
