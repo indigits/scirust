@@ -2046,14 +2046,14 @@ mod test {
     #[test]
     fn test_row_col_iter(){
         let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, range(10, 30));
-        let mut r = m.row_iter(0);
+        let r = m.row_iter(0);
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![10, 14, 18, 22, 26]);
-        let mut r = m.col_iter(2);
+        let r = m.col_iter(2);
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![18, 19, 20, 21]);
         let m  : MatrixI64 = Matrix::from_iter_cw(3, 2, range(10, 30));
-        let mut r = m.cell_iter();
+        let r = m.cell_iter();
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![10, 11, 12, 13, 14, 15]);
     }

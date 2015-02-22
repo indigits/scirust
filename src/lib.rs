@@ -4,6 +4,8 @@
 #![feature(unsafe_destructor)]
 #![feature(alloc)]
 #![feature(std_misc)]
+#![feature(test)]
+#![allow(unused_features)]
 
 #![doc="A generics based scientific computing library for Rust
 

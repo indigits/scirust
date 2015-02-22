@@ -1,7 +1,7 @@
 [package]
 
 name = "scirust"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Shailesh Kumar <shailesh@indigits.com>"]
 description="A scientific computing library"
 documentation="http://www.rust-ci.org/indigits/scirust/doc/scirust/"
