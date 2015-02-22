@@ -33,6 +33,5 @@ pub use linalg::rank::*;
 
 
 // Statistics library
-//pub use stat::*;
-//pub use stat::moments::*;
+pub use stat::moments::matrix_moments::*;
 

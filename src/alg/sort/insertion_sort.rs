@@ -97,12 +97,12 @@ mod bench{
     extern crate test;
     use self::test::Bencher;
     use super::*;
-    use std::rand;
-    use std::rand::Rng;
+    use rand;
+    use rand::Rng;
 
     #[bench]
     fn bench_insertion_sort_slice_reverse_data(b: &mut Bencher){
-        let mut v = Vec::from_fn(10000, |idx| (20000 - idx));        
+        let mut v = (0..10000).map(|idx| (20000 - idx)).collect::<Vec<i32>>();
         b.iter(|| {
             insertion_sort_slice(v.as_mut_slice());
         });
@@ -111,7 +111,7 @@ mod bench{
     #[bench]
     fn bench_insertion_sort_slice_random_data(b: &mut Bencher){
         // create a task-local Random Number Generator
-        let mut rng = rand::task_rng();
+        let mut rng = rand::thread_rng();
         let mut v: Vec<uint> = rng.gen_iter::<uint>().take(10000).collect();
         b.iter(|| {
             insertion_sort_slice(v.as_mut_slice());
@@ -120,7 +120,7 @@ mod bench{
 
     #[bench]
     fn bench_insertion_sort_buffer_reverse_data(b: &mut Bencher){
-        let mut v = Vec::from_fn(10000, |idx| (20000 - idx));        
+        let mut v = (0..10000).map(|idx| (20000 - idx)).collect::<Vec<i32>>();
         b.iter(|| {
             unsafe {
                 insertion_sort_buffer(v.as_mut_ptr(), v.len());

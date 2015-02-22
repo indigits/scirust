@@ -400,11 +400,12 @@ mod test{
             4., 5., 6.,
             7., 8., 9.]);
         let s = m.mean_sqr_rw();
-        let d = s - matrix_cw_f32(4,1, &[14./3., 
+        let m2 = matrix_cw_f32(4,1, &[14./3., 
             77. / 3., 
             77. / 3., 
             194.0 / 3.0
             ]);
+        let d = &s - &m2; 
         println!("{:e}", d.max_abs_scalar_value());
         assert!(d.max_abs_scalar_value() < 1e-5);
         // for 64-bit floating point, we can be more accurate.
@@ -423,7 +424,7 @@ mod test{
             6. , 
             6.
             ]);
-        let d = s - e;
+        let d = &s - &e;
         println!("{}", s);
         println!("{:e}", d.max_abs_scalar_value());
         assert!(d.max_abs_scalar_value() < 1e-12);
@@ -441,7 +442,7 @@ mod test{
         let s = m.var_rw();
         let e = matrix_cw_f32(4,1, &[1., 1., 1., 1.]);
         println!("{}", s);
-        let d = s - e;
+        let d = &s - &e;
         println!("{:e}", d.max_abs_scalar_value());
         assert!(d.max_abs_scalar_value() < 1e-12);
         // for 64-bit floating point, we can be more accurate.
@@ -461,7 +462,7 @@ mod test{
             6., 6., 6.,
             6., 6., 6.]);
         println!("{}", s);
-        let d = s - e;
+        let d = &s - &e;
         println!("{:e}", d.max_abs_scalar_value());
         assert!(d.max_abs_scalar_value() < 1e-12);
         // for 64-bit floating point, we can be more accurate.
