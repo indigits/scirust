@@ -1644,7 +1644,7 @@ mod test {
 
     #[test]
     fn test_from_iter_cw0(){
-        for _ in range(0u, 100){
+        for _ in 0..100{
             let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(1, 20));
             let b: Vec<i64> = range(1, 17).collect();
             assert!(m.as_slice_() == b.as_slice());
@@ -1652,7 +1652,7 @@ mod test {
             assert_eq!(m.get(0, 0), 1);
             assert_eq!(m.get(2, 2), 11);
             let mut b: Vec<i64> = range(1, 16).collect();
-            for _ in range(0u, 17){
+            for _ in 0..17{
                 b.push(0);
             }
             assert_eq!(m.as_slice_(), b.as_slice());
@@ -1918,7 +1918,7 @@ mod test {
     #[test]
     fn test_diag_from_vector(){
         // repeat the same test a hundred times
-        for _ in range(0u, 100){
+        for _ in 0..100{
             let v  : MatrixI64 = Matrix::from_iter_cw(4, 1, range(20, 30));
             assert!(v.is_vector());
             let m = Matrix::diag_from_vec(&v);

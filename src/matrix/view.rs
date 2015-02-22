@@ -512,7 +512,7 @@ mod test{
     fn test_basic(){
         let m1 :  MatrixI64 = Matrix::from_iter_cw(10, 8, range(1, 100));
         let mut v1 = m1.view(2, 3, 4, 4);
-        assert_eq!(v1.size(), (4u, 4u));
+        assert_eq!(v1.size(), (4, 4));
         assert_eq!(v1.num_rows(), 4);
         assert_eq!(v1.num_cols(), 4);
         assert_eq!(v1.is_scalar(), false);

@@ -65,7 +65,7 @@ mod test{
     #[test]
     fn test_impulse_f64(){
         let mut gen = impulse_f64();
-        for i in range(0i, 100){
+        for i in 0..100{
             let v = gen.next().unwrap();
             println!("v[{}], {}", i, v);
             if i == 0 {

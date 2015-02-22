@@ -191,7 +191,7 @@ mod test{
 
     #[test]
     fn test_det_hilbert(){
-        let sizes = vec![1u, 2, 4, 8];
+        let sizes = vec![1, 2, 4, 8];
         let determinants = vec![1.0, 0.083333333333333, 
             1.653439153439264e-07, 2.737050310006999e-33];
         let threshold =  1e-10;
