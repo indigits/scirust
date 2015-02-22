@@ -1,7 +1,7 @@
 // library imports
-use std::rand;
-use std::rand::Rng;
-use std::rand::distributions::normal::{StandardNormal};
+use rand;
+use rand::Rng;
+use rand::distributions::normal::{StandardNormal};
 use super::matrix::*;
 use matrix::traits::*;
 

@@ -4,7 +4,6 @@
 #![feature(unsafe_destructor)]
 #![feature(alloc)]
 #![feature(std_misc)]
-#![feature(rand)]
 
 #![doc="A generics based scientific computing library for Rust
 
@@ -37,7 +36,7 @@ C libraries like BLAS or LAPACK.
 extern crate collections;
 //extern crate quickcheck_macros;
 //extern crate quickcheck;
-//extern crate rand;
+extern crate rand;
 
 // Common modules
 pub mod error;

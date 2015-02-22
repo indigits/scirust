@@ -17,6 +17,6 @@ pub mod entry;
 pub mod zero;
 pub mod one;
 pub mod signed;
-pub mod properties;
+//pub mod properties;
 
 //pub mod complex;
