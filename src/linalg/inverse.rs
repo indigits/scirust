@@ -40,7 +40,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
             let first = v.get(r, 0);
             v.ero_scale_add(r, 0, -first);
             // TODO: ignore 0 entries in k-th row of result
-            result.ero_scale_add(k + r, k as int, -first);
+            result.ero_scale_add(k + r, k as isize, -first);
         }
         //println!("a: {}", a);
         //println!("b: {}", result);
@@ -54,7 +54,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         // updating k-th column in a.
         for r in range(0, k){
             let factor = a.get(r, k);
-            result.ero_scale_add(r, k as int, -factor);
+            result.ero_scale_add(r, k as isize, -factor);
         }
         if k == 0 {
             break;
@@ -95,7 +95,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
             let first = v.get(0, c);
             v.eco_scale_add(c, 0, -first);
             // TODO: ignore 0 entries in k-th col of result
-            result.eco_scale_add(k + c, k as int, -first);
+            result.eco_scale_add(k + c, k as isize, -first);
         }
         //println!("a: {}", a);
         //println!("b: {}", result);
@@ -109,7 +109,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         // updating k-th row in a.
         for c in range(0, k){
             let factor = a.get(k, c);
-            result.eco_scale_add(c, k as int, -factor);
+            result.eco_scale_add(c, k as isize, -factor);
         }
         if k == 0 {
             break;
@@ -211,7 +211,7 @@ mod test{
 
             A suitable way to verify correctness is to 
             measure the maximum deviation of any entry
-            int the difference matrix below from identity. 
+            isize the difference matrix below from identity. 
             */
             let diff = &i  - &c;
             let max = diff.max_abs_scalar_value();

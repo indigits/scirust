@@ -40,15 +40,15 @@ pub fn transpose_simple<T:Number>(src: & Matrix<T>)->Matrix <T>{
     let mut result : Matrix<T> = Matrix::new(cols, rows);
     let mut psrc_col = src.as_ptr();
     let mut pdst_row = result.as_mut_ptr();
-    let src_stride = src.stride() as int;
-    let dst_stride = result.stride() as int;
+    let src_stride = src.stride() as isize;
+    let dst_stride = result.stride() as isize;
     for _ in range(0, cols){
         let mut psrc = psrc_col;
         let mut pdst = pdst_row;
         for _ in range(0, rows){
             unsafe {
                 *pdst = *psrc;
-                psrc = psrc.offset(1i);
+                psrc = psrc.offset(1);
                 pdst = pdst.offset(dst_stride);
             }
         }
@@ -56,7 +56,7 @@ pub fn transpose_simple<T:Number>(src: & Matrix<T>)->Matrix <T>{
             // Move to next column in source
             psrc_col = psrc_col.offset(src_stride);
             // Move to next row in destination
-            pdst_row = pdst_row.offset(1i);
+            pdst_row = pdst_row.offset(1);
         }
     }
     result
@@ -73,8 +73,8 @@ pub fn transpose_block<T:Number>(src: & Matrix<T>)->Matrix <T>{
     let mut result : Matrix<T> = Matrix::new(cols, rows);
     let psrc = src.as_ptr();
     let pdst = result.as_mut_ptr();
-    let src_stride = src.stride() as int;
-    let dst_stride = result.stride() as int;
+    let src_stride = src.stride() as isize;
+    let dst_stride = result.stride() as isize;
 
 
     for cc in range_step(0, cols, block_size){
@@ -98,14 +98,14 @@ pub fn transpose_block<T:Number>(src: & Matrix<T>)->Matrix <T>{
                     for _ in range(0, blk_rows){
                         *pdst_blk = *psrc_blk;
                         // next row in source
-                        psrc_blk = psrc_blk.offset(1i);
+                        psrc_blk = psrc_blk.offset(1);
                         // next column in destination
                         pdst_blk = pdst_blk.offset(dst_stride);
                     }
                     // Move to next column in source block
                     psrc_col = psrc_col.offset(src_stride);
                     // Move to next row in destination block
-                    pdst_row = pdst_row.offset(1i);
+                    pdst_row = pdst_row.offset(1);
                 }
             }
         }
@@ -132,7 +132,7 @@ impl <T:Number> Transpose<T> for Matrix<T> {
         let rows = self.num_rows();
         let mut result = Matrix::new(cols, cols);
         let ps = self.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let z : T = Zero::zero();
         // We take advantage of the fact that the gram matrix
         // is symmetric. 
@@ -140,14 +140,14 @@ impl <T:Number> Transpose<T> for Matrix<T> {
         for i in range(0, cols){
             for j in range(i, cols){
                 unsafe{
-                    let mut pi  = ps.offset((i as int)*stride);
-                    let mut pj  = ps.offset((j as int)*stride);
+                    let mut pi  = ps.offset((i as isize)*stride);
+                    let mut pj  = ps.offset((j as isize)*stride);
                     let mut sum = z;
                     for _ in range(0, rows){
                         sum = sum + *pi * *pj;
                         // Move the pointer ahead
-                        pi = pi.offset(1i);
-                        pj = pj.offset(1i);
+                        pi = pi.offset(1);
+                        pj = pj.offset(1);
                     }
                     result.set(i, j, sum);
                     if i != j {
@@ -231,8 +231,8 @@ pub fn multiply_transpose_simple<T:Number>(lhs : &Matrix<T>,
                     let term = *pl * *pr;
                     sum = sum + term;
                     // Move to next entry in column
-                    pl = pl.offset(1i);
-                    pr = pr.offset(1i);
+                    pl = pl.offset(1);
+                    pr = pr.offset(1);
                 }
                 // Write the inner product to destination
                 let dst_offset = result.cell_to_offset(r, c);
@@ -396,7 +396,7 @@ mod bench {
 
     }
 
-    static MULTIPLY_MATRIX_SIZE : uint = 512;
+    static MULTIPLY_MATRIX_SIZE : usize = 512;
 
     #[bench]
     fn bench_transpose_block_mult_mat_size(b: &mut Bencher){

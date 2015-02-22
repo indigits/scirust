@@ -233,10 +233,10 @@ impl LUDecomposition{
         for i in range(0, n){
             let index = pv.get(i, 0);
             if self.pre {
-                p.set(i, index as uint, 1.);
+                p.set(i, index as usize, 1.);
             }
             else{
-              p.set(index as uint, i, 1.);  
+              p.set(index as usize, i, 1.);  
             }
         }
         p

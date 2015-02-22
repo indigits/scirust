@@ -20,10 +20,10 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let rows = self.num_rows();
         let cols = self.num_cols();
         let pa = self.as_mut_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for _ in range(0, cols){
-            for r in range(0i, rows as int){
+            for r in 0..rows as isize{
                 unsafe {
                     let v = *pa.offset(offset + r);
                     *pa.offset(offset + r) = v + rhs;
@@ -38,10 +38,10 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let rows = self.num_rows();
         let cols = self.num_cols();
         let pa = self.as_mut_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for _ in range(0, cols){
-            for r in range(0i, rows as int){
+            for r in 0..rows as isize{
                 unsafe {
                     let v = *pa.offset(offset + r);
                     *pa.offset(offset + r) = v * rhs;
@@ -59,10 +59,10 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let rows = self.num_rows();
         let cols = self.num_cols();
         let pa = self.as_mut_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for _ in range(0, cols){
-            for r in range(0i, rows as int){
+            for r in 0..rows as isize{
                 unsafe {
                     let v = *pa.offset(offset + r);
                     *pa.offset(offset + r) = v / rhs;
@@ -74,9 +74,9 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
     }
 
 
-    fn scale_row_lt(&mut self, r :  uint, scale_factor : T)-> &mut Matrix<T>{
+    fn scale_row_lt(&mut self, r :  usize, scale_factor : T)-> &mut Matrix<T>{
         debug_assert!(r < self.num_rows());
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(r, 0);
         for _ in range(0, r + 1){
@@ -84,12 +84,12 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale_factor * v;
                 offset += stride;
-                debug_assert!(offset < self.capacity() as int);
+                debug_assert!(offset < self.capacity() as isize);
             }
         }
         self
     }
-    fn scale_col_lt(&mut self, c :  uint, scale_factor : T)-> &mut Matrix<T>{
+    fn scale_col_lt(&mut self, c :  usize, scale_factor : T)-> &mut Matrix<T>{
         debug_assert!(c < self.num_cols());
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(c, c);
@@ -102,9 +102,9 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         }
         self
     }
-    fn scale_row_ut(&mut self, r :  uint, scale_factor : T)-> &mut Matrix<T>{
+    fn scale_row_ut(&mut self, r :  usize, scale_factor : T)-> &mut Matrix<T>{
         debug_assert!(r < self.num_rows());
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(r, r);
         for _ in range(r, self.num_cols()){
@@ -116,7 +116,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         }
         self
     }
-    fn scale_col_ut(&mut self, c :  uint, scale_factor : T)-> &mut Matrix<T>{
+    fn scale_col_ut(&mut self, c :  usize, scale_factor : T)-> &mut Matrix<T>{
         debug_assert!(c < self.num_cols());
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(0, c);
@@ -160,10 +160,10 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let cols = self.num_cols();
         let pd = self.as_mut_ptr();
         let ps = vec.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for _ in range(0, cols){
-            for r in range(0i, rows as int){
+            for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
                     let v2 = *ps.offset(r);
@@ -186,11 +186,11 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let rows = self.num_rows();
         let pd = self.as_mut_ptr();
         let ps = vec.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for c in range(0, cols){
-            let v2 = unsafe{*ps.offset(c as int)};
-            for r in range(0i, rows as int){
+            let v2 = unsafe{*ps.offset(c as isize)};
+            for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
                     *pd.offset(offset + r) = v1  - v2;
@@ -212,10 +212,10 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let cols = self.num_cols();
         let pd = self.as_mut_ptr();
         let ps = vec.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for _ in range(0, cols){
-            for r in range(0i, rows as int){
+            for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
                     let v2 = *ps.offset(r);
@@ -238,11 +238,11 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let rows = self.num_rows();
         let pd = self.as_mut_ptr();
         let ps = vec.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for c in range(0, cols){
-            let v2 = unsafe{*ps.offset(c as int)};
-            for r in range(0i, rows as int){
+            let v2 = unsafe{*ps.offset(c as isize)};
+            for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
                     *pd.offset(offset + r) = v1  + v2;
@@ -264,10 +264,10 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let cols = self.num_cols();
         let pd = self.as_mut_ptr();
         let ps = vec.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for _ in range(0, cols){
-            for r in range(0i, rows as int){
+            for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
                     let v2 = *ps.offset(r);
@@ -290,11 +290,11 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let rows = self.num_rows();
         let pd = self.as_mut_ptr();
         let ps = vec.as_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = self.start_offset();
         for c in range(0, cols){
-            let v2 = unsafe{*ps.offset(c as int)};
-            for r in range(0i, rows as int){
+            let v2 = unsafe{*ps.offset(c as isize)};
+            for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
                     *pd.offset(offset + r) = v1  * v2;
@@ -309,14 +309,14 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
     fn ut_to_lt(&mut self)->&mut Matrix<T>{
         let p = self.smaller_dim();
         let ptr = self.as_mut_ptr();
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut psrc_col  =  ptr;
         unsafe{
             for c in range(1, p){
                 psrc_col = psrc_col.offset(stride);
-                let mut pdst_row = ptr.offset(c as int);
+                let mut pdst_row = ptr.offset(c as isize);
                 for r in range(0, c){
-                    *pdst_row = *psrc_col.offset(r as int);
+                    *pdst_row = *psrc_col.offset(r as isize);
                     pdst_row = pdst_row.offset(stride);
                 }
             }

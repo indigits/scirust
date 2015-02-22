@@ -87,7 +87,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
             b.ero_scale(r, 1.0/pivot);
             for j in range(r+1, m.num_rows()){
                 let factor = m.get(r, j) / pivot;
-                b.ero_scale_add(r, j as int, -factor);  
+                b.ero_scale_add(r, j as isize, -factor);  
             }
             if r == 0 {
                 break;
@@ -125,7 +125,7 @@ pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) ->
             return Err(SRError::IsSingular);
         }
         for k in range(0,  r){
-            b.ero_scale_add(r, k as int, -l.get(r, k));
+            b.ero_scale_add(r, k as isize, -l.get(r, k));
         }
         b.ero_scale(r, 1.0/pivot);
     }
@@ -155,7 +155,7 @@ pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) ->
         b.ero_scale(r, 1.0/pivot);
         for j in range(r+1, u.num_rows()){
             let factor = u.get(r, j) / pivot;
-            b.ero_scale_add(r, j as int, -factor);  
+            b.ero_scale_add(r, j as isize, -factor);  
         }
         if r == 0 {
             break;
@@ -197,7 +197,7 @@ pub fn ldu_solve(l : &MatrixF64,
             return Err(SRError::IsSingular);
         }
         for k in range(0,  r){
-            b.ero_scale_add(r, k as int, -l.get(r, k));
+            b.ero_scale_add(r, k as isize, -l.get(r, k));
         }
         b.ero_scale(r, 1.0/pivot);
     }
@@ -220,7 +220,7 @@ pub fn ldu_solve(l : &MatrixF64,
         b.ero_scale(r, 1.0/pivot);
         for j in range(r+1, u.num_rows()){
             let factor = u.get(r, j) / pivot;
-            b.ero_scale_add(r, j as int, -factor);  
+            b.ero_scale_add(r, j as isize, -factor);  
         }
         if r == 0 {
             break;

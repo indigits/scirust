@@ -161,7 +161,7 @@ impl<T:Number> Matrix<T> {
             for c in range(0, cols){
                 for r in range (0, rows){
                     let offset = m.cell_to_offset(r, c);
-                    let p  = ptr.offset(offset as int);
+                    let p  = ptr.offset(offset as isize);
                     *p = o;
                 }
             } 
@@ -356,7 +356,7 @@ by hand.
         for r in range(0, n){
             let offset = m.cell_to_offset(r, r);
             unsafe{
-                *dst.offset(offset) =  *src.offset(r as int);
+                *dst.offset(offset) =  *src.offset(r as isize);
             }
         }
         m
@@ -516,11 +516,11 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
             return Zero::zero()
         }
         let mut result = self.get(0, 0);
-        let stride = self.stride() as int;
+        let stride = self.stride() as isize;
         let mut offset = stride;
         let ptr = self.as_ptr();
         for i in range(1, self.smaller_dim()){
-            result = result + unsafe{*ptr.offset(offset + i as int)};
+            result = result + unsafe{*ptr.offset(offset + i as isize)};
             offset += stride;
         }
         result
@@ -573,8 +573,8 @@ impl<T:Entry> MatrixBuffer<T> for Matrix<T> {
 
     /// Maps a cell index to actual offset in the internal buffer
     #[inline]
-    fn cell_to_offset(&self, r : usize,  c: usize)-> int {
-        (c * self.stride() + r) as int
+    fn cell_to_offset(&self, r : usize,  c: usize)-> isize {
+        (c * self.stride() + r) as isize
     } 
 
 }
@@ -662,7 +662,7 @@ impl<T:Number> Matrix<T> {
         for i in range(0, m){
             let offset = self.cell_to_offset(i, i);
             unsafe{
-                *dst.offset(i as int) = *src.offset(offset);
+                *dst.offset(i as isize) = *src.offset(offset);
             } 
         }
         result        
@@ -732,8 +732,8 @@ impl<T:Number> Matrix<T> {
             let src_start = self.cell_to_offset(0, c);
             let dst_start = result.cell_to_offset(0, c);
             for r in range (0, self.num_rows()){
-                let src_offset = src_start + permutation[r] as int;
-                let dst_offset = dst_start +  r as int;
+                let src_offset = src_start + permutation[r] as isize;
+                let dst_offset = dst_start +  r as isize;
                 unsafe {*dst.offset(dst_offset) = *src.offset(src_offset);}
             }
         }
@@ -791,7 +791,7 @@ impl<T:Number> Matrix<T> {
         let pa = self.ptr;
         let pb = other.ptr;
         for i in range(0, self.num_rows()){
-            let ii = i as int;
+            let ii = i as isize;
             let va = unsafe{*pa.offset(ii)};
             let vb = unsafe{*pb.offset(ii)};
             result = result + va * vb;
@@ -814,8 +814,8 @@ impl<T:Number> Matrix<T> {
         let pc = result.ptr;
         for r in range(0, n){
             for c in range(0, n){
-                let va = unsafe{*pa.offset(r as int)};
-                let vb = unsafe{*pb.offset(c as int)};
+                let va = unsafe{*pa.offset(r as isize)};
+                let vb = unsafe{*pb.offset(c as isize)};
                 let offset = result.cell_to_offset(r, c);
                 unsafe{
                     *pc.offset(offset) = va * vb;
@@ -888,7 +888,7 @@ impl<T:Number> Matrix<T> {
             let src_offset = other.cell_to_offset(0, i);
             let dst_offset = self.cell_to_offset(0, i + index);
             for j in range(0, self.rows){
-                let jj = j as int;
+                let jj = j as isize;
                 unsafe {
                     *dst_ptr.offset(dst_offset + jj) = *src_ptr.offset(src_offset + jj);
                 }
@@ -944,8 +944,8 @@ impl<T:Number> Matrix<T> {
             let dst_offset = self.cell_to_offset(i + index, 0);
             for j in range(0, self.cols){
                 unsafe {
-                    *dst_ptr.offset(dst_offset + (j*dst_stride) as int) = 
-                    *src_ptr.offset(src_offset + (j*src_stride) as int);
+                    *dst_ptr.offset(dst_offset + (j*dst_stride) as isize) = 
+                    *src_ptr.offset(src_offset + (j*src_stride) as isize);
                 }
             }
         }
@@ -988,8 +988,8 @@ impl<T:Number> Matrix<T> {
         let dst_stride = new_xrows;
         for c in range(0, self.cols){
             for r in range(0, self.rows){
-                let src_offset = (c * src_stride + r) as int;
-                let dst_offset = (c * dst_stride + r) as int;
+                let src_offset = (c * src_stride + r) as isize;
+                let dst_offset = (c * dst_stride + r) as isize;
                 unsafe{
                     *dst_ptr.offset(dst_offset) = *src_ptr.offset(src_offset);
                 }
@@ -1018,7 +1018,7 @@ impl<T:Number> Matrix<T> {
             // Nothing to move.
             return;
         }
-        let capacity = self.capacity() as int;
+        let capacity = self.capacity() as isize;
         // count columns starting from start column need to be
         // shifted by count.
         let mut cur_col = self.cols - 1;
@@ -1032,7 +1032,7 @@ impl<T:Number> Matrix<T> {
             debug_assert!(src_offset < capacity);
             debug_assert!(dst_offset < capacity);
             for i in range(0, self.rows){
-                let ii = i as int;
+                let ii = i as isize;
                 // Some validations
                 debug_assert!(src_offset + ii < capacity);
                 debug_assert!(dst_offset + ii < capacity);
@@ -1052,7 +1052,7 @@ impl<T:Number> Matrix<T> {
             // Nothing to move.
             return;
         }
-        let capacity = self.capacity() as int;
+        let capacity = self.capacity() as isize;
         // count rows starting from start row need to be
         // shifted by count.
         let mut cur_row = self.rows - 1;
@@ -1067,7 +1067,7 @@ impl<T:Number> Matrix<T> {
             debug_assert!(src_offset < capacity);
             debug_assert!(dst_offset < capacity);
             for i in range(0, self.cols){
-                let ii = (i*stride) as int;
+                let ii = (i*stride) as isize;
                 // Some validations
                 debug_assert!(src_offset + ii < capacity);
                 debug_assert!(dst_offset + ii < capacity);
@@ -1287,15 +1287,15 @@ impl<T:Number+Float> Matrix<T> {
 
 
 
-impl<T:Number> Index<uint> for Matrix<T> {
+impl<T:Number> Index<usize> for Matrix<T> {
     type Output = T;
     #[inline]
-    fn index<'a>(&'a self, index: &uint) -> &'a T {
+    fn index<'a>(&'a self, index: &usize) -> &'a T {
         // The matrix is column major order
         let (r, c) = self.index_to_cell(*index);
         let offset = c * self.stride() + r;
         unsafe {
-            &*self.ptr.offset(offset as int)
+            &*self.ptr.offset(offset as isize)
         }
     }
 }
@@ -1394,7 +1394,7 @@ impl<'a, 'b, T:Number> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) + *pb.offset(i);
             }
         }
@@ -1418,7 +1418,7 @@ impl<'a, 'b, T:Number> ops::Sub<&'b Matrix<T>> for &'a Matrix<T>{
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) - *pb.offset(i);
             }
         }
@@ -1465,7 +1465,7 @@ impl<T:Number> Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) + *pb.offset(i);
             }
         }
@@ -1485,7 +1485,7 @@ impl<T:Number> Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) - *pb.offset(i);
             }
         }
@@ -1504,7 +1504,7 @@ impl<T:Number> Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) * *pb.offset(i);
             }
         }
@@ -1524,7 +1524,7 @@ impl<T:Number> Matrix<T> {
         let n = self.capacity();
         unsafe{
             for i_ in range(0, n){
-                let i = i_ as int;
+                let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) / *pb.offset(i);
             }
         }
@@ -1532,14 +1532,14 @@ impl<T:Number> Matrix<T> {
     }
 
     /// Computs power of matrix elements
-    pub fn pow_elt(&self, n : uint) -> Matrix<T> {
+    pub fn pow_elt(&self, n : usize) -> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pc = result.ptr;
         let cap = self.capacity();
         unsafe{
             for i_ in range(0, cap){
-                let i = i_ as int;
+                let i = i_ as isize;
                 let v = *pa.offset(i);
                 *pc.offset(i) = v.power(n);
             }
@@ -1572,7 +1572,7 @@ impl<T:Number> Matrix<T> {
         println!("Rows: {}, Cols: {}, XRows : {}, XCols {} , Capacity: {}, Bytes; {}, Buffer: {:p}, End : {:p}", 
             self.rows, self.cols, self.xrows, self.xcols, 
             capacity, bytes, self.ptr, unsafe {
-                self.ptr.offset(capacity as int)
+                self.ptr.offset(capacity as isize)
             });
     }
 }

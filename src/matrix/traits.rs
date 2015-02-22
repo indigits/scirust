@@ -32,18 +32,18 @@ This API focuses only on the shape of the matrix.
 pub trait Shape<T:Entry> {
     
     /// Returns the number of rows
-    fn num_rows(&self) -> uint;
+    fn num_rows(&self) -> usize;
 
     /// Returns the number of columns
-    fn num_cols(&self) -> uint;
+    fn num_cols(&self) -> usize;
 
 
     /// Returns the size in an (r, c) tuple
-    fn size (&self)-> (uint, uint);
+    fn size (&self)-> (usize, usize);
  
  
      /// Returns the number of cells in matrix
-    fn num_cells(&self)->uint;
+    fn num_cells(&self)->usize;
 
     /// Indicates if the matrix is a row vector
     fn is_row(&self) -> bool {
@@ -77,15 +77,15 @@ pub trait Shape<T:Entry> {
 
 
     /// Gets an element by its row and column number
-    fn get(&self, r : uint, c : uint) -> T;
+    fn get(&self, r : usize, c : usize) -> T;
 
     /// Sets an element in the view
-    fn set(&mut self, r : uint, c : uint, value : T);
+    fn set(&mut self, r : usize, c : usize, value : T);
 
 
     /// Converts an index to cell address (row, column)
     #[inline]
-    fn index_to_cell(&self, index : uint) -> (uint, uint){
+    fn index_to_cell(&self, index : usize) -> (usize, usize){
         debug_assert!(index < self.num_cells());
         let rows = self.num_rows();
         let c = index / rows;
@@ -95,7 +95,7 @@ pub trait Shape<T:Entry> {
 
     /// Converts a cell address to an index (r, c) to index
     #[inline]
-    fn cell_to_index(&self, r : uint,  c: uint) -> uint{
+    fn cell_to_index(&self, r : usize,  c: usize) -> usize{
         let rows = self.num_rows();
         debug_assert!(r < rows);
         debug_assert!(c < self.num_cols());
@@ -103,12 +103,12 @@ pub trait Shape<T:Entry> {
     }
 
     /// Returns the minimum of rows and columns
-    fn smaller_dim(&self) -> uint {
+    fn smaller_dim(&self) -> usize {
         cmp::min(self.num_rows(), self.num_cols())
     }
 
     /// Returns the larger of rows and columns
-    fn larger_dim(&self)-> uint {
+    fn larger_dim(&self)-> usize {
         cmp::max(self.num_rows(), self.num_cols())
     }
 
@@ -129,11 +129,11 @@ pub trait MatrixBuffer<T:Entry> {
 
 
     /// Maps a cell index to actual offset in buffer
-    fn cell_to_offset(&self, r : uint,  c: uint)-> int;
+    fn cell_to_offset(&self, r : usize,  c: usize)-> isize;
 
     /// Returns the offset of the first cell in the buffer
     #[inline]
-    fn start_offset(&self) -> int {
+    fn start_offset(&self) -> isize {
         0
     }
 }
@@ -146,7 +146,7 @@ pub trait Strided {
 
     /// Returns the number of actual memory elements 
     /// per column
-    fn stride (&self)->uint;
+    fn stride (&self)->usize;
 
 
 }
@@ -255,10 +255,10 @@ pub trait MinMax<T:Number+PartialOrd> : Shape<T> {
 pub trait MinMaxAbs<T:Signed> : Shape<T> {
 
     // Returns the absolute minimum scalar value
-    fn min_abs_scalar(&self) -> (T, uint, uint);
+    fn min_abs_scalar(&self) -> (T, usize, usize);
 
     // Returns the maximum scalar value
-    fn max_abs_scalar(&self) -> (T, uint, uint);
+    fn max_abs_scalar(&self) -> (T, usize, usize);
 
 
 }
@@ -270,19 +270,19 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
     /// Returns the largest entry (by magnitude) in the row between
     /// [start, end) columns
     fn max_abs_scalar_in_row(&self, 
-        row : uint, 
-        start_col: uint, 
-        end_col : uint)-> (T, uint){
+        row : usize, 
+        start_col: usize, 
+        end_col : usize)-> (T, usize){
         debug_assert!(row < self.num_rows());
         debug_assert!(end_col <= self.num_cols());
         let p = self.as_ptr();
         let stride = self.stride();
         let mut offset = start_col * stride + row;
-        let mut result = unsafe{*p.offset(offset as int)}.abs_val();
+        let mut result = unsafe{*p.offset(offset as isize)}.abs_val();
         let mut index  = 0;
         for i in range(1, end_col - start_col){
             offset += stride;
-            let s = unsafe{*p.offset(offset as int)}.abs_val();
+            let s = unsafe{*p.offset(offset as isize)}.abs_val();
             if s > result {
                 index = i;
                 result = s;
@@ -295,19 +295,19 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
     /// Returns the largest entry (by magnitude) in the column between
     /// [start, end) rows
     fn max_abs_scalar_in_col(&self, 
-        col : uint, 
-        start_row: uint, 
-        end_row : uint)-> (T, uint){
+        col : usize, 
+        start_row: usize, 
+        end_row : usize)-> (T, usize){
         debug_assert!(end_row <= self.num_rows());
         debug_assert!(col < self.num_cols());
         let p = self.as_ptr();
         let stride = self.stride();
         let mut offset = col * stride + start_row;
-        let mut result = unsafe{*p.offset(offset as int)}.abs_val();
+        let mut result = unsafe{*p.offset(offset as isize)}.abs_val();
         let mut index  = 0;
         for i in range(1, end_row - start_row){
             offset += 1;
-            let s = unsafe{*p.offset(offset as int)}.abs_val();
+            let s = unsafe{*p.offset(offset as isize)}.abs_val();
             if s > result {
                 index = i;
                 result = s;

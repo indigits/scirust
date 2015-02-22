@@ -26,7 +26,7 @@ use number::{Number, num_range};
 
 n must be a power of 2.
 "] 
-pub fn hadamard(n : uint) -> Result<MatrixF64, SRError>{
+pub fn hadamard(n : usize) -> Result<MatrixF64, SRError>{
     if !n.is_power_of_two(){
         return Err(SRError::IsNotPowerOfTwo);
     }
@@ -41,7 +41,7 @@ pub fn hadamard(n : uint) -> Result<MatrixF64, SRError>{
     m.set(0, 0, 1.0);
     for  o in range(0, order){
         // We will construct four views.
-        let size = 2u.pow(o);
+        let size : usize = 2.pow(o);
         // top left block
         let tl = m.view(0, 0, size, size);
         // top right block
@@ -60,7 +60,7 @@ pub fn hadamard(n : uint) -> Result<MatrixF64, SRError>{
 
 #[doc="Returns a Hilbert matrix.
 "]
-pub fn hilbert(n : uint) -> MatrixF64{
+pub fn hilbert(n : usize) -> MatrixF64{
     let mut m : MatrixF64 = Matrix::new(n, n);
     for r in range(0, n){
         for c in range(0, n){
@@ -109,7 +109,7 @@ Constructing a 4x4 matrix of floating point numbers:
 
 
 "]
-pub fn from_range_cw<T:Number+PartialOrd+One+ToPrimitive>(rows : uint, cols : uint, 
+pub fn from_range_cw<T:Number+PartialOrd+One+ToPrimitive>(rows : usize, cols : usize, 
     start : T, stop : T )-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, num_range(start, stop));
     m 
@@ -120,7 +120,7 @@ pub fn from_range_cw<T:Number+PartialOrd+One+ToPrimitive>(rows : uint, cols : ui
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_cw_f64(rows : uint, cols : uint, 
+pub fn from_range_cw_f64(rows : usize, cols : usize, 
     start : f64, stop : f64)->MatrixF64 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -130,7 +130,7 @@ pub fn from_range_cw_f64(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_cw_i8(rows : uint, cols : uint, 
+pub fn from_range_cw_i8(rows : usize, cols : usize, 
     start : i8, stop : i8)->MatrixI8 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -140,7 +140,7 @@ pub fn from_range_cw_i8(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_cw_i16(rows : uint, cols : uint, 
+pub fn from_range_cw_i16(rows : usize, cols : usize, 
     start : i16, stop : i16)->MatrixI16 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -149,7 +149,7 @@ pub fn from_range_cw_i16(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_cw_i32(rows : uint, cols : uint, 
+pub fn from_range_cw_i32(rows : usize, cols : usize, 
     start : i32, stop : i32)->MatrixI32 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -173,7 +173,7 @@ See from_range_cw function  for further discussion.
     }
 "]
 #[inline]
-pub fn from_range_cw_i64(rows : uint, cols : uint, 
+pub fn from_range_cw_i64(rows : usize, cols : usize, 
     start : i64, stop : i64)->MatrixI64 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -182,7 +182,7 @@ pub fn from_range_cw_i64(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_cw_u8(rows : uint, cols : uint, 
+pub fn from_range_cw_u8(rows : usize, cols : usize, 
     start : u8, stop : u8)->MatrixU8 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -192,7 +192,7 @@ pub fn from_range_cw_u8(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_cw_u16(rows : uint, cols : uint, 
+pub fn from_range_cw_u16(rows : usize, cols : usize, 
     start : u16, stop : u16)->MatrixU16 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -201,7 +201,7 @@ pub fn from_range_cw_u16(rows : uint, cols : uint,
 picked up from a range in column wise order.
 "]
 #[inline]
-pub fn from_range_cw_u32(rows : uint, cols : uint, 
+pub fn from_range_cw_u32(rows : usize, cols : usize, 
     start : u32, stop : u32)->MatrixU32 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -225,7 +225,7 @@ See from_range_cw function  for further discussion.
     }
 "]
 #[inline]
-pub fn from_range_cw_u64(rows : uint, cols : uint, 
+pub fn from_range_cw_u64(rows : usize, cols : usize, 
     start : u64, stop : u64)->MatrixU64 {
     from_range_cw(rows, cols, start, stop)
 }
@@ -240,7 +240,7 @@ pub fn from_range_cw_u64(rows : uint, cols : uint,
 #[doc="Returns a matrix whose entries are picked up from
 a range in row wise order.
 "]
-pub fn from_range_rw<T:Number+PartialOrd+One+ToPrimitive>(rows : uint, cols : uint, 
+pub fn from_range_rw<T:Number+PartialOrd+One+ToPrimitive>(rows : usize, cols : usize, 
     start : T, stop : T )-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_rw(rows, cols, num_range(start, stop));
     m 
@@ -251,7 +251,7 @@ pub fn from_range_rw<T:Number+PartialOrd+One+ToPrimitive>(rows : uint, cols : ui
 picked up from a range in row wise order.
 "]
 #[inline]
-pub fn from_range_rw_i8(rows : uint, cols : uint, 
+pub fn from_range_rw_i8(rows : usize, cols : usize, 
     start : i8, stop : i8)->MatrixI8 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -261,7 +261,7 @@ pub fn from_range_rw_i8(rows : uint, cols : uint,
 picked up from a range in row wise order.
 "]
 #[inline]
-pub fn from_range_rw_i16(rows : uint, cols : uint, 
+pub fn from_range_rw_i16(rows : usize, cols : usize, 
     start : i16, stop : i16)->MatrixI16 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -270,7 +270,7 @@ pub fn from_range_rw_i16(rows : uint, cols : uint,
 picked up from a range in row wise order.
 "]
 #[inline]
-pub fn from_range_rw_i32(rows : uint, cols : uint, 
+pub fn from_range_rw_i32(rows : usize, cols : usize, 
     start : i32, stop : i32)->MatrixI32 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -294,7 +294,7 @@ See from_range_rw function  for further discussion.
     }
 "]
 #[inline]
-pub fn from_range_rw_i64(rows : uint, cols : uint, 
+pub fn from_range_rw_i64(rows : usize, cols : usize, 
     start : i64, stop : i64)->MatrixI64 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -303,7 +303,7 @@ pub fn from_range_rw_i64(rows : uint, cols : uint,
 picked up from a range in row wise order.
 "]
 #[inline]
-pub fn from_range_rw_u8(rows : uint, cols : uint, 
+pub fn from_range_rw_u8(rows : usize, cols : usize, 
     start : u8, stop : u8)->MatrixU8 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -313,7 +313,7 @@ pub fn from_range_rw_u8(rows : uint, cols : uint,
 picked up from a range in row wise order.
 "]
 #[inline]
-pub fn from_range_rw_u16(rows : uint, cols : uint, 
+pub fn from_range_rw_u16(rows : usize, cols : usize, 
     start : u16, stop : u16)->MatrixU16 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -322,7 +322,7 @@ pub fn from_range_rw_u16(rows : uint, cols : uint,
 picked up from a range in row wise order.
 "]
 #[inline]
-pub fn from_range_rw_u32(rows : uint, cols : uint, 
+pub fn from_range_rw_u32(rows : usize, cols : usize, 
     start : u32, stop : u32)->MatrixU32 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -346,7 +346,7 @@ See from_range_rw function  for further discussion.
     }
 "]
 #[inline]
-pub fn from_range_rw_u64(rows : uint, cols : uint, 
+pub fn from_range_rw_u64(rows : usize, cols : usize, 
     start : u64, stop : u64)->MatrixU64 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -355,7 +355,7 @@ pub fn from_range_rw_u64(rows : uint, cols : uint,
 picked up from a range in row wise order.
 "]
 #[inline]
-pub fn from_range_rw_f64(rows : uint, cols : uint, 
+pub fn from_range_rw_f64(rows : usize, cols : usize, 
     start : f64, stop : f64)->MatrixF64 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -366,7 +366,7 @@ pub fn from_range_rw_f64(rows : uint, cols : uint,
 picked up from a range in row wise order.
 "]
 #[inline]
-pub fn from_range_rw_f32(rows : uint, cols : uint, 
+pub fn from_range_rw_f32(rows : usize, cols : usize, 
     start : f32, stop : f32)->MatrixF32 {
     from_range_rw(rows, cols, start, stop)
 }
@@ -384,7 +384,7 @@ pub fn from_range_rw_f32(rows : uint, cols : uint,
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
+pub fn matrix_cw_u8(rows : usize, cols : usize, values: &[u8])->MatrixU8 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -392,7 +392,7 @@ pub fn matrix_cw_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
+pub fn matrix_cw_u16(rows : usize, cols : usize, values: &[u16])->MatrixU16 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -400,7 +400,7 @@ pub fn matrix_cw_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
+pub fn matrix_cw_u32(rows : usize, cols : usize, values: &[u32])->MatrixU32 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -408,7 +408,7 @@ pub fn matrix_cw_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
+pub fn matrix_cw_u64(rows : usize, cols : usize, values: &[u64])->MatrixU64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -416,7 +416,7 @@ pub fn matrix_cw_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
+pub fn matrix_cw_i8(rows : usize, cols : usize, values: &[i8])->MatrixI8 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -424,7 +424,7 @@ pub fn matrix_cw_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
+pub fn matrix_cw_i16(rows : usize, cols : usize, values: &[i16])->MatrixI16 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -432,7 +432,7 @@ pub fn matrix_cw_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
+pub fn matrix_cw_i32(rows : usize, cols : usize, values: &[i32])->MatrixI32 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -440,7 +440,7 @@ pub fn matrix_cw_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
+pub fn matrix_cw_i64(rows : usize, cols : usize, values: &[i64])->MatrixI64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -448,7 +448,7 @@ pub fn matrix_cw_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
+pub fn matrix_cw_f32(rows : usize, cols : usize, values: &[f32])->MatrixF32 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -457,7 +457,7 @@ pub fn matrix_cw_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
+pub fn matrix_cw_f64(rows : usize, cols : usize, values: &[f64])->MatrixF64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -467,7 +467,7 @@ pub fn matrix_cw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_c32(rows : uint, cols : uint, values: &[Complex32])->MatrixC32 {
+pub fn matrix_cw_c32(rows : usize, cols : usize, values: &[Complex32])->MatrixC32 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 
@@ -476,7 +476,7 @@ pub fn matrix_cw_c32(rows : uint, cols : uint, values: &[Complex32])->MatrixC32 
 picked up from a slice in column wise order.
 "]
 #[inline]
-pub fn matrix_cw_c64(rows : uint, cols : uint, values: &[Complex64])->MatrixC64 {
+pub fn matrix_cw_c64(rows : usize, cols : usize, values: &[Complex64])->MatrixC64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
 */
@@ -485,7 +485,7 @@ pub fn matrix_cw_c64(rows : uint, cols : uint, values: &[Complex64])->MatrixC64 
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
+pub fn matrix_rw_u8(rows : usize, cols : usize, values: &[u8])->MatrixU8 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -493,7 +493,7 @@ pub fn matrix_rw_u8(rows : uint, cols : uint, values: &[u8])->MatrixU8 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
+pub fn matrix_rw_u16(rows : usize, cols : usize, values: &[u16])->MatrixU16 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -501,7 +501,7 @@ pub fn matrix_rw_u16(rows : uint, cols : uint, values: &[u16])->MatrixU16 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
+pub fn matrix_rw_u32(rows : usize, cols : usize, values: &[u32])->MatrixU32 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -509,7 +509,7 @@ pub fn matrix_rw_u32(rows : uint, cols : uint, values: &[u32])->MatrixU32 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
+pub fn matrix_rw_u64(rows : usize, cols : usize, values: &[u64])->MatrixU64 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -517,7 +517,7 @@ pub fn matrix_rw_u64(rows : uint, cols : uint, values: &[u64])->MatrixU64 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
+pub fn matrix_rw_i8(rows : usize, cols : usize, values: &[i8])->MatrixI8 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -525,7 +525,7 @@ pub fn matrix_rw_i8(rows : uint, cols : uint, values: &[i8])->MatrixI8 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
+pub fn matrix_rw_i16(rows : usize, cols : usize, values: &[i16])->MatrixI16 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -533,7 +533,7 @@ pub fn matrix_rw_i16(rows : uint, cols : uint, values: &[i16])->MatrixI16 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
+pub fn matrix_rw_i32(rows : usize, cols : usize, values: &[i32])->MatrixI32 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -541,7 +541,7 @@ pub fn matrix_rw_i32(rows : uint, cols : uint, values: &[i32])->MatrixI32 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
+pub fn matrix_rw_i64(rows : usize, cols : usize, values: &[i64])->MatrixI64 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -549,7 +549,7 @@ pub fn matrix_rw_i64(rows : uint, cols : uint, values: &[i64])->MatrixI64 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
+pub fn matrix_rw_f32(rows : usize, cols : usize, values: &[f32])->MatrixF32 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -558,7 +558,7 @@ pub fn matrix_rw_f32(rows : uint, cols : uint, values: &[f32])->MatrixF32 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
+pub fn matrix_rw_f64(rows : usize, cols : usize, values: &[f64])->MatrixF64 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -567,7 +567,7 @@ pub fn matrix_rw_f64(rows : uint, cols : uint, values: &[f64])->MatrixF64 {
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_c32(rows : uint, cols : uint, values: &[Complex32])->MatrixC32 {
+pub fn matrix_rw_c32(rows : usize, cols : usize, values: &[Complex32])->MatrixC32 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 
@@ -576,7 +576,7 @@ pub fn matrix_rw_c32(rows : uint, cols : uint, values: &[Complex32])->MatrixC32 
 picked up from a slice in row wise order.
 "]
 #[inline]
-pub fn matrix_rw_c64(rows : uint, cols : uint, values: &[Complex64])->MatrixC64 {
+pub fn matrix_rw_c64(rows : usize, cols : usize, values: &[Complex64])->MatrixC64 {
     Matrix::from_slice_rw(rows, cols, values)
 }
 */
@@ -600,7 +600,7 @@ pub fn col_vector<T:Number>(values: &[T])-> Matrix<T> {
 #[inline]
 pub fn col_vector_from_iter<T:Number, A : Iterator<Item=T>>(
     values: A,
-    len : uint)-> Matrix<T> {
+    len : usize)-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_rw(len, 1, values);
     m 
 }
@@ -701,9 +701,9 @@ pub fn vector_f64(values: &[f64])->MatrixF64 {
 exchange rows i and j
 on left multiplication.
 "]
-pub fn ero_switch<T:Number>(n : uint, 
-    i  : uint, 
-    j : uint)-> Matrix<T> {
+pub fn ero_switch<T:Number>(n : usize, 
+    i  : usize, 
+    j : usize)-> Matrix<T> {
     debug_assert! (i  < n);
     debug_assert! (j  < n);
     let mut m : Matrix<T> = Matrix::identity(n, n);
@@ -719,8 +719,8 @@ pub fn ero_switch<T:Number>(n : uint,
 #[doc="Returns elementary matrix which can scale
 a particular row by a factor on left multiplication.
 "]
-pub fn ero_scale<T:Number>(n : uint, 
-    r  : uint, 
+pub fn ero_scale<T:Number>(n : usize, 
+    r  : usize, 
     scale : T)-> Matrix<T> {
 
     let mut m : Matrix<T> = Matrix::identity(n, n);
@@ -736,9 +736,9 @@ on left multiplication.
 r_i = r_i + k * r_j
 
 "]
-pub fn ero_scale_add<T:Number>(n : uint, 
-    i  : uint, 
-    j : uint, 
+pub fn ero_scale_add<T:Number>(n : usize, 
+    i  : usize, 
+    j : usize, 
     scale : T)-> Matrix<T> {
 
     let mut m : Matrix<T> = Matrix::identity(n, n);

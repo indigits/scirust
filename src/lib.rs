@@ -1,6 +1,5 @@
 #![feature(collections)]
 #![feature(core)]
-#![feature(int_uint)]
 #![feature(unsafe_destructor)]
 #![feature(alloc)]
 #![feature(std_misc)]

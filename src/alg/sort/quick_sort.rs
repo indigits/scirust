@@ -49,19 +49,19 @@ pub fn quick_sort_slice<T: PartialOrd>(xs: &mut [T]){
 
 
 // Helper function for debugging
-pub unsafe fn  print_arr<T: PartialOrd + fmt::Display>(data : *mut T, n : uint){
+pub unsafe fn  print_arr<T: PartialOrd + fmt::Display>(data : *mut T, n : usize){
     for i in range(0, n){
-        print!("{} ", *data.offset(i as int));
+        print!("{} ", *data.offset(i as isize));
     }
     println!("");
 }
 
 /// Quick sort algorithm on a buffer of data
-pub unsafe fn quick_sort_buffer<T: PartialOrd>(data : *mut T, n : uint){
+pub unsafe fn quick_sort_buffer<T: PartialOrd>(data : *mut T, n : usize){
     if n <= 1 {
         return;
     }
-    let right = (n - 1) as int;
+    let right = (n - 1) as isize;
     // pointer to the last entry
     let pright = data.offset(right);
     let mut pleft = data;
@@ -73,7 +73,7 @@ pub unsafe fn quick_sort_buffer<T: PartialOrd>(data : *mut T, n : uint){
         if *pmid >= *pleft && *pmid <= *pright {
             mid
         } else if *pleft >= *pmid && *pleft <= *pright {
-            0i
+            0
         } else {
             right
         }
@@ -85,7 +85,7 @@ pub unsafe fn quick_sort_buffer<T: PartialOrd>(data : *mut T, n : uint){
     ptr::swap(pright, ppivot);
     //print_arr(data, n);
     // now start from the beginning
-    let (mut i, mut pivot) = (0i, 0i);
+    let (mut i, mut pivot) = (0, 0);
     ppivot = data.offset(pivot);
     while i < right {
         if *pleft <= *pright {
@@ -104,9 +104,9 @@ pub unsafe fn quick_sort_buffer<T: PartialOrd>(data : *mut T, n : uint){
     // Now run quick sort recursively
     // we split original slice into two slices
     // the left slide [0, pivot]
-    quick_sort_buffer(data, pivot as uint);
+    quick_sort_buffer(data, pivot as usize);
     // the right slice [pivot + 1, end]
-    quick_sort_buffer(data.offset(pivot + 1i), n - (pivot as uint) - 1);
+    quick_sort_buffer(data.offset(pivot + 1), n - (pivot as usize) - 1);
 }
 
 
@@ -127,21 +127,21 @@ mod test{
 
     #[test]
     fn test_quick_sort_slice_1() {
-        let mut x : [int; 5] = [1, 2, 3, 4, 5];
+        let mut x : [i32; 5] = [1, 2, 3, 4, 5];
         quick_sort_slice(&mut x);
         assert!(is_ascending_slice(&x));
     }
 
     #[test]
     fn test_quick_sort_slice_2() {
-        let mut x : [int; 5] = [5,4,3,2,1];
+        let mut x : [i32; 5] = [5,4,3,2,1];
         quick_sort_slice(&mut x);
         assert!(is_ascending_slice(&x));
     }
 
     #[test]
     fn test_quick_sort_buffer_1() {
-        let mut x : [int; 5] = [1, 2, 3, 4, 5];
+        let mut x : [i32; 5] = [1, 2, 3, 4, 5];
         print_slice(&x);
         unsafe {quick_sort_buffer(&mut x[0], x.len());}
         print_slice(&x);
@@ -150,7 +150,7 @@ mod test{
 
     #[test]
     fn test_quick_sort_buffer_2() {
-        let mut x : [int; 5] = [5,4,3,2,1];
+        let mut x : [i32; 5] = [5,4,3,2,1];
         unsafe { quick_sort_buffer(&mut x[0], x.len());}
         assert!(is_ascending_slice(&x));
     }
@@ -165,14 +165,14 @@ mod test{
     #[test]
     fn test_quick_sort_buffer_random_data() {
         let mut rng = rand::thread_rng();
-        let mut v: Vec<uint> = rng.gen_iter::<uint>().take(10000).collect();
+        let mut v: Vec<usize> = rng.gen_iter::<usize>().take(10000).collect();
         unsafe { quick_sort_buffer(v.as_mut_ptr(), v.len());}
         assert!(is_ascending_slice(v.as_slice()));
     }
 
     // #[test]
     // fn test_insertion_sort_buffer_1() {
-    //     let mut x : [int, ..5] = [5,5,3,3,1];
+    //     let mut x : [i32, ..5] = [5,5,3,3,1];
     //     unsafe {
     //         quick_sort_buffer(&mut x[0], x.len());
     //     }
@@ -209,7 +209,7 @@ mod bench{
     fn bench_quick_sort_slice_random_data(b: &mut Bencher){
         // create a task-local Random Number Generator
         let mut rng = rand::thread_rng();
-        let mut v: Vec<uint> = rng.gen_iter::<uint>().take(10000).collect();
+        let mut v: Vec<usize> = rng.gen_iter::<usize>().take(10000).collect();
         b.iter(|| {
             quick_sort_slice(v.as_mut_slice());
         });
@@ -230,7 +230,7 @@ mod bench{
     fn bench_quick_sort_buffer_random_data(b: &mut Bencher){
         // create a task-local Random Number Generator
         let mut rng = rand::thread_rng();
-        let mut v: Vec<uint> = rng.gen_iter::<uint>().take(10000).collect();
+        let mut v: Vec<usize> = rng.gen_iter::<usize>().take(10000).collect();
         b.iter(|| {
             unsafe {
                 quick_sort_buffer(v.as_mut_ptr(), v.len());

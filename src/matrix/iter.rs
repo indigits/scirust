@@ -13,9 +13,9 @@ use number::{Number};
 
 /// An iterator over the elements of a matrix in a row
 pub struct RowIterator<T:Number>{
-    cols : uint,
-    stride: uint,
-    pos  : uint, 
+    cols : usize,
+    stride: usize,
+    pos  : usize, 
     ptr : *const T
 }
 
@@ -23,7 +23,7 @@ pub struct RowIterator<T:Number>{
 
 impl <T:Number> RowIterator<T> {
     /// Creates a new iterator object
-    pub fn new(cols: uint, stride : uint, ptr : *const T)-> RowIterator<T>{
+    pub fn new(cols: usize, stride : usize, ptr : *const T)-> RowIterator<T>{
         RowIterator{cols : cols, stride : stride, pos : 0, ptr : ptr}
     }
 }
@@ -37,21 +37,21 @@ impl <T:Number> Iterator for RowIterator<T> {
         }
         let offset = self.pos * self.stride;
         self.pos += 1;
-        Some(unsafe{*self.ptr.offset(offset as int)})
+        Some(unsafe{*self.ptr.offset(offset as isize)})
     }
 }
 
  /// An iterator over the elements of a matrix in a column
 pub struct ColIterator<T:Number>{
-    rows : uint,
-    pos  : uint, 
+    rows : usize,
+    pos  : usize, 
     ptr : *const T
 }
 
 
 impl <T:Number> ColIterator<T> {
     /// Creates a new iterator object
-    pub fn new(rows: uint, ptr : *const T)-> ColIterator<T>{
+    pub fn new(rows: usize, ptr : *const T)-> ColIterator<T>{
         ColIterator{rows : rows, pos : 0, ptr : ptr}
     }
 }
@@ -67,23 +67,23 @@ impl <T:Number> Iterator for ColIterator<T> {
         }
         let offset = self.pos;
         self.pos += 1;
-        Some(unsafe{*self.ptr.offset(offset as int)})
+        Some(unsafe{*self.ptr.offset(offset as isize)})
     }
 }
 
 /// A column major iterator over the elements of a matrix
 pub struct CellIterator<T:Number>{
-    rows : uint,
-    cols : uint,
-    stride: uint, 
-    r  : uint, 
-    c : uint,
+    rows : usize,
+    cols : usize,
+    stride: usize, 
+    r  : usize, 
+    c : usize,
     ptr : *const T
 }
 
 impl <T:Number> CellIterator<T> {
     /// Creates a new iterator object
-    pub fn new(rows: uint, cols: uint, stride : uint, ptr : *const T)-> CellIterator<T>{
+    pub fn new(rows: usize, cols: usize, stride : usize, ptr : *const T)-> CellIterator<T>{
         CellIterator{rows : rows, 
             cols : cols, 
             stride : stride, 
@@ -106,7 +106,7 @@ impl <T:Number> Iterator for CellIterator<T> {
             self.r = 0;
             self.c += 1;
         }
-        Some(unsafe{*self.ptr.offset(offset as int)})
+        Some(unsafe{*self.ptr.offset(offset as isize)})
     }
 }
 
