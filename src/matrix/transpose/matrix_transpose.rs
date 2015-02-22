@@ -313,14 +313,14 @@ mod test{
             4., 5., 6.,
             7., 8., 9.]);
         let g  = m.gram();
-        assert_eq!(g, m.transpose() * m);
+        assert_eq!(g, &(m.transpose()) * &m);
     }
 
     #[test]
     fn test_mult_1(){
         let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
         let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
-        let m3 = m1 * m2;
+        let m3 = &m1 * &m2;
         let v = vec![2i64, 3, 6, 11];
         assert_eq!(m3.to_std_vec(), v);
         let m3 = multiply_simple(&m1, &m2).unwrap();
@@ -380,7 +380,7 @@ mod bench {
         let m = m.repeat_matrix(1, 2);
         b.iter(|| {
                     // computation of gram matrix
-                    m.transpose() * m;
+                    &(m.transpose()) * &m;
                 });
 
     }

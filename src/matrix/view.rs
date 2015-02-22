@@ -488,6 +488,14 @@ impl <'a, T:Number> fmt::Debug for MatrixView<'a, T> {
     }
 }
 
+impl <'a, T:Number> fmt::Display for MatrixView<'a, T> {
+    /// Display and Debug versions are same
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
+}
+
+
 
 /******************************************************
  *
@@ -575,7 +583,7 @@ mod test{
         let m :  MatrixI64 = Matrix::from_iter_cw(10, 10, range(1, 200));
         let v1   = m.view(2, 2, 2, 2); // 23 , 24 , 33, 34
         let v2 = m.view(1, 1, 2, 2);  // 12, 13, 22, 33
-        let m2 = v1 + v2; // 
+        let m2 = &v1 + &v2; // 
         let m3 : MatrixI64 = Matrix::from_slice_cw(2, 2, vec![35, 37, 55, 57].as_slice());
         assert_eq!(m2, m3);
     }

@@ -1371,6 +1371,14 @@ impl <T:Number> fmt::Debug for Matrix<T> {
     }
 }
 
+impl <T:Number> fmt::Display for Matrix<T> {
+    /// Display and Debug versions are same
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
+}
+
+
 /// Matrix addition support
 impl<'a, 'b, T:Number> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
     type Output = Matrix<T>;
@@ -1639,7 +1647,7 @@ mod test {
         for _ in range(0u, 100){
             let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(1, 20));
             let b: Vec<i64> = range(1, 17).collect();
-            assert!(m.as_slice_() == b.as_slice_());
+            assert!(m.as_slice_() == b.as_slice());
             let m : MatrixI64 = Matrix::from_iter_cw(4, 8, range(1, 16));
             assert_eq!(m.get(0, 0), 1);
             assert_eq!(m.get(2, 2), 11);
@@ -1647,7 +1655,7 @@ mod test {
             for _ in range(0u, 17){
                 b.push(0);
             }
-            assert_eq!(m.as_slice_(), b.as_slice_());
+            assert_eq!(m.as_slice_(), b.as_slice());
         }
     }
 
@@ -1687,7 +1695,7 @@ mod test {
     #[test]
     fn test_sum(){
         let m : MatrixI64 = Matrix::ones(4, 2);
-        let m2 = m  + m;
+        let m2 = &m  + &m;
         let v = vec![2i64, 2, 2, 2, 2, 2, 2, 2];
         assert_eq!(m2.to_std_vec(), v);
     }
@@ -1697,14 +1705,14 @@ mod test {
     fn test_sum_fail(){
         let m1 : MatrixI64 = Matrix::ones(4, 2);
         let m2 : MatrixI64 = Matrix::ones(3, 2);
-        m1 + m2;
+        &m1 + &m2;
     }
 
     #[test]
     fn test_sub(){
         let m : MatrixI64 = Matrix::ones(4, 2);
-        let m3 = m  + m + m;
-        let m2 = m3 - m;  
+        let m3 = &(&m  + &m) + &m;
+        let m2 = &m3 - &m;  
         let v = vec![2i64, 2, 2, 2, 2, 2, 2, 2];
         assert_eq!(m2.to_std_vec(), v);
     }
@@ -1712,8 +1720,8 @@ mod test {
     #[test]
     fn test_sub_float(){
         let m : MatrixF64 = Matrix::ones(4, 2);
-        let m3 = m  + m + m;
-        let m2 = m3 - m;  
+        let m3 = &(&m  + &m) + &m;
+        let m2 = &m3 - &m;  
         let v = vec![2f64, 2., 2., 2., 2., 2., 2., 2.];
         assert_eq!(m2.to_std_vec(), v);
     }
@@ -1722,7 +1730,7 @@ mod test {
     fn test_sub_fail(){
         let m1 : MatrixI64 = Matrix::ones(4, 2);
         let m2 : MatrixI64 = Matrix::ones(3, 2);
-        m1 - m2;
+        &m1 - &m2;
     }
 
 
@@ -1797,7 +1805,7 @@ mod test {
     fn test_is_logical(){
         let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16).map(|x| x % 2));
         assert!(m.is_logical());
-        let m = m + m;
+        let m = &m + &m;
         assert!(!m.is_logical());
     }
 
@@ -1848,7 +1856,7 @@ mod test {
     #[test]
     fn test_div_elt(){
         let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(1, 20));
-        let m2 = m + m;
+        let m2 = &m + &m;
         let m3 = m2.div_elt(&m);
         assert_eq!(m3.to_std_vec(), vec![2,2,2,2]);
     }
@@ -1891,8 +1899,10 @@ mod test {
         assert!(m3.is_square());
         assert_eq!(m3.to_std_vec(), vec![6, 11, 22, 39]);
         assert_eq!(m.pow(1).to_std_vec(), vec![0, 1, 2, 3]);
-        assert_eq!(m.pow(2), m * m);
-        assert_eq!(m.pow(10), m * m * m * m * m * m * m * m * m * m);
+        assert_eq!(m.pow(2), &m * &m);
+        // This is UGLY. I wish I could fix it.
+        let x = &(&(&(&(&(&(&(&(&m * &m) * &m) * &m) * &m) * &m) * &m) * &m) * &m) * &m;
+        assert_eq!(m.pow(10), x);
     }
 
     #[test]
@@ -1900,7 +1910,7 @@ mod test {
         let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
         let z : MatrixI64 = Matrix::zeros(2,2);
         let m2 = m.unary_minus();
-        let m3 = z - m;
+        let m3 = &z - &m;
         assert_eq!(m2, m3);
     }
 
@@ -1914,7 +1924,7 @@ mod test {
             let m = Matrix::diag_from_vec(&v);
             assert!(!m.is_empty());
             assert!(!m.is_vector());
-            println!("{}", m);
+            println!("{:?}", m);
             assert!(m.is_diagonal());
             assert_eq!(m.num_cells(), 16);
             let mut m2 : MatrixI64 = Matrix::zeros(4, 4);
@@ -1942,7 +1952,7 @@ mod test {
         let m = matrix_cw_f64(3, 3, [1., 0., 0., 
             4., 5., 0.,
             6., 2., 3.].as_slice());
-        println!("m: {}", m);
+        println!("m: {:?}", m);
         assert!(m.is_ut());
         assert!(!m.is_lt());
         assert!(m.is_triangular());

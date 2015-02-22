@@ -558,6 +558,13 @@ impl <T:Number> fmt::Debug for TriangularMatrix<T> {
     }
 }
 
+impl <T:Number> fmt::Display for TriangularMatrix<T> {
+    /// Display and Debug versions are same
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
+}
+
 
 
 /******************************************************

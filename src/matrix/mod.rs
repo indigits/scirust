@@ -3,8 +3,8 @@
 pub mod constructors;
 pub mod iter;
 pub mod matrix;
-//pub mod matrix_conversion;
-//pub mod matrix_minmax;
+pub mod matrix_conversion;
+pub mod matrix_minmax;
 pub mod random;
 pub mod traits;
 pub mod vector;
