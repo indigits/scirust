@@ -48,7 +48,7 @@ pub mod number;
 pub mod external;
 pub mod discrete;
 pub mod matrix;
-//pub mod linalg;
+pub mod linalg;
 // pub mod signal;
 // pub mod dx;
 //pub mod stat;
@@ -66,7 +66,7 @@ pub mod audio {
 
 // for internal use only
 pub mod util;
-//mod testdata;
+mod testdata;
 
 // Overall API of SciRust
 pub mod api;

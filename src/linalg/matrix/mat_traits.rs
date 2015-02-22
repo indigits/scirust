@@ -1,4 +1,7 @@
 
+// std imports
+use std::marker::MarkerTrait;
+
 
 
 // local imports
@@ -15,18 +18,18 @@ pub trait LANumberMatrix<T:Number+Signed> {
 
 
 /// Linear algebra methods for integer matrix
-pub trait LAIntMatrix{
+pub trait LAIntMatrix : MarkerTrait{
 
 }
 
 /// Linear algebra methods for signed integer matrix
-pub trait LASignedMatrix{
+pub trait LASignedMatrix : MarkerTrait{
 
 }
 
 
 /// Linear algebra methods for float matrix
-pub trait LAFloatMatrix{
+pub trait LAFloatMatrix : MarkerTrait{
 
 }
 

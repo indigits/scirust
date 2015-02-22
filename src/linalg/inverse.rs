@@ -142,7 +142,7 @@ mod test{
             1., 0.,
             1., 1.].as_slice());
         let b = inverse_ero(&mut a.clone()).unwrap();
-        let c = a * b;
+        let c = &a * &b;
         assert!(c.is_identity());
 
     }
@@ -153,7 +153,7 @@ mod test{
             1., 0.,
             1., 1.].as_slice());
         let b = inverse_eco(&mut a.clone()).unwrap();
-        let c = a * b;
+        let c = &a * &b;
         assert!(c.is_identity());
 
     }
@@ -166,7 +166,7 @@ mod test{
             println!("n: {}", n);
             println!("a: {}", a);
             let b = inverse_ero(&mut a.clone()).unwrap();
-            let c = a * b;
+            let c = &a * &b;
             println!("b: {}", b);
             println!("c: {}", c);
 
@@ -183,7 +183,7 @@ mod test{
             println!("n: {}", n);
             println!("a: {}", a);
             let b = inverse_eco(&mut a.clone()).unwrap();
-            let c = a * b;
+            let c = &a * &b;
             println!("b: {}", b);
             println!("c: {}", c);
 
@@ -199,7 +199,7 @@ mod test{
             println!("n: {}", n);
             println!("a: {}", a);
             let b = inverse_ero(&mut a.clone()).unwrap();
-            let c = a * b;
+            let c = &a * &b;
             println!("b: {}", b);
             println!("c: {}", c);
             let i : MatrixF64  = Matrix::identity(n, n);
@@ -213,7 +213,7 @@ mod test{
             measure the maximum deviation of any entry
             int the difference matrix below from identity. 
             */
-            let diff = i  - c;
+            let diff = &i  - &c;
             let max = diff.max_abs_scalar_value();
             assert!(max < 1e-3);
         }
@@ -229,11 +229,11 @@ mod test{
             println!("n: {}", n);
             println!("a: {}", a);
             let b = inverse_eco(&mut a.clone()).unwrap();
-            let c = a * b;
+            let c = &a * &b;
             println!("b: {}", b);
             println!("c: {}", c);
             let i : MatrixF64  = Matrix::identity(n, n);
-            let diff = i  - c;
+            let diff = &i  - &c;
             let max = diff.max_abs_scalar_value();
             assert!(max < 1e-3);
         }

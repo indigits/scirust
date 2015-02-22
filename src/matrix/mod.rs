@@ -13,9 +13,6 @@ pub mod view_conversion;
 pub mod view_minmax;
 pub mod triangular_matrix;
 pub mod eo {
-    //pub use self::eo_traits;
-    //pub use self::eo_matrix;
-    //pub use self::eo_view;
     pub mod eo_traits;
     pub mod eo_matrix;
     pub mod eo_view;

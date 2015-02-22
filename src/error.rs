@@ -3,6 +3,7 @@
 
 
 // std imports
+use std::fmt;
 
 
 // local imports
@@ -131,3 +132,18 @@ impl SRError{
     }
 }
 
+/***
+impl fmt::Debug for SRError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        try!(write!(f, "{}", self.to_string()));
+        Ok(())
+    }
+}
+
+***/
+
+impl fmt::Display for SRError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
+}

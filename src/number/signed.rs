@@ -9,7 +9,7 @@ use std::num::{SignedInt, Float};
 // local imports
 use number::number::Number;
 
-pub trait Signed: Number + Neg {
+pub trait Signed: Number + Neg<Output=Self> {
     fn abs_val(&self) -> Self;
     fn signum(&self) -> Self;
     fn is_positive(&self) -> bool;

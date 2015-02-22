@@ -209,8 +209,8 @@ impl LUDecomposition{
             a.permuted_cols(p)
         };
         u.scale_rows(d);
-        let b = l * u;
-        let diff  = a  - b;
+        let b = &l * &u;
+        let diff  = &a  - &b;
         //println!("a {}", a);
         //println!("p{}", p);
         //println!("p a {}", a);
@@ -259,7 +259,7 @@ impl LUDecomposition{
         println!("l: {}", l);
         println!("d: {}", d);
         println!("u: {}", u);
-        println!("lu: {}", l * d * u);
+        println!("lu: {}", &(&l * &d) * &u);
     }
 }
 
@@ -409,11 +409,11 @@ mod test{
         lus.print();
         assert!(lus.max_abs_diff(&a) <  1e-7);
         let (l, u) = lu_ero(&a);
-        let d = a - l * u;
+        let d = &a - &(&l * &u);
         assert!(d.max_abs_scalar_value() < 1e-7);
 
         let (l, u, p) = lup_ero(&a);
-        let d = p*a -  l*u;
+        let d = &(&p* &a) -  &(&l* &u);
         assert!(d.max_abs_scalar_value() < 1e-7);
     }
 
@@ -425,10 +425,10 @@ mod test{
         lus.print();
         assert_eq!(lus.max_abs_diff(&a), 0.);
         let (l, u) = lu_eco(&a);
-        assert_eq!(a, l*u);
+        assert_eq!(a, &l*&u);
 
         let (l, u, p) = lup_eco(&a);
-        assert_eq!(a*p, l*u);
+        assert_eq!(&a*&p, &l*&u);
     }
 
     #[test]
@@ -439,7 +439,7 @@ mod test{
         lus.decompose_ero();
         assert_eq!(lus.max_abs_diff(&a), 0.);
         let (l, u, p) = lup_ero(&a);
-        assert_eq!(p*a, l*u);
+        assert_eq!(&a*&p, &l*&u);
     }
 
     #[test]
@@ -449,7 +449,7 @@ mod test{
         lus.decompose_eco();
         assert_eq!(lus.max_abs_diff(&a), 0.);
         let (l, u, p) = lup_eco(&a);
-        assert_eq!(a*p, l*u);
+        assert_eq!(&a*&p, &l*&u);
     }
 
     #[test]

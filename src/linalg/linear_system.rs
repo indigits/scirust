@@ -255,7 +255,7 @@ impl<'a, 'b, 'c> LinearSystemValidator<'a, 'b, 'c>{
         LinearSystemValidator{a : a , 
             x : x, 
             b : b, 
-            d : *a * *x - *b}
+            d : &(a * x) - b}
     }
 
     pub fn max_abs_scalar_value(&self)-> f64{
@@ -272,7 +272,7 @@ impl<'a, 'b, 'c> LinearSystemValidator<'a, 'b, 'c>{
     pub fn print(&self){
         println!("a: {}", self.a);
         println!("x: {}", self.x);
-        println!("ax: {}", *self.a * *(self.x));
+        println!("ax: {}", self.a * (self.x));
         println!("b: {}", self.b);
         println!("diff: {}", self.d);
         println!("max abs diff: {}", self.max_abs_scalar_value());
@@ -312,7 +312,7 @@ mod test{
         let x = from_range_cw(3, 1, 1.0, 100.0);
         // a above is rank-2.
         a.set(2,2, 11.0);
-        let b  = a * x;
+        let b  = &a * &x;
         println!("A: {}", a);
         println!("x: {}", x);
         println!("b: {}", b);
@@ -380,7 +380,7 @@ mod test{
             1., 1.,
             0., 1.].as_slice());
         let x = vector_f64([1., 2.].as_slice());
-        let b = l * x;
+        let b = &l * &x;
         let x = ut_solve(&l, &b).unwrap();
         let lsv = LinearSystemValidator::new(&l, &x, &b);
         lsv.print();
@@ -393,7 +393,7 @@ mod test{
             1., 0.,
             1., 1.].as_slice());
         let x = vector_f64([1., 2.].as_slice());
-        let b = l * x;
+        let b = &l * &x;
         let x = lt_solve(&l, &b).unwrap();
         let lsv = LinearSystemValidator::new(&l, &x, &b);
         lsv.print();
@@ -410,7 +410,7 @@ mod test{
         1.0, 1.0, 1.0, 1.0
         ].as_slice());
         let x = vector_f64([1., 2., 3., 4.].as_slice());
-        let b = l * x;
+        let b = &l * &x;
         let x = lt_solve(&l, &b).unwrap();
         let lsv = LinearSystemValidator::new(&l, &x, &b);
         lsv.print();
@@ -423,7 +423,7 @@ mod test{
         let m = from_range_rw_f64(10, 10, 1., 200.);
         let x = vector_f64([1., 2., 3., 4., 5., 6., 7., 8., 9., 10.].as_slice());
         let l = m.lt();
-        let b = l * x;
+        let b = &l * &x;
         let x = lt_solve(&l, &b).unwrap();
         let lsv = LinearSystemValidator::new(&l, &x, &b);
         lsv.print();
