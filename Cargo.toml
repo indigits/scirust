@@ -1,7 +1,7 @@
 [package]
 
 name = "scirust"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Shailesh Kumar <shailesh@indigits.com>"]
 description="A scientific computing library"
 documentation="http://www.rust-ci.org/indigits/scirust/doc/scirust/"
@@ -11,8 +11,8 @@ license="Apache-2.0"
 
 
 [dependencies]
-log = "0.2.4"
-rand = "0.1.3"
+log = "0.3.1"
+rand = "0.3.7"
 
 [[bin]]
 

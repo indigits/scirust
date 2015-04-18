@@ -1,9 +1,3 @@
-#![feature(collections)]
-#![feature(core)]
-#![feature(unsafe_destructor)]
-#![feature(alloc)]
-#![feature(std_misc)]
-#![feature(test)]
 #![allow(unused_features)]
 
 #![doc="A generics based scientific computing library for Rust
@@ -33,10 +27,8 @@ C libraries like BLAS or LAPACK.
 "]
 
 #[macro_use(plugin, link)] 
-#[macro_use] extern crate log;
-extern crate collections;
-//extern crate quickcheck_macros;
-//extern crate quickcheck;
+#[macro_use] 
+extern crate log;
 extern crate rand;
 
 // Common modules
@@ -44,28 +36,28 @@ pub mod error;
 pub mod number;
 
 // Main libraries
-pub mod external;
-pub mod discrete;
-pub mod matrix;
-pub mod linalg;
-pub mod signal;
-pub mod dx;
-pub mod stat;
-pub mod alg;
-// pub mod opt;
-pub mod image {
-#![doc="Image processing
-"]
-}
+// pub mod external;
+// pub mod discrete;
+// pub mod matrix;
+// pub mod linalg;
+// pub mod signal;
+// pub mod dx;
+// pub mod stat;
+// pub mod alg;
+// // pub mod opt;
+// pub mod image {
+// #![doc="Image processing
+// "]
+// }
 
-pub mod audio {
-#![doc="Audio signal processing
-"]
-}
+// pub mod audio {
+// #![doc="Audio signal processing
+// "]
+// }
 
-// for internal use only
-pub mod util;
-mod testdata;
+// // for internal use only
+// pub mod util;
+// mod testdata;
 
-// Overall API of SciRust
-pub mod api;
+// // Overall API of SciRust
+// pub mod api;

@@ -20,3 +20,11 @@ pub mod signed;
 //pub mod properties;
 
 //pub mod complex;
+pub mod ops;
+pub mod magma;
+pub mod quasigroup;
+pub mod semigroup;
+pub mod loop_;
+pub mod monoid;
+pub mod group;
+

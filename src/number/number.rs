@@ -4,8 +4,6 @@
 
 // std imports
 use std::ops::{Add, Sub, Mul, Div};
-use std::num::{Int, Float};
-use std::num::{ToPrimitive};
 
 
 // local imports
@@ -343,51 +341,51 @@ pub fn num_range<A: Number + PartialOrd + One>(start: A, stop: A) -> NumRange<A>
     NumRange{state: start, stop: stop, one: One::one()}
 }
 
-impl<A: Number + PartialOrd + One + ToPrimitive> Iterator for NumRange<A> {
-    type Item = A;
-    #[inline]
-    fn next(&mut self) -> Option<A> {
-        if self.state < self.stop {
-            let result = self.state.clone();
-            self.state = self.state + self.one;
-            Some(result)
-        } else {
-            None
-        }
-    }
+// impl<A: Number + PartialOrd + One> Iterator for NumRange<A> {
+//     type Item = A;
+//     #[inline]
+//     fn next(&mut self) -> Option<A> {
+//         if self.state < self.stop {
+//             let result = self.state.clone();
+//             self.state = self.state + self.one;
+//             Some(result)
+//         } else {
+//             None
+//         }
+//     }
 
-    #[inline]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        // This first checks if the elements are representable as i64. If they aren't, try u64 (to
-        // handle cases like range(huge, huger)). We don't use uint/int because the difference of
-        // the i64/u64 might lie within their range.
-        let bound = match self.state.to_i64() {
-            Some(a) => {
-                let sz = self.stop.to_i64().map(|b| b.checked_sub(a));
-                match sz {
-                    Some(Some(bound)) => bound.to_uint(),
-                    _ => None,
-                }
-            },
-            None => match self.state.to_u64() {
-                Some(a) => {
-                    let sz = self.stop.to_u64().map(|b| b.checked_sub(a));
-                    match sz {
-                        Some(Some(bound)) => bound.to_uint(),
-                        _ => None
-                    }
-                },
-                None => None
-            }
-        };
+//     #[inline]
+//     fn size_hint(&self) -> (usize, Option<usize>) {
+//         // This first checks if the elements are representable as i64. If they aren't, try u64 (to
+//         // handle cases like range(huge, huger)). We don't use uint/int because the difference of
+//         // the i64/u64 might lie within their range.
+//         let bound = match self.state as i64 {
+//             Some(a) => {
+//                 let sz = self.stop.to_i64().map(|b| b.checked_sub(a));
+//                 match sz {
+//                     Some(Some(bound)) => bound.to_uint(),
+//                     _ => None,
+//                 }
+//             },
+//             None => match self.state.to_u64() {
+//                 Some(a) => {
+//                     let sz = self.stop.to_u64().map(|b| b.checked_sub(a));
+//                     match sz {
+//                         Some(Some(bound)) => bound.to_uint(),
+//                         _ => None
+//                     }
+//                 },
+//                 None => None
+//             }
+//         };
 
-        match bound {
-            Some(b) => (b, Some(b)),
-            // Standard fallback for unbounded/unrepresentable bounds
-            None => (0, None)
-        }
-    }
-}
+//         match bound {
+//             Some(b) => (b, Some(b)),
+//             // Standard fallback for unbounded/unrepresentable bounds
+//             None => (0, None)
+//         }
+//     }
+// }
 
 
 

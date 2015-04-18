@@ -70,79 +70,8 @@ pub trait Groupoid{
 
 }
 
-pub trait Magma{
-
-}
-
-pub trait QuasiGroup{
-
-}
-
-pub trait Loop{
-
-}
-
-pub trait SemiGroup{
-
-}
-
-pub trait Monoid{
-
-}
-
-pub trait Group{
-
-}
-
-pub trait CommutativeGroup{
-
-}
-
-pub trait SemiRing{
-
-}
-
-pub trait NonAssociativeRing{
-
-}
 
 
-pub trait Ring{
 
-}
-
-pub trait CommutativeRing{
-
-}
-
-pub trait LieRing{
-
-}
-
-pub trait BooleanRing{
-
-}
-
-
-pub trait IntegralDomain{
-
-}
-
-
-pub trait Field{
-
-}
-
-pub trait SkewLattice{
-
-}
-
-pub trait Lattice{
-
-}
-
-pub trait BoundedLattice{
-
-}
 
 
