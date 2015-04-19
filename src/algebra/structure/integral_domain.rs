@@ -27,7 +27,21 @@ pub trait IntegralDomainPartial : CommutativeRingPartial {
 
 }
 
+impl IntegralDomainPartial for i8   {}
+impl IntegralDomainPartial for i16  {}
+impl IntegralDomainPartial for i32  {}
+impl IntegralDomainPartial for i64  {}
+impl IntegralDomainPartial for f32  {}
+impl IntegralDomainPartial for f64  {}
+
 /// Marker trait for integral domains with full equivalence
 pub trait IntegralDomain : IntegralDomainPartial + CommutativeRing{
 
 }
+
+
+impl IntegralDomain for i8   {}
+impl IntegralDomain for i16  {}
+impl IntegralDomain for i32  {}
+impl IntegralDomain for i64  {}
+

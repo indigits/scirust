@@ -52,16 +52,394 @@ Distributivity of multiplication over addition
 
 "]
 
+use algebra::zero::Zero;
+use algebra::one::One;
+use algebra::ops::Recip;
 use algebra::structure::integral_domain::{IntegralDomainPartial, IntegralDomain};
+use algebra::structure::semigroup::{SemiGroupAdd, SemiGroupAddPartial, 
+    SemiGroupMulPartial};
+use algebra::structure::group::{CommutativeGroupAdd, CommutativeGroupAddPartial};
+use algebra::structure::monoid::{CommutativeMonoidMulPartial, CommutativeMonoidMul};
+
 
 /// Marker trait for fields with partial equivalence
-pub trait FieldPartial : IntegralDomainPartial{
+pub trait FieldPartial : IntegralDomainPartial
+        + Recip<Output=Self>
+{
 
+    fn prop_addition_is_associative(a : Self, b : Self, c : Self) -> bool {
+        SemiGroupAddPartial::prop_is_associative(a, b, c)
+    }
+
+    fn prop_multiplication_is_associative(a : Self, b : Self, c : Self) -> bool {
+        SemiGroupMulPartial::prop_is_associative(a, b, c)
+    }
+
+    fn prop_addition_is_commutative(a : Self, b : Self) -> bool {
+        CommutativeGroupAddPartial::prop_is_commutative(a, b)
+    }
+
+    fn prop_multiplication_is_commutative(a : Self, b : Self) -> bool {
+        CommutativeMonoidMulPartial::prop_is_commutative(a, b)
+    }
+
+
+    fn prop_additive_identity(a : Self) -> bool{
+        let z : Self = Zero::zero();
+        if a != a.clone() + z.clone(){
+            return false;
+        }
+        if a != z.clone() + a.clone(){
+            return false;
+        }
+        true
+    }
+
+    fn prop_multiplicative_identity(a : Self) -> bool{
+        let o : Self = One::one();
+        if a != a.clone() * o.clone(){
+            return false;
+        }
+        if a != o.clone() * a.clone(){
+            return false;
+        }
+        true
+    }
+
+    #[allow(unused_variables)]
+    fn prop_distinct_zero_one(a : Self) -> bool{
+        let o : Self = One::one();
+        let z : Self = Zero::zero();
+        o != z
+    }
+
+    fn prop_additive_inverse(a : Self) -> bool{
+        let z : Self = Zero::zero();
+        let b = -a.clone();
+        if a.clone() + b.clone() != z{
+            return false;
+        }
+        if b.clone() + a.clone() != z{
+            return false;
+        }
+        true
+    }
+
+    fn prop_multiplicative_inverse(a : Self) -> bool{
+        let z : Self = Zero::zero();
+        if z == a {
+            return true;
+        }
+        let b = a.clone().recip();
+        let o : Self = One::one();
+
+        if a.clone() *  b.clone() != o{
+            return false;
+        }
+        if b.clone() * a.clone() != o{
+            return false;
+        }
+        true
+    }
+
+
+
+    fn prop_is_distributive(a : Self, b : Self, c : Self) -> bool {
+        let bc = b.clone() + c.clone();
+        let lhs = a.clone()  * bc.clone();
+        let ab = a.clone() * b.clone();
+        let ac = a.clone() * c.clone();
+        let rhs = ab.clone() + ac.clone();
+        if lhs != rhs{
+            return false;
+        }
+        let lhs = bc.clone() * a.clone();
+        let ba = b.clone() * a.clone();
+        let ca = c.clone() * a.clone();
+        let rhs = ba + ca;
+        if lhs != rhs{
+            return false;
+        }
+        true
+    }
+
+    fn check_all_properties(a: Self, b: Self, c : Self)-> bool {
+        // check addition associativity
+        if !FieldPartial::prop_addition_is_associative(
+            a.clone(), b.clone(), c.clone()) {
+            return false;
+        }
+        
+
+        if !FieldPartial::prop_additive_identity(a.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_additive_identity(b.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_additive_identity(c.clone()){
+            return false;
+        }
+
+        
+        if !FieldPartial::prop_additive_inverse(a.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_additive_inverse(b.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_additive_inverse(c.clone()){
+            return false;
+        }
+        
+        if !FieldPartial::prop_multiplicative_inverse(a.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_multiplicative_inverse(b.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_multiplicative_inverse(c.clone()){
+            return false;
+        }
+        
+        if !FieldPartial::prop_addition_is_commutative(a.clone(), b.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_addition_is_commutative(b.clone(), c.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_addition_is_commutative(a.clone(), c.clone()){
+            return false;
+        }
+        
+        if !FieldPartial::prop_multiplication_is_commutative(a.clone(), b.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_multiplication_is_commutative(b.clone(), c.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_multiplication_is_commutative(a.clone(), c.clone()){
+            return false;
+        }
+        
+        if !FieldPartial::prop_multiplication_is_associative(
+            a.clone(), b.clone(), c.clone()) {
+            return false;
+        }
+
+        if !FieldPartial::prop_multiplicative_identity(a.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_multiplicative_identity(b.clone()){
+            return false;
+        }
+        if !FieldPartial::prop_multiplicative_identity(c.clone()){
+            return false;
+        }
+
+        if !FieldPartial::prop_is_distributive(
+            a.clone(), b.clone(), c.clone()) {
+            return false;
+        }
+
+        if !FieldPartial::prop_distinct_zero_one(a.clone()){
+            return false;
+        }
+
+        true
+    }
 }
 
 
+
+impl FieldPartial for f32  {}
+impl FieldPartial for f64  {}
+
+
 /// Marker trait for fields with full equivalence
-pub trait Field : IntegralDomain {
+pub trait Field : FieldPartial + IntegralDomain {
+    fn prop_addition_is_associative(a : Self, b : Self, c : Self) -> bool {
+        SemiGroupAdd::prop_is_associative(a, b, c)
+    }
+
+    fn prop_multiplication_is_associative(a : Self, b : Self, c : Self) -> bool {
+        // TODO : using SemiGroupMul doesn't work here. Why? 
+        SemiGroupMulPartial::prop_is_associative(a, b, c)
+    }
+
+    fn prop_addition_is_commutative(a : Self, b : Self) -> bool {
+        CommutativeGroupAdd::prop_is_commutative(a, b)
+    }
+
+    fn prop_multiplication_is_commutative(a : Self, b : Self) -> bool {
+        CommutativeMonoidMul::prop_is_commutative(a, b)
+    }
+
+
+    fn prop_additive_identity(a : Self) -> bool{
+        let z : Self = Zero::zero();
+        if a != a.clone() + z.clone(){
+            return false;
+        }
+        if a != z.clone() + a.clone(){
+            return false;
+        }
+        true
+    }
+
+    fn prop_multiplicative_identity(a : Self) -> bool{
+        let o : Self = One::one();
+        if a != a.clone() * o.clone(){
+            return false;
+        }
+        if a != o.clone() * a.clone(){
+            return false;
+        }
+        true
+    }
+
+     #[allow(unused_variables)]
+    fn prop_distinct_zero_one(a : Self) -> bool{
+        let o : Self = One::one();
+        let z : Self = Zero::zero();
+        o != z
+    }
+
+    fn prop_additive_inverse(a : Self) -> bool{
+        let z : Self = Zero::zero();
+        let b = -a.clone();
+        if a.clone() + b.clone() != z{
+            return false;
+        }
+        if b.clone() + a.clone() != z{
+            return false;
+        }
+        true
+    }
+
+    fn prop_multiplicative_inverse(a : Self) -> bool{
+        let z : Self = Zero::zero();
+        if z == a {
+            return true;
+        }
+        let b = a.clone().recip();
+        let o : Self = One::one();
+
+        if a.clone() *  b.clone() != o{
+            return false;
+        }
+        if b.clone() * a.clone() != o{
+            return false;
+        }
+        true
+    }
+
+
+
+    fn prop_is_distributive(a : Self, b : Self, c : Self) -> bool {
+        let bc = b.clone() + c.clone();
+        let lhs = a.clone()  * bc.clone();
+        let ab = a.clone() * b.clone();
+        let ac = a.clone() * c.clone();
+        let rhs = ab.clone() + ac.clone();
+        if lhs != rhs{
+            return false;
+        }
+        let lhs = bc.clone() * a.clone();
+        let ba = b.clone() * a.clone();
+        let ca = c.clone() * a.clone();
+        let rhs = ba + ca;
+        if lhs != rhs{
+            return false;
+        }
+        true
+    }
+
+    fn check_all_properties(a: Self, b: Self, c : Self)-> bool {
+        // check addition associativity
+        if !Field::prop_addition_is_associative(
+            a.clone(), b.clone(), c.clone()) {
+            return false;
+        }
+        
+
+        if !Field::prop_additive_identity(a.clone()){
+            return false;
+        }
+        if !Field::prop_additive_identity(b.clone()){
+            return false;
+        }
+        if !Field::prop_additive_identity(c.clone()){
+            return false;
+        }
+
+        
+        if !Field::prop_additive_inverse(a.clone()){
+            return false;
+        }
+        if !Field::prop_additive_inverse(b.clone()){
+            return false;
+        }
+        if !Field::prop_additive_inverse(c.clone()){
+            return false;
+        }
+        
+        if !Field::prop_multiplicative_inverse(a.clone()){
+            return false;
+        }
+        if !Field::prop_multiplicative_inverse(b.clone()){
+            return false;
+        }
+        if !Field::prop_multiplicative_inverse(c.clone()){
+            return false;
+        }
+        
+        if !Field::prop_addition_is_commutative(a.clone(), b.clone()){
+            return false;
+        }
+        if !Field::prop_addition_is_commutative(b.clone(), c.clone()){
+            return false;
+        }
+        if !Field::prop_addition_is_commutative(a.clone(), c.clone()){
+            return false;
+        }
+        
+        if !Field::prop_multiplication_is_commutative(a.clone(), b.clone()){
+            return false;
+        }
+        if !Field::prop_multiplication_is_commutative(b.clone(), c.clone()){
+            return false;
+        }
+        if !Field::prop_multiplication_is_commutative(a.clone(), c.clone()){
+            return false;
+        }
+        
+        if !Field::prop_multiplication_is_associative(
+            a.clone(), b.clone(), c.clone()) {
+            return false;
+        }
+
+        if !Field::prop_multiplicative_identity(a.clone()){
+            return false;
+        }
+        if !Field::prop_multiplicative_identity(b.clone()){
+            return false;
+        }
+        if !Field::prop_multiplicative_identity(c.clone()){
+            return false;
+        }
+
+        if !Field::prop_is_distributive(
+            a.clone(), b.clone(), c.clone()) {
+            return false;
+        }
+
+        if !Field::prop_distinct_zero_one(a.clone()){
+            return false;
+        }
+
+        true
+    }
 
 }
 

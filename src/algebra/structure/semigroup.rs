@@ -119,8 +119,7 @@ impl SemiGroupMulPartial for f64  {}
 
 /// Semigroup with a multiplication operation with full equivalence
 pub trait SemiGroupMul 
-    : MagmaMul
-    + SemiGroupMulPartial
+    : SemiGroupMulPartial + MagmaMul
 {
 
 }
