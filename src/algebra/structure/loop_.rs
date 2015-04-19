@@ -30,7 +30,7 @@ use std::ops::{Neg};
 use algebra::ops::{Recip};
 use algebra::zero::Zero;
 use algebra::one::One;
-use algebra::quasigroup::{QuasiGroupAddPartial, QuasiGroupAdd, 
+use algebra::structure::quasigroup::{QuasiGroupAddPartial, QuasiGroupAdd, 
     QuasiGroupMulPartial, QuasiGroupMul};
 
 ///////////////////////////////////////////////////////////

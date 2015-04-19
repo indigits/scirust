@@ -20,7 +20,7 @@ References:
 "]
 
 // local imports
-use algebra::commutative_ring::{CommutativeRingPartial, CommutativeRing};
+use algebra::structure::commutative_ring::{CommutativeRingPartial, CommutativeRing};
 
 /// Marker trait for integral domains with partial equivalence
 pub trait IntegralDomainPartial : CommutativeRingPartial {

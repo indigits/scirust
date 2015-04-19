@@ -29,7 +29,7 @@ References:
 // local imports
 use algebra::zero::Zero;
 use algebra::one::One;
-use algebra::semigroup::{SemiGroupAddPartial, SemiGroupAdd, 
+use algebra::structure::semigroup::{SemiGroupAddPartial, SemiGroupAdd, 
     SemiGroupMulPartial, SemiGroupMul};
 
 ///////////////////////////////////////////////////////////

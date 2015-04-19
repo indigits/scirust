@@ -52,7 +52,7 @@ Distributivity of multiplication over addition
 
 "]
 
-use algebra::integral_domain::{IntegralDomainPartial, IntegralDomain};
+use algebra::structure::integral_domain::{IntegralDomainPartial, IntegralDomain};
 
 /// Marker trait for fields with partial equivalence
 pub trait FieldPartial : IntegralDomainPartial{

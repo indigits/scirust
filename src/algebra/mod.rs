@@ -75,10 +75,9 @@ pub mod entry;
 pub mod zero;
 pub mod one;
 pub mod signed;
-//pub mod properties;
-
-//pub mod complex;
 pub mod ops;
+
+pub mod structure {
 pub mod magma;
 pub mod quasigroup;
 pub mod semigroup;
@@ -90,3 +89,5 @@ pub mod commutative_ring;
 pub mod integral_domain;
 pub mod field;
 
+}
+//pub mod complex;

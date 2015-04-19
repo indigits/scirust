@@ -45,9 +45,9 @@ References:
 // local imports
 use algebra::zero::Zero;
 use algebra::one::One;
-use algebra::group::{CommutativeGroupAddPartial, CommutativeGroupAdd};
-use algebra::monoid::{MonoidMulPartial, MonoidMul};
-use algebra::semigroup::{SemiGroupAddPartial, SemiGroupMulPartial};
+use algebra::structure::group::{CommutativeGroupAddPartial, CommutativeGroupAdd};
+use algebra::structure::monoid::{MonoidMulPartial, MonoidMul};
+use algebra::structure::semigroup::{SemiGroupAddPartial, SemiGroupMulPartial};
 
 
 ///////////////////////////////////////////////////////////

@@ -43,9 +43,9 @@ References:
 // std imports
 
 // local imports
-use algebra::monoid::{MonoidAddPartial, MonoidAdd, 
+use algebra::structure::monoid::{MonoidAddPartial, MonoidAdd, 
     MonoidMulPartial, MonoidMul};
-use algebra::loop_::{LoopAddPartial, LoopAdd, 
+use algebra::structure::loop_::{LoopAddPartial, LoopAdd, 
     LoopMulPartial, LoopMul};
 
 
