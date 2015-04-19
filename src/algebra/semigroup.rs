@@ -1,3 +1,31 @@
+#![doc="Defines the semigroup algebraic structure.
+
+A semigroup  is an algebraic structure consisting of a set 
+together with an associative binary operation. 
+
+Semigroup builds on top of magma and provides associativity.
+
+
+We define four kinds of semigroups.
+
+* Semigroup with an addition operation with partial equivalence
+* Semigroup with an addition operation with full equivalence
+* Semigroup with a multiplication operation with partial equivalence
+* Semigroup with a multiplication operation with full equivalence
+
+It is not possible to check the associativity of the
+group operation at the compile time. We do provide 
+a function (with each semigroup trait) to validate
+the associativity of the operation.
+
+
+
+References:
+
+* http://en.wikipedia.org/wiki/Algebraic_structure
+* http://en.wikipedia.org/wiki/Semigroup
+
+"]
 
 
 // local imports
@@ -7,11 +35,12 @@ use algebra::magma::{MagmaAddPartial, MagmaAdd,
 
 ///////////////////////////////////////////////////////////
 
+/// Semigroup with an addition operation with partial equivalence
 pub trait SemiGroupAddPartial
     : MagmaAddPartial
 {
 
-    fn prop_add_is_associative_partial(a : Self, b : Self, c : Self) -> bool {
+    fn prop_is_associative(a : Self, b : Self, c : Self) -> bool {
         let ab = a.clone() + b.clone();
         let bc = b.clone() + c.clone();
         (ab) + c == a + (bc)
@@ -34,11 +63,12 @@ impl SemiGroupAddPartial for f64  {}
 ///////////////////////////////////////////////////////////
 
 
+/// Semigroup with an addition operation with full equivalence
 pub trait SemiGroupAdd 
     : MagmaAdd
     + SemiGroupAddPartial
 {
-    fn prop_add_is_associative(a : Self, b : Self, c : Self) -> bool {
+    fn prop_is_associative(a : Self, b : Self, c : Self) -> bool {
         let ab = a.clone() + b.clone();
         let bc = b.clone() + c.clone();
         (ab) + c == a + (bc)
@@ -60,11 +90,12 @@ impl SemiGroupAdd for i64  {}
 
 ///////////////////////////////////////////////////////////
 
+/// Semigroup with a multiplication operation with partial equivalence
 pub trait SemiGroupMulPartial
     : MagmaMulPartial
 {
 
-    fn prop_mul_is_associative_partial(a : Self, b : Self, c : Self) -> bool {
+    fn prop_is_associative(a : Self, b : Self, c : Self) -> bool {
         let ab = a.clone() * b.clone();
         let bc = b.clone() * c.clone();
         (ab) * c == a * (bc)
@@ -86,6 +117,7 @@ impl SemiGroupMulPartial for f64  {}
 
 ///////////////////////////////////////////////////////////
 
+/// Semigroup with a multiplication operation with full equivalence
 pub trait SemiGroupMul 
     : MagmaMul
     + SemiGroupMulPartial

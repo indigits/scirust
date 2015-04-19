@@ -1,3 +1,45 @@
+#![doc="Defines the group algebraic structure.
+
+
+A group is an algebraic structure consisting of a set 
+of elements together with an operation that combines 
+any two elements to form a third element. 
+The operation satisfies four conditions called the group 
+axioms, namely closure, associativity, identity and 
+invertibility.
+
+Essentially a group is a monoid and a loop both.
+
+A commutative or Abelian group is a group whose
+group operation is also commutative.
+
+
+We define four kinds of groups.
+
+* Group with an addition operation with partial equivalence
+* Group with an addition operation with full equivalence
+* Group with a multiplication operation with partial equivalence
+* Group with a multiplication operation with full equivalence
+
+We define four kinds of commutative groups.
+
+* Commutative group with an addition operation with partial equivalence
+* Commutative group with an addition operation with full equivalence
+* Commutative group with a multiplication operation with partial equivalence
+* Commutative group with a multiplication operation with full equivalence
+
+
+
+
+References:
+
+* http://en.wikipedia.org/wiki/Algebraic_structure
+* http://en.wikipedia.org/wiki/Group_(mathematics)
+* http://en.wikipedia.org/wiki/Abelian_group
+
+"]
+
+
 // std imports
 
 // local imports
@@ -9,6 +51,8 @@ use algebra::loop_::{LoopAddPartial, LoopAdd,
 
 ///////////////////////////////////////////////////////////
 
+
+/// Group with an addition operation with partial equivalence
 pub trait GroupAddPartial 
 : MonoidAddPartial  + LoopAddPartial
 {
@@ -24,6 +68,7 @@ impl<T> GroupAddPartial for T where
 ///////////////////////////////////////////////////////////
 
 
+/// Group with an addition operation with full equivalence
 pub trait GroupAdd 
 : GroupAddPartial + MonoidAdd  + LoopAdd
 {
@@ -39,6 +84,7 @@ impl<T> GroupAdd for T where
 ///////////////////////////////////////////////////////////
 
 
+/// Group with a multiplication operation with partial equivalence
 pub trait GroupMulPartial 
 : MonoidMulPartial  + LoopMulPartial
 {
@@ -55,6 +101,7 @@ impl<T> GroupMulPartial for T where
 ///////////////////////////////////////////////////////////
 
 
+/// Group with a multiplication operation with full equivalence
 pub trait GroupMul 
 : GroupMulPartial + MonoidMul  + LoopMul
 {
@@ -69,13 +116,14 @@ impl<T> GroupMul for T where
 
 ///////////////////////////////////////////////////////////
 
+/// Commutative group with an addition operation with partial equivalence
 pub trait CommutativeGroupAddPartial 
 : GroupAddPartial
 {
 
     /// Returns `true` if the addition operator is approximately commutative for
     /// the given argument tuple.
-    fn prop_add_is_commutative_partial(a : Self, b : Self) -> bool {
+    fn prop_is_commutative(a : Self, b : Self) -> bool {
         let ab = a.clone() + b.clone();
         let ba = b.clone() + a.clone();
         ab == ba
@@ -92,13 +140,14 @@ impl CommutativeGroupAddPartial for f64  {}
 
 ///////////////////////////////////////////////////////////
 
+/// Commutative group with an addition operation with full equivalence
 pub trait CommutativeGroupAdd
 : CommutativeGroupAddPartial + GroupAdd
 {
 
     /// Returns `true` if the addition operator is approximately commutative for
     /// the given argument tuple.
-    fn prop_add_is_commutative_partial(a : Self, b : Self) -> bool {
+    fn prop_is_commutative(a : Self, b : Self) -> bool {
         let ab = a.clone() + b.clone();
         let ba = b.clone() + a.clone();
         ab == ba
@@ -111,6 +160,40 @@ impl CommutativeGroupAdd for i16  {}
 impl CommutativeGroupAdd for i32  {}
 impl CommutativeGroupAdd for i64  {}
 
+///////////////////////////////////////////////////////////
+
+/// Commutative group with a multiplication operation with partial equivalence
+pub trait CommutativeGroupMulPartial 
+: GroupMulPartial
+{
+
+    /// Returns `true` if the multiplication operator is approximately commutative for
+    /// the given argument tuple.
+    fn prop_is_commutative(a : Self, b : Self) -> bool {
+        let ab = a.clone() * b.clone();
+        let ba = b.clone() * a.clone();
+        ab == ba
+    }
+
+}
+
+///////////////////////////////////////////////////////////
+
+
+/// Commutative group with a multiplication operation with full equivalence
+pub trait CommutativeGroupMul
+: CommutativeGroupMulPartial + GroupMul
+{
+
+    /// Returns `true` if the multiplication operator is approximately commutative for
+    /// the given argument tuple.
+    fn prop_is_commutative(a : Self, b : Self) -> bool {
+        let ab = a.clone() * b.clone();
+        let ba = b.clone() * a.clone();
+        ab == ba
+    }
+
+}
 
 
 

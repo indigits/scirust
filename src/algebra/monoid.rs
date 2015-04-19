@@ -1,4 +1,27 @@
+#![doc="Defines the monoid algebraic structure.
 
+A monoid is an algebraic structure with a single associative 
+binary operation and an identity element. 
+Monoids are studied in semigroup theory as they are 
+semigroups with identity. 
+
+A commutative monoid is a monoid whose binary operation is
+commutative.
+
+We define four kinds of monoids.
+
+* Monoid with an addition operation with partial equivalence
+* Monoid with an addition operation with full equivalence
+* Monoid with a multiplication operation with partial equivalence
+* Monoid with a multiplication operation with full equivalence
+
+
+References:
+
+* http://en.wikipedia.org/wiki/Algebraic_structure
+* http://en.wikipedia.org/wiki/Monoid
+
+"]
 
 // std imports
 
@@ -11,6 +34,7 @@ use algebra::semigroup::{SemiGroupAddPartial, SemiGroupAdd,
 
 ///////////////////////////////////////////////////////////
 
+/// Monoid with an addition operation with partial equivalence
 pub trait MonoidAddPartial
     : SemiGroupAddPartial
     + Zero
@@ -30,6 +54,7 @@ impl<T> MonoidAddPartial for T where
 ///////////////////////////////////////////////////////////
 
 
+/// Monoid with an addition operation with full equivalence
 pub trait MonoidAdd 
     : SemiGroupAdd
     + MonoidAddPartial
@@ -45,6 +70,7 @@ impl<T> MonoidAdd for T where
 
 ///////////////////////////////////////////////////////////
 
+/// Monoid with a multiplication operation with partial equivalence
 pub trait MonoidMulPartial
     : SemiGroupMulPartial
     + One
@@ -62,6 +88,7 @@ impl<T> MonoidMulPartial for T where
 ///////////////////////////////////////////////////////////
 
 
+/// Monoid with a multiplication operation with full equivalence
 pub trait MonoidMul 
     : SemiGroupMul
     + MonoidMulPartial
@@ -75,6 +102,90 @@ impl<T> MonoidMul for T where
 {}
 
 ///////////////////////////////////////////////////////////
+
+/// Commutative monoid with an addition operation with partial equivalence
+pub trait CommutativeMonoidAddPartial 
+: MonoidAddPartial
+{
+
+    /// Returns `true` if the addition operator is approximately commutative for
+    /// the given argument tuple.
+    fn prop_is_commutative(a : Self, b : Self) -> bool {
+        let ab = a.clone() + b.clone();
+        let ba = b.clone() + a.clone();
+        ab == ba
+    }
+
+}
+
+impl CommutativeMonoidAddPartial for i8   {}
+impl CommutativeMonoidAddPartial for i16  {}
+impl CommutativeMonoidAddPartial for i32  {}
+impl CommutativeMonoidAddPartial for i64  {}
+impl CommutativeMonoidAddPartial for f32  {}
+impl CommutativeMonoidAddPartial for f64  {}
+
+///////////////////////////////////////////////////////////
+
+/// Commutative monoid with an addition operation with full equivalence
+pub trait CommutativeMonoidAdd
+: CommutativeMonoidAddPartial + MonoidAdd
+{
+
+    /// Returns `true` if the addition operator is approximately commutative for
+    /// the given argument tuple.
+    fn prop_is_commutative(a : Self, b : Self) -> bool {
+        let ab = a.clone() + b.clone();
+        let ba = b.clone() + a.clone();
+        ab == ba
+    }
+
+}
+
+impl CommutativeMonoidAdd for i8   {}
+impl CommutativeMonoidAdd for i16  {}
+impl CommutativeMonoidAdd for i32  {}
+impl CommutativeMonoidAdd for i64  {}
+
+///////////////////////////////////////////////////////////
+
+
+/// Commutative monoid with a multiplication operation with partial equivalence
+pub trait CommutativeMonoidMulPartial 
+: MonoidMulPartial
+{
+
+    /// Returns `true` if the multiplication operator is approximately commutative for
+    /// the given argument tuple.
+    fn prop_is_commutative(a : Self, b : Self) -> bool {
+        let ab = a.clone() * b.clone();
+        let ba = b.clone() * a.clone();
+        ab == ba
+    }
+
+}
+
+///////////////////////////////////////////////////////////
+
+
+/// Commutative monoid with a multiplication operation with full equivalence
+pub trait CommutativeMonoidMul
+: CommutativeMonoidMulPartial + MonoidMul
+{
+
+    /// Returns `true` if the multiplication operator is approximately commutative for
+    /// the given argument tuple.
+    fn prop_is_commutative(a : Self, b : Self) -> bool {
+        let ab = a.clone() * b.clone();
+        let ba = b.clone() * a.clone();
+        ab == ba
+    }
+
+}
+
+
+///////////////////////////////////////////////////////////
+
 
 #[cfg(test)]
 mod tests {

@@ -1,3 +1,50 @@
+#![doc="Defines the magma algebraic structure.
+
+
+
+
+A magma is a basic kind of algebraic structure.
+A magma is a set with a single binary operation.
+The binary operation must be closed. No other
+properties are imposed.
+
+
+
+We define four kinds of magmas.
+
+* Magma with an addition operation with partial equivalence
+* Magma with an addition operation with full equivalence
+* Magma with a multiplication operation with partial equivalence
+* Magma with a multiplication operation with full equivalence
+
+Types like float don't support full equivalence. That's why
+separate magma types are needed for them.
+
+We define separate magma types for addition and multiplication
+operations. This gives us freedom in combining them to form
+algebraic structures with two operations. 
+
+In a sense, the traits defined in this module are marker traits.
+It is not really possible to verify the closure property for a 
+type at the compile time. It is assumed that the implementation
+will ensure that (to a reasonable degree).
+
+We also define a base trait ``MagmaBase``. This trait imposes
+some basic requirements for all types taking advantage
+of the algebraic traits defined in ``SciRust``. They all
+are required to support ``Debug``, ``Clone`` and ``Sized`` traits.
+
+
+References:
+
+* http://en.wikipedia.org/wiki/Algebraic_structure
+
+* http://en.wikipedia.org/wiki/Magma_(algebra)
+
+
+"]
+
+
 
 // std imports
 use std::fmt::Debug;
@@ -5,6 +52,9 @@ use std::fmt::Debug;
 // use std::marker::MarkerTrait;
 use std::ops::{Add, Mul};
 
+
+/// Defines basic requirements for all types implementing
+/// the algebraic traits defined  in SciRust
 pub trait MagmaBase : Debug + Clone + Sized {
 
 }
@@ -15,6 +65,7 @@ impl<T> MagmaBase for T where
 
 }
 
+/// Magma with an addition operation with partial equivalence
 pub trait MagmaAddPartial 
     : MagmaBase 
     + Add<Output=Self> 
@@ -29,6 +80,7 @@ impl<T> MagmaAddPartial for T where
 ///////////////////////////////////////////////////////////
 
 
+/// Magma with an addition operation with full equivalence
 pub trait MagmaAdd 
     : MagmaAddPartial
     + Eq {
@@ -41,7 +93,7 @@ impl<T> MagmaAdd for T where
 
 ///////////////////////////////////////////////////////////
 
-
+/// Magma with a multiplication operation with partial equivalence
 pub trait MagmaMulPartial
     : MagmaBase 
     + Mul<Output=Self> 
@@ -56,7 +108,7 @@ impl<T> MagmaMulPartial for T where
 
 ///////////////////////////////////////////////////////////
 
-
+/// Magma with a multiplication operation with full equivalence
 pub trait MagmaMul 
     : MagmaMulPartial
     + Eq {

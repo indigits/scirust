@@ -1,9 +1,33 @@
+#![doc="Defines the loop algebraic structure.
 
+A quasigroup with an identity element is called a loop. 
+Existence of identity element also implies the existence of inverse 
+element.
+
+
+We define four kinds of loops.
+
+* Loop with an addition operation with partial equivalence
+* Loop with an addition operation with full equivalence
+* Loop with a multiplication operation with partial equivalence
+* Loop with a multiplication operation with full equivalence
+
+
+
+
+References:
+
+* http://en.wikipedia.org/wiki/Algebraic_structure
+* http://en.wikipedia.org/wiki/Quasigroup
+
+"]
 
 // std imports
+use std::ops::{Neg};
 
 
 // local imports
+use algebra::ops::{Recip};
 use algebra::zero::Zero;
 use algebra::one::One;
 use algebra::quasigroup::{QuasiGroupAddPartial, QuasiGroupAdd, 
@@ -14,6 +38,7 @@ use algebra::quasigroup::{QuasiGroupAddPartial, QuasiGroupAdd,
 pub trait LoopAddPartial
     : QuasiGroupAddPartial
     + Zero
+    + Neg<Output=Self>
 {
 
 }
@@ -21,6 +46,7 @@ pub trait LoopAddPartial
 
 impl<T> LoopAddPartial for T where
     T: QuasiGroupAddPartial + Zero 
+    + Neg<Output=T>
 {
 
 }
@@ -48,6 +74,7 @@ impl<T> LoopAdd for T where
 pub trait LoopMulPartial
     : QuasiGroupMulPartial
     + One
+    + Recip<Output=Self>
 {
 
 }
@@ -55,6 +82,7 @@ pub trait LoopMulPartial
 
 impl<T> LoopMulPartial for T where
     T: QuasiGroupMulPartial + One 
+    + Recip<Output=T>
 {
 
 }

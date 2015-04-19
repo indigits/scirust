@@ -1,5 +1,58 @@
-#![doc="Defines generic traits for numbers on which
+#![doc="Defines generic traits for algebraic structures on which
 SciRust library works.
+
+
+Supporting modules
+
+* ``ops``:  Some operations not defined in std
+
+
+Algebraic structures
+
+* Magma : closure (set with an operation)
+* Quasi-group: closure, division (a set where division is always possible)
+* Loop: closure, identity, inverse (Quasigroup with identity)
+* Semigroup: closure, associativity
+* Monoid: closure, associativity, identity
+* Commutative monoid: closure, associativity, identity, commutativity (Monoid with commutativity)
+* Group: closure, associativity, identity, inverse  
+* Commutative group: closure, associativity, identity, inverse, commutativity
+* Ring : commutative group under addition, monoid under multiplication, distributive
+* Commutative Ring: commutative group under addition, commutative monoid under multiplication, distributive (ring + commutative monoid under multiplication)
+
+Modules:
+
+* ``magma``: Magma
+* ``quasigroup`` : Quasi-group
+* ``semigroup``: Semi-group
+* ``loop_``: Loop
+* ``monoid``: Monoid and commutative monoid
+* ``group``: Group  and commutative group
+* ``ring``: Ring
+
+References:
+
+* http://en.wikipedia.org/wiki/Algebraic_structure
+* http://en.wikipedia.org/wiki/Magma_(algebra)
+* http://en.wikipedia.org/wiki/Quasigroup
+* http://en.wikipedia.org/wiki/Semigroup
+* http://en.wikipedia.org/wiki/Monoid
+* http://en.wikipedia.org/wiki/Group_(mathematics)
+* http://en.wikipedia.org/wiki/Abelian_group
+* http://en.wikipedia.org/wiki/Ring_(mathematics)
+* http://en.wikipedia.org/wiki/Field_(mathematics)
+* http://en.wikipedia.org/wiki/Lattice_(order)
+
+
+Similar libraries
+
+* http://hackage.haskell.org/package/numeric-prelude
+
+
+
+Items on the agenda
+
+
 "]
 // Re-exporting symbols
 pub use self::number::Number;
@@ -27,4 +80,6 @@ pub mod semigroup;
 pub mod loop_;
 pub mod monoid;
 pub mod group;
+pub mod ring;
+
 
