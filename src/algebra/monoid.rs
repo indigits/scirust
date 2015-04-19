@@ -165,6 +165,13 @@ pub trait CommutativeMonoidMulPartial
 
 }
 
+impl CommutativeMonoidMulPartial for i8   {}
+impl CommutativeMonoidMulPartial for i16  {}
+impl CommutativeMonoidMulPartial for i32  {}
+impl CommutativeMonoidMulPartial for i64  {}
+impl CommutativeMonoidMulPartial for f32  {}
+impl CommutativeMonoidMulPartial for f64  {}
+
 ///////////////////////////////////////////////////////////
 
 
@@ -183,6 +190,10 @@ pub trait CommutativeMonoidMul
 
 }
 
+impl CommutativeMonoidMul for i8   {}
+impl CommutativeMonoidMul for i16  {}
+impl CommutativeMonoidMul for i32  {}
+impl CommutativeMonoidMul for i64  {}
 
 ///////////////////////////////////////////////////////////
 

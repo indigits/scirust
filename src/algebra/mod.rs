@@ -81,5 +81,6 @@ pub mod loop_;
 pub mod monoid;
 pub mod group;
 pub mod ring;
+pub mod commutative_ring;
 
 

@@ -34,6 +34,7 @@ References:
 
 * http://en.wikipedia.org/wiki/Algebraic_structure
 * http://en.wikipedia.org/wiki/Group_(mathematics)
+* http://en.wikipedia.org/wiki/Monoid
 * http://en.wikipedia.org/wiki/Ring_(mathematics)
 
 "]
@@ -273,18 +274,6 @@ pub trait SemiRing{
 pub trait NonAssociativeRing{
 
 }
-
-
-
-
-pub trait CommutativeRing{
-
-}
-
-
-
-
-
 
 pub trait LieRing{
 
