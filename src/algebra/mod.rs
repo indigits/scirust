@@ -40,6 +40,11 @@ References:
 * http://en.wikipedia.org/wiki/Group_(mathematics)
 * http://en.wikipedia.org/wiki/Abelian_group
 * http://en.wikipedia.org/wiki/Ring_(mathematics)
+* http://en.wikipedia.org/wiki/Integral_domain
+* http://en.wikipedia.org/wiki/Integrally_closed_domain
+* http://en.wikipedia.org/wiki/Unique_factorization_domain
+* http://en.wikipedia.org/wiki/Principal_ideal_domain
+* http://en.wikipedia.org/wiki/Euclidean_domain
 * http://en.wikipedia.org/wiki/Field_(mathematics)
 * http://en.wikipedia.org/wiki/Lattice_(order)
 
@@ -82,5 +87,6 @@ pub mod monoid;
 pub mod group;
 pub mod ring;
 pub mod commutative_ring;
-
+pub mod integral_domain;
+pub mod field;
 

@@ -4,7 +4,7 @@ A commutative ring is a ring where the multiplication
 operation is commutative.
 
 A commutative ring is a set R equipped with binary operations + and * 
-satisfying the following nine axioms, called the ring axioms:
+satisfying the following nine axioms:
 
 R is an abelian group under addition, meaning:
 
@@ -14,7 +14,7 @@ R is an abelian group under addition, meaning:
 * a + b = b + a for all a, b in R (+ is commutative).
 
 
-R is a monoid under multiplication, meaning:
+R is a commutative monoid under multiplication, meaning:
 
 * (a * b) * c = a * (b * c) for all a, b, c in R (* is associative).
 * There is an element 1 in R such that a * 1 = a and 1 * a = a for all a in R (1 is the multiplicative identity).[2]
