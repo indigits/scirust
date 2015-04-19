@@ -12,8 +12,8 @@ use std::num::{Float};
 use std::marker::MarkerTrait;
 
 // local imports
-use number::Entry;
-use number::{Number, Signed};
+use algebra::Entry;
+use algebra::{Number, Signed};
 use matrix::matrix::Matrix;
 use error::SRError;
 

@@ -13,10 +13,10 @@ use std::ops::{Neg, Add, Sub, Mul, Div};
 use std::num::Float;
 
 // local imports
-use number::number::Number;
-use number::zero::Zero;
-use number::one::One;
-use number::entry::Entry;
+use algebra::algebra::Number;
+use algebra::zero::Zero;
+use algebra::one::One;
+use algebra::entry::Entry;
 
 // FIXME #1284: handle complex NaN & infinity etc. This
 // probably doesn't map to C's _Complex correctly.
@@ -225,8 +225,8 @@ mod test {
 
     use super::{Complex64, Complex};
     use std::num::Float;
-    //use number::{Number};
-    use number::{Zero, One};
+    //use algebra::{Number};
+    use algebra::{Zero, One};
     use std::hash::hash;
 
     pub const _0_0i : Complex64 = Complex { re: 0.0, im: 0.0 };
@@ -329,7 +329,7 @@ mod test {
 
     mod arith {
         use super::{_0_0i, _1_0i, _1_1i, _0_1i, _neg1_1i, _05_05i, all_consts};
-        use number::Zero;
+        use algebra::Zero;
 
         #[test]
         fn test_add() {

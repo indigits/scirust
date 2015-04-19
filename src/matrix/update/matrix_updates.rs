@@ -4,7 +4,7 @@
 /// std imports
 
 /// local imports
-use number::Number;
+use algebra::Number;
 use error::SRResult;
 use error::SRError;
 use matrix::traits::{Shape, MatrixBuffer, Strided};

@@ -4,9 +4,9 @@
 
 
 // local imports
-use number::zero::Zero;
-use number::one::One;
-use number::quasigroup::{QuasiGroupAddPartial, QuasiGroupAdd, 
+use algebra::zero::Zero;
+use algebra::one::One;
+use algebra::quasigroup::{QuasiGroupAddPartial, QuasiGroupAdd, 
     QuasiGroupMulPartial, QuasiGroupMul};
 
 ///////////////////////////////////////////////////////////
@@ -79,8 +79,8 @@ impl<T> LoopMul for T where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use number::zero::Zero;
-    use number::one::One;
+    use algebra::zero::Zero;
+    use algebra::one::One;
 
     fn check_loop_add_partial<T: LoopAddPartial>(a: T, b: T, c : T)->T{
         let d = a + b;

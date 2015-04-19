@@ -3,7 +3,7 @@
 
 
 // local imports
-use number::Number;
+use algebra::Number;
 use matrix::matrix::Matrix;
 use matrix::view::MatrixView;
 use matrix::extract::traits::Extraction;

@@ -4,9 +4,9 @@
 
 
 // local imports
-use number::zero::Zero;
-use number::one::One;
-use number::semigroup::{SemiGroupAddPartial, SemiGroupAdd, 
+use algebra::zero::Zero;
+use algebra::one::One;
+use algebra::semigroup::{SemiGroupAddPartial, SemiGroupAdd, 
     SemiGroupMulPartial, SemiGroupMul};
 
 ///////////////////////////////////////////////////////////
@@ -79,8 +79,8 @@ impl<T> MonoidMul for T where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use number::zero::Zero;
-    use number::one::One;
+    use algebra::zero::Zero;
+    use algebra::one::One;
 
     fn check_monoid_add_partial<T: MonoidAddPartial>(a: T, b: T)->T{
         let d = a + b;

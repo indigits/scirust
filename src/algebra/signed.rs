@@ -7,7 +7,7 @@ use std::ops::{Neg};
 use std::num::{SignedInt, Float};
 
 // local imports
-use number::number::Number;
+use algebra::number::Number;
 
 pub trait Signed: Number + Neg<Output=Self> {
     fn abs_val(&self) -> Self;

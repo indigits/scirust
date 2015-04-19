@@ -8,7 +8,7 @@ use std::cmp;
 /// local imports
 use error::SRResult;
 use discrete::mod_n;
-use number::Number;
+use algebra::Number;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer};
 

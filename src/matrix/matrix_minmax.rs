@@ -3,7 +3,7 @@
 // local imports
 use matrix::matrix::Matrix;
 use matrix::traits::*;
-use number::Number;
+use algebra::Number;
 
 /// Implements matrix extraction API
 impl <T:Number+PartialOrd> MinMax<T> for Matrix<T> {

@@ -3,7 +3,7 @@
 use std::mem;
 
 // local imports
-use number::Number;
+use algebra::Number;
 use super::eo_traits::{ERO, ECO};
 use matrix::view::MatrixView;
 use matrix::traits::{Shape, MatrixBuffer, Strided};

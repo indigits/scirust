@@ -7,7 +7,7 @@ use std::cmp::min;
 use std::ops;
 
 // local imports
-use number::{Number, Zero};
+use algebra::{Number, Zero};
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 use matrix::matrix::Matrix;
 use matrix::transpose::traits::Transpose;

@@ -3,8 +3,8 @@
 use std::num::{Float};
 
 // local imports
-use number::One;
-pub use number::{Number, Signed};
+use algebra::One;
+pub use algebra::{Number, Signed};
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, Extraction, MatrixBuffer, Search};
 use matrix::eo::eo_traits::ECO;

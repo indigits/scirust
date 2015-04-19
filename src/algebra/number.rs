@@ -7,9 +7,9 @@ use std::ops::{Add, Sub, Mul, Div};
 
 
 // local imports
-use number::entry::Entry;
-use number::zero::Zero;
-use number::one::One;
+use algebra::entry::Entry;
+use algebra::zero::Zero;
+use algebra::one::One;
 
 
 /// Defines basic requirements for a matrix of numbers
@@ -400,7 +400,7 @@ pub fn num_range<A: Number + PartialOrd + One>(start: A, stop: A) -> NumRange<A>
 mod tests {
 
     use super::*;
-    use number::Zero;
+    use algebra::Zero;
 
 
 

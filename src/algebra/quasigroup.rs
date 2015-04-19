@@ -5,15 +5,15 @@ use std::ops::{Sub, Neg, Div};
 
 
 // local imports
-use number::ops::{Recip};
-use number::magma::{MagmaAddPartial, MagmaAdd,
+use algebra::ops::{Recip};
+use algebra::magma::{MagmaAddPartial, MagmaAdd,
     MagmaMulPartial, MagmaMul};
 
 ///////////////////////////////////////////////////////////
 
 pub trait QuasiGroupAddPartial
     : MagmaAddPartial
-    + Sub<Self, Output=Self>
+    + Sub<Output=Self>
     + Neg<Output=Self>
 {
 
@@ -22,7 +22,7 @@ pub trait QuasiGroupAddPartial
 
 impl<T> QuasiGroupAddPartial for T where
     T: MagmaAddPartial
-      + Sub<Self, Output=Self> + Neg<Output=Self>,
+      + Sub<Output=T> + Neg<Output=T>,
 {}
 
 
@@ -46,7 +46,7 @@ impl<T> QuasiGroupAdd for T where
 
 pub trait QuasiGroupMulPartial
     : MagmaMulPartial
-    + Div<Self, Output=Self>
+    + Div<Output=Self>
     + Recip<Output=Self>
 {
 
@@ -55,7 +55,7 @@ pub trait QuasiGroupMulPartial
 
 impl<T> QuasiGroupMulPartial for T where
     T: MagmaMulPartial 
-      + Div<Self, Output=Self> + Recip<Output=Self>,
+      + Div<Output=T> + Recip<Output=T>,
 {}
 
 ///////////////////////////////////////////////////////////

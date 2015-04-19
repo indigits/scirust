@@ -1,9 +1,9 @@
 // std imports
 
 // local imports
-use number::monoid::{MonoidAddPartial, MonoidAdd, 
+use algebra::monoid::{MonoidAddPartial, MonoidAdd, 
     MonoidMulPartial, MonoidMul};
-use number::loop_::{LoopAddPartial, LoopAdd, 
+use algebra::loop_::{LoopAddPartial, LoopAdd, 
     LoopMulPartial, LoopMul};
 
 
@@ -119,8 +119,8 @@ impl CommutativeGroupAdd for i64  {}
 #[cfg(test)]
 mod tests {
     use super::*;
-    use number::zero::Zero;
-    use number::one::One;
+    use algebra::zero::Zero;
+    use algebra::one::One;
 
     fn check_group_add_partial<T: GroupAddPartial>(a: T, b: T, c : T)->T{
         let d = a + b;

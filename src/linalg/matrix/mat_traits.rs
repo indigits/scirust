@@ -5,7 +5,7 @@ use std::marker::MarkerTrait;
 
 
 // local imports
-use number::{Number, Signed};
+use algebra::{Number, Signed};
 
 use error::SRError;
 

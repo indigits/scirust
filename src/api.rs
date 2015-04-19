@@ -4,7 +4,7 @@
 pub use error::SRError;
 
 // Number library
-pub use number::*;
+pub use algebra::*;
 
 
 // Matrix library

@@ -6,7 +6,7 @@ use std::num::{Float, FromPrimitive};
 
 // local imports
 use matrix::matrix::Matrix;
-use number::Number;
+use algebra::Number;
 
 
 pub trait Sums<T: Number> {

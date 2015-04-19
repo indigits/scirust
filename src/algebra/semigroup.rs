@@ -1,7 +1,7 @@
 
 
 // local imports
-use number::magma::{MagmaAddPartial, MagmaAdd,
+use algebra::magma::{MagmaAddPartial, MagmaAdd,
     MagmaMulPartial, MagmaMul};
 
 

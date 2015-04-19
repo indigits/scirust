@@ -6,7 +6,7 @@ use std::num;
 use std::num::{Int, FromPrimitive};
 
 // local imports
-use number::Number;
+use algebra::Number;
 use matrix::matrix::{Matrix, MatrixU8};
 use matrix::traits::Shape;
 

@@ -6,8 +6,8 @@ use std::num::Float;
 //use std::ptr;
 
 // local imports
-use number::{Entry, One, Zero};
-use number::{Number};
+use algebra::{Entry, One, Zero};
+use algebra::{Number};
 use error::SRError;
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, NumberMatrix, 

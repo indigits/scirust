@@ -14,11 +14,11 @@ use matrix::matrix::{Matrix,
     MatrixF32, MatrixF64};
 use matrix::traits::{Shape};
 use error::SRError;
-use number::{One, Zero};
-use number::{Number, num_range};
+use algebra::{One, Zero};
+use algebra::{Number, num_range};
 
 // complex numbers
-//use number::{Complex32, Complex64};
+//use algebra::{Complex32, Complex64};
 
 
 #[doc="Returns a Hadamard matrix of size n x n

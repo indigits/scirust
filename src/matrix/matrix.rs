@@ -17,9 +17,9 @@ use std::ops::{Neg, Index};
 // local imports
 
 use discrete::{mod_n};
-use number::Entry;
-use number::{Zero, One};
-use number::{Number, Signed};
+use algebra::Entry;
+use algebra::{Zero, One};
+use algebra::{Number, Signed};
 use error::SRError;
 use matrix::iter::*;
 use matrix::view::MatrixView;
@@ -32,8 +32,8 @@ use matrix::traits::{Shape, NumberMatrix,
     Search};
 
 // complex numbers
-//use number::Complex32;
-//use number::Complex64;
+//use algebra::Complex32;
+//use algebra::Complex64;
 
 use util;
 

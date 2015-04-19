@@ -1,6 +1,6 @@
 
 // local imports
-use number::Number;
+use algebra::Number;
 use matrix::traits::Shape;
 
 #[doc="Implemented by matrix types

@@ -5,11 +5,9 @@
 
 pub trait Recip {
     /// The resulting type after applying the `-` operator
-    #[stable(feature = "rust1", since = "1.0.0")]
     type Output;
 
     /// The method for the unary `-` operator
-    #[stable(feature = "rust1", since = "1.0.0")]
     fn recip(self) -> Self::Output;
 }
 

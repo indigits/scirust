@@ -8,7 +8,7 @@ use std::fmt::Display;
 
 
 // local imports
-use number::zero::Zero;
+use algebra::zero::Zero;
 
 /// Defines basic requirements for a matrix entry
 pub trait Entry : Debug + Display + Clone + Zero {

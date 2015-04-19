@@ -9,7 +9,7 @@ use std::ptr;
 
 /// local imports
 use discrete::mod_n;
-use number::Number;
+use algebra::Number;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 
 

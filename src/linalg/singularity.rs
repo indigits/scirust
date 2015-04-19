@@ -6,8 +6,8 @@
 use std::cmp;
 
 // local imports
-use number::Zero;
-use number::Number;
+use algebra::Zero;
+use algebra::Number;
 //use error::SRError;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, NumberMatrix};

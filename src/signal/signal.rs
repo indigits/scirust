@@ -5,7 +5,7 @@
 //use core::marker::PhantomData;
 
 // local imports
-use number::*;
+use algebra::*;
 use matrix::matrix::{Matrix, MatrixF64};
 
 pub struct Impulse<T:Number> {

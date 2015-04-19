@@ -4,7 +4,7 @@
 use error::SRError;
 use matrix::view::MatrixView;
 use matrix::traits::*;
-use number::Signed;
+use algebra::Signed;
 
 
 /// Implementation of min-max with absolute values API for matrix view

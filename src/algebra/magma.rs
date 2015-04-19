@@ -17,13 +17,13 @@ impl<T> MagmaBase for T where
 
 pub trait MagmaAddPartial 
     : MagmaBase 
-    + Add<Self, Output=Self> 
+    + Add<Output=Self> 
     + PartialEq{
 
 }
 
 impl<T> MagmaAddPartial for T where
-    T: MagmaBase + Add<Self, Output=Self> + PartialEq,
+    T: MagmaBase + Add<Output=T> + PartialEq,
 {}
 
 ///////////////////////////////////////////////////////////
@@ -44,13 +44,13 @@ impl<T> MagmaAdd for T where
 
 pub trait MagmaMulPartial
     : MagmaBase 
-    + Mul<Self, Output=Self> 
+    + Mul<Output=Self> 
     + PartialEq{
 
 }
 
 impl<T> MagmaMulPartial for T where
-    T: MagmaBase + Mul<Self, Output=Self> + PartialEq,
+    T: MagmaBase + Mul<Output=T> + PartialEq,
 {}
 
 

@@ -33,7 +33,7 @@ extern crate rand;
 
 // Common modules
 pub mod error;
-pub mod number;
+pub mod algebra;
 
 // Main libraries
 // pub mod external;

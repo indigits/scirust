@@ -2,7 +2,7 @@
 
 
 // local imports
-use number::{Number};
+use algebra::{Number};
 
 
 /******************************************************

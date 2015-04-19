@@ -3,7 +3,7 @@
 // std imports
 
 // local imports
-use number::Number;
+use algebra::Number;
 use super::eo_traits::{ERO, ECO};
 use matrix::matrix::Matrix;
 

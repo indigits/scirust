@@ -5,8 +5,8 @@
 use std::num::{Float, FromPrimitive};
 
 // local imports
-use number::{Zero, One};
-use number::Number;
+use algebra::{Zero, One};
+use algebra::Number;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, 
     MatrixBuffer, Strided,

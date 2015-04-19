@@ -9,8 +9,8 @@ or a row vector. The stride is always one in both cases.
 // std imports
 
 // local imports
-use number::{One, Zero};
-use number::Number;
+use algebra::{One, Zero};
+use algebra::Number;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer};
 

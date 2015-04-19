@@ -2,7 +2,7 @@
 // std imports
 
 // local imports
-use number::{Number, Signed};
+use algebra::{Number, Signed};
 use super::mat_traits::LANumberMatrix;
 use linalg;
 use matrix::matrix::Matrix;
