@@ -37,9 +37,9 @@ pub mod error;
 pub mod algebra;
 
 // Main libraries
-// pub mod external;
-// pub mod discrete;
-// pub mod matrix;
+pub mod external;
+pub mod discrete;
+pub mod matrix;
 // pub mod linalg;
 // pub mod signal;
 // pub mod dx;
@@ -57,7 +57,7 @@ pub mod algebra;
 // }
 
 // // for internal use only
-// pub mod util;
+pub mod util;
 // mod testdata;
 
 // // Overall API of SciRust

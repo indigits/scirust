@@ -2,12 +2,14 @@
 "]
 
 // std imports
-use std::iter::range_step;
 use std::cmp::min;
 use std::ops;
 
+// external imports
+use num::traits::{Zero};
+
 // local imports
-use algebra::{Number, Zero};
+use algebra::structure::{MagmaBase, FieldPartial};
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 use matrix::matrix::Matrix;
 use matrix::transpose::traits::Transpose;
@@ -15,15 +17,15 @@ use error::{SRError, SRResult};
 
 
 /// Checks if the matrices are transpose of each other
-pub fn are_transpose<T:Number>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool{
+pub fn are_transpose<T:FieldPartial>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool{
     if lhs.num_rows() != rhs.num_cols(){
         return false;
     }
     if lhs.num_cols() != rhs.num_rows(){
         return false;
     }
-    for c in range(0, lhs.num_cols()){
-        for r in range(0, lhs.num_rows()){
+    for c in 0..lhs.num_cols(){
+        for r in 0..lhs.num_rows(){
             if lhs.get(r, c) != rhs.get(c, r){
                 return false;
             }
@@ -34,7 +36,7 @@ pub fn are_transpose<T:Number>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool{
 }
 
 /// Simple implementation of transpose operation
-pub fn transpose_simple<T:Number>(src: & Matrix<T>)->Matrix <T>{
+pub fn transpose_simple<T:FieldPartial>(src: & Matrix<T>)->Matrix <T>{
     let rows = src.num_rows();
     let cols = src.num_cols();
     let mut result : Matrix<T> = Matrix::new(cols, rows);
@@ -42,10 +44,10 @@ pub fn transpose_simple<T:Number>(src: & Matrix<T>)->Matrix <T>{
     let mut pdst_row = result.as_mut_ptr();
     let src_stride = src.stride() as isize;
     let dst_stride = result.stride() as isize;
-    for _ in range(0, cols){
+    for _ in 0..cols{
         let mut psrc = psrc_col;
         let mut pdst = pdst_row;
-        for _ in range(0, rows){
+        for _ in 0..rows{
             unsafe {
                 *pdst = *psrc;
                 psrc = psrc.offset(1);
@@ -64,7 +66,7 @@ pub fn transpose_simple<T:Number>(src: & Matrix<T>)->Matrix <T>{
 
 
 /// Block wise transpose
-pub fn transpose_block<T:Number>(src: & Matrix<T>)->Matrix <T>{
+pub fn transpose_block<T:FieldPartial>(src: & Matrix<T>)->Matrix <T>{
     // Choose a block size
     let block_size = 32;
     // Construct the destination
@@ -77,8 +79,8 @@ pub fn transpose_block<T:Number>(src: & Matrix<T>)->Matrix <T>{
     let dst_stride = result.stride() as isize;
 
 
-    for cc in range_step(0, cols, block_size){
-        for rr in range_step(0, rows, block_size){
+    for cc in (0..cols).step_by(block_size){
+        for rr in (0..rows).step_by(block_size){
             // We have to transpose a block of size blk x blk
             let blk_cols = min (block_size, cols - cc); 
             let blk_rows = min (block_size, rows - rr);
@@ -90,12 +92,12 @@ pub fn transpose_block<T:Number>(src: & Matrix<T>)->Matrix <T>{
                 // Now run through the block
                 // iterate over columns of source block
                 // iterate over rows of destination block
-                for _ in range(0, blk_cols){
+                for _ in 0..blk_cols{
                     let mut psrc_blk = psrc_col;
                     let mut pdst_blk = pdst_row;
                     // iterate over the rows of a column in source block
                     // iterate over the columns of a row in destination block
-                    for _ in range(0, blk_rows){
+                    for _ in 0..blk_rows{
                         *pdst_blk = *psrc_blk;
                         // next row in source
                         psrc_blk = psrc_blk.offset(1);
@@ -115,7 +117,7 @@ pub fn transpose_block<T:Number>(src: & Matrix<T>)->Matrix <T>{
 
 
 
-impl <T:Number> Transpose<T> for Matrix<T> {
+impl <T:FieldPartial> Transpose<T> for Matrix<T> {
     /// Computes the transpose of a matrix.
     /// This doesn't involve complex conjugation.
     /// Returns a new matrix
@@ -137,13 +139,13 @@ impl <T:Number> Transpose<T> for Matrix<T> {
         // We take advantage of the fact that the gram matrix
         // is symmetric. 
         // We only compute one half of it.
-        for i in range(0, cols){
-            for j in range(i, cols){
+        for i in 0..cols{
+            for j in i..cols{
                 unsafe{
                     let mut pi  = ps.offset((i as isize)*stride);
                     let mut pj  = ps.offset((j as isize)*stride);
                     let mut sum = z;
-                    for _ in range(0, rows){
+                    for _ in 0..rows{
                         sum = sum + *pi * *pj;
                         // Move the pointer ahead
                         pi = pi.offset(1);
@@ -168,7 +170,7 @@ impl <T:Number> Transpose<T> for Matrix<T> {
  *
  *******************************************************/
 
- pub fn multiply_simple<T:Number>(lhs : &Matrix<T>, 
+ pub fn multiply_simple<T:FieldPartial>(lhs : &Matrix<T>, 
     rhs: &Matrix<T>)->SRResult<Matrix<T>>{
     // Validate dimensions match for multiplication
     if lhs.num_cols() != rhs.num_rows(){
@@ -180,10 +182,10 @@ impl <T:Number> Transpose<T> for Matrix<T> {
     let pc = result.as_mut_ptr();
     let zero : T = Zero::zero();
     unsafe {
-        for r in range(0, lhs.num_rows()){
-            for c in range(0, rhs.num_cols()){
+        for r in 0..lhs.num_rows(){
+            for c in 0..rhs.num_cols(){
                 let mut sum = zero;
-                for j in range(0, lhs.num_cols()){
+                for j in 0..lhs.num_cols(){
                     let lhs_offset = lhs.cell_to_offset(r, j);
                     let rhs_offset = rhs.cell_to_offset(j, c);
                     let term = *pa.offset(lhs_offset) * *pb.offset(rhs_offset);
@@ -209,7 +211,7 @@ Since the matrix is stored in column major order, hence multiplying
 columns with each other is highly efficient from locality of data
 perspective. This benefit shows up more as the matrix size increases.
 "]
-pub fn multiply_transpose_simple<T:Number>(lhs : &Matrix<T>, 
+pub fn multiply_transpose_simple<T:FieldPartial>(lhs : &Matrix<T>, 
     rhs: &Matrix<T>)->SRResult<Matrix<T>>{
     // Validate dimensions match for multiplication
     if lhs.num_rows() != rhs.num_rows(){
@@ -221,13 +223,13 @@ pub fn multiply_transpose_simple<T:Number>(lhs : &Matrix<T>,
     let pc = result.as_mut_ptr();
     let zero : T = Zero::zero();
     unsafe {
-        for r in range(0, lhs.num_cols()){
-            for c in range(0, rhs.num_cols()){
+        for r in 0..lhs.num_cols(){
+            for c in 0..rhs.num_cols(){
                 let mut sum = zero;
                 // Go to beginning of corresponding columns in lhs and rhs.
                 let mut pl = pa.offset(lhs.cell_to_offset(0, r));
                 let mut pr = pb.offset(rhs.cell_to_offset(0, c));
-                for _ in range(0, lhs.num_rows()){
+                for _ in 0..lhs.num_rows(){
                     let term = *pl * *pr;
                     sum = sum + term;
                     // Move to next entry in column
@@ -245,7 +247,7 @@ pub fn multiply_transpose_simple<T:Number>(lhs : &Matrix<T>,
 
 
 /// Matrix multiplication support
-impl<'a, 'b, T:Number> ops::Mul<&'b Matrix<T>> for &'a Matrix<T>{
+impl<'a, 'b, T:FieldPartial> ops::Mul<&'b Matrix<T>> for &'a Matrix<T>{
     type Output = Matrix<T>;
     fn mul(self, rhs: &Matrix<T>) -> Matrix<T> {
         let result = multiply_simple(self, rhs);
@@ -267,7 +269,6 @@ impl<'a, 'b, T:Number> ops::Mul<&'b Matrix<T>> for &'a Matrix<T>{
 #[cfg(test)]
 mod test{
 
-    use std::iter::range_step;
     use matrix::matrix::*;
     use matrix::traits::*;
     use matrix::constructors::*;

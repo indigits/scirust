@@ -5,4 +5,4 @@ pub use self::modular::*;
 //pub use self::permutations::*;
 
 mod modular;
-pub mod permutations;
+//pub mod permutations;

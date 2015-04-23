@@ -2,12 +2,15 @@
 use std::mem;
 use std::ops;
 use std::fmt;
-use std::num::Float;
 //use std::ptr;
 
+// external imports
+use num::{Float};
+use num::traits::{Zero, One, Signed};
+
+
 // local imports
-use algebra::{Entry, One, Zero};
-use algebra::{Number};
+use algebra::structure::{MagmaBase, FieldPartial};
 use error::SRError;
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, NumberMatrix, 
@@ -27,7 +30,7 @@ chosen rows and columns.
 
 
 "]
-pub struct MatrixView<'a, T:'a+Entry>{
+pub struct MatrixView<'a, T:'a+MagmaBase>{
     // Reference to the associated matrix
     m : &'a Matrix<T>,
     // start row
@@ -42,7 +45,7 @@ pub struct MatrixView<'a, T:'a+Entry>{
 
 
 /// Static functions for creating  a view
-impl<'a, T:Entry> MatrixView<'a, T> {
+impl<'a, T:MagmaBase> MatrixView<'a, T> {
     pub fn new(m : &Matrix<T>, start_row : usize, start_col : usize , num_rows: usize, num_cols : usize) -> MatrixView<T> {
         debug_assert!(start_row + num_rows <= m.num_rows());
         debug_assert!(start_col + num_cols <= m.num_cols());
@@ -59,7 +62,7 @@ impl<'a, T:Entry> MatrixView<'a, T> {
 }
 
 ///Basic methods for a view
-impl<'a, T:Entry> MatrixView<'a, T> {
+impl<'a, T:MagmaBase> MatrixView<'a, T> {
     /// Returns the start row
     #[inline]
     pub fn start_row(&self) -> usize{
@@ -79,7 +82,7 @@ impl<'a, T:Entry> MatrixView<'a, T> {
 
 
 ///Basic methods for a view of a matrix of  numbers
-impl<'a, T:Number> MatrixView<'a, T> {
+impl<'a, T:FieldPartial> MatrixView<'a, T> {
 
     /// Copies data from other view
     // TODO: write tests
@@ -90,8 +93,8 @@ impl<'a, T:Number> MatrixView<'a, T> {
         }        
         let pd : *mut T = unsafe { mem::transmute(self.m.as_ptr()) };
         let ps = rhs.m.as_ptr();
-        for c in range (0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset  = rhs.cell_to_offset(r, c);
                 let dst_offset = self.cell_to_offset(r, c);
                 unsafe{
@@ -110,8 +113,8 @@ impl<'a, T:Number> MatrixView<'a, T> {
         }        
         let pd : *mut T = unsafe { mem::transmute(self.m.as_ptr()) };
         let ps = rhs.m.as_ptr();
-        for c in range (0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset  = rhs.cell_to_offset(r, c);
                 let dst_offset = self.cell_to_offset(r, c);
                 unsafe{
@@ -131,7 +134,7 @@ impl<'a, T:Number> MatrixView<'a, T> {
 }
 
 /// Strided buffer 
-impl <'a, T:Entry> Strided for MatrixView<'a, T> {
+impl <'a, T:MagmaBase> Strided for MatrixView<'a, T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     fn stride (&self)->usize {
@@ -140,7 +143,7 @@ impl <'a, T:Entry> Strided for MatrixView<'a, T> {
 }
 
 /// Implement Buffer API for matrix view
-impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
+impl <'a, T:MagmaBase> MatrixBuffer<T> for MatrixView<'a, T> {
 
     /// Returns an unsafe pointer to the matrix's 
     /// buffer.
@@ -176,7 +179,7 @@ impl <'a, T:Entry> MatrixBuffer<T> for MatrixView<'a, T> {
 
 
 /// Implementation of common matrix methods
-impl <'a, T:Entry> Shape<T> for MatrixView<'a, T> {
+impl <'a, T:MagmaBase> Shape<T> for MatrixView<'a, T> {
     /// Returns the number of rows in the view
     fn num_rows(&self) -> usize {
         self.rows
@@ -232,14 +235,14 @@ impl <'a, T:Entry> Shape<T> for MatrixView<'a, T> {
 }
 
 /// Implementation of methods related to matrices of numbers
-impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
+impl <'a, T:FieldPartial> NumberMatrix<T> for MatrixView<'a, T> {
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool {
         let o : T = One::one();
         let z  : T = Zero::zero();
         let ptr = self.m.as_ptr();
-        for c in range(0, self.cols){
-            for r in range (0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
                 if r == c {
@@ -259,8 +262,8 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
     fn is_diagonal(&self) -> bool {
         let z  : T = Zero::zero();
         let ptr = self.m.as_ptr();
-        for c in range(0, self.cols){
-            for r in range (0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 if r != c {
                     let offset = self.cell_to_offset(r, c);
                     let v = unsafe {*ptr.offset(offset)};
@@ -277,8 +280,8 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
     fn is_lt(&self) -> bool {
         let z  : T = Zero::zero();
         let ptr = self.m.as_ptr();
-        for c in range(0, self.cols){
-            for r in range (0, c){
+        for c in 0..self.cols{
+            for r in 0..c{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
                 if v != z {
@@ -293,8 +296,8 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
     fn is_ut(&self) -> bool {
         let z  : T = Zero::zero();
         let ptr = self.m.as_ptr();
-        for c in range(0, self.cols){
-            for r in range (c+1, self.rows){
+        for c in 0..self.cols{
+            for r in (c+1)..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
                 //println!("r: {}, c: {}, v: {}", r, c, v);
@@ -314,8 +317,8 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
         }
         // size of the square matrix
         let n = self.num_rows();
-        for i in range(0, n){
-            for j in range(i + 1, n){
+        for i in 0..n{
+            for j in (i + 1)..n{
                 if self.get(i, j) != self.get(j, i) {
                     return false;
                 }
@@ -332,7 +335,7 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
         let mut offset = self.start_offset();
         let ptr = self.as_ptr();
         let mut result = unsafe {*ptr.offset(offset)};
-        for i in range(1, self.smaller_dim()){
+        for i in 1..self.smaller_dim(){
             offset += stride;
             result = result + unsafe{*ptr.offset(offset + i as isize)};
         }
@@ -341,16 +344,16 @@ impl <'a, T:Number> NumberMatrix<T> for MatrixView<'a, T> {
 
 }
 
-impl<'a, T:Number> StridedNumberMatrix<T> for MatrixView<'a, T> {
+impl<'a, T:FieldPartial> StridedNumberMatrix<T> for MatrixView<'a, T> {
 }
 
 
-impl<'a, T:Number+Float> StridedFloatMatrix<T> for MatrixView<'a, T> {
+impl<'a, T:FieldPartial+Float> StridedFloatMatrix<T> for MatrixView<'a, T> {
 }
 
 
 /// Functions to construct new views out of a view and other conversions
-impl<'a, T:Number> MatrixView<'a, T> {
+impl<'a, T:FieldPartial> MatrixView<'a, T> {
 
     /// Returns the view as a new matrix.
     /// Creates a copy of the data.
@@ -358,8 +361,8 @@ impl<'a, T:Number> MatrixView<'a, T> {
         let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pd = result.as_mut_ptr();
         let ps = self.m.as_ptr();
-        for c in range(0, self.cols) {
-            for r in range(0, self.rows) {
+        for c in 0..self.cols {
+            for r in 0..self.rows {
                 let src_offset = self.cell_to_offset(r, c);
                 let dst_offset = result.cell_to_offset(r, c);
                 unsafe{
@@ -373,7 +376,7 @@ impl<'a, T:Number> MatrixView<'a, T> {
 }
 
 /// Introspection support
-impl<'a, T:Number> Introspection for MatrixView<'a, T> {
+impl<'a, T:FieldPartial> Introspection for MatrixView<'a, T> {
     /// This is a view inside a matrix
     fn is_matrix_view_type(&self) -> bool {
         true
@@ -381,7 +384,7 @@ impl<'a, T:Number> Introspection for MatrixView<'a, T> {
 }
 
 
-impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
+impl<'a, T:FieldPartial+PartialOrd> MatrixView<'a, T> {
     // Returns the minimum scalar value
     pub fn min_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
@@ -392,8 +395,8 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
         let mut rr = 0;
         let mut cc = 0;
         let ps = self.m.as_ptr();
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset = self.cell_to_offset(r, c);
                 let s = unsafe{*ps.offset(src_offset)};
                 if s < v { 
@@ -416,8 +419,8 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
         let mut rr = 0;
         let mut cc = 0;
         let ps = self.m.as_ptr();
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset = self.cell_to_offset(r, c);
                 let s = unsafe{*ps.offset(src_offset)};
                 if s > v { 
@@ -444,7 +447,7 @@ impl<'a, T:Number+PartialOrd> MatrixView<'a, T> {
 
 
 /// View + View =  Matrix addition
-impl<'a, 'b, 'c, 'd, T:Number> ops::Add<&'b MatrixView<'d, T>> for &'a MatrixView<'c, T> {
+impl<'a, 'b, 'c, 'd, T:FieldPartial> ops::Add<&'b MatrixView<'d, T>> for &'a MatrixView<'c, T> {
     type Output = Matrix<T>;
     fn add(self, rhs: &'b MatrixView<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -455,8 +458,8 @@ impl<'a, 'b, 'c, 'd, T:Number> ops::Add<&'b MatrixView<'d, T>> for &'a MatrixVie
         let pa = self.m.as_ptr();
         let pb = rhs.m.as_ptr();
         let pc = result.as_mut_ptr();
-        for c in range (0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let dst_offset = result.cell_to_offset(r, c);
                 let a_offset  = self.cell_to_offset(r, c);
                 let b_offset = rhs.cell_to_offset(r, c);
@@ -470,14 +473,14 @@ impl<'a, 'b, 'c, 'd, T:Number> ops::Add<&'b MatrixView<'d, T>> for &'a MatrixVie
 }
 
 
-impl <'a, T:Number> fmt::Debug for MatrixView<'a, T> {
+impl <'a, T:FieldPartial> fmt::Debug for MatrixView<'a, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let ptr = self.m.as_ptr();
         try!(write!(f, "["));
         // Here we print row by row
-        for r in range (0, self.rows) {
+        for r in 0..self.rows {
            try!(write!(f, "\n  "));
-            for c in range (0, self.cols){
+            for c in 0..self.cols{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
                 try!(write!(f, "{} ", v));
@@ -488,7 +491,7 @@ impl <'a, T:Number> fmt::Debug for MatrixView<'a, T> {
     }
 }
 
-impl <'a, T:Number> fmt::Display for MatrixView<'a, T> {
+impl <'a, T:FieldPartial> fmt::Display for MatrixView<'a, T> {
     /// Display and Debug versions are same
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Debug::fmt(self, f)
@@ -510,7 +513,7 @@ mod test{
 
     #[test]
     fn test_basic(){
-        let m1 :  MatrixI64 = Matrix::from_iter_cw(10, 8, range(1, 100));
+        let m1 :  MatrixI64 = Matrix::from_iter_cw(10, 8, 1..100);
         let mut v1 = m1.view(2, 3, 4, 4);
         assert_eq!(v1.size(), (4, 4));
         assert_eq!(v1.num_rows(), 4);

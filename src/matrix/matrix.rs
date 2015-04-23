@@ -7,19 +7,20 @@ use std::ptr;
 use std::ops;
 use std::cmp;
 use std::fmt;
-use std::num::{Int, Float};
+use num::{Float};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::raw::Slice as RawSlice;
-use std::num::UnsignedInt;
 use std::ops::{Neg, Index};
+
+// external imports
+use num::Unsigned;
+use num::traits::{Zero, One, Signed};
 
 // local imports
 
 use discrete::{mod_n};
-use algebra::Entry;
-use algebra::{Zero, One};
-use algebra::{Number, Signed};
+use algebra::structure::{MagmaBase, FieldPartial};
 use error::SRError;
 use matrix::iter::*;
 use matrix::view::MatrixView;
@@ -46,7 +47,7 @@ The numbers are stored in column-major order.
 This is the standard in Fortran and MATLAB.
 
 "]
-pub struct Matrix<T:Entry> {
+pub struct Matrix<T:MagmaBase> {
     /// Number of rows in the matrix
     rows : usize,
     /// Number of columns in the matrix
@@ -88,7 +89,7 @@ pub type MatrixF64 = Matrix<f64>;
 
 
 /// Static functions for creating  a matrix
-impl<T:Entry> Matrix<T> {
+impl<T:MagmaBase> Matrix<T> {
 
 #[doc = "Constructs a new matrix of given size (uninitialized).
 
@@ -132,7 +133,7 @@ the matrix differently.
 }
 
 /// Static functions for creating  a matrix of numbers
-impl<T:Number> Matrix<T> {
+impl<T:FieldPartial> Matrix<T> {
 
     /// Constructs a scalar matrix
     pub fn from_scalar (scalar : T) -> Matrix <T>{
@@ -145,8 +146,18 @@ impl<T:Number> Matrix<T> {
     /// Constructs a matrix of all zeros
     pub fn zeros(rows: usize, cols : usize)-> Matrix<T> {
         let m : Matrix<T> = Matrix::new(rows, cols);
+        let ptr = m.ptr;
         // zero out the memory
-        unsafe { ptr::zero_memory(m.ptr, m.capacity())};
+        let z : T = Zero::zero();
+        unsafe {
+            for c in 0..cols{
+                for r in 0..rows{
+                    let offset = m.cell_to_offset(r, c);
+                    let p  = ptr.offset(offset as isize);
+                    *p = z;
+                }
+            } 
+        }
         m
     }
 
@@ -158,8 +169,8 @@ impl<T:Number> Matrix<T> {
         let ptr = m.ptr;
         let o : T = One::one();
         unsafe {
-            for c in range(0, cols){
-                for r in range (0, rows){
+            for c in 0..cols{
+                for r in 0..rows{
                     let offset = m.cell_to_offset(r, c);
                     let p  = ptr.offset(offset as isize);
                     *p = o;
@@ -177,7 +188,7 @@ impl<T:Number> Matrix<T> {
         let ptr = m.ptr;
         let one : T = One::one();
         let n = cmp::min(rows, cols);
-        for i in range(0, n){
+        for i in 0..n{
             let offset = m.cell_to_offset(i, i);
             unsafe{
                 *ptr.offset(offset) = one;
@@ -202,8 +213,8 @@ impl<T:Number> Matrix<T> {
             let z : T = Zero::zero();
             let mut n = 0;
             let mut offset_dst = 0;
-            for _ in range(0, cols){
-                for r in range(0, rows){
+            for _ in 0..cols{
+                for r in 0..rows{
                     let v = if n < n_values {
                         values[n]
                     }else{
@@ -237,8 +248,8 @@ by hand.
             let n_values = values.len();
             let z : T = Zero::zero();
             let mut n = 0;
-            for r in range(0, rows){
-                for c in range(0, cols){
+            for r in 0..rows{
+                for c in 0..cols{
                     let v = if n < n_values {
                         values[n]
                     }else{
@@ -265,14 +276,14 @@ by hand.
             let mut offset_dst = 0;
             let z : T = Zero::zero();
             let mut completed_columns  = 0;
-            'outer: for _ in range(0, cols){
-                for r in range(0, rows){
+            'outer: for _ in 0..cols{
+                for r in 0..rows{
                     let next_val = iter.next();
                     match next_val{
                         Some(val) => dst_slice[offset_dst + r] = val,
                         None => {
                             // Finish this column with zeros
-                            for _ in range(r, rows){
+                            for _ in r..rows{
                                 dst_slice[offset_dst + r] = z;
                             }
                             completed_columns += 1;
@@ -286,8 +297,8 @@ by hand.
             }
             if completed_columns < cols {
                 // We  need to fill remaining columns with zeros
-                for _ in range(completed_columns, cols){
-                    for r in range(0, rows){
+                for _ in completed_columns..cols{
+                    for r in 0..rows{
                         dst_slice[offset_dst + r] = z;
                     }
                     completed_columns += 1;
@@ -353,7 +364,7 @@ by hand.
         let src = v.ptr;
         let dst = m.ptr;
         // Copy the elements of v in the vector
-        for r in range(0, n){
+        for r in 0..n{
             let offset = m.cell_to_offset(r, r);
             unsafe{
                 *dst.offset(offset) =  *src.offset(r as isize);
@@ -372,7 +383,7 @@ by hand.
 }
 
 /// Core methods for all matrix types
-impl<T:Entry> Shape<T> for Matrix<T> {
+impl<T:MagmaBase> Shape<T> for Matrix<T> {
 
     /// Returns the number of rows in the matrix
     fn num_rows(&self) -> usize {
@@ -418,15 +429,15 @@ impl<T:Entry> Shape<T> for Matrix<T> {
 }
 
 /// Methods available to number matrices
-impl<T:Number> NumberMatrix<T> for Matrix<T> {
+impl<T:FieldPartial> NumberMatrix<T> for Matrix<T> {
 
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool {
         let o : T = One::one();
         let z  : T = Zero::zero();
         let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
                 if r == c {
@@ -446,8 +457,8 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
     fn is_diagonal(&self) -> bool {
         let z  : T = Zero::zero();
         let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 if r != c {
                     let offset = self.cell_to_offset(r, c);
                     let v = unsafe {*ptr.offset(offset)};
@@ -464,8 +475,8 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
     fn is_lt(&self) -> bool {
         let z  : T = Zero::zero();
         let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (0, c){
+        for c in 0..self.cols{
+            for r in 0..c{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
                 if v != z {
@@ -480,8 +491,8 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
     fn is_ut(&self) -> bool {
         let z  : T = Zero::zero();
         let ptr = self.ptr;
-        for c in range(0, self.cols){
-            for r in range (c+1, self.rows){
+        for c in 0..self.cols{
+            for r in c+1..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
                 if v != z {
@@ -500,8 +511,8 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
         }
         // size of the square matrix
         let n = self.num_rows();
-        for i in range(0, n){
-            for j in range(i + 1, n){
+        for i in 0..n{
+            for j in (i + 1)..n{
                 if self.get(i, j) != self.get(j, i) {
                     return false;
                 }
@@ -519,7 +530,7 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
         let stride = self.stride() as isize;
         let mut offset = stride;
         let ptr = self.as_ptr();
-        for i in range(1, self.smaller_dim()){
+        for i in 1..self.smaller_dim(){
             result = result + unsafe{*ptr.offset(offset + i as isize)};
             offset += stride;
         }
@@ -528,7 +539,7 @@ impl<T:Number> NumberMatrix<T> for Matrix<T> {
 }
 
 /// Introspection support
-impl<T:Number> Introspection for Matrix<T> {
+impl<T:FieldPartial> Introspection for Matrix<T> {
     /// This is a standard matrix object
     fn is_standard_matrix_type(&self) -> bool {
         true
@@ -536,7 +547,7 @@ impl<T:Number> Introspection for Matrix<T> {
 }
 
 /// Strided buffer
-impl<T:Entry> Strided for Matrix<T> {
+impl<T:MagmaBase> Strided for Matrix<T> {
 
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
@@ -546,16 +557,16 @@ impl<T:Entry> Strided for Matrix<T> {
 
 }
 
-impl<T:Number> StridedNumberMatrix<T> for Matrix<T> {
+impl<T:FieldPartial> StridedNumberMatrix<T> for Matrix<T> {
 }
 
-impl<T:Number+Float> StridedFloatMatrix<T> for Matrix<T> {
+impl<T:FieldPartial+Float> StridedFloatMatrix<T> for Matrix<T> {
 }
 
 
 
 /// Buffer access
-impl<T:Entry> MatrixBuffer<T> for Matrix<T> {
+impl<T:MagmaBase> MatrixBuffer<T> for Matrix<T> {
 
     /// Returns an unsafe pointer to the matrix's 
     /// buffer.
@@ -580,7 +591,7 @@ impl<T:Entry> MatrixBuffer<T> for Matrix<T> {
 }
 
 /// Main methods of a matrix
-impl<T:Entry> Matrix<T> {
+impl<T:MagmaBase> Matrix<T> {
 
     /// Returns the capacity of the matrix 
     /// i.e. the number of elements it can hold
@@ -594,7 +605,7 @@ impl<T:Entry> Matrix<T> {
 
 
 /// Functions to construct new matrices out of a matrix and other conversions
-impl<T:Number> Matrix<T> {
+impl<T:FieldPartial> Matrix<T> {
 
 
 
@@ -634,12 +645,12 @@ impl<T:Number> Matrix<T> {
         let result : Matrix<T> = Matrix::new(rows, cols);
         let pd = result.ptr;
         let ps = self.ptr;
-        for bc in range(0, num_cols){
+        for bc in 0..num_cols{
             let bc_start = bc * self.cols;
-            for br in range(0, num_rows){
+            for br in 0..num_rows{
                 let br_start =  br * self.rows;
-                for c in range(0, self.cols) {
-                    for r in range(0, self.rows){
+                for c in 0..self.cols {
+                    for r in 0..self.rows{
                         let src_offset = self.cell_to_offset(r, c);
                         let dst_offset = result.cell_to_offset(br_start + r, bc_start + c);
                         unsafe{
@@ -659,7 +670,7 @@ impl<T:Number> Matrix<T> {
         let result : Matrix<T> = Matrix::new(m, 1);
         let src = self.ptr;
         let dst = result.ptr;
-        for i in range(0, m){
+        for i in 0..m{
             let offset = self.cell_to_offset(i, i);
             unsafe{
                 *dst.offset(i as isize) = *src.offset(offset);
@@ -674,7 +685,7 @@ impl<T:Number> Matrix<T> {
         let result : Matrix<T> = Matrix::zeros(self.rows, self.cols);
         let src = self.ptr;
         let dst = result.ptr;
-        for i in range(0, m){
+        for i in 0..m{
             let offset = self.cell_to_offset(i, i);
             unsafe{
                 *dst.offset(offset) = *src.offset(offset);
@@ -689,12 +700,12 @@ impl<T:Number> Matrix<T> {
         let src = self.ptr;
         let dst = result.ptr;
         let z  : T = Zero::zero();
-        for c in range(0, self.cols){
-            for r in range (0, c+1){
+        for c in 0..self.cols{
+            for r in 0..(c+1){
                 let offset = self.cell_to_offset(r, c);
                 unsafe {*dst.offset(offset) = *src.offset(offset);}
             }
-            for r in range (c+1, self.rows){
+            for r in (c+1)..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 unsafe {*dst.offset(offset) = z;}
             }
@@ -708,12 +719,12 @@ impl<T:Number> Matrix<T> {
         let src = self.ptr;
         let dst = result.ptr;
         let z  : T = Zero::zero();
-        for c in range(0, self.cols){
-            for r in range (0, c){
+        for c in 0..self.cols{
+            for r in 0..c{
                 let offset = self.cell_to_offset(r, c);
                 unsafe {*dst.offset(offset) = z;}
             }
-            for r in range (c, self.rows){
+            for r in c..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 unsafe {*dst.offset(offset) = *src.offset(offset);}
             }
@@ -728,10 +739,10 @@ impl<T:Number> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let src = self.ptr;
         let dst = result.ptr;
-        for c in range(0, self.cols){
+        for c in 0..self.cols{
             let src_start = self.cell_to_offset(0, c);
             let dst_start = result.cell_to_offset(0, c);
-            for r in range (0, self.num_rows()){
+            for r in 0..self.num_rows(){
                 let src_offset = src_start + permutation[r] as isize;
                 let dst_offset = dst_start +  r as isize;
                 unsafe {*dst.offset(dst_offset) = *src.offset(src_offset);}
@@ -747,11 +758,11 @@ impl<T:Number> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let src = self.ptr;
         let dst = result.ptr;
-        for c in range(0, self.cols){
+        for c in 0..self.cols{
             debug_assert!((permutation[c] as usize) < self.num_cols());
             let mut src_offset = self.cell_to_offset(0, permutation[c] as usize);
             let mut dst_offset = result.cell_to_offset(0, c);
-            for _ in range (0, self.num_rows()){
+            for _ in 0..self.num_rows(){
                 unsafe {*dst.offset(dst_offset) = *src.offset(src_offset);}
                 src_offset += 1;
                 dst_offset += 1;
@@ -770,7 +781,7 @@ impl<T:Number> Matrix<T> {
             return Matrix::identity(self.rows, self.cols);
         }
         let mut result = self.clone();
-        for _ in range(0, exp -1){
+        for _ in 0..(exp -1){
             result = &result * self;
         }
         result
@@ -790,7 +801,7 @@ impl<T:Number> Matrix<T> {
         let mut result : T =  Zero::zero();
         let pa = self.ptr;
         let pb = other.ptr;
-        for i in range(0, self.num_rows()){
+        for i in 0..self.num_rows(){
             let ii = i as isize;
             let va = unsafe{*pa.offset(ii)};
             let vb = unsafe{*pb.offset(ii)};
@@ -812,8 +823,8 @@ impl<T:Number> Matrix<T> {
         let pa = self.ptr;
         let pb = other.ptr;
         let pc = result.ptr;
-        for r in range(0, n){
-            for c in range(0, n){
+        for r in 0..n{
+            for c in 0..n{
                 let va = unsafe{*pa.offset(r as isize)};
                 let vb = unsafe{*pb.offset(c as isize)};
                 let offset = result.cell_to_offset(r, c);
@@ -827,14 +838,15 @@ impl<T:Number> Matrix<T> {
 
 }
 
-impl<T:Number+Neg<Output=T>> Matrix<T> {
+//+Neg<Output=T>
+impl<T:FieldPartial> Matrix<T> {
     /// Computes the unary minus of a matrix
     pub fn unary_minus(&self)-> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.cols, self.rows);
         let pa = self.ptr;
         let pc = result.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
+        for r in 0..self.rows{
+            for c in 0..self.cols{
                 let offset = self.cell_to_offset(r, c);
                 unsafe {
                     *pc.offset(offset) = -*pa.offset(offset);
@@ -847,7 +859,7 @@ impl<T:Number+Neg<Output=T>> Matrix<T> {
 
 
 /// These methods modify the matrix itself
-impl<T:Number> Matrix<T> {
+impl<T:FieldPartial> Matrix<T> {
 
     /// Appends one or more columns at the end of matrix
     pub fn append_columns(&mut self, 
@@ -884,10 +896,10 @@ impl<T:Number> Matrix<T> {
         // Finally copy the column data from the matrix.
         let src_ptr = other.ptr;
         let dst_ptr = self.ptr;
-        for i in range(0, other.num_cols()){
+        for i in 0..other.num_cols(){
             let src_offset = other.cell_to_offset(0, i);
             let dst_offset = self.cell_to_offset(0, i + index);
-            for j in range(0, self.rows){
+            for j in 0..self.rows{
                 let jj = j as isize;
                 unsafe {
                     *dst_ptr.offset(dst_offset + jj) = *src_ptr.offset(src_offset + jj);
@@ -939,10 +951,10 @@ impl<T:Number> Matrix<T> {
         let dst_ptr = self.ptr;
         let src_stride = other.stride();
         let dst_stride = self.stride();
-        for i in range(0, other.num_rows()){
+        for i in 0..other.num_rows(){
             let src_offset = other.cell_to_offset(i, 0);
             let dst_offset = self.cell_to_offset(i + index, 0);
-            for j in range(0, self.cols){
+            for j in 0..self.cols{
                 unsafe {
                     *dst_ptr.offset(dst_offset + (j*dst_stride) as isize) = 
                     *src_ptr.offset(src_offset + (j*src_stride) as isize);
@@ -986,8 +998,8 @@ impl<T:Number> Matrix<T> {
         // Copy data from source to destination.
         let src_stride = self.xrows;
         let dst_stride = new_xrows;
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset = (c * src_stride + r) as isize;
                 let dst_offset = (c * dst_stride + r) as isize;
                 unsafe{
@@ -1025,13 +1037,13 @@ impl<T:Number> Matrix<T> {
         let ptr = self.ptr;
         // Number of columns to shift
         let cols_to_shift =  self.cols - (start + count - 1);
-        for _ in range(0, cols_to_shift){
+        for _ in 0..cols_to_shift{
             let dst_col = cur_col + count;
             let src_offset = self.cell_to_offset(0, cur_col);
             let dst_offset = self.cell_to_offset(0, dst_col);
             debug_assert!(src_offset < capacity);
             debug_assert!(dst_offset < capacity);
-            for i in range(0, self.rows){
+            for i in 0..self.rows{
                 let ii = i as isize;
                 // Some validations
                 debug_assert!(src_offset + ii < capacity);
@@ -1060,13 +1072,13 @@ impl<T:Number> Matrix<T> {
         // Number of rows to shift
         let rows_to_shift =  self.rows - (start + count - 1);
         let stride = self.stride();
-        for _ in range(0, rows_to_shift){
+        for _ in 0..rows_to_shift{
             let dst_row = cur_row + count;
             let src_offset = self.cell_to_offset(cur_row, 0);
             let dst_offset = self.cell_to_offset(dst_row, 0);
             debug_assert!(src_offset < capacity);
             debug_assert!(dst_offset < capacity);
-            for i in range(0, self.cols){
+            for i in 0..self.cols{
                 let ii = (i*stride) as isize;
                 // Some validations
                 debug_assert!(src_offset + ii < capacity);
@@ -1085,13 +1097,13 @@ impl<T:Number> Matrix<T> {
 
 
 /// Implementation of Matrix search operations.
-impl<T:Signed+PartialOrd> Search<T> for Matrix<T> {
+impl<T:MagmaBase+Signed+PartialOrd> Search<T> for Matrix<T> {
 }
 
 
 
 /// Views of a matrix
-impl<T:Number> Matrix<T> {
+impl<T:FieldPartial> Matrix<T> {
     /// Creates a view on the matrix
     pub fn view(&self, start_row : usize, start_col : usize , num_rows: usize, num_cols : usize) -> MatrixView<T> {
         let result : MatrixView<T> = MatrixView::new(self, start_row, start_col, num_rows, num_cols);
@@ -1104,7 +1116,7 @@ impl<T:Number> Matrix<T> {
 
 /// These functions are available only for types which support
 /// ordering [at least partial ordering for floating point numbers].
-impl<T:Number+PartialOrd> Matrix<T> {
+impl<T:FieldPartial+PartialOrd> Matrix<T> {
 
 
     // Returns the minimum scalar value with location
@@ -1117,8 +1129,8 @@ impl<T:Number+PartialOrd> Matrix<T> {
         // The location
         let mut rr = 0;
         let mut cc = 0;
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset = self.cell_to_offset(r, c);
                 let s = unsafe{*ps.offset(src_offset)};
                 if s < v { 
@@ -1141,8 +1153,8 @@ impl<T:Number+PartialOrd> Matrix<T> {
         let mut rr = 0;
         let mut cc = 0;
         let ps = self.ptr;
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset = self.cell_to_offset(r, c);
                 let s = unsafe{*ps.offset(src_offset)};
                 if s > v { 
@@ -1166,7 +1178,7 @@ impl<T:Number+PartialOrd> Matrix<T> {
     }    
 }
 
-impl<T:Signed+PartialOrd> Matrix<T> {
+impl<T:MagmaBase+Signed+PartialOrd> Matrix<T> {
 
     // Returns the absolute minimum scalar value
     pub fn min_abs_scalar(&self) -> (T, usize, usize){
@@ -1178,8 +1190,8 @@ impl<T:Signed+PartialOrd> Matrix<T> {
         let mut rr = 0;
         let mut cc = 0;
         let ps = self.ptr;
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset = self.cell_to_offset(r, c);
                 let s = unsafe{*ps.offset(src_offset)}.abs_val();
                 if s < v { 
@@ -1202,8 +1214,8 @@ impl<T:Signed+PartialOrd> Matrix<T> {
         let mut rr = 0;
         let mut cc = 0;
         let ps = self.ptr;
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let src_offset = self.cell_to_offset(r, c);
                 let s = unsafe{*ps.offset(src_offset)}.abs_val();
                 if s > v { 
@@ -1229,15 +1241,15 @@ impl<T:Signed+PartialOrd> Matrix<T> {
 }
 
 /// These functions are available only for integer matrices
-impl<T:Signed+Int> Matrix<T> {
+impl<T:Signed> Matrix<T> {
 
     /// Returns if an integer matrix is a logical matrix
     //// i.e. all cells are either 0s or 1s.
     pub fn is_logical(&self) -> bool {
         let z : T = Zero::zero();
         let o : T = One::one();
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 unsafe{ 
                     let v = *self.ptr.offset(offset);
@@ -1253,12 +1265,12 @@ impl<T:Signed+Int> Matrix<T> {
 
 
 /// These functions are available only for floating point matrices
-impl<T:Number+Float> Matrix<T> {
+impl<T:FieldPartial+Float> Matrix<T> {
     /// Returns a matrix showing all the cells which are finite
     pub fn is_finite(&self) -> Matrix<u8>{
         let m : Matrix<u8> = Matrix::ones(self.rows, self.cols);
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 unsafe{ 
                     let v = *self.ptr.offset(offset);
@@ -1272,8 +1284,8 @@ impl<T:Number+Float> Matrix<T> {
     /// Returns a matrix showing all the cells which are infinite
     pub fn is_infinite(&self) -> Matrix<u8>{
         let m : Matrix<u8> = Matrix::ones(self.rows, self.cols);
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let offset = self.cell_to_offset(r, c);
                 unsafe{ 
                     let v = *self.ptr.offset(offset);
@@ -1287,7 +1299,7 @@ impl<T:Number+Float> Matrix<T> {
 
 
 
-impl<T:Number> Index<usize> for Matrix<T> {
+impl<T:MagmaBase> Index<usize> for Matrix<T> {
     type Output = T;
     #[inline]
     fn index<'a>(&'a self, index: &usize) -> &'a T {
@@ -1302,7 +1314,7 @@ impl<T:Number> Index<usize> for Matrix<T> {
 
 
 
-impl<T:Number> Matrix<T>{
+impl<T:FieldPartial> Matrix<T>{
     /// This function is for internal use only.
     #[inline]
     fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
@@ -1318,20 +1330,25 @@ impl<T:Number> Matrix<T>{
 
 
 /// Implementation of Clone interface
-impl <T:Number> Clone for Matrix<T> {
+impl <T:MagmaBase> Clone for Matrix<T> {
 
     /// Creates a clone of the matrix
     fn clone(&self )-> Matrix<T> {
         let m : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pb = m.ptr;
+        let n = self.capacity();
         unsafe{
-            //TODO: this may not work if xrows and xcols are different.
-            ptr::copy_memory(m.ptr, self.ptr as *const T, self.capacity());
+            for i_ in 0..n{
+                let i = i_ as isize;
+                *pb.offset(i) = *pa.offset(i);
+            }
         }
         m
     }
 }
 
-impl <T:Number> fmt::Debug for Matrix<T> {
+impl <T:FieldPartial> fmt::Debug for Matrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // We need to find out the number of characters needed
         // to show each value.
@@ -1339,8 +1356,8 @@ impl <T:Number> fmt::Debug for Matrix<T> {
         let mut strings : Vec<String> = Vec::with_capacity(self.num_cells());
         let mut n : usize = 0;
         let ptr = self.ptr;
-        for r in range(0, self.rows){
-            for c in range(0, self.cols){
+        for r in 0..self.rows{
+            for c in 0..self.cols{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
                 let s = v.to_str();
@@ -1354,13 +1371,13 @@ impl <T:Number> fmt::Debug for Matrix<T> {
         //println!("{}, {}, {}", v, s, n);
         try!(write!(f, "["));
         // Here we print row by row
-        for r in range (0, self.rows) {
+        for r in 0..self.rows {
            try!(write!(f, "\n  "));
-            for c in range (0, self.cols){
+            for c in 0..self.cols{
                 let offset =  r *self.cols + c;
                 let ref s = strings[offset];
                 let extra = n + 2 - s.len();
-                for _ in range(0, extra){
+                for _ in 0..extra{
                     try!(write!(f, " "));
                 }
                 try!(write!(f, "{}", s));
@@ -1371,7 +1388,7 @@ impl <T:Number> fmt::Debug for Matrix<T> {
     }
 }
 
-impl <T:Number> fmt::Display for Matrix<T> {
+impl <T:FieldPartial> fmt::Display for Matrix<T> {
     /// Display and Debug versions are same
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Debug::fmt(self, f)
@@ -1380,7 +1397,7 @@ impl <T:Number> fmt::Display for Matrix<T> {
 
 
 /// Matrix addition support
-impl<'a, 'b, T:Number> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
+impl<'a, 'b, T:FieldPartial> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
     type Output = Matrix<T>;
     fn add(self, rhs: &'b Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1393,7 +1410,7 @@ impl<'a, 'b, T:Number> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
         let pc = result.ptr;
         let n = self.capacity();
         unsafe{
-            for i_ in range(0, n){
+            for i_ in 0..n{
                 let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) + *pb.offset(i);
             }
@@ -1404,7 +1421,7 @@ impl<'a, 'b, T:Number> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
 
 
 /// Matrix subtraction support
-impl<'a, 'b, T:Number> ops::Sub<&'b Matrix<T>> for &'a Matrix<T>{
+impl<'a, 'b, T:FieldPartial> ops::Sub<&'b Matrix<T>> for &'a Matrix<T>{
     type Output = Matrix<T>;
     fn sub(self, rhs: &'b Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1417,7 +1434,7 @@ impl<'a, 'b, T:Number> ops::Sub<&'b Matrix<T>> for &'a Matrix<T>{
         let pc = result.ptr;
         let n = self.capacity();
         unsafe{
-            for i_ in range(0, n){
+            for i_ in 0..n{
                 let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) - *pb.offset(i);
             }
@@ -1430,12 +1447,12 @@ impl<'a, 'b, T:Number> ops::Sub<&'b Matrix<T>> for &'a Matrix<T>{
 
 
 /// Matrix equality check support
-impl<T:Number> cmp::PartialEq for Matrix<T>{
+impl<T:FieldPartial> cmp::PartialEq for Matrix<T>{
     fn eq(&self, other: &Matrix<T>) -> bool {
         let pa = self.ptr as *const  T;
         let pb = other.ptr as *const  T;
-        for c in range(0, self.cols){
-            for r in range(0, self.rows){
+        for c in 0..self.cols{
+            for r in 0..self.rows{
                 let offset_a = self.cell_to_offset(r, c);
                 let offset_b = other.cell_to_offset(r, c);
                 let va = unsafe{*pa.offset(offset_a)};
@@ -1451,7 +1468,7 @@ impl<T:Number> cmp::PartialEq for Matrix<T>{
 }
 
 // Element wise operations.
-impl<T:Number> Matrix<T> {
+impl<T:FieldPartial> Matrix<T> {
     /// Adds matrices element by element
     pub fn add_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1464,7 +1481,7 @@ impl<T:Number> Matrix<T> {
         let pc = result.ptr;
         let n = self.capacity();
         unsafe{
-            for i_ in range(0, n){
+            for i_ in 0..n{
                 let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) + *pb.offset(i);
             }
@@ -1484,7 +1501,7 @@ impl<T:Number> Matrix<T> {
         let pc = result.ptr;
         let n = self.capacity();
         unsafe{
-            for i_ in range(0, n){
+            for i_ in 0..n{
                 let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) - *pb.offset(i);
             }
@@ -1503,7 +1520,7 @@ impl<T:Number> Matrix<T> {
         let pc = result.ptr;
         let n = self.capacity();
         unsafe{
-            for i_ in range(0, n){
+            for i_ in 0..n{
                 let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) * *pb.offset(i);
             }
@@ -1523,7 +1540,7 @@ impl<T:Number> Matrix<T> {
         let pc = result.ptr;
         let n = self.capacity();
         unsafe{
-            for i_ in range(0, n){
+            for i_ in 0..n{
                 let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) / *pb.offset(i);
             }
@@ -1538,7 +1555,7 @@ impl<T:Number> Matrix<T> {
         let pc = result.ptr;
         let cap = self.capacity();
         unsafe{
-            for i_ in range(0, cap){
+            for i_ in 0..cap{
                 let i = i_ as isize;
                 let v = *pa.offset(i);
                 *pc.offset(i) = v.power(n);
@@ -1548,8 +1565,7 @@ impl<T:Number> Matrix<T> {
     }
 }
 
-#[unsafe_destructor]
-impl<T:Entry> Drop for Matrix<T> {
+impl<T:MagmaBase> Drop for Matrix<T> {
     fn drop(&mut self) {
         if self.num_cells() != 0 {
             unsafe {
@@ -1565,7 +1581,7 @@ impl<T:Entry> Drop for Matrix<T> {
  *
  *******************************************************/
 
-impl<T:Number> Matrix<T> {
+impl<T:FieldPartial> Matrix<T> {
     pub fn print_state(&self){
         let capacity = self.capacity();
         let bytes = capacity * mem::size_of::<T>();
@@ -1584,7 +1600,7 @@ impl<T:Number> Matrix<T> {
  *
  *******************************************************/
 
-impl<T:Number> Matrix<T> {
+impl<T:FieldPartial> Matrix<T> {
     /// Returns a slice into `self`.
     //#[inline]
     pub fn as_slice_<'a>(&'a self) -> &'a [T] {
@@ -1645,10 +1661,10 @@ mod test {
     #[test]
     fn test_from_iter_cw0(){
         for _ in 0..100{
-            let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(1, 20));
+            let m : MatrixI64 = Matrix::from_iter_cw(4, 4, 1..20);
             let b: Vec<i64> = range(1, 17).collect();
             assert!(m.as_slice_() == b.as_slice());
-            let m : MatrixI64 = Matrix::from_iter_cw(4, 8, range(1, 16));
+            let m : MatrixI64 = Matrix::from_iter_cw(4, 8, 1..16);
             assert_eq!(m.get(0, 0), 1);
             assert_eq!(m.get(2, 2), 11);
             let mut b: Vec<i64> = range(1, 16).collect();

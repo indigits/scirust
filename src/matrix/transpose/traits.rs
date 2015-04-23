@@ -1,12 +1,12 @@
 
 // local imports
-use algebra::Number;
+use algebra::structure::{MagmaBase, FieldPartial};
 use matrix::traits::Shape;
 
 #[doc="Implemented by matrix types
 which support transpose operations.
 "]
-pub trait Transpose<T:Number> : Shape<T>{
+pub trait Transpose<T:FieldPartial> : Shape<T>{
 
     /// Returns a new matrix holding the transpose
     fn transpose(&self) -> Self;

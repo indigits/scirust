@@ -347,7 +347,6 @@ impl<T:Number> TriangularMatrix<T> {
 
 }
 
-#[unsafe_destructor]
 impl<T:Number> Drop for TriangularMatrix<T> {
     fn drop(&mut self) {
         if self.num_cells() != 0 {

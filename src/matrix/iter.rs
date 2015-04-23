@@ -1,8 +1,10 @@
 // std imports
 
+// external imports
+
 
 // local imports
-use algebra::{Number};
+use algebra::structure::{MagmaBase, FieldPartial};
 
 
 /******************************************************
@@ -12,7 +14,7 @@ use algebra::{Number};
  *******************************************************/
 
 /// An iterator over the elements of a matrix in a row
-pub struct RowIterator<T:Number>{
+pub struct RowIterator<T:MagmaBase>{
     cols : usize,
     stride: usize,
     pos  : usize, 
@@ -21,14 +23,14 @@ pub struct RowIterator<T:Number>{
 
 
 
-impl <T:Number> RowIterator<T> {
+impl <T:MagmaBase> RowIterator<T> {
     /// Creates a new iterator object
     pub fn new(cols: usize, stride : usize, ptr : *const T)-> RowIterator<T>{
         RowIterator{cols : cols, stride : stride, pos : 0, ptr : ptr}
     }
 }
 
-impl <T:Number> Iterator for RowIterator<T> {
+impl <T:MagmaBase> Iterator for RowIterator<T> {
     type Item = T;
     fn next(&mut self) -> Option<T> {
         if self.cols == self.pos{
@@ -42,14 +44,14 @@ impl <T:Number> Iterator for RowIterator<T> {
 }
 
  /// An iterator over the elements of a matrix in a column
-pub struct ColIterator<T:Number>{
+pub struct ColIterator<T:MagmaBase>{
     rows : usize,
     pos  : usize, 
     ptr : *const T
 }
 
 
-impl <T:Number> ColIterator<T> {
+impl <T:MagmaBase> ColIterator<T> {
     /// Creates a new iterator object
     pub fn new(rows: usize, ptr : *const T)-> ColIterator<T>{
         ColIterator{rows : rows, pos : 0, ptr : ptr}
@@ -58,7 +60,7 @@ impl <T:Number> ColIterator<T> {
 
 
 
-impl <T:Number> Iterator for ColIterator<T> {
+impl <T:MagmaBase> Iterator for ColIterator<T> {
     type Item = T;
     fn next(&mut self) -> Option<T> {
         if self.rows == self.pos{
@@ -72,7 +74,7 @@ impl <T:Number> Iterator for ColIterator<T> {
 }
 
 /// A column major iterator over the elements of a matrix
-pub struct CellIterator<T:Number>{
+pub struct CellIterator<T:MagmaBase>{
     rows : usize,
     cols : usize,
     stride: usize, 
@@ -81,7 +83,7 @@ pub struct CellIterator<T:Number>{
     ptr : *const T
 }
 
-impl <T:Number> CellIterator<T> {
+impl <T:MagmaBase> CellIterator<T> {
     /// Creates a new iterator object
     pub fn new(rows: usize, cols: usize, stride : usize, ptr : *const T)-> CellIterator<T>{
         CellIterator{rows : rows, 
@@ -93,7 +95,7 @@ impl <T:Number> CellIterator<T> {
 }
 
 
-impl <T:Number> Iterator for CellIterator<T> {
+impl <T:MagmaBase> Iterator for CellIterator<T> {
     type Item = T;
     fn next(&mut self) -> Option<T> {
         if self.cols == self.c{

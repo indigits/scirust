@@ -7,29 +7,30 @@
 
 // Standard library imports
 use std::cmp;
-//use std::num::{Int, SignedInt;
-use std::num::{Float};
+use num::{Float};
 use std::marker::MarkerTrait;
 
+// external imports
+use num::traits::{Signed};
+
 // local imports
-use algebra::Entry;
-use algebra::{Number, Signed};
+use algebra::structure::{MagmaBase, FieldPartial};
 use matrix::matrix::Matrix;
 use error::SRError;
 
 
 // Reexports
-pub use matrix::eo::eo_traits::{ERO, ECO};
-pub use matrix::update::traits::{
-    InPlaceUpdates, CopyUpdates};
-pub use matrix::transpose::traits::{Transpose};
-pub use matrix::extract::traits::{Extraction};
+// pub use matrix::eo::eo_traits::{ERO, ECO};
+// pub use matrix::update::traits::{
+//     InPlaceUpdates, CopyUpdates};
+// pub use matrix::transpose::traits::{Transpose};
+// pub use matrix::extract::traits::{Extraction};
 
 
 #[doc="Defines the features which all matrix types must implement.
 This API focuses only on the shape of the matrix.
 "] 
-pub trait Shape<T:Entry> {
+pub trait Shape<T:MagmaBase> {
     
     /// Returns the number of rows
     fn num_rows(&self) -> usize;
@@ -119,7 +120,7 @@ pub trait Shape<T:Entry> {
 memory buffer of a matrix implementation.  Use it with
 caution. 
 "]
-pub trait MatrixBuffer<T:Entry> {
+pub trait MatrixBuffer<T:MagmaBase> {
 
     /// Returns a constant pointer to matrix's buffer
     fn as_ptr(&self)-> *const T;
@@ -153,7 +154,7 @@ pub trait Strided {
 
 
 /// Defines a set of basic methods implemented by matrices of numbers
-pub trait NumberMatrix<T:Number> : Shape<T> + MatrixBuffer<T>{
+pub trait NumberMatrix<T:FieldPartial> : Shape<T> + MatrixBuffer<T>{
     
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool;
@@ -181,7 +182,7 @@ pub trait NumberMatrix<T:Number> : Shape<T> + MatrixBuffer<T>{
 }
 
 /// A matrix which is both a number matrix and is strided.
-pub trait StridedNumberMatrix<T:Number> : 
+pub trait StridedNumberMatrix<T:FieldPartial> : 
 NumberMatrix<T>+Strided{
 
 }
@@ -219,7 +220,7 @@ pub trait Introspection {
 
 
 /// Matrix conversion API
-pub trait Conversion<T:Number> : Shape<T> {
+pub trait Conversion<T:FieldPartial> : Shape<T> {
     /// Converts the matrix to vector from standard library
     fn to_std_vec(&self) -> Vec<T>;
 
@@ -235,7 +236,7 @@ pub trait Conversion<T:Number> : Shape<T> {
 
 
 /// Matrix min-max API
-pub trait MinMax<T:Number+PartialOrd> : Shape<T> {
+pub trait MinMax<T:FieldPartial+PartialOrd> : Shape<T> {
 
     /// Returns a column vector consisting of maximum over each row
     fn max_row_wise(&self) -> Matrix<T>;
@@ -280,7 +281,7 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
         let mut offset = start_col * stride + row;
         let mut result = unsafe{*p.offset(offset as isize)}.abs_val();
         let mut index  = 0;
-        for i in range(1, end_col - start_col){
+        for i in 1..(end_col - start_col){
             offset += stride;
             let s = unsafe{*p.offset(offset as isize)}.abs_val();
             if s > result {
@@ -305,7 +306,7 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
         let mut offset = col * stride + start_row;
         let mut result = unsafe{*p.offset(offset as isize)}.abs_val();
         let mut index  = 0;
-        for i in range(1, end_row - start_row){
+        for i in 1..(end_row - start_row){
             offset += 1;
             let s = unsafe{*p.offset(offset as isize)}.abs_val();
             if s > result {
@@ -337,7 +338,7 @@ pub trait SignedMatrix : MarkerTrait {
 
 
 /// A strided buffer matrix of floats
-pub trait StridedFloatMatrix <T:Number+Float> 
+pub trait StridedFloatMatrix <T:FieldPartial+Float> 
     : StridedNumberMatrix<T> {
 
 }
