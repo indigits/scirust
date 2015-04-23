@@ -52,8 +52,7 @@ Distributivity of multiplication over addition
 
 "]
 
-use algebra::zero::Zero;
-use algebra::one::One;
+use num::traits::{Zero, One};
 use algebra::ops::Recip;
 use algebra::structure::integral_domain::{IntegralDomainPartial, IntegralDomain};
 use algebra::structure::semigroup::{SemiGroupAdd, SemiGroupAddPartial, 

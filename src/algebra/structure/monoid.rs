@@ -27,8 +27,7 @@ References:
 
 
 // local imports
-use algebra::zero::Zero;
-use algebra::one::One;
+use num::traits::{Zero, One};
 use algebra::structure::semigroup::{SemiGroupAddPartial, SemiGroupAdd, 
     SemiGroupMulPartial, SemiGroupMul};
 
@@ -122,6 +121,10 @@ impl CommutativeMonoidAddPartial for i8   {}
 impl CommutativeMonoidAddPartial for i16  {}
 impl CommutativeMonoidAddPartial for i32  {}
 impl CommutativeMonoidAddPartial for i64  {}
+impl CommutativeMonoidAddPartial for u8   {}
+impl CommutativeMonoidAddPartial for u16  {}
+impl CommutativeMonoidAddPartial for u32  {}
+impl CommutativeMonoidAddPartial for u64  {}
 impl CommutativeMonoidAddPartial for f32  {}
 impl CommutativeMonoidAddPartial for f64  {}
 
@@ -146,6 +149,10 @@ impl CommutativeMonoidAdd for i8   {}
 impl CommutativeMonoidAdd for i16  {}
 impl CommutativeMonoidAdd for i32  {}
 impl CommutativeMonoidAdd for i64  {}
+impl CommutativeMonoidAdd for u8   {}
+impl CommutativeMonoidAdd for u16  {}
+impl CommutativeMonoidAdd for u32  {}
+impl CommutativeMonoidAdd for u64  {}
 
 ///////////////////////////////////////////////////////////
 
@@ -169,6 +176,10 @@ impl CommutativeMonoidMulPartial for i8   {}
 impl CommutativeMonoidMulPartial for i16  {}
 impl CommutativeMonoidMulPartial for i32  {}
 impl CommutativeMonoidMulPartial for i64  {}
+impl CommutativeMonoidMulPartial for u8   {}
+impl CommutativeMonoidMulPartial for u16  {}
+impl CommutativeMonoidMulPartial for u32  {}
+impl CommutativeMonoidMulPartial for u64  {}
 impl CommutativeMonoidMulPartial for f32  {}
 impl CommutativeMonoidMulPartial for f64  {}
 
@@ -194,6 +205,10 @@ impl CommutativeMonoidMul for i8   {}
 impl CommutativeMonoidMul for i16  {}
 impl CommutativeMonoidMul for i32  {}
 impl CommutativeMonoidMul for i64  {}
+impl CommutativeMonoidMul for u8   {}
+impl CommutativeMonoidMul for u16  {}
+impl CommutativeMonoidMul for u32  {}
+impl CommutativeMonoidMul for u64  {}
 
 ///////////////////////////////////////////////////////////
 
@@ -201,8 +216,8 @@ impl CommutativeMonoidMul for i64  {}
 #[cfg(test)]
 mod tests {
     use super::*;
-    use algebra::zero::Zero;
-    use algebra::one::One;
+    use num::traits::{Zero, One};
+
 
     fn check_monoid_add_partial<T: MonoidAddPartial>(a: T, b: T)->T{
         let d = a + b;
@@ -216,13 +231,13 @@ mod tests {
         assert_eq!(check_monoid_add_partial(2i16, 3i16), 5);
         assert_eq!(check_monoid_add_partial(2i32, 3i32), 5);
         assert_eq!(check_monoid_add_partial(2i64, 3i64), 5);
+        assert_eq!(check_monoid_add_partial(2u8, 3u8), 5);
+        assert_eq!(check_monoid_add_partial(2u16, 3u16), 5);
+        assert_eq!(check_monoid_add_partial(2u32, 3u32), 5);
+        assert_eq!(check_monoid_add_partial(2u64, 3u64), 5);
         assert_eq!(check_monoid_add_partial(2f32, 3f32), 5f32);
         assert_eq!(check_monoid_add_partial(2f64, 3f64), 5f64);
         // The following will not compile
-        // assert_eq!(check_monoid_add_partial(2u8, 3u8, 1u8), -4);
-        // assert_eq!(check_monoid_add_partial(2u16, 3u16, 1u16), -4);
-        // assert_eq!(check_monoid_add_partial(2u32, 3u32, 1u32), -4);
-        // assert_eq!(check_monoid_add_partial(2u64, 3u64, 1u64), -4);
     }
 
 
@@ -237,13 +252,13 @@ mod tests {
         assert_eq!(check_monoid_add(2i16, 3i16), 5);
         assert_eq!(check_monoid_add(2i32, 3i32), 5);
         assert_eq!(check_monoid_add(2i64, 3i64), 5);
+        assert_eq!(check_monoid_add(2u8, 3u8), 5);
+        assert_eq!(check_monoid_add(2u16, 3u16), 5);
+        assert_eq!(check_monoid_add(2u32, 3u32), 5);
+        assert_eq!(check_monoid_add(2u64, 3u64), 5);
         // The following will not compile
-        // assert_eq!(check_monoid_add(2f32, 3f32, 1f32), -4f32);
+        // assert_eq!(check_monoid_add(2f32, 3f32), 5f32);
         // assert_eq!(check_monoid_add(2f64, 3f64, 1f64), -4f64);
-        // assert_eq!(check_monoid_add(2u8, 3u8, 1u8), -4);
-        // assert_eq!(check_monoid_add(2u16, 3u16, 1u16), -4);
-        // assert_eq!(check_monoid_add(2u32, 3u32, 1u32), -4);
-        // assert_eq!(check_monoid_add(2u64, 3u64, 1u64), -4);
     }
 
 
@@ -255,17 +270,17 @@ mod tests {
 
     #[test]
     fn test_monoid_mul_partial() {
+        assert_eq!(check_monoid_mul_partial(2i8, 3i8), 6);
+        assert_eq!(check_monoid_mul_partial(2i16, 3i16), 6);
+        assert_eq!(check_monoid_mul_partial(2i32, 3i32), 6);
+        assert_eq!(check_monoid_mul_partial(2i64, 3i64), 6);
+        assert_eq!(check_monoid_mul_partial(2u8, 3u8), 6);
+        assert_eq!(check_monoid_mul_partial(2u16, 3u16), 6);
+        assert_eq!(check_monoid_mul_partial(2u32, 3u32), 6);
+        assert_eq!(check_monoid_mul_partial(2u64, 3u64), 6);
         assert_eq!(check_monoid_mul_partial(2f32, 3f32), 6.0);
         assert_eq!(check_monoid_mul_partial(2f64, 3f64), 6.0);
         // The following will not compile
-        // assert_eq!(check_monoid_mul_partial(2i8, 3i8), -4);
-        // assert_eq!(check_monoid_mul_partial(2i16, 3i16, 1i16), -4);
-        // assert_eq!(check_monoid_mul_partial(2i32, 3i32, 1i32), -4);
-        // assert_eq!(check_monoid_mul_partial(2i64, 3i64, 1i64), -4);
-        // assert_eq!(check_monoid_mul_partial(2u8, 3u8, 1u8), -4);
-        // assert_eq!(check_monoid_mul_partial(2u16, 3u16, 1u16), -4);
-        // assert_eq!(check_monoid_mul_partial(2u32, 3u32, 1u32), -4);
-        // assert_eq!(check_monoid_mul_partial(2u64, 3u64, 1u64), -4);
     }
 
 

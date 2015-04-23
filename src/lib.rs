@@ -30,6 +30,7 @@ C libraries like BLAS or LAPACK.
 #[macro_use] 
 extern crate log;
 extern crate rand;
+extern crate num;
 
 // Common modules
 pub mod error;

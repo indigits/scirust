@@ -43,8 +43,7 @@ References:
 
 
 // local imports
-use algebra::zero::Zero;
-use algebra::one::One;
+use num::traits::{Zero, One};
 use algebra::structure::group::{CommutativeGroupAddPartial, CommutativeGroupAdd};
 use algebra::structure::monoid::{MonoidMulPartial, MonoidMul};
 use algebra::structure::semigroup::{SemiGroupAddPartial, SemiGroupMulPartial};
