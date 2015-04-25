@@ -2,17 +2,21 @@
 
 // std imports
 
+// external imports
+use num::traits::Num;
+
+
 // local imports
-use algebra::structure::FieldPartial;
+use algebra::structure::MagmaBase;
 use super::eo_traits::{ERO, ECO};
 use matrix::matrix::Matrix;
 
 /// Implementation of Elementary row operations.
-impl<T:FieldPartial> ERO<T> for Matrix<T> {
+impl<T:MagmaBase + Num> ERO<T> for Matrix<T> {
 }
 
 /// Implementation of Elementary column operations.
-impl<T:FieldPartial> ECO<T> for Matrix<T> {
+impl<T:MagmaBase + Num> ECO<T> for Matrix<T> {
 }
 
 

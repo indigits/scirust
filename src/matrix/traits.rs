@@ -13,15 +13,17 @@ use num::{Float};
 use num::traits::{Signed};
 
 // local imports
-use algebra::structure::{MagmaBase, FieldPartial};
+use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial,
+        CommutativeMonoidMulPartial,
+        FieldPartial};
 use matrix::matrix::Matrix;
 use error::SRError;
 
 
 // Reexports
 pub use matrix::eo::eo_traits::{ERO, ECO};
-// pub use matrix::update::traits::{
-//     InPlaceUpdates, CopyUpdates};
+pub use matrix::update::traits::{
+    InPlaceUpdates, CopyUpdates};
 pub use matrix::transpose::traits::{Transpose};
 pub use matrix::extract::traits::{Extraction};
 
@@ -153,7 +155,7 @@ pub trait Strided {
 
 
 /// Defines a set of basic methods implemented by matrices of numbers
-pub trait NumberMatrix<T:FieldPartial> : Shape<T> + MatrixBuffer<T>{
+pub trait NumberMatrix<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> : Shape<T> + MatrixBuffer<T>{
     
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool;
@@ -235,7 +237,7 @@ pub trait Conversion<T:MagmaBase> : Shape<T> {
 
 
 /// Matrix min-max API
-pub trait MinMax<T:FieldPartial+PartialOrd> : Shape<T> {
+pub trait MinMax<T:CommutativeMonoidAddPartial+PartialOrd> : Shape<T> {
 
     /// Returns a column vector consisting of maximum over each row
     fn max_row_wise(&self) -> Matrix<T>;

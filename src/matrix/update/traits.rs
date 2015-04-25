@@ -4,10 +4,14 @@
 /// std imports
 use std::cmp;
 
+// external imports
+use num::traits::Num;
 
 /// local imports
 use error::SRResult;
-use algebra::structure::{FieldPartial};
+use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial,
+        CommutativeMonoidMulPartial,
+        FieldPartial};
 use discrete::mod_n;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer};
@@ -29,7 +33,7 @@ are provided to achieve them quickly. Further,
 optimizing the low level code can help a lot in improving performance
 of higher level functions.
 "]
-pub trait InPlaceUpdates<T:FieldPartial> : Shape<T>+MatrixBuffer<T> {
+pub trait InPlaceUpdates<T:MagmaBase + Num> : Shape<T>+MatrixBuffer<T> {
 
     // Sets all the entries on the main diagonal to a particular value
     fn set_diagonal(&mut self, value : T)-> &mut Self{
@@ -146,7 +150,7 @@ save processing cycles.
 These methods require immutable reference to the
 matrix being updated.
 "]
-pub trait CopyUpdates<T:FieldPartial> : Shape<T>+MatrixBuffer<T> {
+pub trait CopyUpdates<T:MagmaBase + Num> : Shape<T>+MatrixBuffer<T> {
      /// Add the matrix by a scalar
     fn copy_add_scalar(&self, rhs: T) -> Self;
      /// Multiply the matrix by a scalar

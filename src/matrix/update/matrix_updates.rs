@@ -3,8 +3,12 @@
 
 /// std imports
 
+// external imports
+use num::traits::Num;
+
+
 /// local imports
-use algebra::structure::{FieldPartial};
+use algebra::structure::{MagmaBase, FieldPartial};
 use error::SRResult;
 use error::SRError;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
@@ -13,7 +17,7 @@ use matrix::eo::eo_traits::{ERO, ECO};
 use matrix::matrix::Matrix;
 
 /// Implementation of Matrix general update operations.
-impl<T:FieldPartial> InPlaceUpdates<T> for Matrix<T> {
+impl<T:MagmaBase + Num> InPlaceUpdates<T> for Matrix<T> {
 
 
     fn add_scalar(&mut self, rhs: T) -> &mut Matrix<T> {
@@ -329,7 +333,7 @@ impl<T:FieldPartial> InPlaceUpdates<T> for Matrix<T> {
 
 /// Implementation of Matrix general copy and update operations.
 /// TODO Optimize implementations.
-impl<T:FieldPartial> CopyUpdates<T> for Matrix<T> {
+impl<T:MagmaBase + Num> CopyUpdates<T> for Matrix<T> {
 
     /// Add the matrix by a scalar
     /// Returns a new matrix

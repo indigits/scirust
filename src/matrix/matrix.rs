@@ -23,6 +23,7 @@ use algebra::structure::{MagmaBase,
     CommutativeMonoidAddPartial, 
     CommutativeMonoidMulPartial,
     QuasiGroupAddPartial,
+    CommutativeGroupAddPartial,
     FieldPartial};
 use error::SRError;
 use matrix::iter::*;
@@ -435,7 +436,7 @@ impl<T:MagmaBase> Shape<T> for Matrix<T> {
 }
 
 /// Methods available to number matrices
-impl<T:FieldPartial> NumberMatrix<T> for Matrix<T> {
+impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> for Matrix<T> {
 
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool {
@@ -848,7 +849,7 @@ impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Matrix<T> {
 }
 
 //+Neg<Output=T>
-impl<T:FieldPartial> Matrix<T> {
+impl<T:CommutativeGroupAddPartial> Matrix<T> {
     /// Computes the unary minus of a matrix
     pub fn unary_minus(&self)-> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.cols, self.rows);
@@ -1112,7 +1113,7 @@ impl<T:MagmaBase+Signed+PartialOrd> Search<T> for Matrix<T> {
 
 
 /// Views of a matrix
-impl<T:FieldPartial> Matrix<T> {
+impl<T:MagmaBase> Matrix<T> {
     /// Creates a view on the matrix
     pub fn view(&self, start_row : usize, start_col : usize , num_rows: usize, num_cols : usize) -> MatrixView<T> {
         let result : MatrixView<T> = MatrixView::new(self, start_row, start_col, num_rows, num_cols);
@@ -1125,7 +1126,7 @@ impl<T:FieldPartial> Matrix<T> {
 
 /// These functions are available only for types which support
 /// ordering [at least partial ordering for floating point numbers].
-impl<T:FieldPartial+PartialOrd> Matrix<T> {
+impl<T:CommutativeMonoidAddPartial+PartialOrd> Matrix<T> {
 
 
     // Returns the minimum scalar value with location
@@ -1357,7 +1358,7 @@ impl <T:MagmaBase> Clone for Matrix<T> {
     }
 }
 
-impl <T:FieldPartial> fmt::Debug for Matrix<T> {
+impl <T:MagmaBase> fmt::Debug for Matrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // We need to find out the number of characters needed
         // to show each value.
@@ -1397,7 +1398,7 @@ impl <T:FieldPartial> fmt::Debug for Matrix<T> {
     }
 }
 
-impl <T:FieldPartial> fmt::Display for Matrix<T> {
+impl <T:MagmaBase> fmt::Display for Matrix<T> {
     /// Display and Debug versions are same
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Debug::fmt(self, f)
@@ -1476,7 +1477,7 @@ impl<T:MagmaBase> cmp::PartialEq for Matrix<T>{
 }
 
 // Element wise operations.
-impl<T:FieldPartial> Matrix<T> {
+impl<T:CommutativeMonoidAddPartial> Matrix<T> {
     /// Adds matrices element by element
     pub fn add_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1496,7 +1497,9 @@ impl<T:FieldPartial> Matrix<T> {
         }
         result
     }
+}
 
+impl<T:CommutativeMonoidAddPartial+ops::Sub<Output=T>> Matrix<T> {
     /// Subtracts matrices element by element
     pub fn sub_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1516,6 +1519,8 @@ impl<T:FieldPartial> Matrix<T> {
         }
         result
     }
+}
+impl<T:CommutativeMonoidMulPartial> Matrix<T> {
     /// Multiplies matrices element by element
     pub fn mul_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1531,26 +1536,6 @@ impl<T:FieldPartial> Matrix<T> {
             for i_ in 0..n{
                 let i = i_ as isize;
                 *pc.offset(i) = *pa.offset(i) * *pb.offset(i);
-            }
-        }
-        result
-    }
-
-    /// Divides matrices element by element
-    pub fn div_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
-        // Validate dimensions are same.
-        if self.size() != rhs.size(){
-            panic!(SRError::DimensionsMismatch.to_string());
-        }
-        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
-        let pa = self.ptr;
-        let pb = rhs.ptr;
-        let pc = result.ptr;
-        let n = self.capacity();
-        unsafe{
-            for i_ in 0..n{
-                let i = i_ as isize;
-                *pc.offset(i) = *pa.offset(i) / *pb.offset(i);
             }
         }
         result
@@ -1575,6 +1560,29 @@ impl<T:FieldPartial> Matrix<T> {
         }
         result
     }
+}
+
+impl<T:CommutativeMonoidMulPartial+ops::Div<Output=T>> Matrix<T> {
+    /// Divides matrices element by element
+    pub fn div_elt(&self, rhs: &Matrix<T>) -> Matrix<T> {
+        // Validate dimensions are same.
+        if self.size() != rhs.size(){
+            panic!(SRError::DimensionsMismatch.to_string());
+        }
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pb = rhs.ptr;
+        let pc = result.ptr;
+        let n = self.capacity();
+        unsafe{
+            for i_ in 0..n{
+                let i = i_ as isize;
+                *pc.offset(i) = *pa.offset(i) / *pb.offset(i);
+            }
+        }
+        result
+    }
+
 }
 
 impl<T:MagmaBase> Drop for Matrix<T> {

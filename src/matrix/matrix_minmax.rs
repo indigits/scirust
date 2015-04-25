@@ -3,10 +3,10 @@
 // local imports
 use matrix::matrix::Matrix;
 use matrix::traits::*;
-use algebra::structure::FieldPartial;
+use algebra::structure::CommutativeMonoidAddPartial;
 
 /// Implements matrix extraction API
-impl <T:FieldPartial+PartialOrd> MinMax<T> for Matrix<T> {
+impl <T:CommutativeMonoidAddPartial+PartialOrd> MinMax<T> for Matrix<T> {
 
     /// Returns a column vector consisting of maximum over each row
     fn max_row_wise(&self) -> Matrix<T>{

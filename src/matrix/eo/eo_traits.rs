@@ -7,16 +7,21 @@
 /// std imports
 use std::ptr;
 
+
+// external imports
+use num::traits::Num;
+
+
 /// local imports
 use discrete::mod_n;
 //use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeRingPartial, FieldPartial};
-use algebra::structure::FieldPartial;
+use algebra::structure::{MagmaBase};
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 
 
 
 /// Elementary row operations on a matrix
-pub trait ERO<T:FieldPartial> : Shape<T>+MatrixBuffer<T> + Strided {
+pub trait ERO<T:MagmaBase + Num> : Shape<T>+MatrixBuffer<T> + Strided {
 
     /// Row switching.
     #[inline]
@@ -113,7 +118,7 @@ pub trait ERO<T:FieldPartial> : Shape<T>+MatrixBuffer<T> + Strided {
 
 
 /// Elementary column operations on a matrix
-pub trait ECO<T:FieldPartial> : Shape<T>+MatrixBuffer<T> + Strided {
+pub trait ECO<T:MagmaBase + Num> : Shape<T>+MatrixBuffer<T> + Strided {
 
     /// Column switching.
     #[inline]

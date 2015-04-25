@@ -2,15 +2,20 @@
 // std imports
 use std::mem;
 
+// external imports
+use num::traits::Num;
+
+
+
 // local imports
-use algebra::structure::FieldPartial;
+use algebra::structure::MagmaBase;
 use super::eo_traits::{ERO, ECO};
 use matrix::view::MatrixView;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 
 
 /// Implementation of Elementary row operations.
-impl<'a, T:FieldPartial> ERO<T> for MatrixView<'a, T> {
+impl<'a, T:MagmaBase + Num> ERO<T> for MatrixView<'a, T> {
 
 
     /// Row scaling by a factor and adding to another row.
@@ -54,7 +59,7 @@ impl<'a, T:FieldPartial> ERO<T> for MatrixView<'a, T> {
 }
 
 /// Implementation of Elementary column operations.
-impl<'a, T:FieldPartial> ECO<T> for MatrixView<'a, T> {
+impl<'a, T:MagmaBase + Num> ECO<T> for MatrixView<'a, T> {
     /// Column scaling by a factor and adding to another column.
     /// c_i = c_i + k * c_j
     /// The j-th column can be outside the view also.
