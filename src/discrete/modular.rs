@@ -1,7 +1,9 @@
 /// This module provides useful discrete mathematics functions
 
 // std imports
-use std::num::SignedInt;
+
+// external imports
+use num::traits::Signed;
 
 // local imports
 

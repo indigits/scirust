@@ -9,7 +9,7 @@ use std::ops;
 use num::traits::{Zero};
 
 // local imports
-use algebra::structure::{MagmaBase, FieldPartial};
+use algebra::structure::{FieldPartial};
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 use matrix::matrix::Matrix;
 use matrix::transpose::traits::Transpose;

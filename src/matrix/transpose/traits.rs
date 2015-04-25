@@ -1,6 +1,6 @@
 
 // local imports
-use algebra::structure::{MagmaBase, FieldPartial};
+use algebra::structure::{FieldPartial};
 use matrix::traits::Shape;
 
 #[doc="Implemented by matrix types

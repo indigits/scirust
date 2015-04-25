@@ -45,6 +45,8 @@ References:
 // local imports
 use algebra::structure::monoid::{MonoidAddPartial, MonoidAdd, 
     MonoidMulPartial, MonoidMul};
+use algebra::structure::monoid::{CommutativeMonoidAddPartial, CommutativeMonoidAdd, 
+    CommutativeMonoidMulPartial, CommutativeMonoidMul};
 use algebra::structure::loop_::{LoopAddPartial, LoopAdd, 
     LoopMulPartial, LoopMul};
 
@@ -118,7 +120,7 @@ impl<T> GroupMul for T where
 
 /// Commutative group with an addition operation with partial equivalence
 pub trait CommutativeGroupAddPartial 
-: GroupAddPartial
+: GroupAddPartial + CommutativeMonoidAddPartial
 {
 
     /// Returns `true` if the addition operator is approximately commutative for
@@ -142,7 +144,7 @@ impl CommutativeGroupAddPartial for f64  {}
 
 /// Commutative group with an addition operation with full equivalence
 pub trait CommutativeGroupAdd
-: CommutativeGroupAddPartial + GroupAdd
+: CommutativeGroupAddPartial + CommutativeMonoidAdd + GroupAdd
 {
 
     /// Returns `true` if the addition operator is approximately commutative for
@@ -164,7 +166,7 @@ impl CommutativeGroupAdd for i64  {}
 
 /// Commutative group with a multiplication operation with partial equivalence
 pub trait CommutativeGroupMulPartial 
-: GroupMulPartial
+: CommutativeMonoidMulPartial + GroupMulPartial
 {
 
     /// Returns `true` if the multiplication operator is approximately commutative for
@@ -182,7 +184,7 @@ pub trait CommutativeGroupMulPartial
 
 /// Commutative group with a multiplication operation with full equivalence
 pub trait CommutativeGroupMul
-: CommutativeGroupMulPartial + GroupMul
+: CommutativeGroupMulPartial + GroupMul + CommutativeMonoidMul
 {
 
     /// Returns `true` if the multiplication operator is approximately commutative for

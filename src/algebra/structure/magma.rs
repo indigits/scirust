@@ -55,12 +55,12 @@ use std::ops::{Add, Mul};
 
 /// Defines basic requirements for all types implementing
 /// the algebraic traits defined  in SciRust
-pub trait MagmaBase : Debug + Clone + Sized {
+pub trait MagmaBase : Debug + Copy + Clone + Sized {
 
 }
 
 impl<T> MagmaBase for T where
-    T : Debug + Clone + Sized
+    T : Debug + Clone + Sized + Copy
 {
 
 }

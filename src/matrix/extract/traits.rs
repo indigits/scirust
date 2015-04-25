@@ -1,6 +1,6 @@
 
 // local imports
-use algebra::Number;
+use algebra::structure::{CommutativeMonoidAddPartial};
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape};
 
@@ -8,7 +8,7 @@ use matrix::traits::{Shape};
 
 
 /// Matrix extraction API
-pub trait Extraction<T:Number> : Shape<T>{
+pub trait Extraction<T:CommutativeMonoidAddPartial> : Shape<T>{
 
     /// Returns the r'th row vector
     fn row(&self, r : isize) -> Matrix<T>;

@@ -2,7 +2,8 @@
 "]
 
 // local imports
-use algebra::{Number, Zero};
+use algebra::structure::{CommutativeMonoidAddPartial};
+use num::traits::Zero;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 use matrix::extract::traits::Extraction;
@@ -10,7 +11,7 @@ use matrix::extract::traits::Extraction;
 use discrete::{mod_n};
 
 /// Implements matrix extraction API
-impl <T:Number> Extraction<T> for Matrix<T> {
+impl <T:CommutativeMonoidAddPartial> Extraction<T> for Matrix<T> {
 
     /// Returns the r'th row vector
     fn row(&self, r : isize) -> Matrix<T> {
@@ -20,7 +21,7 @@ impl <T:Number> Extraction<T> for Matrix<T> {
         let mut result : Matrix<T> = Matrix::new(1, self.num_cols());
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for c in range(0, self.num_cols()){
+        for c in 0..self.num_cols(){
             let src_offset = self.cell_to_offset(r, c);
             let dst_offset = result.cell_to_offset(0, c);
             unsafe{
@@ -38,7 +39,7 @@ impl <T:Number> Extraction<T> for Matrix<T> {
         let mut result : Matrix<T> = Matrix::new(self.num_rows(), 1);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for r in range(0, self.num_rows()){
+        for r in 0..self.num_rows(){
             let src_offset = self.cell_to_offset(r, c);
             let dst_offset = result.cell_to_offset(r, 0);
             unsafe{
@@ -61,9 +62,9 @@ impl <T:Number> Extraction<T> for Matrix<T> {
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
         let mut dc = 0;
-        for c in range(c, c + num_cols).map(|x | x % self.num_cols()) {
+        for c in (c..(c + num_cols)).map(|x | x % self.num_cols()) {
             let mut dr = 0;
-            for r in range(r , r + num_rows).map(|x|  x % self.num_rows()) {
+            for r in (r..(r + num_rows)).map(|x|  x % self.num_rows()) {
                 let src_offset = self.cell_to_offset(r, c);
                 let dst_offset = result.cell_to_offset(dr, dc);
                 unsafe{
@@ -86,13 +87,13 @@ impl <T:Number> Extraction<T> for Matrix<T> {
         let mut pd = result.as_mut_ptr();
         let src_stride = self.stride() as isize;
         let dst_stride = result.stride() as isize;
-        for c in range(0, n){
-            for r in range(0, c){
+        for c in 0..n{
+            for r in 0..c{
                 unsafe{
                     *pd.offset(r as isize) = z;
                 }
             }
-            for r in range (c, n){
+            for r in c..n{
                 let r  = r as isize;
                 unsafe {
                     *pd.offset(r) = *ps.offset(r);
@@ -116,14 +117,14 @@ impl <T:Number> Extraction<T> for Matrix<T> {
         let mut pd = result.as_mut_ptr();
         let src_stride = self.stride() as isize;
         let dst_stride = result.stride() as isize;
-        for c in range(0, n){
-            for r in range(0, c + 1){
+        for c in 0..n{
+            for r in 0..(c + 1){
                 let r  = r as isize;
                 unsafe {
                     *pd.offset(r) = *ps.offset(r);
                 }
             }
-            for r in range (c + 1, n){
+            for r in (c + 1)..n{
                 unsafe{
                     *pd.offset(r as isize) = z;
                 }

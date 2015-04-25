@@ -76,6 +76,8 @@ pub use self::loop_::{LoopAddPartial, LoopAdd,
 
 pub use self::monoid::{MonoidAddPartial, MonoidAdd, 
     MonoidMulPartial, MonoidMul};
+pub use self::monoid::{CommutativeMonoidAddPartial, CommutativeMonoidAdd, 
+    CommutativeMonoidMulPartial, CommutativeMonoidMul};
 
 pub use self::group::{GroupAddPartial, GroupAdd, 
     GroupMulPartial, GroupMul};

@@ -8,26 +8,29 @@ or a row vector. The stride is always one in both cases.
 
 // std imports
 
+// external imports
+use num::traits::{One, Zero};
+
+
 // local imports
-use algebra::{One, Zero};
-use algebra::Number;
+use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeRingPartial};
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer};
 
-pub struct VecIterator<T:Number> {
+pub struct VecIterator<T:MagmaBase> {
     ptr : *const T,
     pos : usize,
     len : usize
 }
 
-impl <T:Number> VecIterator<T> {
+impl <T:MagmaBase> VecIterator<T> {
     pub fn new (ptr: *const T, len : usize)->VecIterator<T>{
         VecIterator{ptr: ptr, pos : 0, len : len}
     } 
 }
 
 /// Implementation of iterator trait
-impl<T:Number> Iterator for VecIterator<T>{
+impl<T:MagmaBase> Iterator for VecIterator<T>{
     type Item = T;
     /// Next element in the vector
     fn next(&mut self)->Option<T> {
@@ -49,13 +52,13 @@ impl<T:Number> Iterator for VecIterator<T>{
 
 /// Constructs a vector iterator for a matrix with the
 /// assumption that the matrix is indeed a vector
-pub fn vec_iter<T:Number>(m : &Matrix<T>) -> VecIterator<T> {
+pub fn vec_iter<T:MagmaBase>(m : &Matrix<T>) -> VecIterator<T> {
     assert!(m.is_vector());
     VecIterator::new(m.as_ptr(), m.num_cells())
 }
 
 /// Computes the sum of entries in vector v
-pub fn vec_reduce_sum<T:Number>(v : &Matrix<T>) -> T{
+pub fn vec_reduce_sum<T:CommutativeMonoidAddPartial>(v : &Matrix<T>) -> T{
     let mut result : T = Zero::zero();
     for entry in vec_iter(v){
         result = result + entry;
@@ -65,7 +68,7 @@ pub fn vec_reduce_sum<T:Number>(v : &Matrix<T>) -> T{
 
 
 /// Computes the product of entries in vector v
-pub fn vec_reduce_product<T:Number>(v : &Matrix<T>) -> T{
+pub fn vec_reduce_product<T:CommutativeRingPartial>(v : &Matrix<T>) -> T{
     let mut result : T = One::one();
     for entry in vec_iter(v){
         result = result * entry;

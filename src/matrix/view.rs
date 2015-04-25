@@ -6,7 +6,7 @@ use std::fmt;
 
 // external imports
 use num::{Float};
-use num::traits::{Zero, One, Signed};
+use num::traits::{Zero, One};
 
 
 // local imports
@@ -483,7 +483,7 @@ impl <'a, T:FieldPartial> fmt::Debug for MatrixView<'a, T> {
             for c in 0..self.cols{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
-                try!(write!(f, "{} ", v));
+                try!(write!(f, "{:?} ", v));
             }
         }
         try!(write!(f, "\n]"));

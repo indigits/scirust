@@ -4,7 +4,7 @@
 
 
 // local imports
-use algebra::structure::{MagmaBase, FieldPartial};
+use algebra::structure::{MagmaBase};
 
 
 /******************************************************
@@ -39,7 +39,7 @@ impl <T:MagmaBase> Iterator for RowIterator<T> {
         }
         let offset = self.pos * self.stride;
         self.pos += 1;
-        Some(unsafe{*self.ptr.offset(offset as isize)})
+        Some(unsafe{*self.ptr.offset(offset as isize).clone()})
     }
 }
 

@@ -7,14 +7,13 @@ use std::ptr;
 use std::ops;
 use std::cmp;
 use std::fmt;
-use num::{Float};
+use num::{Float, Num};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
-use std::raw::Slice as RawSlice;
-use std::ops::{Neg, Index};
+use std::ops::{Index};
+use std::raw::Slice;
 
 // external imports
-use num::Unsigned;
 use num::traits::{Zero, One, Signed};
 
 // local imports
@@ -133,7 +132,7 @@ the matrix differently.
 }
 
 /// Static functions for creating  a matrix of numbers
-impl<T:FieldPartial> Matrix<T> {
+impl<T:MagmaBase + Num> Matrix<T> {
 
     /// Constructs a scalar matrix
     pub fn from_scalar (scalar : T) -> Matrix <T>{
@@ -605,7 +604,7 @@ impl<T:MagmaBase> Matrix<T> {
 
 
 /// Functions to construct new matrices out of a matrix and other conversions
-impl<T:FieldPartial> Matrix<T> {
+impl<T:FieldPartial+Num> Matrix<T> {
 
 
 
@@ -1185,7 +1184,7 @@ impl<T:MagmaBase+Signed+PartialOrd> Matrix<T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs_val();
+        let mut v = self.get(0, 0).abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1193,7 +1192,7 @@ impl<T:MagmaBase+Signed+PartialOrd> Matrix<T> {
         for c in 0..self.cols{
             for r in 0..self.rows{
                 let src_offset = self.cell_to_offset(r, c);
-                let s = unsafe{*ps.offset(src_offset)}.abs_val();
+                let s = unsafe{*ps.offset(src_offset)}.abs();
                 if s < v { 
                     v = s;
                     rr = r;
@@ -1209,7 +1208,7 @@ impl<T:MagmaBase+Signed+PartialOrd> Matrix<T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs_val();
+        let mut v = self.get(0, 0).abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1217,7 +1216,7 @@ impl<T:MagmaBase+Signed+PartialOrd> Matrix<T> {
         for c in 0..self.cols{
             for r in 0..self.rows{
                 let src_offset = self.cell_to_offset(r, c);
-                let s = unsafe{*ps.offset(src_offset)}.abs_val();
+                let s = unsafe{*ps.offset(src_offset)}.abs();
                 if s > v { 
                     v  = s;
                     rr = r;
@@ -1241,7 +1240,7 @@ impl<T:MagmaBase+Signed+PartialOrd> Matrix<T> {
 }
 
 /// These functions are available only for integer matrices
-impl<T:Signed> Matrix<T> {
+impl<T:MagmaBase + Signed> Matrix<T> {
 
     /// Returns if an integer matrix is a logical matrix
     //// i.e. all cells are either 0s or 1s.
@@ -1302,9 +1301,9 @@ impl<T:FieldPartial+Float> Matrix<T> {
 impl<T:MagmaBase> Index<usize> for Matrix<T> {
     type Output = T;
     #[inline]
-    fn index<'a>(&'a self, index: &usize) -> &'a T {
+    fn index<'a>(&'a self, index: usize) -> &'a T {
         // The matrix is column major order
-        let (r, c) = self.index_to_cell(*index);
+        let (r, c) = self.index_to_cell(index);
         let offset = c * self.stride() + r;
         unsafe {
             &*self.ptr.offset(offset as isize)
@@ -1314,12 +1313,12 @@ impl<T:MagmaBase> Index<usize> for Matrix<T> {
 
 
 
-impl<T:FieldPartial> Matrix<T>{
+impl<T:MagmaBase> Matrix<T>{
     /// This function is for internal use only.
     #[inline]
     fn as_mut_slice<'a>(&'a mut self) -> &'a mut [T] {
         unsafe {
-            mem::transmute(RawSlice {
+            mem::transmute(Slice {
                 data: self.as_mut_ptr() as *const T,
                 len: self.capacity(),
             })
@@ -1360,7 +1359,7 @@ impl <T:FieldPartial> fmt::Debug for Matrix<T> {
             for c in 0..self.cols{
                 let offset = self.cell_to_offset(r, c);
                 let v = unsafe {*ptr.offset(offset)};
-                let s = v.to_str();
+                let s = format!("{:?}", v);
                 let slen = s.len();
                 strings.push(s);
                 if slen > n {
@@ -1558,7 +1557,11 @@ impl<T:FieldPartial> Matrix<T> {
             for i_ in 0..cap{
                 let i = i_ as isize;
                 let v = *pa.offset(i);
-                *pc.offset(i) = v.power(n);
+                let mut result : T = One::one();
+                for _ in 1..n{
+                    result = result * v; 
+                }
+                *pc.offset(i) = result;
             }
         }
         result
@@ -1604,7 +1607,7 @@ impl<T:FieldPartial> Matrix<T> {
     /// Returns a slice into `self`.
     //#[inline]
     pub fn as_slice_<'a>(&'a self) -> &'a [T] {
-        unsafe { mem::transmute(RawSlice { data: self.as_ptr(), len: self.capacity() }) }
+        unsafe { mem::transmute(Slice { data: self.as_ptr(), len: self.capacity() }) }
     }
 
 }
@@ -1717,7 +1720,7 @@ mod test {
     }
 
     #[test]
-    #[should_fail]
+    #[should_panic]
     fn test_sum_fail(){
         let m1 : MatrixI64 = Matrix::ones(4, 2);
         let m2 : MatrixI64 = Matrix::ones(3, 2);
@@ -1742,7 +1745,7 @@ mod test {
         assert_eq!(m2.to_std_vec(), v);
     }
     #[test]
-    #[should_fail]
+    #[should_panic]
     fn test_sub_fail(){
         let m1 : MatrixI64 = Matrix::ones(4, 2);
         let m2 : MatrixI64 = Matrix::ones(3, 2);

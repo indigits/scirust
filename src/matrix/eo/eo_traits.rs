@@ -9,13 +9,14 @@ use std::ptr;
 
 /// local imports
 use discrete::mod_n;
-use algebra::Number;
+//use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeRingPartial, FieldPartial};
+use algebra::structure::FieldPartial;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 
 
 
 /// Elementary row operations on a matrix
-pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
+pub trait ERO<T:FieldPartial> : Shape<T>+MatrixBuffer<T> + Strided {
 
     /// Row switching.
     #[inline]
@@ -29,7 +30,7 @@ pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
         let mut offset_a = self.cell_to_offset(i, 0);
         let mut offset_b = self.cell_to_offset(j, 0);
         let stride = self.stride() as isize;
-        for _ in range(0, self.num_cols()){
+        for _ in 0..self.num_cols(){
             unsafe {
                 ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
                 offset_a += stride;
@@ -47,7 +48,7 @@ pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
         )-> &mut Self {
         debug_assert! (r  < self.num_rows());
         let ptr = self.as_mut_ptr();
-        for c in range(0, self.num_cols()){
+        for c in 0..self.num_cols(){
             let offset = self.cell_to_offset(r, c);
             unsafe {
                 let v = *ptr.offset(offset);
@@ -69,7 +70,7 @@ pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
         debug_assert!(start <= end);
         debug_assert!(end <= self.num_cols());
         let ptr = self.as_mut_ptr();
-        for c in range(start, end){
+        for c in start..end{
             let offset = self.cell_to_offset(r, c);
             unsafe {
                 let v = *ptr.offset(offset);
@@ -96,7 +97,7 @@ pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
             j as usize
         };
         let ptr = self.as_mut_ptr();
-        for c in range(0, self.num_cols()){
+        for c in 0..self.num_cols(){
             let offset_a = self.cell_to_offset(i, c);
             let offset_b = self.cell_to_offset(j, c);
             unsafe {
@@ -112,7 +113,7 @@ pub trait ERO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
 
 
 /// Elementary column operations on a matrix
-pub trait ECO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
+pub trait ECO<T:FieldPartial> : Shape<T>+MatrixBuffer<T> + Strided {
 
     /// Column switching.
     #[inline]
@@ -125,7 +126,7 @@ pub trait ECO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
         let ptr = self.as_mut_ptr();
         let mut offset_a = self.cell_to_offset(0, i);
         let mut offset_b = self.cell_to_offset(0, j);
-        for _ in range(0, self.num_rows()){
+        for _ in 0..self.num_rows(){
             unsafe {
                 ptr::swap(ptr.offset(offset_a), ptr.offset(offset_b));
                 offset_a += 1;
@@ -144,7 +145,7 @@ pub trait ECO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
         debug_assert! (c  < self.num_cols());
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(0, c);
-        for _ in range(0, self.num_rows()){
+        for _ in 0..self.num_rows(){
             unsafe {
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale * v;
@@ -167,7 +168,7 @@ pub trait ECO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
         debug_assert!(end <= self.num_rows());
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(start, c);
-        for _ in range(start, end){
+        for _ in start..end{
             unsafe {
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale * v;
@@ -196,7 +197,7 @@ pub trait ECO<T:Number> : Shape<T>+MatrixBuffer<T> + Strided {
         let ptr = self.as_mut_ptr();
         let mut offset_a = self.cell_to_offset(0, i);
         let mut offset_b = self.cell_to_offset(0, j);
-        for _ in range(0, self.num_rows()){
+        for _ in 0..self.num_rows(){
             unsafe {
                 let va = *ptr.offset(offset_a);
                 let vb = *ptr.offset(offset_b);

@@ -3,10 +3,10 @@
 // local imports
 use matrix::matrix::Matrix;
 use matrix::traits::*;
-use algebra::Number;
+use algebra::structure::FieldPartial;
 
 /// Implements matrix extraction API
-impl <T:Number+PartialOrd> MinMax<T> for Matrix<T> {
+impl <T:FieldPartial+PartialOrd> MinMax<T> for Matrix<T> {
 
     /// Returns a column vector consisting of maximum over each row
     fn max_row_wise(&self) -> Matrix<T>{
@@ -14,9 +14,9 @@ impl <T:Number+PartialOrd> MinMax<T> for Matrix<T> {
         let mut result = self.col(0);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for r  in range(0, self.num_rows()){
+        for r  in 0..self.num_rows(){
             let dst_offset = result.cell_to_offset(r, 0);
-            for c in range (1, self.num_cols()){
+            for c in 1..self.num_cols(){
                 let src_offset = self.cell_to_offset(r, c);
                 unsafe{
                     let s = *ps.offset(src_offset);
@@ -35,9 +35,9 @@ impl <T:Number+PartialOrd> MinMax<T> for Matrix<T> {
         let mut result = self.col(0);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for r  in range(0, self.num_rows()){
+        for r  in 0..self.num_rows(){
             let dst_offset = result.cell_to_offset(r, 0);
-            for c in range (1, self.num_cols()){
+            for c in 1..self.num_cols(){
                 let src_offset = self.cell_to_offset(r, c);
                 unsafe{
                     let s = *ps.offset(src_offset);
@@ -56,9 +56,9 @@ impl <T:Number+PartialOrd> MinMax<T> for Matrix<T> {
         let mut result = self.row(0);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for c in range (0, self.num_cols()){
+        for c in 0..self.num_cols(){
             let dst_offset = result.cell_to_offset(0, c);
-            for r  in range(1, self.num_rows()){
+            for r  in 1..self.num_rows(){
                 let src_offset = self.cell_to_offset(r, c);
                 unsafe{
                     let s = *ps.offset(src_offset);
@@ -79,9 +79,9 @@ impl <T:Number+PartialOrd> MinMax<T> for Matrix<T> {
         let mut result = self.row(0);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for c in range (0, self.num_cols()){
+        for c in 0..self.num_cols(){
             let dst_offset = result.cell_to_offset(0, c);
-            for r  in range(1, self.num_rows()){
+            for r  in 1..self.num_rows(){
                 let src_offset = self.cell_to_offset(r, c);
                 unsafe{
                     let s = *ps.offset(src_offset);

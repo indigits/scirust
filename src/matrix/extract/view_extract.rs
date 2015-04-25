@@ -3,7 +3,7 @@
 
 
 // local imports
-use algebra::Number;
+use algebra::structure::{CommutativeMonoidAddPartial};
 use matrix::matrix::Matrix;
 use matrix::view::MatrixView;
 use matrix::extract::traits::Extraction;
@@ -13,7 +13,7 @@ use discrete::{mod_n};
 
 
 /// Implement extraction API for matrix view 
-impl <'a, T:Number> Extraction<T> for MatrixView<'a, T> {
+impl <'a, T:CommutativeMonoidAddPartial> Extraction<T> for MatrixView<'a, T> {
 
     /// Returns the r'th row vector
     fn row(&self, r : isize) -> Matrix<T> {
@@ -23,7 +23,7 @@ impl <'a, T:Number> Extraction<T> for MatrixView<'a, T> {
         let mut result : Matrix<T> = Matrix::new(1, self.num_cols());
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for c in range(0, self.num_cols()){
+        for c in 0..self.num_cols(){
             let src_offset = self.cell_to_offset(r, c);
             let dst_offset = result.cell_to_offset(0, c);
             unsafe{
@@ -41,7 +41,7 @@ impl <'a, T:Number> Extraction<T> for MatrixView<'a, T> {
         let mut result : Matrix<T> = Matrix::new(self.num_rows(), 1);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
-        for r in range(0, self.num_rows()){
+        for r in 0..self.num_rows(){
             let src_offset = self.cell_to_offset(r, c);
             let dst_offset = result.cell_to_offset(r, 0);
             unsafe{
@@ -64,9 +64,9 @@ impl <'a, T:Number> Extraction<T> for MatrixView<'a, T> {
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
         let mut dc = 0;
-        for c in range(c, c + num_cols).map(|x | x % self.num_cols()) {
+        for c in (c..(c + num_cols)).map(|x | x % self.num_cols()) {
             let mut dr = 0;
-            for r in range(r , r + num_rows).map(|x|  x % self.num_rows()) {
+            for r in (r.. (r + num_rows)).map(|x|  x % self.num_rows()) {
                 let src_offset = self.cell_to_offset(r, c);
                 let dst_offset = result.cell_to_offset(dr, dc);
                 unsafe{

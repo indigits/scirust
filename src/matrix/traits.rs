@@ -8,7 +8,6 @@
 // Standard library imports
 use std::cmp;
 use num::{Float};
-use std::marker::MarkerTrait;
 
 // external imports
 use num::traits::{Signed};
@@ -20,11 +19,11 @@ use error::SRError;
 
 
 // Reexports
-// pub use matrix::eo::eo_traits::{ERO, ECO};
+pub use matrix::eo::eo_traits::{ERO, ECO};
 // pub use matrix::update::traits::{
 //     InPlaceUpdates, CopyUpdates};
-// pub use matrix::transpose::traits::{Transpose};
-// pub use matrix::extract::traits::{Extraction};
+pub use matrix::transpose::traits::{Transpose};
+pub use matrix::extract::traits::{Extraction};
 
 
 #[doc="Defines the features which all matrix types must implement.
@@ -266,7 +265,7 @@ pub trait MinMaxAbs<T:Signed> : Shape<T> {
 
 #[doc="Features for searching within the matrix
 "]
-pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
+pub trait Search<T:MagmaBase+Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
 
     /// Returns the largest entry (by magnitude) in the row between
     /// [start, end) columns
@@ -279,11 +278,11 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
         let p = self.as_ptr();
         let stride = self.stride();
         let mut offset = start_col * stride + row;
-        let mut result = unsafe{*p.offset(offset as isize)}.abs_val();
+        let mut result = unsafe{*p.offset(offset as isize)}.abs();
         let mut index  = 0;
         for i in 1..(end_col - start_col){
             offset += stride;
-            let s = unsafe{*p.offset(offset as isize)}.abs_val();
+            let s = unsafe{*p.offset(offset as isize)}.abs();
             if s > result {
                 index = i;
                 result = s;
@@ -304,11 +303,11 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
         let p = self.as_ptr();
         let stride = self.stride();
         let mut offset = col * stride + start_row;
-        let mut result = unsafe{*p.offset(offset as isize)}.abs_val();
+        let mut result = unsafe{*p.offset(offset as isize)}.abs();
         let mut index  = 0;
         for i in 1..(end_row - start_row){
             offset += 1;
-            let s = unsafe{*p.offset(offset as isize)}.abs_val();
+            let s = unsafe{*p.offset(offset as isize)}.abs();
             if s > result {
                 index = i;
                 result = s;
@@ -320,19 +319,19 @@ pub trait Search<T:Signed+PartialOrd> : Shape<T>+MatrixBuffer<T> + Strided{
 
 
 /// A matrix of integers <T:Number+Int>
-pub trait IntMatrix : MarkerTrait {
+pub trait IntMatrix {
 
 }
 
 
 /// A matrix of floats T:Number+Float
-pub trait FloatMatrix: MarkerTrait {
+pub trait FloatMatrix {
 
 }
 
 
 /// A matrix of signed integers T:Number+SignedInt
-pub trait SignedMatrix : MarkerTrait {
+pub trait SignedMatrix {
 
 }
 

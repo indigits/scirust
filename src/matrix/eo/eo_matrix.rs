@@ -3,16 +3,16 @@
 // std imports
 
 // local imports
-use algebra::Number;
+use algebra::structure::FieldPartial;
 use super::eo_traits::{ERO, ECO};
 use matrix::matrix::Matrix;
 
 /// Implementation of Elementary row operations.
-impl<T:Number> ERO<T> for Matrix<T> {
+impl<T:FieldPartial> ERO<T> for Matrix<T> {
 }
 
 /// Implementation of Elementary column operations.
-impl<T:Number> ECO<T> for Matrix<T> {
+impl<T:FieldPartial> ECO<T> for Matrix<T> {
 }
 
 

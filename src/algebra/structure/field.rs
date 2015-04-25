@@ -51,8 +51,13 @@ Distributivity of multiplication over addition
 
 
 "]
+// std imports
+use std::ops::Div;
 
+// external imports
 use num::traits::{Zero, One};
+
+// local imports
 use algebra::ops::Recip;
 use algebra::structure::integral_domain::{IntegralDomainPartial, IntegralDomain};
 use algebra::structure::semigroup::{SemiGroupAdd, SemiGroupAddPartial, 
@@ -63,6 +68,7 @@ use algebra::structure::monoid::{CommutativeMonoidMulPartial, CommutativeMonoidM
 
 /// Marker trait for fields with partial equivalence
 pub trait FieldPartial : IntegralDomainPartial
+        + Div<Output=Self>
         + Recip<Output=Self>
 {
 

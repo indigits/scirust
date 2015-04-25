@@ -3,14 +3,14 @@
 use std::mem;
 
 // local imports
-use algebra::Number;
+use algebra::structure::FieldPartial;
 use super::eo_traits::{ERO, ECO};
 use matrix::view::MatrixView;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 
 
 /// Implementation of Elementary row operations.
-impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
+impl<'a, T:FieldPartial> ERO<T> for MatrixView<'a, T> {
 
 
     /// Row scaling by a factor and adding to another row.
@@ -39,7 +39,7 @@ impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
         let mut offset_b = m.cell_to_offset(j, sc);
         let stride_a = self.stride() as isize;
         let stride_b = m.stride() as isize;
-        for _ in range(0, self.num_cols()){
+        for _ in 0..self.num_cols(){
             unsafe {
                 let va = *ptr.offset(offset_a);
                 let vb = *ptr.offset(offset_b);
@@ -54,7 +54,7 @@ impl<'a, T:Number> ERO<T> for MatrixView<'a, T> {
 }
 
 /// Implementation of Elementary column operations.
-impl<'a, T:Number> ECO<T> for MatrixView<'a, T> {
+impl<'a, T:FieldPartial> ECO<T> for MatrixView<'a, T> {
     /// Column scaling by a factor and adding to another column.
     /// c_i = c_i + k * c_j
     /// The j-th column can be outside the view also.
@@ -79,7 +79,7 @@ impl<'a, T:Number> ECO<T> for MatrixView<'a, T> {
         // Compute initial offsets
         let mut offset_a = self.cell_to_offset(0, i);
         let mut offset_b = m.cell_to_offset(sr, j);
-        for _ in range(0, self.num_rows()){
+        for _ in 0..self.num_rows(){
             unsafe {
                 let va = *ptr.offset(offset_a);
                 let vb = *ptr.offset(offset_b);
