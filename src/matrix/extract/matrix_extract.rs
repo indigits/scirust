@@ -148,7 +148,7 @@ mod test{
 
     #[test]
     fn test_extract_row(){
-        let m1 : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(4, 4, (0..16));
         let m2  = m1.row(0);
         assert_eq!(m2.to_std_vec(), vec![0, 4, 8, 12]);
         assert_eq!(m2.num_rows() , 1);
@@ -166,7 +166,7 @@ mod test{
 
     #[test]
     fn test_extract_col(){
-        let m1 : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(4, 4, (0..16));
         let m2  = m1.col(0);
         assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
         assert!(!m2.is_row());
@@ -185,7 +185,7 @@ mod test{
 
     #[test]
     fn test_sub_matrix(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16));
+        let m  : MatrixI64 = Matrix::from_iter_cw(4, 4, (0..16));
         let m1 = m.sub_matrix(0, 0, 2, 2);
         assert_eq!(m1.num_cells(), 4);
         assert_eq!(m1.num_rows(), 2);

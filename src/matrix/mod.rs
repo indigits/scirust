@@ -3,6 +3,7 @@
 
 Basic Matrix element: MagmaBase
 Support for addition with zero: CommutativeMonoidAddPartial
+Support of add, mul, 0, 1: CommutativeMonoidAddPartial+CommutativeMonoidMulPartial
 Support for addition and subtraction with zero: CommutativeGroupAddPartial
 Support for add, sub, mult: CommutativeRingPartial
 Support for add, sub, mult, div: FieldPartial

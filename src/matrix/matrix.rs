@@ -7,7 +7,7 @@ use std::ptr;
 use std::ops;
 use std::cmp;
 use std::fmt;
-use num::{Float, Num};
+use num::{Float};
 use std::iter::Iterator;
 use std::rt::heap::{allocate, deallocate};
 use std::ops::{Index};
@@ -19,7 +19,11 @@ use num::traits::{Zero, One, Signed};
 // local imports
 
 use discrete::{mod_n};
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
+use algebra::structure::{MagmaBase, 
+    CommutativeMonoidAddPartial, 
+    CommutativeMonoidMulPartial,
+    QuasiGroupAddPartial,
+    FieldPartial};
 use error::SRError;
 use matrix::iter::*;
 use matrix::view::MatrixView;
@@ -607,7 +611,7 @@ impl<T:MagmaBase> Matrix<T> {
 
 
 /// Functions to construct new matrices out of a matrix and other conversions
-impl<T:FieldPartial+Num> Matrix<T> {
+impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
 
 
 
@@ -773,6 +777,9 @@ impl<T:FieldPartial+Num> Matrix<T> {
         result
     }
 
+}
+
+impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Matrix<T> {
     /// Computes power of a matrix
     /// Returns a new matrix
     pub fn pow(&self, exp : usize) -> Matrix<T>{
@@ -1399,7 +1406,7 @@ impl <T:FieldPartial> fmt::Display for Matrix<T> {
 
 
 /// Matrix addition support
-impl<'a, 'b, T:FieldPartial> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
+impl<'a, 'b, T:CommutativeMonoidAddPartial> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
     type Output = Matrix<T>;
     fn add(self, rhs: &'b Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1423,7 +1430,7 @@ impl<'a, 'b, T:FieldPartial> ops::Add<&'b Matrix<T>> for &'a Matrix<T> {
 
 
 /// Matrix subtraction support
-impl<'a, 'b, T:FieldPartial> ops::Sub<&'b Matrix<T>> for &'a Matrix<T>{
+impl<'a, 'b, T:QuasiGroupAddPartial> ops::Sub<&'b Matrix<T>> for &'a Matrix<T>{
     type Output = Matrix<T>;
     fn sub(self, rhs: &'b Matrix<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -1449,7 +1456,7 @@ impl<'a, 'b, T:FieldPartial> ops::Sub<&'b Matrix<T>> for &'a Matrix<T>{
 
 
 /// Matrix equality check support
-impl<T:FieldPartial> cmp::PartialEq for Matrix<T>{
+impl<T:MagmaBase> cmp::PartialEq for Matrix<T>{
     fn eq(&self, other: &Matrix<T>) -> bool {
         let pa = self.ptr as *const  T;
         let pb = other.ptr as *const  T;
@@ -1466,7 +1473,6 @@ impl<T:FieldPartial> cmp::PartialEq for Matrix<T>{
         }
         true
     }
-
 }
 
 // Element wise operations.
@@ -1606,7 +1612,7 @@ impl<T:FieldPartial> Matrix<T> {
  *
  *******************************************************/
 
-impl<T:FieldPartial> Matrix<T> {
+impl<T:MagmaBase> Matrix<T> {
     /// Returns a slice into `self`.
     //#[inline]
     pub fn as_slice_<'a>(&'a self) -> &'a [T] {
@@ -1630,7 +1636,7 @@ mod test {
     use  super::{Matrix, MatrixI64, MatrixF64};
     use matrix::constructors::*;
     use matrix::traits::*;
-    use std::num::Float;
+    use num::Float;
 
     #[test]
     fn  test_create_mat0(){
@@ -1668,12 +1674,12 @@ mod test {
     fn test_from_iter_cw0(){
         for _ in 0..100{
             let m : MatrixI64 = Matrix::from_iter_cw(4, 4, 1..20);
-            let b: Vec<i64> = range(1, 17).collect();
+            let b: Vec<i64> = (1..17).collect();
             assert!(m.as_slice_() == b.as_slice());
             let m : MatrixI64 = Matrix::from_iter_cw(4, 8, 1..16);
             assert_eq!(m.get(0, 0), 1);
             assert_eq!(m.get(2, 2), 11);
-            let mut b: Vec<i64> = range(1, 16).collect();
+            let mut b: Vec<i64> = (1..16).collect();
             for _ in 0..17{
                 b.push(0);
             }
@@ -1683,7 +1689,7 @@ mod test {
 
     #[test]
     fn test_index0(){
-        let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(1, 20));
+        let m : MatrixI64 = Matrix::from_iter_cw(4, 4, (1..20));
         let x = m[4];
         assert_eq!(x, 5);
     }
@@ -1701,9 +1707,9 @@ mod test {
 
     #[test]
     fn test_to_std_vec(){
-        let m : MatrixI64 = Matrix::from_iter_cw(4, 3, range(0, 12));
+        let m : MatrixI64 = Matrix::from_iter_cw(4, 3, 0..12);
         let v1 = m.to_std_vec();
-        let v2 : Vec<i64> = range(0, 12).collect();
+        let v2 : Vec<i64> = (0..12).collect();
         assert_eq!(v1, v2);
     }
 
@@ -1758,8 +1764,8 @@ mod test {
 
     #[test]
     fn test_eq(){
-        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
-        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, 0..4);
+        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, 0..4);
         assert_eq!(m1, m2);
         let v = vec![1.0f64, 2., 3., 4.];
         let m1 : MatrixF64 = Matrix::from_slice_cw(2, 2, v.as_slice());
@@ -1776,7 +1782,7 @@ mod test {
     }
     #[test]
     fn test_rep_mat(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  0..4);
         let m2 = m.repeat_matrix(2, 2);
         assert_eq!(m2.num_cells(), 16);
         assert_eq!(m2.num_rows(), 4);
@@ -1825,7 +1831,7 @@ mod test {
 
     #[test]
     fn test_is_logical(){
-        let m : MatrixI64 = Matrix::from_iter_cw(4, 4, range(0, 16).map(|x| x % 2));
+        let m : MatrixI64 = Matrix::from_iter_cw(4, 4, (0..16).map(|x| x % 2));
         assert!(m.is_logical());
         let m = &m + &m;
         assert!(!m.is_logical());
@@ -1868,16 +1874,16 @@ mod test {
 
     #[test]
     fn test_mul_elt(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  0..4);
         let m2 = m.mul_elt(&m);
-        let m3  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4).map(|x| x*x));
+        let m3  : MatrixI64 = Matrix::from_iter_cw(2, 2,  (0..4).map(|x| x*x));
         assert_eq!(m2, m3);
     }
 
 
     #[test]
     fn test_div_elt(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(1, 20));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  (1..20));
         let m2 = &m + &m;
         let m3 = m2.div_elt(&m);
         assert_eq!(m3.to_std_vec(), vec![2,2,2,2]);
@@ -1895,7 +1901,7 @@ mod test {
         let m : MatrixI64 = Matrix::identity(2, 3);
         assert_eq!(m.to_std_vec(), vec![1, 0, 0, 1, 0, 0]);
         assert!(m.is_identity());
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  0..4);
         assert!(!m.is_identity());
     }
 
@@ -1915,7 +1921,7 @@ mod test {
         let m4 = m2.pow(4);
         let m16 = m.copy_mul_scalar(16);
         assert_eq!(m4, m16); 
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  0..4);
         assert!(m.is_square());
         let m3 = m.pow(3);
         assert!(m3.is_square());
@@ -1929,7 +1935,7 @@ mod test {
 
     #[test]
     fn test_unary_minus(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  0..4);
         let z : MatrixI64 = Matrix::zeros(2,2);
         let m2 = m.unary_minus();
         let m3 = &z - &m;
@@ -1941,7 +1947,7 @@ mod test {
     fn test_diag_from_vector(){
         // repeat the same test a hundred times
         for _ in 0..100{
-            let v  : MatrixI64 = Matrix::from_iter_cw(4, 1, range(20, 30));
+            let v  : MatrixI64 = Matrix::from_iter_cw(4, 1, (20..30));
             assert!(v.is_vector());
             let m = Matrix::diag_from_vec(&v);
             assert!(!m.is_empty());
@@ -1960,7 +1966,7 @@ mod test {
 
     #[test]
     fn test_diagonal(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, range(10, 30));
+        let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, (10..30));
         let v = m.diagonal_vector();
         assert!(v.is_vector());
         assert_eq!(v.num_cells(), 4);
@@ -2067,14 +2073,14 @@ mod test {
 
     #[test]
     fn test_row_col_iter(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, range(10, 30));
+        let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, (10..30));
         let r = m.row_iter(0);
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![10, 14, 18, 22, 26]);
         let r = m.col_iter(2);
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![18, 19, 20, 21]);
-        let m  : MatrixI64 = Matrix::from_iter_cw(3, 2, range(10, 30));
+        let m  : MatrixI64 = Matrix::from_iter_cw(3, 2, (10..30));
         let r = m.cell_iter();
         let v : Vec<i64> = r.collect();
         assert_eq!(v, vec![10, 11, 12, 13, 14, 15]);
@@ -2082,11 +2088,11 @@ mod test {
 
     #[test]
     fn test_add_columns(){
-        let mut m1 :  MatrixI64 = Matrix::from_iter_cw(2, 3, range(11, 100));
-        let m2 :  MatrixI64 = Matrix::from_iter_cw(2, 4, range(11, 100));
-        let m3 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(17, 100));
-        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, range(9, 100));
-        let m5 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(9, 100));
+        let mut m1 :  MatrixI64 = Matrix::from_iter_cw(2, 3, (11..100));
+        let m2 :  MatrixI64 = Matrix::from_iter_cw(2, 4, (11..100));
+        let m3 : MatrixI64  = Matrix::from_iter_cw(2, 1, (17..100));
+        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, (9..100));
+        let m5 : MatrixI64  = Matrix::from_iter_cw(2, 1, (9..100));
         println!("{}", m1);
         m1.append_columns(&m3);
         println!("{}", m1);
@@ -2094,10 +2100,10 @@ mod test {
         m1.prepend_columns(&m5);
         println!("{}", m1);
         assert_eq!(m1, m4);
-        let m6 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(5, 100));
+        let m6 : MatrixI64  = Matrix::from_iter_cw(2, 1, (5..100));
         m1.prepend_columns(&m6);
         println!("{}", m1);
-        let m7 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(7, 100));
+        let m7 : MatrixI64  = Matrix::from_iter_cw(2, 1, (7..100));
         m1.insert_columns(1, &m7);
         println!("{}", m1);
     }
@@ -2105,11 +2111,11 @@ mod test {
 
     #[test]
     fn test_add_rows(){
-        let mut m1 :  MatrixI64 = Matrix::from_iter_cw(2, 3, range(11, 100)).transpose();
-        let m2 :  MatrixI64 = Matrix::from_iter_cw(2, 4, range(11, 100)).transpose();
-        let m3 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(17, 100)).transpose();
-        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, range(9, 100)).transpose();
-        let m5 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(9, 100)).transpose();
+        let mut m1 :  MatrixI64 = Matrix::from_iter_cw(2, 3, (11..100)).transpose();
+        let m2 :  MatrixI64 = Matrix::from_iter_cw(2, 4, (11..100)).transpose();
+        let m3 : MatrixI64  = Matrix::from_iter_cw(2, 1, (17..100)).transpose();
+        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, (9..100)).transpose();
+        let m5 : MatrixI64  = Matrix::from_iter_cw(2, 1, (9..100)).transpose();
         println!("m1: {}", m1);
         m1.print_state();
         println!("m2: {}", m2);
@@ -2131,10 +2137,10 @@ mod test {
         println!("\nm4 {}", m4);
         m4.print_state();
         assert_eq!(m1, m4);
-        let m6 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(5, 100)).transpose();
+        let m6 : MatrixI64  = Matrix::from_iter_cw(2, 1, (5..100)).transpose();
         m1.prepend_rows(&m6);
         println!("{}", m1);
-        let m7 : MatrixI64  = Matrix::from_iter_cw(2, 1, range(7, 100)).transpose();
+        let m7 : MatrixI64  = Matrix::from_iter_cw(2, 1, (7..100)).transpose();
         m1.insert_rows(1, &m7);
         println!("{}", m1);
     }

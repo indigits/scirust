@@ -55,12 +55,12 @@ use std::ops::{Add, Mul};
 
 /// Defines basic requirements for all types implementing
 /// the algebraic traits defined  in SciRust
-pub trait MagmaBase : Debug + Copy + Clone + Sized {
+pub trait MagmaBase : Debug + Copy + Clone + Sized + PartialEq{
 
 }
 
 impl<T> MagmaBase for T where
-    T : Debug + Clone + Sized + Copy
+    T : Debug + Clone + Sized + Copy + PartialEq
 {
 
 }
@@ -68,13 +68,12 @@ impl<T> MagmaBase for T where
 /// Magma with an addition operation with partial equivalence
 pub trait MagmaAddPartial 
     : MagmaBase 
-    + Add<Output=Self> 
-    + PartialEq{
+    + Add<Output=Self> {
 
 }
 
 impl<T> MagmaAddPartial for T where
-    T: MagmaBase + Add<Output=T> + PartialEq,
+    T: MagmaBase + Add<Output=T>,
 {}
 
 ///////////////////////////////////////////////////////////
@@ -96,13 +95,12 @@ impl<T> MagmaAdd for T where
 /// Magma with a multiplication operation with partial equivalence
 pub trait MagmaMulPartial
     : MagmaBase 
-    + Mul<Output=Self> 
-    + PartialEq{
+    + Mul<Output=Self>{
 
 }
 
 impl<T> MagmaMulPartial for T where
-    T: MagmaBase + Mul<Output=T> + PartialEq,
+    T: MagmaBase + Mul<Output=T>,
 {}
 
 

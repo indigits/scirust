@@ -219,7 +219,7 @@ pub trait Introspection {
 
 
 /// Matrix conversion API
-pub trait Conversion<T:FieldPartial> : Shape<T> {
+pub trait Conversion<T:MagmaBase> : Shape<T> {
     /// Converts the matrix to vector from standard library
     fn to_std_vec(&self) -> Vec<T>;
 

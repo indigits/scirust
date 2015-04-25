@@ -97,7 +97,7 @@ mod test{
     use api::*;
     #[test]
     fn test_extract_row(){
-        let m :  MatrixI64 = Matrix::from_iter_cw(20, 20, range(-100, 400));
+        let m :  MatrixI64 = Matrix::from_iter_cw(20, 20, (-100..400));
         let v1   = m.view(2, 2, 6, 6);
         println!("v1 : {}", v1);
         let r1 = v1.row(0);

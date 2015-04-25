@@ -64,4 +64,4 @@ pub mod util;
 // mod testdata;
 
 // // Overall API of SciRust
-// pub mod api;
+pub mod api;

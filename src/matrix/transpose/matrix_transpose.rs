@@ -9,15 +9,15 @@ use std::ops;
 use num::traits::{Zero};
 
 // local imports
-use algebra::structure::{FieldPartial};
+use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeMonoidMulPartial};
 use matrix::traits::{Shape, MatrixBuffer, Strided};
 use matrix::matrix::Matrix;
-use matrix::transpose::traits::Transpose;
+use matrix::transpose::traits::{Transpose, Frame};
 use error::{SRError, SRResult};
 
 
 /// Checks if the matrices are transpose of each other
-pub fn are_transpose<T:FieldPartial>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool{
+pub fn are_transpose<T:MagmaBase>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool{
     if lhs.num_rows() != rhs.num_cols(){
         return false;
     }
@@ -36,7 +36,7 @@ pub fn are_transpose<T:FieldPartial>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool
 }
 
 /// Simple implementation of transpose operation
-pub fn transpose_simple<T:FieldPartial>(src: & Matrix<T>)->Matrix <T>{
+pub fn transpose_simple<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     let rows = src.num_rows();
     let cols = src.num_cols();
     let mut result : Matrix<T> = Matrix::new(cols, rows);
@@ -66,7 +66,7 @@ pub fn transpose_simple<T:FieldPartial>(src: & Matrix<T>)->Matrix <T>{
 
 
 /// Block wise transpose
-pub fn transpose_block<T:FieldPartial>(src: & Matrix<T>)->Matrix <T>{
+pub fn transpose_block<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     // Choose a block size
     let block_size = 32;
     // Construct the destination
@@ -117,7 +117,7 @@ pub fn transpose_block<T:FieldPartial>(src: & Matrix<T>)->Matrix <T>{
 
 
 
-impl <T:FieldPartial> Transpose<T> for Matrix<T> {
+impl <T:MagmaBase> Transpose<T> for Matrix<T> {
     /// Computes the transpose of a matrix.
     /// This doesn't involve complex conjugation.
     /// Returns a new matrix
@@ -125,6 +125,9 @@ impl <T:FieldPartial> Transpose<T> for Matrix<T> {
     fn transpose(&self) -> Matrix <T>{
         transpose_block(self)
     }
+}
+
+impl <T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Frame<T> for Matrix<T> {
 
     fn gram(&self) -> Matrix <T>{
         // simple implementation
@@ -170,7 +173,7 @@ impl <T:FieldPartial> Transpose<T> for Matrix<T> {
  *
  *******************************************************/
 
- pub fn multiply_simple<T:FieldPartial>(lhs : &Matrix<T>, 
+ pub fn multiply_simple<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(lhs : &Matrix<T>, 
     rhs: &Matrix<T>)->SRResult<Matrix<T>>{
     // Validate dimensions match for multiplication
     if lhs.num_cols() != rhs.num_rows(){
@@ -211,7 +214,7 @@ Since the matrix is stored in column major order, hence multiplying
 columns with each other is highly efficient from locality of data
 perspective. This benefit shows up more as the matrix size increases.
 "]
-pub fn multiply_transpose_simple<T:FieldPartial>(lhs : &Matrix<T>, 
+pub fn multiply_transpose_simple<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(lhs : &Matrix<T>, 
     rhs: &Matrix<T>)->SRResult<Matrix<T>>{
     // Validate dimensions match for multiplication
     if lhs.num_rows() != rhs.num_rows(){
@@ -247,7 +250,7 @@ pub fn multiply_transpose_simple<T:FieldPartial>(lhs : &Matrix<T>,
 
 
 /// Matrix multiplication support
-impl<'a, 'b, T:FieldPartial> ops::Mul<&'b Matrix<T>> for &'a Matrix<T>{
+impl<'a, 'b, T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> ops::Mul<&'b Matrix<T>> for &'a Matrix<T>{
     type Output = Matrix<T>;
     fn mul(self, rhs: &Matrix<T>) -> Matrix<T> {
         let result = multiply_simple(self, rhs);
@@ -276,14 +279,14 @@ mod test{
 
     #[test]
     fn test_transpose(){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  (0..4));
         assert_eq!(m.to_std_vec(), vec![0, 1, 2, 3]);
         assert_eq!(m.transpose().to_std_vec(), vec![0, 2, 1, 3]);
         assert_eq!(m.transpose().transpose().to_std_vec(), vec![0, 1, 2, 3]);
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 3,  range(0, 10));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 3,  (0..10));
         assert_eq!(m.transpose().to_std_vec(), vec![
             0, 2, 4, 1, 3, 5]);
-        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, range(9, 100));
+        let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, (9..100));
         let m5 = m4.transpose();
         println!("m4: {}", m4);
         println!("m5: {}", m5);
@@ -292,7 +295,7 @@ mod test{
 
     #[test]
     fn test_transpoe_simple_hilbert(){
-        for n in range_step(100, 1024, 81){
+        for n in (100..1024).step_by(81){
             let h = hilbert(n);
             assert!(are_transpose(&h, &h.transpose()));
         }
@@ -300,7 +303,7 @@ mod test{
 
     #[test]
     fn test_transpoe_block_hilbert(){
-        for n in range_step(100, 1024, 81){
+        for n in (100, 1024).step_by(81){
             let h = hilbert(n);
             assert!(are_transpose(&h, & transpose_block(&h)));
         }
@@ -319,8 +322,8 @@ mod test{
 
     #[test]
     fn test_mult_1(){
-        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
-        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, range(0, 4));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, (0..4));
+        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, (0..4));
         let m3 = &m1 * &m2;
         let v = vec![2i64, 3, 6, 11];
         assert_eq!(m3.to_std_vec(), v);
@@ -332,8 +335,8 @@ mod test{
 
     #[test]
     fn test_mult_4(){
-        let m1 : MatrixI64 = Matrix::from_iter_cw(10, 20, range(0, 400));
-        let m2 : MatrixI64 = Matrix::from_iter_cw(20, 5, range(0, 400));
+        let m1 : MatrixI64 = Matrix::from_iter_cw(10, 20, (0..400));
+        let m2 : MatrixI64 = Matrix::from_iter_cw(20, 5, (0..400));
         let m3 = multiply_simple(&m1, &m2).unwrap();
         let m4 = multiply_transpose_simple(&m1.transpose(), &m2).unwrap();
         assert_eq!(m3, m4);

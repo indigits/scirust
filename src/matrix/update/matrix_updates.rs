@@ -616,7 +616,7 @@ mod test{
 
     #[test]
     fn test_add_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  (0..4));
         let mut m2 = m.copy_add_scalar(2);
         assert_eq!(m2.to_std_vec(), vec![2, 3, 4, 5]);
         m2.add_scalar(3);
@@ -625,7 +625,7 @@ mod test{
 
     #[test]
     fn test_mul_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  (0..4));
         let mut m2 = m.copy_mul_scalar(2);
         assert_eq!(m2.to_std_vec(), vec![0, 2, 4, 6]);
         m2.mul_scalar(3);
@@ -634,7 +634,7 @@ mod test{
 
     #[test]
     fn test_div_scalar (){
-        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  range(0, 4).map(|x| x * 3));
+        let m  : MatrixI64 = Matrix::from_iter_cw(2, 2,  (0..4).map(|x| x * 3));
         let mut m2 = m.copy_div_scalar(3);
         assert_eq!(m2.to_std_vec(), vec![0, 1, 2, 3]);
         m2.mul_scalar(3);

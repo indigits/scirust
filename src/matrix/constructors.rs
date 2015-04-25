@@ -801,7 +801,7 @@ mod test{
     #[test]
     fn test_range_cw_functions(){
         let m = from_range_cw_i64(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let c = i >> 2;
             let r = i & 3;
             assert_eq!(m.get(r, c), i as i64);
@@ -809,13 +809,13 @@ mod test{
         let start  = 0.0;
         let stop = 16.0;
         let m : MatrixF64 = from_range_cw(4, 4, start, stop);
-        for i in range(0, 16){
+        for i in 0..16{
             let c = i >> 2;
             let r = i & 3;
             assert_eq!(m.get(r, c), i as f64);
         }
         let m = from_range_cw_f64(4, 4, start, stop);
-        for i in range(0, 16){
+        for i in 0..16{
             let c = i >> 2;
             let r = i & 3;
             assert_eq!(m.get(r, c), i as f64);
@@ -827,31 +827,31 @@ mod test{
         let start  = 0.0;
         let stop = 16.0;
         let m : MatrixF64 = from_range_rw(4, 4, start, stop);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as f64);
         }
         let m = from_range_rw_i8(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as i8);
         }
         let m = from_range_rw_i16(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as i16);
         }
         let m = from_range_rw_i32(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as i32);
         }
         let m = from_range_rw_i64(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as i64);
@@ -859,25 +859,25 @@ mod test{
 
 
         let m = from_range_rw_u8(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as u8);
         }
         let m = from_range_rw_u16(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as u16);
         }
         let m = from_range_rw_u32(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as u32);
         }
         let m = from_range_rw_u64(4, 4, 0, 16);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as u64);
@@ -885,14 +885,14 @@ mod test{
 
 
         let m = from_range_rw_f64(4, 4, start, stop);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as f64);
         }
 
         let m = from_range_rw_f32(4, 4, 0.0, 16.0);
-        for i in range(0, 16){
+        for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
             assert_eq!(m.get(r, c), i as f32);
@@ -903,56 +903,56 @@ mod test{
 
     #[test]
     fn test_matrix_type_functions(){
-        let m = matrix_cw_u8(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_u8(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u8);
         }
-        let m = matrix_cw_u16(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_u16(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u16);
         }
-        let m = matrix_cw_u32(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_u32(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u32);
         }
-        let m = matrix_cw_u64(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_u64(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u64);
         }
-        let m = matrix_cw_i8(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_i8(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i8);
         }
-        let m = matrix_cw_i16(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_i16(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i16);
         }
-        let m = matrix_cw_i32(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_i32(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i32);
         }
-        let m = matrix_cw_i64(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_i64(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i64);
         }
-        let m = matrix_cw_f64(2,2, [1.0,2.0,3.0,4.0].as_slice());
-        for i in range(0, 4){
+        let m = matrix_cw_f64(2,2, &[1.0,2.0,3.0,4.0]);
+        for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as f64);
@@ -961,56 +961,56 @@ mod test{
         //  We will now test row wise construction functions.
 
 
-        let m = matrix_rw_u8(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_u8(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u8);
         }
-        let m = matrix_rw_u16(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_u16(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u16);
         }
-        let m = matrix_rw_u32(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_u32(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u32);
         }
-        let m = matrix_rw_u64(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_u64(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as u64);
         }
-        let m = matrix_rw_i8(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_i8(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i8);
         }
-        let m = matrix_rw_i16(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_i16(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i16);
         }
-        let m = matrix_rw_i32(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_i32(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i32);
         }
-        let m = matrix_rw_i64(2,2, [1,2,3,4].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_i64(2,2, &[1,2,3,4]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as i64);
         }
-        let m = matrix_rw_f64(2,2, [1.0,2.0,3.0,4.0].as_slice());
-        for i in range(0, 4){
+        let m = matrix_rw_f64(2,2, &[1.0,2.0,3.0,4.0]);
+        for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
             assert_eq!(m.get(r, c), (i + 1) as f64);
@@ -1019,73 +1019,73 @@ mod test{
 
     #[test]
     fn test_vector_type_functions(){
-        let v = vector_u8([1,2,3,4].as_slice());
+        let v = vector_u8(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as u8);
         }
 
-        let v = vector_u16([1,2,3,4].as_slice());
+        let v = vector_u16(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as u16);
         }
 
-        let v = vector_u32([1,2,3,4].as_slice());
+        let v = vector_u32(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as u32);
         }
 
-        let v = vector_u64([1,2,3,4].as_slice());
+        let v = vector_u64(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as u64);
         }
 
-        let v = vector_i8([1,2,3,4].as_slice());
+        let v = vector_i8(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as i8);
         }
 
-        let v = vector_i16([1,2,3,4].as_slice());
+        let v = vector_i16(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as i16);
         }
 
-        let v = vector_i32([1,2,3,4].as_slice());
+        let v = vector_i32(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as i32);
         }
 
-        let v = vector_i64([1,2,3,4].as_slice());
+        let v = vector_i64(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as i64);
         }
 
-        let v = vector_f32([1.,2.,3.,4.].as_slice());
+        let v = vector_f32(&[1.,2.,3.,4.]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as f32);
         }
 
-        let v = vector_f64([1.,2.,3.,4.].as_slice());
+        let v = vector_f64(&[1.,2.,3.,4.]);
         assert!(v.is_vector());
         assert!(v.is_col());
-        for i in range(0, 4){
+        for i in 0..4{
             assert_eq!(v.get(i, 0), (i + 1) as f64);
         }
 
@@ -1095,10 +1095,10 @@ mod test{
     fn test_ero_switch_scale(){
         let eswitch : MatrixF64 = ero_switch(4, 1, 3);
         let escale : MatrixF64 = ero_scale(4, 2, 2.0);
-        let mut m = matrix_rw_f64(4,4, [0., 1., 2., 3., 
+        let mut m = matrix_rw_f64(4,4, &[0., 1., 2., 3., 
             4., 5., 6., 7.,
             8., 9., 10., 11.,
-            12., 13., 14., 15.].as_slice());
+            12., 13., 14., 15.]);
         // Carry out transformation through multiplying
         // elementary matrices 
         let m2 = &eswitch * &m;
@@ -1116,10 +1116,10 @@ mod test{
 
     #[test]
     fn test_ero_scale_add(){
-        let mut m = matrix_rw_f64(4,4, [0., 1., 2., 3., 
+        let mut m = matrix_rw_f64(4,4, &[0., 1., 2., 3., 
             4., 5., 6., 7.,
             8., 9., 10., 11.,
-            12., 13., 14., 15.].as_slice());
+            12., 13., 14., 15.]);
         let esa : MatrixF64 = ero_scale_add(4, 1, 2, 3.0);
         println!("esa: {:?}", esa);
         let m2 = &esa * &m;
