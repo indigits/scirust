@@ -2,20 +2,19 @@
 "]
 
 // std imports
-use std::num::Int;
-use std::num::UnsignedInt;
-use std::num::{ToPrimitive};
+
+// external imports
+use num::{Num, One, Zero};
 
 
 // local imports
+use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
 use matrix::matrix::{Matrix, 
     MatrixI8, MatrixI16, MatrixI32, MatrixI64,
     MatrixU8, MatrixU16, MatrixU32, MatrixU64,
     MatrixF32, MatrixF64};
 use matrix::traits::{Shape};
 use error::SRError;
-use algebra::{One, Zero};
-use algebra::{Number, num_range};
 
 // complex numbers
 //use algebra::{Complex32, Complex64};
@@ -39,9 +38,9 @@ pub fn hadamard(n : usize) -> Result<MatrixF64, SRError>{
 
     // Let's fill the first level Hadamard matrix
     m.set(0, 0, 1.0);
-    for  o in range(0, order){
+    for  o in 0..order{
         // We will construct four views.
-        let size : usize = 2.pow(o);
+        let size : usize = 2i32.pow(o) as usize;
         // top left block
         let tl = m.view(0, 0, size, size);
         // top right block
@@ -62,8 +61,8 @@ pub fn hadamard(n : usize) -> Result<MatrixF64, SRError>{
 "]
 pub fn hilbert(n : usize) -> MatrixF64{
     let mut m : MatrixF64 = Matrix::new(n, n);
-    for r in range(0, n){
-        for c in range(0, n){
+    for r in 0..n{
+        for c in 0..n{
             let l = (r + c + 1) as f64;
             m.set(r, c, 1.0 / l);
         }
@@ -109,9 +108,21 @@ Constructing a 4x4 matrix of floating point numbers:
 
 
 "]
-pub fn from_range_cw<T:Number+PartialOrd+One+ToPrimitive>(rows : usize, cols : usize, 
+pub fn from_range_cw<T:MagmaBase+Num>(rows : usize, cols : usize, 
     start : T, stop : T )-> Matrix<T> {
-    let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, num_range(start, stop));
+    // TODO this is not working.
+    //let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, range);
+    let mut m : Matrix<T> = Matrix::new(rows, cols);
+    let mut cur = start;
+    'outer: for c in 0..cols{
+        for r in 0..rows{
+            m.set(r, c, cur);
+            cur = cur + One::one();
+            if cur == stop {
+                break 'outer;
+            }
+        }
+    }
     m 
 }
 
@@ -240,9 +251,21 @@ pub fn from_range_cw_u64(rows : usize, cols : usize,
 #[doc="Returns a matrix whose entries are picked up from
 a range in row wise order.
 "]
-pub fn from_range_rw<T:Number+PartialOrd+One+ToPrimitive>(rows : usize, cols : usize, 
+pub fn from_range_rw<T:MagmaBase+Num>(rows : usize, cols : usize, 
     start : T, stop : T )-> Matrix<T> {
-    let m : Matrix<T> = Matrix::from_iter_rw(rows, cols, num_range(start, stop));
+    // TODO make it work.
+    //let m : Matrix<T> = Matrix::from_iter_rw(rows, cols, start..stop);
+    let mut m : Matrix<T> = Matrix::new(rows, cols);
+    let mut cur = start;
+    'outer: for r in 0..rows{
+        for c in 0..cols{
+            m.set(r, c, cur);
+            cur = cur + One::one();
+            if cur == stop {
+                break 'outer;
+            }
+        }
+    }
     m 
 }
 
@@ -590,7 +613,7 @@ pub fn matrix_rw_c64(rows : usize, cols : usize, values: &[Complex64])->MatrixC6
 #[doc="Returns a column vector with entries from a slice.
 "]
 #[inline]
-pub fn col_vector<T:Number>(values: &[T])-> Matrix<T> {
+pub fn col_vector<T:CommutativeMonoidAddPartial>(values: &[T])-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_slice_cw(values.len(), 1, values);
     m 
 }
@@ -598,7 +621,7 @@ pub fn col_vector<T:Number>(values: &[T])-> Matrix<T> {
 #[doc="Returns a column vector with entries from an iterator.
 "]
 #[inline]
-pub fn col_vector_from_iter<T:Number, A : Iterator<Item=T>>(
+pub fn col_vector_from_iter<T:CommutativeMonoidAddPartial, A : Iterator<Item=T>>(
     values: A,
     len : usize)-> Matrix<T> {
     let m : Matrix<T> = Matrix::from_iter_rw(len, 1, values);
@@ -701,7 +724,7 @@ pub fn vector_f64(values: &[f64])->MatrixF64 {
 exchange rows i and j
 on left multiplication.
 "]
-pub fn ero_switch<T:Number>(n : usize, 
+pub fn ero_switch<T:FieldPartial>(n : usize, 
     i  : usize, 
     j : usize)-> Matrix<T> {
     debug_assert! (i  < n);
@@ -719,7 +742,7 @@ pub fn ero_switch<T:Number>(n : usize,
 #[doc="Returns elementary matrix which can scale
 a particular row by a factor on left multiplication.
 "]
-pub fn ero_scale<T:Number>(n : usize, 
+pub fn ero_scale<T:FieldPartial>(n : usize, 
     r  : usize, 
     scale : T)-> Matrix<T> {
 
@@ -736,7 +759,7 @@ on left multiplication.
 r_i = r_i + k * r_j
 
 "]
-pub fn ero_scale_add<T:Number>(n : usize, 
+pub fn ero_scale_add<T:FieldPartial>(n : usize, 
     i  : usize, 
     j : usize, 
     scale : T)-> Matrix<T> {

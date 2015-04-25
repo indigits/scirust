@@ -1,29 +1,32 @@
 // std imports
 
+// external imports
+use num::traits::Signed;
+
+
 // local imports
 use error::SRError;
+use algebra::structure::FieldPartial;
 use matrix::view::MatrixView;
 use matrix::traits::*;
-use algebra::Signed;
-
 
 /// Implementation of min-max with absolute values API for matrix view
-impl <'a, T:Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
+impl <'a, T:FieldPartial+Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
 
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs_val();
+        let mut v = self.get(0, 0).abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
         let ps = self.matrix().as_ptr();
-        for c in range(0, self.num_cols()){
-            for r in range(0, self.num_rows()){
+        for c in 0..self.num_cols(){
+            for r in 0..self.num_rows(){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = unsafe{*ps.offset(src_offset)}.abs_val();
+                let s = unsafe{*ps.offset(src_offset)}.abs();
                 if s < v { 
                     v = s;
                     rr = r;
@@ -39,15 +42,15 @@ impl <'a, T:Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs_val();
+        let mut v = self.get(0, 0).abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
         let ps = self.matrix().as_ptr();
-        for c in range(0, self.num_cols()){
-            for r in range(0, self.num_rows()){
+        for c in 0..self.num_cols(){
+            for r in 0..self.num_rows(){
                 let src_offset = self.cell_to_offset(r, c);
-                let s = unsafe{*ps.offset(src_offset)}.abs_val();
+                let s = unsafe{*ps.offset(src_offset)}.abs();
                 if s > v { 
                     v  = s;
                     rr = r;

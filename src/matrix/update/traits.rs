@@ -7,8 +7,8 @@ use std::cmp;
 
 /// local imports
 use error::SRResult;
+use algebra::structure::{FieldPartial};
 use discrete::mod_n;
-use algebra::Number;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer};
 
@@ -29,13 +29,13 @@ are provided to achieve them quickly. Further,
 optimizing the low level code can help a lot in improving performance
 of higher level functions.
 "]
-pub trait InPlaceUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
+pub trait InPlaceUpdates<T:FieldPartial> : Shape<T>+MatrixBuffer<T> {
 
     // Sets all the entries on the main diagonal to a particular value
     fn set_diagonal(&mut self, value : T)-> &mut Self{
         let n = cmp::min(self.num_rows(), self.num_cols());
         let p = self.as_mut_ptr();
-        for i in range(0, n){
+        for i in 0..n{
             unsafe{
                 *p.offset(self.cell_to_offset(i, i)) = value;
             }
@@ -50,7 +50,7 @@ pub trait InPlaceUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
         )-> &mut Self {
         debug_assert! (r  < self.num_rows());
         let ptr = self.as_mut_ptr();
-        for c in range(0, self.num_cols()){
+        for c in 0..self.num_cols(){
             unsafe{
                 *ptr.offset(self.cell_to_offset(r, c)) = value;
             }
@@ -66,7 +66,7 @@ pub trait InPlaceUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
         )-> &mut Self {
         debug_assert! (c  < self.num_cols());
         let ptr = self.as_mut_ptr();
-        for r in range(0, self.num_rows()){
+        for r in 0..self.num_rows(){
             unsafe{
                 *ptr.offset(self.cell_to_offset(r, c)) = value;
             }
@@ -87,8 +87,8 @@ pub trait InPlaceUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
         assert!(num_rows < self.num_rows());
         assert!(num_cols < self.num_cols());
         let p = self.as_mut_ptr();
-        for c in range(c, c + num_cols).map(|x | x % self.num_cols()) {
-            for r in range(r , r + num_rows).map(|x|  x % self.num_rows()) {
+        for c in (c..(c + num_cols)).map(|x | x % self.num_cols()) {
+            for r in (r..(r + num_rows)).map(|x|  x % self.num_rows()) {
                 let offset = self.cell_to_offset(r, c);
                 unsafe{
                     *p.offset(offset) = value;
@@ -146,7 +146,7 @@ save processing cycles.
 These methods require immutable reference to the
 matrix being updated.
 "]
-pub trait CopyUpdates<T:Number> : Shape<T>+MatrixBuffer<T> {
+pub trait CopyUpdates<T:FieldPartial> : Shape<T>+MatrixBuffer<T> {
      /// Add the matrix by a scalar
     fn copy_add_scalar(&self, rhs: T) -> Self;
      /// Multiply the matrix by a scalar

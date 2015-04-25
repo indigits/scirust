@@ -10,15 +10,15 @@ Support for add, sub, mult, div: FieldPartial
 
 
 "]
-//pub mod constructors;
+pub mod constructors;
 pub mod iter;
 pub mod matrix;
 pub mod random;
 pub mod traits;
 pub mod vector;
 pub mod view;
-// pub mod view_conversion;
-// pub mod view_minmax;
+pub mod view_conversion;
+pub mod view_minmax;
 pub mod triangular_matrix;
 pub mod eo {
    pub mod eo_traits;
@@ -27,11 +27,11 @@ pub mod eo {
 }
 
 
-// pub mod update{
+pub mod update{
 
-//     pub mod traits;
-//     pub mod matrix_updates;
-// }
+    pub mod traits;
+    pub mod matrix_updates;
+}
 
 
 pub mod transpose{

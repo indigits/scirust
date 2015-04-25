@@ -4,7 +4,7 @@
 /// std imports
 
 /// local imports
-use algebra::Number;
+use algebra::structure::{FieldPartial};
 use error::SRResult;
 use error::SRError;
 use matrix::traits::{Shape, MatrixBuffer, Strided};
@@ -13,7 +13,7 @@ use matrix::eo::eo_traits::{ERO, ECO};
 use matrix::matrix::Matrix;
 
 /// Implementation of Matrix general update operations.
-impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
+impl<T:FieldPartial> InPlaceUpdates<T> for Matrix<T> {
 
 
     fn add_scalar(&mut self, rhs: T) -> &mut Matrix<T> {
@@ -22,7 +22,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let pa = self.as_mut_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for _ in range(0, cols){
+        for _ in 0..cols{
             for r in 0..rows as isize{
                 unsafe {
                     let v = *pa.offset(offset + r);
@@ -40,7 +40,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let pa = self.as_mut_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for _ in range(0, cols){
+        for _ in 0..cols{
             for r in 0..rows as isize{
                 unsafe {
                     let v = *pa.offset(offset + r);
@@ -61,7 +61,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let pa = self.as_mut_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for _ in range(0, cols){
+        for _ in 0..cols{
             for r in 0..rows as isize{
                 unsafe {
                     let v = *pa.offset(offset + r);
@@ -79,7 +79,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let stride = self.stride() as isize;
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(r, 0);
-        for _ in range(0, r + 1){
+        for _ in 0..(r + 1){
             unsafe{
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale_factor * v;
@@ -93,7 +93,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         debug_assert!(c < self.num_cols());
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(c, c);
-        for _ in range(c, self.num_cols()){
+        for _ in c..self.num_cols(){
             unsafe{
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale_factor * v;
@@ -107,7 +107,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let stride = self.stride() as isize;
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(r, r);
-        for _ in range(r, self.num_cols()){
+        for _ in r..self.num_cols(){
             unsafe{
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale_factor * v;
@@ -120,7 +120,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         debug_assert!(c < self.num_cols());
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(0, c);
-        for _ in range(0, c + 1){
+        for _ in 0..(c + 1){
             unsafe{
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale_factor * v;
@@ -132,7 +132,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
     fn scale_rows(&mut self, scale_factors : &Matrix<T>)-> &mut Matrix<T>{
         assert!(scale_factors.is_col());
         assert_eq!(scale_factors.num_cells(), self.num_rows());
-        for r in range(0, self.num_rows()){
+        for r in 0..self.num_rows(){
             let factor = scale_factors[r];
             self.ero_scale(r, factor);
         }
@@ -141,7 +141,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
     fn scale_cols(&mut self, scale_factors : &Matrix<T>)-> &mut Matrix<T>{
         assert!(scale_factors.is_col());
         assert_eq!(scale_factors.num_cells(), self.num_cols());
-        for c in range(0, self.num_cols()){
+        for c in 0..self.num_cols(){
             let factor = scale_factors[c];
             self.eco_scale(c, factor);
         }
@@ -162,7 +162,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let ps = vec.as_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for _ in range(0, cols){
+        for _ in 0..cols{
             for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
@@ -188,7 +188,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let ps = vec.as_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for c in range(0, cols){
+        for c in 0..cols{
             let v2 = unsafe{*ps.offset(c as isize)};
             for r in 0..rows as isize{
                 unsafe{
@@ -214,7 +214,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let ps = vec.as_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for _ in range(0, cols){
+        for _ in 0..cols{
             for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
@@ -240,7 +240,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let ps = vec.as_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for c in range(0, cols){
+        for c in 0..cols{
             let v2 = unsafe{*ps.offset(c as isize)};
             for r in 0..rows as isize{
                 unsafe{
@@ -266,7 +266,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let ps = vec.as_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for _ in range(0, cols){
+        for _ in 0..cols{
             for r in 0..rows as isize{
                 unsafe{
                     let v1 = *pd.offset(offset + r);
@@ -292,7 +292,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let ps = vec.as_ptr();
         let stride = self.stride() as isize;
         let mut offset = self.start_offset();
-        for c in range(0, cols){
+        for c in 0..cols{
             let v2 = unsafe{*ps.offset(c as isize)};
             for r in 0..rows as isize{
                 unsafe{
@@ -312,10 +312,10 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
         let stride = self.stride() as isize;
         let mut psrc_col  =  ptr;
         unsafe{
-            for c in range(1, p){
+            for c in 1..p{
                 psrc_col = psrc_col.offset(stride);
                 let mut pdst_row = ptr.offset(c as isize);
-                for r in range(0, c){
+                for r in 0..c{
                     *pdst_row = *psrc_col.offset(r as isize);
                     pdst_row = pdst_row.offset(stride);
                 }
@@ -329,7 +329,7 @@ impl<T:Number> InPlaceUpdates<T> for Matrix<T> {
 
 /// Implementation of Matrix general copy and update operations.
 /// TODO Optimize implementations.
-impl<T:Number> CopyUpdates<T> for Matrix<T> {
+impl<T:FieldPartial> CopyUpdates<T> for Matrix<T> {
 
     /// Add the matrix by a scalar
     /// Returns a new matrix
@@ -339,8 +339,8 @@ impl<T:Number> CopyUpdates<T> for Matrix<T> {
         let mut result : Matrix<T> = Matrix::new(rows, cols);
         let pa = self.as_ptr();
         let pc = result.as_mut_ptr();
-        for r in range(0, rows){
-            for c in range(0, cols){
+        for r in 0..rows{
+            for c in 0..cols{
                 let offset = self.cell_to_offset(r, c);
                 unsafe {
                     *pc.offset(offset) = *pa.offset(offset) + rhs;
@@ -359,8 +359,8 @@ impl<T:Number> CopyUpdates<T> for Matrix<T> {
         let mut result : Matrix<T> = Matrix::new(rows, cols);
         let pa = self.as_ptr();
         let pc = result.as_mut_ptr();
-        for r in range(0, rows){
-            for c in range(0, cols){
+        for r in 0..rows{
+            for c in 0..cols{
                 let offset = self.cell_to_offset(r, c);
                 unsafe {
                     *pc.offset(offset) = *pa.offset(offset) * rhs;
@@ -378,8 +378,8 @@ impl<T:Number> CopyUpdates<T> for Matrix<T> {
         let mut result : Matrix<T> = Matrix::new(rows, cols);
         let pa = self.as_ptr();
         let pc = result.as_mut_ptr();
-        for r in range(0, rows){
-            for c in range(0, cols){
+        for r in 0..rows{
+            for c in 0..cols{
                 let offset = self.cell_to_offset(r, c);
                 unsafe {
                     *pc.offset(offset) = *pa.offset(offset) / rhs;

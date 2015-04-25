@@ -19,7 +19,7 @@ use num::traits::{Zero, One, Signed};
 // local imports
 
 use discrete::{mod_n};
-use algebra::structure::{MagmaBase, FieldPartial};
+use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
 use error::SRError;
 use matrix::iter::*;
 use matrix::view::MatrixView;
@@ -132,15 +132,13 @@ the matrix differently.
 }
 
 /// Static functions for creating  a matrix of numbers
-impl<T:MagmaBase + Num> Matrix<T> {
-
+impl<T:CommutativeMonoidAddPartial> Matrix<T> {
     /// Constructs a scalar matrix
     pub fn from_scalar (scalar : T) -> Matrix <T>{
         let m : Matrix<T> = Matrix::new(1, 1);
         unsafe {*m.ptr = scalar;}
         m
     }
-
 
     /// Constructs a matrix of all zeros
     pub fn zeros(rows: usize, cols : usize)-> Matrix<T> {
@@ -159,43 +157,6 @@ impl<T:MagmaBase + Num> Matrix<T> {
         }
         m
     }
-
-
-    /// Constructs a matrix of all ones.
-    pub fn ones(rows: usize, cols : usize)-> Matrix<T> {
-        let m : Matrix<T> = Matrix::new(rows, cols);
-        // fill with ones
-        let ptr = m.ptr;
-        let o : T = One::one();
-        unsafe {
-            for c in 0..cols{
-                for r in 0..rows{
-                    let offset = m.cell_to_offset(r, c);
-                    let p  = ptr.offset(offset as isize);
-                    *p = o;
-                }
-            } 
-        }
-        m
-    }
-
-
-    /// Constructs an identity matrix
-    pub fn identity(rows: usize, cols : usize) -> Matrix<T> {
-        let m : Matrix<T> = Matrix::zeros(rows, cols);
-        // fill with ones
-        let ptr = m.ptr;
-        let one : T = One::one();
-        let n = cmp::min(rows, cols);
-        for i in 0..n{
-            let offset = m.cell_to_offset(i, i);
-            unsafe{
-                *ptr.offset(offset) = one;
-            }
-        }
-        m
-    }
-
 
     #[doc = "Constructs a matrix from a slice of data reading
     data in column wise order.
@@ -372,6 +333,46 @@ by hand.
         m
     }
 
+}
+
+/// Static functions for creating  a matrix of numbers
+impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
+
+    /// Constructs a matrix of all ones.
+    pub fn ones(rows: usize, cols : usize)-> Matrix<T> {
+        let m : Matrix<T> = Matrix::new(rows, cols);
+        // fill with ones
+        let ptr = m.ptr;
+        let o : T = One::one();
+        unsafe {
+            for c in 0..cols{
+                for r in 0..rows{
+                    let offset = m.cell_to_offset(r, c);
+                    let p  = ptr.offset(offset as isize);
+                    *p = o;
+                }
+            } 
+        }
+        m
+    }
+
+
+    /// Constructs an identity matrix
+    pub fn identity(rows: usize, cols : usize) -> Matrix<T> {
+        let m : Matrix<T> = Matrix::zeros(rows, cols);
+        // fill with ones
+        let ptr = m.ptr;
+        let one : T = One::one();
+        let n = cmp::min(rows, cols);
+        for i in 0..n{
+            let offset = m.cell_to_offset(i, i);
+            unsafe{
+                *ptr.offset(offset) = one;
+            }
+        }
+        m
+    }
+
     /// Constructs a unit vector
     /// (1, 0, 0), (0, 1, 0), (0, 0, 1), etc.
     pub fn unit_vector( length : usize, dim : usize) -> Matrix<T> {
@@ -379,7 +380,9 @@ by hand.
         m.set(dim, 0, One::one());
         m
     }
+
 }
+
 
 /// Core methods for all matrix types
 impl<T:MagmaBase> Shape<T> for Matrix<T> {
