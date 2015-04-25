@@ -546,7 +546,7 @@ impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> 
 }
 
 /// Introspection support
-impl<T:FieldPartial> Introspection for Matrix<T> {
+impl<T> Introspection for Matrix<T> {
     /// This is a standard matrix object
     fn is_standard_matrix_type(&self) -> bool {
         true
@@ -869,7 +869,7 @@ impl<T:CommutativeGroupAddPartial> Matrix<T> {
 
 
 /// These methods modify the matrix itself
-impl<T:FieldPartial> Matrix<T> {
+impl<T:MagmaBase> Matrix<T> {
 
     /// Appends one or more columns at the end of matrix
     pub fn append_columns(&mut self, 
@@ -1601,7 +1601,7 @@ impl<T:MagmaBase> Drop for Matrix<T> {
  *
  *******************************************************/
 
-impl<T:FieldPartial> Matrix<T> {
+impl<T:MagmaBase> Matrix<T> {
     pub fn print_state(&self){
         let capacity = self.capacity();
         let bytes = capacity * mem::size_of::<T>();
@@ -1985,9 +1985,9 @@ mod test {
 
     #[test]
     fn test_triangular(){
-        let m = matrix_cw_f64(3, 3, [1., 0., 0., 
+        let m = matrix_cw_f64(3, 3, &[1., 0., 0., 
             4., 5., 0.,
-            6., 2., 3.].as_slice());
+            6., 2., 3.]);
         println!("m: {:?}", m);
         assert!(m.is_ut());
         assert!(!m.is_lt());
@@ -2008,67 +2008,67 @@ mod test {
 
     #[test]
     fn test_extract_triangular(){
-        let m = matrix_rw_i64(3,3,[
+        let m = matrix_rw_i64(3,3,&[
             1, 2, 3,
             4, 5, 6,
             7, 8, 9
-            ].as_slice());
-        let mu = matrix_rw_i64(3,3,[
+            ]);
+        let mu = matrix_rw_i64(3,3,&[
             1, 2, 3,
             0, 5, 6,
             0, 0, 9
-            ].as_slice());
-        let ml = matrix_rw_i64(3,3,[
+            ]);
+        let ml = matrix_rw_i64(3,3,&[
             1, 0, 0,
             4, 5, 0,
             7, 8, 9
-            ].as_slice());
+            ]);
         assert_eq!(m.ut(), mu);
         assert_eq!(m.lt(), ml);
     }
 
     #[test]
     fn test_extract_diagonal_matrix(){
-        let m = matrix_rw_i64(3,3,[
+        let m = matrix_rw_i64(3,3,&[
             1, 2, 3,
             4, 5, 6,
             7, 8, 9
-            ].as_slice());
-        let md = matrix_rw_i64(3,3,[
+            ]);
+        let md = matrix_rw_i64(3,3,&[
             1, 0, 0,
             0, 5, 0,
             0, 0, 9
-            ].as_slice());
+            ]);
         assert_eq!(m.diagonal_matrix(), md);
-        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9].as_slice()));
+        assert_eq!(m.diagonal_vector(), vector_i64(&[1, 5, 9]));
         // More columns than rows
-        let m = matrix_rw_i64(3,4,[
+        let m = matrix_rw_i64(3,4,&[
             1, 2, 3, 11,
             4, 5, 6, 12,
             7, 8, 9, 19
-            ].as_slice());
-        let md = matrix_rw_i64(3,4,[
+            ]);
+        let md = matrix_rw_i64(3,4,&[
             1, 0, 0, 0,
             0, 5, 0, 0,
             0, 0, 9, 0
-            ].as_slice());
+            ]);
         assert_eq!(m.diagonal_matrix(), md);
-        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9].as_slice()));
+        assert_eq!(m.diagonal_vector(), vector_i64(&[1, 5, 9]));
         // More rows than columns
-        let m = matrix_rw_i64(4,3,[
+        let m = matrix_rw_i64(4,3,&[
             1, 2, 3,
             4, 5, 6,
             7, 8, 9,
             10, 11, 12
-            ].as_slice());
-        let md = matrix_rw_i64(4,3,[
+            ]);
+        let md = matrix_rw_i64(4,3,&[
             1, 0, 0,
             0, 5, 0,
             0, 0, 9,
             0, 0, 0
-            ].as_slice());
+            ]);
         assert_eq!(m.diagonal_matrix(), md);
-        assert_eq!(m.diagonal_vector(), vector_i64([1, 5, 9].as_slice()));
+        assert_eq!(m.diagonal_vector(), vector_i64(&[1, 5, 9]));
     }
 
     #[test]
@@ -2173,10 +2173,10 @@ mod test {
 
     #[test]
     fn test_max_abs_scalar_in_row(){
-        let m = matrix_rw_i64(3, 3, [
+        let m = matrix_rw_i64(3, 3, &[
             2, 93, 9, 
             2, 71, -79, 
-            -83, 62, 6].as_slice());
+            -83, 62, 6]);
         assert_eq!(m.max_abs_scalar_in_row(0, 0, 3), (93, 1));
         assert_eq!(m.max_abs_scalar_in_row(1, 0, 3), (79, 2));
         assert_eq!(m.max_abs_scalar_in_row(2, 0, 3), (83, 0));
@@ -2186,10 +2186,10 @@ mod test {
 
     #[test]
     fn test_max_abs_scalar_in_col(){
-        let m = matrix_cw_i64(3, 3, [
+        let m = matrix_cw_i64(3, 3, &[
             2, 93, 9, 
             2, 71, -79, 
-            -83, 62, 6].as_slice());
+            -83, 62, 6]);
         assert_eq!(m.max_abs_scalar_in_col(0, 0, 3), (93, 1));
         assert_eq!(m.max_abs_scalar_in_col(1, 0, 3), (79, 2));
         assert_eq!(m.max_abs_scalar_in_col(2, 0, 3), (83, 0));
@@ -2199,39 +2199,39 @@ mod test {
 
     #[test]
     fn test_permute_rows(){
-        let m = matrix_rw_i64(4, 3, [
+        let m = matrix_rw_i64(4, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9,
             10, 11, 12
-            ].as_slice());
-        let permutation = vector_u16([0, 3, 1, 2].as_slice());
+            ]);
+        let permutation = vector_u16(&[0, 3, 1, 2]);
         let m = m.permuted_rows(&permutation);
-        let m2 = matrix_rw_i64(4, 3, [
+        let m2 = matrix_rw_i64(4, 3, &[
             1, 2, 3, 
             10, 11, 12,
             4, 5, 6,
             7, 8, 9,
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
     }
 
     #[test]
     fn test_permute_cols(){
-        let m = matrix_rw_i64(4, 3, [
+        let m = matrix_rw_i64(4, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9,
             10, 11, 12
-            ].as_slice());
-        let permutation = vector_u16([2, 0, 1].as_slice());
+            ]);
+        let permutation = vector_u16(&[2, 0, 1]);
         let m = m.permuted_cols(&permutation);
-        let m2 = matrix_rw_i64(4, 3, [
+        let m2 = matrix_rw_i64(4, 3, &[
             3, 1, 2,
             6, 4, 5,
             9, 7, 8,
             12, 10, 11,
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
     }
 }

@@ -376,7 +376,7 @@ impl<'a, T:FieldPartial> MatrixView<'a, T> {
 }
 
 /// Introspection support
-impl<'a, T:FieldPartial> Introspection for MatrixView<'a, T> {
+impl<'a, T:MagmaBase> Introspection for MatrixView<'a, T> {
     /// This is a view inside a matrix
     fn is_matrix_view_type(&self) -> bool {
         true

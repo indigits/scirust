@@ -294,7 +294,7 @@ impl<T:FieldPartial> NumberMatrix<T> for TriangularMatrix<T> {
 
 
 /// Introspection support
-impl<T:MagmaBase> Introspection for TriangularMatrix<T> {
+impl<T> Introspection for TriangularMatrix<T> {
     /// Indicates if the matrix is a triangular matrix
     fn is_triangular_matrix_type(&self) -> bool {
         true

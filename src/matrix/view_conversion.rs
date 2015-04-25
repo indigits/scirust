@@ -2,10 +2,10 @@
 // local imports
 use matrix::view::MatrixView;
 use matrix::traits::*;
-use algebra::structure::FieldPartial;
+use algebra::structure::MagmaBase;
 
 /// Implements matrix conversion API
-impl <'a, T:FieldPartial> Conversion<T> for MatrixView<'a, T> {
+impl <'a, T:MagmaBase> Conversion<T> for MatrixView<'a, T> {
     /// Converts the view to vector from standard library
     fn to_std_vec(&self) -> Vec<T> {
         let mut vec: Vec<T> = Vec::with_capacity(self.num_cells());
