@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `traits` mod in crate `scirust`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, traits">
+
+    <title>scirust::matrix::traits - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a></p><script>window.sidebarCurrent = {name: 'traits', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a>::<wbr><a class='mod' href=''>traits</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-16137' class='srclink' href='../../../src/scirust/matrix/traits.rs.html#1-345' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Traits for matrices</p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
+<table><tr><td><code>pub use matrix::eo::eo_traits::{<a class='trait' href='../../../scirust/matrix/eo/eo_traits/trait.ERO.html' title='scirust::matrix::eo::eo_traits::ERO'>ERO</a>, <a class='trait' href='../../../scirust/matrix/eo/eo_traits/trait.ECO.html' title='scirust::matrix::eo::eo_traits::ECO'>ECO</a>};</code></td></tr><tr><td><code>pub use matrix::update::traits::{<a class='trait' href='../../../scirust/matrix/update/traits/trait.InPlaceUpdates.html' title='scirust::matrix::update::traits::InPlaceUpdates'>InPlaceUpdates</a>, <a class='trait' href='../../../scirust/matrix/update/traits/trait.CopyUpdates.html' title='scirust::matrix::update::traits::CopyUpdates'>CopyUpdates</a>};</code></td></tr><tr><td><code>pub use matrix::transpose::traits::{<a class='trait' href='../../../scirust/matrix/transpose/traits/trait.Transpose.html' title='scirust::matrix::transpose::traits::Transpose'>Transpose</a>, <a class='trait' href='../../../scirust/matrix/transpose/traits/trait.Frame.html' title='scirust::matrix::transpose::traits::Frame'>Frame</a>};</code></td></tr><tr><td><code>pub use matrix::extract::traits::{<a class='trait' href='../../../scirust/matrix/extract/traits/trait.Extraction.html' title='scirust::matrix::extract::traits::Extraction'>Extraction</a>};</code></td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.Conversion.html'
+                               title='scirust::matrix::traits::Conversion'>Conversion</a></td>
+                        <td class='docblock short'>
+                             <p>Matrix conversion API</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.FloatMatrix.html'
+                               title='scirust::matrix::traits::FloatMatrix'>FloatMatrix</a></td>
+                        <td class='docblock short'>
+                             <p>A matrix of floats T:Number+Float</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.IntMatrix.html'
+                               title='scirust::matrix::traits::IntMatrix'>IntMatrix</a></td>
+                        <td class='docblock short'>
+                             <p>A matrix of integers <T:Number+Int></p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.Introspection.html'
+                               title='scirust::matrix::traits::Introspection'>Introspection</a></td>
+                        <td class='docblock short'>
+                             <p>These methods help in run time to query
+about the properties of the type which is implementing
+the trait. </p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.MatrixBuffer.html'
+                               title='scirust::matrix::traits::MatrixBuffer'>MatrixBuffer</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the low level interface to the internal
+memory buffer of a matrix implementation.  Use it with
+caution. </p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.MinMax.html'
+                               title='scirust::matrix::traits::MinMax'>MinMax</a></td>
+                        <td class='docblock short'>
+                             <p>Matrix min-max API</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.MinMaxAbs.html'
+                               title='scirust::matrix::traits::MinMaxAbs'>MinMaxAbs</a></td>
+                        <td class='docblock short'>
+                             <p>Matrix min-max with absolute values API</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.NumberMatrix.html'
+                               title='scirust::matrix::traits::NumberMatrix'>NumberMatrix</a></td>
+                        <td class='docblock short'>
+                             <p>Defines a set of basic methods implemented by matrices of numbers</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.Search.html'
+                               title='scirust::matrix::traits::Search'>Search</a></td>
+                        <td class='docblock short'>
+                             <p>Features for searching within the matrix</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.Shape.html'
+                               title='scirust::matrix::traits::Shape'>Shape</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the features which all matrix types must implement.
+This API focuses only on the shape of the matrix.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.SignedMatrix.html'
+                               title='scirust::matrix::traits::SignedMatrix'>SignedMatrix</a></td>
+                        <td class='docblock short'>
+                             <p>A matrix of signed integers T:Number+SignedInt</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.Strided.html'
+                               title='scirust::matrix::traits::Strided'>Strided</a></td>
+                        <td class='docblock short'>
+                             <p>A matrix structure whose storage is in terms
+of columns with a fixed number of storage elements
+per column given by its stride. </p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.StridedFloatMatrix.html'
+                               title='scirust::matrix::traits::StridedFloatMatrix'>StridedFloatMatrix</a></td>
+                        <td class='docblock short'>
+                             <p>A strided buffer matrix of floats</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.StridedNumberMatrix.html'
+                               title='scirust::matrix::traits::StridedNumberMatrix'>StridedNumberMatrix</a></td>
+                        <td class='docblock short'>
+                             <p>A matrix which is both a number matrix and is strided.</p>
+
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "scirust";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script async src="../../../search-index.js"></script>
+</body>
+</html>

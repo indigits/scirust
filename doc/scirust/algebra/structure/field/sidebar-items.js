@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Field","Marker trait for fields with full equivalence"],["FieldPartial","Marker trait for fields with partial equivalence"]]});

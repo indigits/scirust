@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["det",""],["inverse","Matrix inverse computation methods"],["linear_system","Methods for solving linear systems of equations"],["lu","LU factorization algorithms"],["matrix",""],["rank","Matrix rank computation methods"],["singularity","Methods for checking singularity or invertibility of matrices."]]});

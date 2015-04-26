@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>scirust</a>::<wbr><a href='index.html'>error</a></p><div class='block enum'><h2>Enums</h2><a class='enum current' href='enum.SRError.html'>SRError</a></div>
+        <p class='location'><a href='../index.html'>scirust</a>::<wbr><a href='index.html'>error</a></p><script>window.sidebarCurrent = {name: 'SRError', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </section>
 
     <nav class="sub">
@@ -41,24 +41,59 @@
     </nav>
 
     <section id='main' class="content enum">
-<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>scirust</a>::<wbr><a href='index.html'>error</a>::<wbr><a class='enum' href=''>SRError</a><wbr></span><span class='out-of-band'><span id='render-detail'>
-            <a id="collapse-all" href="#">[-]
-            </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-259' href='../../src/scirust/work/projects/scirust/srmat/src/error.rs.html#7-22'>[src]</a></span></h1>
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>scirust</a>::<wbr><a href='index.html'>error</a>::<wbr><a class='enum' href=''>SRError</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-10' class='srclink' href='../../src/scirust/error.rs.html#15-90' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum SRError {
     EmptyMatrix,
     DimensionsMismatch,
-    NonSquareMatrix,
-    NotAVector,
+    RowsMismatch,
+    ColsMismatch,
+    IsNotSquareMatrix,
+    IsNotAVector,
+    IsNotAColVector,
+    IsNotARowVector,
+    IsNotFullRankMatrix,
+    IsFullRankMatrix,
+    IsSingular,
+    IsNonSingular,
+    IsPositiveDefinite,
+    IsPositiveSemiDefinite,
+    IsNegativeDefinite,
+    IsNegativeSemiDefinite,
+    IsNonDefinite,
+    LRDimensionMismatch,
+    NoSolution,
+    InfiniteSolutions,
+    DivideByZero,
     IsNotPowerOfTwo,
 }</pre><div class='docblock'><p>Enum for errors related to SciRust library</p>
 </div><h2 class='variants'>Variants</h2>
-<table><tr><td id='variant.EmptyMatrix'><a class='stability Unmarked' title='No stability level'></a><code>EmptyMatrix</code></td><td><div class='docblock'><p>The matrix is empty</p>
-</div></td></tr><tr><td id='variant.DimensionsMismatch'><a class='stability Unmarked' title='No stability level'></a><code>DimensionsMismatch</code></td><td><div class='docblock'><p>The dimensions of two matrices mismatch</p>
-</div></td></tr><tr><td id='variant.NonSquareMatrix'><a class='stability Unmarked' title='No stability level'></a><code>NonSquareMatrix</code></td><td><div class='docblock'><p>The matrix is not a square matrix</p>
-</div></td></tr><tr><td id='variant.NotAVector'><a class='stability Unmarked' title='No stability level'></a><code>NotAVector</code></td><td><div class='docblock'><p>The matrix is not a vector</p>
-</div></td></tr><tr><td id='variant.IsNotPowerOfTwo'><a class='stability Unmarked' title='No stability level'></a><code>IsNotPowerOfTwo</code></td><td><div class='docblock'><p>The number is not a power of two</p>
-</div></td></tr></table><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Show.html' title='core::fmt::Show'>Show</a> for <a class='enum' href='../../scirust/error/enum.SRError.html' title='scirust::error::SRError'>SRError</a></code></h3><div class='impl-methods'><h4 id='method.fmt' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='http://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+<table><tr><td id='variant.EmptyMatrix'><code>EmptyMatrix</code></td><td><div class='docblock'><p>The matrix is empty</p>
+</div></td></tr><tr><td id='variant.DimensionsMismatch'><code>DimensionsMismatch</code></td><td><div class='docblock'><p>The dimensions of two matrices mismatch</p>
+</div></td></tr><tr><td id='variant.RowsMismatch'><code>RowsMismatch</code></td><td><div class='docblock'><p>Number of rows don&#39;t match</p>
+</div></td></tr><tr><td id='variant.ColsMismatch'><code>ColsMismatch</code></td><td><div class='docblock'><p>Number of columns don&#39;t match</p>
+</div></td></tr><tr><td id='variant.IsNotSquareMatrix'><code>IsNotSquareMatrix</code></td><td><div class='docblock'><p>The matrix is not a square matrix</p>
+</div></td></tr><tr><td id='variant.IsNotAVector'><code>IsNotAVector</code></td><td><div class='docblock'><p>The matrix is not a vector</p>
+</div></td></tr><tr><td id='variant.IsNotAColVector'><code>IsNotAColVector</code></td><td></td></tr><tr><td id='variant.IsNotARowVector'><code>IsNotARowVector</code></td><td></td></tr><tr><td id='variant.IsNotFullRankMatrix'><code>IsNotFullRankMatrix</code></td><td><div class='docblock'><p>Indicates that a matrix is not full rank</p>
+</div></td></tr><tr><td id='variant.IsFullRankMatrix'><code>IsFullRankMatrix</code></td><td><div class='docblock'><p>Indicates that the matrix is full rank</p>
+</div></td></tr><tr><td id='variant.IsSingular'><code>IsSingular</code></td><td><div class='docblock'><p>The matrix is singular</p>
+</div></td></tr><tr><td id='variant.IsNonSingular'><code>IsNonSingular</code></td><td><div class='docblock'><p>The matrix is invertible (non-singular)</p>
+</div></td></tr><tr><td id='variant.IsPositiveDefinite'><code>IsPositiveDefinite</code></td><td><div class='docblock'><p>The matrix is positive definite</p>
+</div></td></tr><tr><td id='variant.IsPositiveSemiDefinite'><code>IsPositiveSemiDefinite</code></td><td><div class='docblock'><p>The matrix is positive semi definite</p>
+</div></td></tr><tr><td id='variant.IsNegativeDefinite'><code>IsNegativeDefinite</code></td><td><div class='docblock'><p>The matrix is negative definite</p>
+</div></td></tr><tr><td id='variant.IsNegativeSemiDefinite'><code>IsNegativeSemiDefinite</code></td><td><div class='docblock'><p>The matrix is negative semi definite</p>
+</div></td></tr><tr><td id='variant.IsNonDefinite'><code>IsNonDefinite</code></td><td><div class='docblock'><p>The matrix is non-definite</p>
+</div></td></tr><tr><td id='variant.LRDimensionMismatch'><code>LRDimensionMismatch</code></td><td><div class='docblock'><p>The dimensions of left and right hand side don&#39;t match</p>
+</div></td></tr><tr><td id='variant.NoSolution'><code>NoSolution</code></td><td><div class='docblock'><p>There is no solution to the system of equations</p>
+</div></td></tr><tr><td id='variant.InfiniteSolutions'><code>InfiniteSolutions</code></td><td><div class='docblock'><p>There are infinite solutions to the system of equations.</p>
+</div></td></tr><tr><td id='variant.DivideByZero'><code>DivideByZero</code></td><td></td></tr><tr><td id='variant.IsNotPowerOfTwo'><code>IsNotPowerOfTwo</code></td><td><div class='docblock'><p>The number is not a power of two</p>
+</div></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='enum' href='../../scirust/error/enum.SRError.html' title='scirust::error::SRError'>SRError</a></code></h3><div class='impl-items'><h4 id='method.to_string' class='method'><code>fn <a href='#method.to_string' class='fnname'>to_string</a>(&amp;self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h4>
+<div class='docblock'><p>Converts enum values to string representation</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='enum' href='../../scirust/error/enum.SRError.html' title='scirust::error::SRError'>SRError</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='http://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#method.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='http://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='enum' href='../../scirust/error/enum.SRError.html' title='scirust::error::SRError'>SRError</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='enum' href='../../scirust/error/enum.SRError.html' title='scirust::error::SRError'>SRError</a></code></h4>
+<h4 id='method.clone_from' class='method'><code>fn <a href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> for <a class='enum' href='../../scirust/error/enum.SRError.html' title='scirust::error::SRError'>SRError</a></code></h3><div class='impl-items'></div><h3 class='impl'><code>impl <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='enum' href='../../scirust/error/enum.SRError.html' title='scirust::error::SRError'>SRError</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='http://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 

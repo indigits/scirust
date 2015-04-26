@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["rand_std_normal","Generate a random matrix of uniformly distributed numbers"]]});

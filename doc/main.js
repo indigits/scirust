@@ -15,6 +15,27 @@
     "use strict";
     var resizeTimeout, interval;
 
+    // This mapping table should match the discriminants of
+    // `rustdoc::html::item_type::ItemType` type in Rust.
+    var itemTypes = ["mod",
+                     "externcrate",
+                     "import",
+                     "struct",
+                     "enum",
+                     "fn",
+                     "type",
+                     "static",
+                     "trait",
+                     "impl",
+                     "tymethod",
+                     "method",
+                     "structfield",
+                     "variant",
+                     "macro",
+                     "primitive",
+                     "associatedtype",
+                     "constant"];
+
     $('.js-only').removeClass('js-only');
 
     function getQueryStringParams() {
@@ -33,24 +54,7 @@
         return window.history && typeof window.history.pushState === "function";
     }
 
-    function resizeShortBlocks() {
-        if (resizeTimeout) {
-            clearTimeout(resizeTimeout);
-        }
-        resizeTimeout = setTimeout(function() {
-            var contentWidth = $('.content').width();
-            $('.docblock.short').width(function() {
-                return contentWidth - 40 - $(this).prev().width();
-            }).addClass('nowrap');
-            $('.summary-column').width(function() {
-                return contentWidth - 40 - $(this).prev().width();
-            })
-        }, 150);
-    }
-    resizeShortBlocks();
-    $(window).on('resize', resizeShortBlocks);
-
-    function highlightSourceLines() {
+    function highlightSourceLines(ev) {
         var i, from, to, match = window.location.hash.match(/^#?(\d+)(?:-(\d+))?$/);
         if (match) {
             from = parseInt(match[1], 10);
@@ -59,14 +63,14 @@
             if ($('#' + from).length === 0) {
                 return;
             }
-            $('#' + from)[0].scrollIntoView();
+            if (ev === null) $('#' + from)[0].scrollIntoView();
             $('.line-numbers span').removeClass('line-highlighted');
             for (i = from; i <= to; ++i) {
                 $('#' + i).addClass('line-highlighted');
             }
         }
     }
-    highlightSourceLines();
+    highlightSourceLines(null);
     $(window).on('hashchange', highlightSourceLines);
 
     $(document).on('keyup', function(e) {
@@ -74,9 +78,11 @@
             return;
         }
 
-        if (e.which === 191 && $('#help').hasClass('hidden')) { // question mark
-            e.preventDefault();
-            $('#help').removeClass('hidden');
+        if (e.which === 191) { // question mark
+            if (e.shiftKey && $('#help').hasClass('hidden')) {
+                e.preventDefault();
+                $('#help').removeClass('hidden');
+            }
         } else if (e.which === 27) { // esc
             if (!$('#help').hasClass('hidden')) {
                 e.preventDefault();
@@ -205,6 +211,33 @@
                         break;
                     }
                 }
+            // searching by type
+            } else if (val.search("->") > -1) {
+                var trimmer = function (s) { return s.trim(); };
+                var parts = val.split("->").map(trimmer);
+                var input = parts[0];
+                // sort inputs so that order does not matter
+                var inputs = input.split(",").map(trimmer).sort();
+                var output = parts[1];
+
+                for (var i = 0; i < nSearchWords; ++i) {
+                    var type = searchIndex[i].type;
+                    if (!type) {
+                        continue;
+                    }
+
+                    // sort index inputs so that order does not matter
+                    var typeInputs = type.inputs.map(function (input) {
+                        return input.name;
+                    }).sort();
+
+                    // allow searching for void (no output) functions as well
+                    var typeOutput = type.output ? type.output.name : "";
+                    if (inputs.toString() === typeInputs.toString() &&
+                        output == typeOutput) {
+                        results.push({id: i, index: -1, dontValidate: true});
+                    }
+                }
             } else {
                 // gather matching search results up to a certain maximum
                 val = val.replace(/\_/g, "");
@@ -313,7 +346,8 @@
             for (var i = results.length - 1; i > 0; i -= 1) {
                 if (results[i].word === results[i - 1].word &&
                     results[i].item.ty === results[i - 1].item.ty &&
-                    results[i].item.path === results[i - 1].item.path)
+                    results[i].item.path === results[i - 1].item.path &&
+                    (results[i].item.parent || {}).name === (results[i - 1].item.parent || {}).name)
                 {
                     results[i].id = -1;
                 }
@@ -323,6 +357,11 @@
                     name = result.item.name.toLowerCase(),
                     path = result.item.path.toLowerCase(),
                     parent = result.item.parent;
+
+                // this validation does not make sense when searching by types
+                if (result.dontValidate) {
+                    continue;
+                }
 
                 var valid = validateResult(name, path, split, parent);
                 if (!valid) {
@@ -431,6 +470,8 @@
                     if ($active.length) {
                         document.location.href = $active.find('a').prop('href');
                     }
+                } else {
+                  $active.removeClass('highlighted');
                 }
             });
         }
@@ -551,28 +592,6 @@
             showResults(results);
         }
 
-        // This mapping table should match the discriminants of
-        // `rustdoc::html::item_type::ItemType` type in Rust.
-        var itemTypes = ["mod",
-                         "struct",
-                         "enum",
-                         "fn",
-                         "type",
-                         "static",
-                         "trait",
-                         "impl",
-                         "viewitem",
-                         "tymethod",
-                         "method",
-                         "structfield",
-                         "variant",
-                         "ffi",
-                         "ffs",
-                         "macro",
-                         "primitive",
-                         "associatedtype",
-                         "constant"];
-
         function itemTypeFromName(typename) {
             for (var i = 0; i < itemTypes.length; ++i) {
                 if (itemTypes[i] === typename) return i;
@@ -590,7 +609,8 @@
                 //              (String) name,
                 //              (String) full path or empty string for previous path,
                 //              (String) description,
-                //              (optional Number) the parent path index to `paths`]
+                //              (Number | null) the parent path index to `paths`]
+                //              (Object | null) the type of the function (if any)
                 var items = rawSearchIndex[crate].items;
                 // an array of [(Number) item type,
                 //              (String) name]
@@ -615,7 +635,7 @@
                     var rawRow = items[i];
                     var row = {crate: crate, ty: rawRow[0], name: rawRow[1],
                                path: rawRow[2] || lastPath, desc: rawRow[3],
-                               parent: paths[rawRow[4]]};
+                               parent: paths[rawRow[4]], type: rawRow[5]};
                     searchIndex.push(row);
                     if (typeof row.name === "string") {
                         var word = row.name.toLowerCase();
@@ -634,7 +654,7 @@
             $('.do-search').on('click', search);
             $('.search-input').on('keyup', function() {
                 clearTimeout(keyUpTimeout);
-                keyUpTimeout = setTimeout(search, 100);
+                keyUpTimeout = setTimeout(search, 500);
             });
 
             // Push and pop states are used to add search results to the browser
@@ -668,6 +688,15 @@
             search();
         }
 
+        function plainSummaryLine(markdown) {
+            var str = markdown.replace(/\n/g, ' ')
+            str = str.replace(/'/g, "\'")
+            str = str.replace(/^#+? (.+?)/, "$1")
+            str = str.replace(/\[(.*?)\]\(.*?\)/g, "$1")
+            str = str.replace(/\[(.*?)\]\[.*?\]/g, "$1")
+            return str;
+        }
+
         index = buildIndex(rawSearchIndex);
         startSearch();
 
@@ -688,14 +717,62 @@
                 if (crates[i] == window.currentCrate) {
                     klass += ' current';
                 }
-                div.append($('<a>', {'href': '../' + crates[i] + '/index.html',
-                                    'class': klass}).text(crates[i]));
+                if (rawSearchIndex[crates[i]].items[0]) {
+                    var desc = rawSearchIndex[crates[i]].items[0][3];
+                    div.append($('<a>', {'href': '../' + crates[i] + '/index.html',
+                                         'title': plainSummaryLine(desc),
+                                         'class': klass}).text(crates[i]));
+                }
             }
             sidebar.append(div);
         }
     }
 
     window.initSearch = initSearch;
+
+    // delayed sidebar rendering.
+    function initSidebarItems(items) {
+        var sidebar = $('.sidebar');
+        var current = window.sidebarCurrent;
+
+        function block(shortty, longty) {
+            var filtered = items[shortty];
+            if (!filtered) return;
+
+            var div = $('<div>').attr('class', 'block ' + shortty);
+            div.append($('<h2>').text(longty));
+
+            for (var i = 0; i < filtered.length; ++i) {
+                var item = filtered[i];
+                var name = item[0];
+                var desc = item[1]; // can be null
+
+                var klass = shortty;
+                if (name === current.name && shortty == current.ty) {
+                    klass += ' current';
+                }
+                var path;
+                if (shortty === 'mod') {
+                    path = name + '/index.html';
+                } else {
+                    path = shortty + '.' + name + '.html';
+                }
+                div.append($('<a>', {'href': current.relpath + path,
+                                     'title': desc,
+                                     'class': klass}).text(name));
+            }
+            sidebar.append(div);
+        }
+
+        block("mod", "Modules");
+        block("struct", "Structs");
+        block("enum", "Enums");
+        block("trait", "Traits");
+        block("fn", "Functions");
+        block("macro", "Macros");
+    }
+
+    window.initSidebarItems = initSidebarItems;
 
     window.register_implementors = function(imp) {
         var list = $('#implementors-list');
@@ -707,8 +784,8 @@
                 var code = $('<code>').append(structs[j]);
                 $.each(code.find('a'), function(idx, a) {
                     var href = $(a).attr('href');
-                    if (!href.startsWith('http')) {
-                        $(a).attr('href', rootPath + $(a).attr('href'));
+                    if (href && href.indexOf('http') !== 0) {
+                        $(a).attr('href', rootPath + href);
                     }
                 });
                 var li = $('<li>').append(code);
@@ -725,19 +802,27 @@
     if (query['gotosrc']) {
         window.location = $('#src-' + query['gotosrc']).attr('href');
     }
+    if (query['gotomacrosrc']) {
+        window.location = $('.srclink').attr('href');
+    }
 
-    $("#expand-all").on("click", function() {
-        $(".docblock").show();
-        $(".toggle-label").hide();
-        $(".toggle-wrapper").removeClass("collapsed");
-        $(".collapse-toggle").children(".inner").html("-");
-    });
-
-    $("#collapse-all").on("click", function() {
-        $(".docblock").hide();
-        $(".toggle-label").show();
-        $(".toggle-wrapper").addClass("collapsed");
-        $(".collapse-toggle").children(".inner").html("+");
+    $("#toggle-all-docs").on("click", function() {
+        var toggle = $("#toggle-all-docs");
+        if (toggle.html() == "[-]") {
+            toggle.html("[+]");
+            toggle.attr("title", "expand all docs");
+            $(".docblock").hide();
+            $(".toggle-label").show();
+            $(".toggle-wrapper").addClass("collapsed");
+            $(".collapse-toggle").children(".inner").html("+");
+        } else {
+            toggle.html("[-]");
+            toggle.attr("title", "collapse all docs");
+            $(".docblock").show();
+            $(".toggle-label").hide();
+            $(".toggle-wrapper").removeClass("collapsed");
+            $(".collapse-toggle").children(".inner").html("-");
+        }
     });
 
     $(document).on("click", ".collapse-toggle", function() {
@@ -776,5 +861,36 @@
         var wrapper =  $("<div class='toggle-wrapper'>").append(mainToggle);
         $("#main > .docblock").before(wrapper);
     });
+
+    $('pre.line-numbers').on('click', 'span', function() {
+        var prev_id = 0;
+
+        function set_fragment(name) {
+            if (history.replaceState) {
+                history.replaceState(null, null, '#' + name);
+                $(window).trigger('hashchange');
+            } else {
+                location.replace('#' + name);
+            }
+        }
+
+        return function(ev) {
+            var cur_id = parseInt(ev.target.id);
+
+            if (ev.shiftKey && prev_id) {
+                if (prev_id > cur_id) {
+                    var tmp = prev_id;
+                    prev_id = cur_id;
+                    cur_id = tmp;
+                }
+
+                set_fragment(prev_id + '-' + cur_id);
+            } else {
+                prev_id = cur_id;
+
+                set_fragment(cur_id);
+            }
+        };
+    }());
 
 }());

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `field` mod in crate `scirust`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, field">
+
+    <title>scirust::algebra::structure::field - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../../../index.html'>scirust</a>::<wbr><a href='../../index.html'>algebra</a>::<wbr><a href='../index.html'>structure</a></p><script>window.sidebarCurrent = {name: 'field', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../../index.html'>scirust</a>::<wbr><a href='../../index.html'>algebra</a>::<wbr><a href='../index.html'>structure</a>::<wbr><a class='mod' href=''>field</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-2978' class='srclink' href='../../../../src/scirust/algebra/structure/field.rs.html#1-449' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Defines the field algebraic structure.</p>
+
+<p>A field is a set together with two operations, 
+usually called addition and multiplication, 
+and denoted by + and *, respectively, 
+such that the following axioms hold; 
+subtraction and division are defined in terms of the 
+inverse operations of addition and multiplication:</p>
+
+<p>Closure of F under addition and multiplication</p>
+
+<ul>
+<li>For all a, b in F, both a + b and a * b are in F 
+(or more formally, + and * are binary operations on F).</li>
+</ul>
+
+<p>Associativity of addition and multiplication</p>
+
+<ul>
+<li>For all a, b, and c in F, the following equalities hold: 
+a + (b + c) = (a + b) + c and a * (b * c) = (a * b) * c.</li>
+</ul>
+
+<p>Commutativity of addition and multiplication</p>
+
+<ul>
+<li>For all a and b in F, the following equalities hold: 
+a + b = b + a and a * b = b * a.</li>
+</ul>
+
+<p>Existence of additive and multiplicative identity elements</p>
+
+<ul>
+<li>There exists an element of F, called the additive identity element 
+and denoted by 0, such that for all a in F, a + 0 = a. </li>
+<li>Likewise, there is an element, called the multiplicative identity element 
+and denoted by 1, such that for all a in F, a * 1 = a. </li>
+<li>To exclude the trivial ring, the additive identity and the multiplicative identity 
+are required to be distinct.</li>
+</ul>
+
+<p>Existence of additive inverses and multiplicative inverses</p>
+
+<ul>
+<li>For every a in F, there exists an element -a in F, 
+such that a + (-a) = 0. </li>
+<li>Similarly, for any a in F other than 0, there exists an element 
+b in F, such that a * b = 1. </li>
+</ul>
+
+<p>Distributivity of multiplication over addition</p>
+
+<ul>
+<li>For all a, b and c in F, the following equality holds: 
+a * (b + c) = (a * b) + (a  * c).</li>
+</ul>
+</div><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.Field.html'
+                               title='scirust::algebra::structure::field::Field'>Field</a></td>
+                        <td class='docblock short'>
+                             <p>Marker trait for fields with full equivalence</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.FieldPartial.html'
+                               title='scirust::algebra::structure::field::FieldPartial'>FieldPartial</a></td>
+                        <td class='docblock short'>
+                             <p>Marker trait for fields with partial equivalence</p>
+
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../../../";
+        window.currentCrate = "scirust";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../../jquery.js"></script>
+    <script src="../../../../main.js"></script>
+    
+    <script async src="../../../../search-index.js"></script>
+</body>
+</html>

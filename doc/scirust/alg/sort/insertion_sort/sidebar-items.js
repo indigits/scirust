@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["insertion_sort_buffer","Performs insertion sort on a buffer of data"],["insertion_sort_slice","Performs insertion sort on a slice of type T"]]});

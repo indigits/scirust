@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["vec_iter","Constructs a vector iterator for a matrix with the assumption that the matrix is indeed a vector"],["vec_reduce_product","Computes the product of entries in vector v"],["vec_reduce_sum","Computes the sum of entries in vector v"]],"struct":[["VecIterator",""]]});

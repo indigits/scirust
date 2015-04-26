@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["impulse_f64",""],["impulse_vector",""],["impulse_vector_f64",""]],"struct":[["Impulse",""]]});

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `constructors` mod in crate `scirust`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, constructors">
+
+    <title>scirust::matrix::constructors - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a></p><script>window.sidebarCurrent = {name: 'constructors', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a>::<wbr><a class='mod' href=''>constructors</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-5268' class='srclink' href='../../../src/scirust/matrix/constructors.rs.html#1-1130' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Provides functions to create different types of matrices.</p>
+</div><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.col_vector.html'
+                               title='scirust::matrix::constructors::col_vector'>col_vector</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.col_vector_from_iter.html'
+                               title='scirust::matrix::constructors::col_vector_from_iter'>col_vector_from_iter</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a column vector with entries from an iterator.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.ero_scale.html'
+                               title='scirust::matrix::constructors::ero_scale'>ero_scale</a></td>
+                        <td class='docblock short'>
+                             <p>Returns elementary matrix which can scale
+a particular row by a factor on left multiplication.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.ero_scale_add.html'
+                               title='scirust::matrix::constructors::ero_scale_add'>ero_scale_add</a></td>
+                        <td class='docblock short'>
+                             <p>Returns elementary matrix which can scale
+a particular row by a factor and add it to
+another row
+on left multiplication.
+r_i = r_i + k * r_j</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.ero_switch.html'
+                               title='scirust::matrix::constructors::ero_switch'>ero_switch</a></td>
+                        <td class='docblock short'>
+                             <p>Returns elementary matrix which can
+exchange rows i and j
+on left multiplication.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw.html'
+                               title='scirust::matrix::constructors::from_range_cw'>from_range_cw</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a matrix whose entries are picked up from
+a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_f64.html'
+                               title='scirust::matrix::constructors::from_range_cw_f64'>from_range_cw_f64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit floating point matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_i16.html'
+                               title='scirust::matrix::constructors::from_range_cw_i16'>from_range_cw_i16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 16-bit signed integer matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_i32.html'
+                               title='scirust::matrix::constructors::from_range_cw_i32'>from_range_cw_i32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 32-bit signed integer matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_i64.html'
+                               title='scirust::matrix::constructors::from_range_cw_i64'>from_range_cw_i64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 64-bit signed integer matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_i8.html'
+                               title='scirust::matrix::constructors::from_range_cw_i8'>from_range_cw_i8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit signed integer matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_u16.html'
+                               title='scirust::matrix::constructors::from_range_cw_u16'>from_range_cw_u16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 16-bit unsigned integer matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_u32.html'
+                               title='scirust::matrix::constructors::from_range_cw_u32'>from_range_cw_u32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 32-bit unsigned integer matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_u64.html'
+                               title='scirust::matrix::constructors::from_range_cw_u64'>from_range_cw_u64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 64-bit unsigned integer matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_cw_u8.html'
+                               title='scirust::matrix::constructors::from_range_cw_u8'>from_range_cw_u8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit unsigned integer matrix whose entries are
+picked up from a range in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw.html'
+                               title='scirust::matrix::constructors::from_range_rw'>from_range_rw</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a matrix whose entries are picked up from
+a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_f32.html'
+                               title='scirust::matrix::constructors::from_range_rw_f32'>from_range_rw_f32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit floating point matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_f64.html'
+                               title='scirust::matrix::constructors::from_range_rw_f64'>from_range_rw_f64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit floating point matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_i16.html'
+                               title='scirust::matrix::constructors::from_range_rw_i16'>from_range_rw_i16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 16-bit signed integer matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_i32.html'
+                               title='scirust::matrix::constructors::from_range_rw_i32'>from_range_rw_i32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 32-bit signed integer matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_i64.html'
+                               title='scirust::matrix::constructors::from_range_rw_i64'>from_range_rw_i64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 64-bit signed integer matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_i8.html'
+                               title='scirust::matrix::constructors::from_range_rw_i8'>from_range_rw_i8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit signed integer matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_u16.html'
+                               title='scirust::matrix::constructors::from_range_rw_u16'>from_range_rw_u16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 16-bit unsigned integer matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_u32.html'
+                               title='scirust::matrix::constructors::from_range_rw_u32'>from_range_rw_u32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 32-bit unsigned integer matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_u64.html'
+                               title='scirust::matrix::constructors::from_range_rw_u64'>from_range_rw_u64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 64-bit unsigned integer matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.from_range_rw_u8.html'
+                               title='scirust::matrix::constructors::from_range_rw_u8'>from_range_rw_u8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit unsigned integer matrix whose entries are
+picked up from a range in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.hadamard.html'
+                               title='scirust::matrix::constructors::hadamard'>hadamard</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a Hadamard matrix of size n x n</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.hilbert.html'
+                               title='scirust::matrix::constructors::hilbert'>hilbert</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a Hilbert matrix.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_f32.html'
+                               title='scirust::matrix::constructors::matrix_cw_f32'>matrix_cw_f32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit float matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_f64.html'
+                               title='scirust::matrix::constructors::matrix_cw_f64'>matrix_cw_f64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit float matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_i16.html'
+                               title='scirust::matrix::constructors::matrix_cw_i16'>matrix_cw_i16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 16-bit signed integer matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_i32.html'
+                               title='scirust::matrix::constructors::matrix_cw_i32'>matrix_cw_i32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit signed integer matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_i64.html'
+                               title='scirust::matrix::constructors::matrix_cw_i64'>matrix_cw_i64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit signed integer matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_i8.html'
+                               title='scirust::matrix::constructors::matrix_cw_i8'>matrix_cw_i8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit signed integer matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_u16.html'
+                               title='scirust::matrix::constructors::matrix_cw_u16'>matrix_cw_u16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 16-bit unsigned integer matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_u32.html'
+                               title='scirust::matrix::constructors::matrix_cw_u32'>matrix_cw_u32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit unsigned integer matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_u64.html'
+                               title='scirust::matrix::constructors::matrix_cw_u64'>matrix_cw_u64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit unsigned integer matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_cw_u8.html'
+                               title='scirust::matrix::constructors::matrix_cw_u8'>matrix_cw_u8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit unsigned integer matrix whose entries are
+picked up from a slice in column wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_f32.html'
+                               title='scirust::matrix::constructors::matrix_rw_f32'>matrix_rw_f32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit float matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_f64.html'
+                               title='scirust::matrix::constructors::matrix_rw_f64'>matrix_rw_f64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit float matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_i16.html'
+                               title='scirust::matrix::constructors::matrix_rw_i16'>matrix_rw_i16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 16-bit signed integer matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_i32.html'
+                               title='scirust::matrix::constructors::matrix_rw_i32'>matrix_rw_i32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit signed integer matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_i64.html'
+                               title='scirust::matrix::constructors::matrix_rw_i64'>matrix_rw_i64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit signed integer matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_i8.html'
+                               title='scirust::matrix::constructors::matrix_rw_i8'>matrix_rw_i8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit signed integer matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_u16.html'
+                               title='scirust::matrix::constructors::matrix_rw_u16'>matrix_rw_u16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 16-bit unsigned integer matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_u32.html'
+                               title='scirust::matrix::constructors::matrix_rw_u32'>matrix_rw_u32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit unsigned integer matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_u64.html'
+                               title='scirust::matrix::constructors::matrix_rw_u64'>matrix_rw_u64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit unsigned integer matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix_rw_u8.html'
+                               title='scirust::matrix::constructors::matrix_rw_u8'>matrix_rw_u8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit unsigned integer matrix whose entries are
+picked up from a slice in row wise order.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_f32.html'
+                               title='scirust::matrix::constructors::vector_f32'>vector_f32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit float column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_f64.html'
+                               title='scirust::matrix::constructors::vector_f64'>vector_f64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit float column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_i16.html'
+                               title='scirust::matrix::constructors::vector_i16'>vector_i16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 16-bit signed int column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_i32.html'
+                               title='scirust::matrix::constructors::vector_i32'>vector_i32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit signed int column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_i64.html'
+                               title='scirust::matrix::constructors::vector_i64'>vector_i64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit signed int column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_i8.html'
+                               title='scirust::matrix::constructors::vector_i8'>vector_i8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns an 8-bit signed int column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_u16.html'
+                               title='scirust::matrix::constructors::vector_u16'>vector_u16</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 16-bit unsigned int column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_u32.html'
+                               title='scirust::matrix::constructors::vector_u32'>vector_u32</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 32-bit unsigned int column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_u64.html'
+                               title='scirust::matrix::constructors::vector_u64'>vector_u64</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 64-bit unsigned int column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.vector_u8.html'
+                               title='scirust::matrix::constructors::vector_u8'>vector_u8</a></td>
+                        <td class='docblock short'>
+                             <p>Returns a 8-bit unsigned int column vector with entries from a slice.</p>
+
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "scirust";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script async src="../../../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["mat_impl",""],["mat_traits",""]]});

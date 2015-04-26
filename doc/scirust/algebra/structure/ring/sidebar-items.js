@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Ring","Ring with full equivalence"],["RingPartial","Ring with partial equivalence"]]});

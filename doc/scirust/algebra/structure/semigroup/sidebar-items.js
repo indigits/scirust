@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["SemiGroupAdd","Semigroup with an addition operation with full equivalence"],["SemiGroupAddPartial","Semigroup with an addition operation with partial equivalence"],["SemiGroupMul","Semigroup with a multiplication operation with full equivalence"],["SemiGroupMulPartial","Semigroup with a multiplication operation with partial equivalence"]]});

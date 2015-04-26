@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `InPlaceUpdates` trait in crate `scirust`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, InPlaceUpdates">
+
+    <title>scirust::matrix::update::traits::InPlaceUpdates - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../../../index.html'>scirust</a>::<wbr><a href='../../index.html'>matrix</a>::<wbr><a href='../index.html'>update</a>::<wbr><a href='index.html'>traits</a></p><script>window.sidebarCurrent = {name: 'InPlaceUpdates', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../../../index.html'>scirust</a>::<wbr><a href='../../index.html'>matrix</a>::<wbr><a href='../index.html'>update</a>::<wbr><a href='index.html'>traits</a>::<wbr><a class='trait' href=''>InPlaceUpdates</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-24628' class='srclink' href='../../../../src/scirust/matrix/update/traits.rs.html#34-135' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait InPlaceUpdates&lt;T: <a class='trait' href='../../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.Num.html' title='num::traits::Num'>Num</a>&gt;: <a class='trait' href='../../../../scirust/matrix/traits/trait.Shape.html' title='scirust::matrix::traits::Shape'>Shape</a>&lt;T&gt; + <a class='trait' href='../../../../scirust/matrix/traits/trait.MatrixBuffer.html' title='scirust::matrix::traits::MatrixBuffer'>MatrixBuffer</a>&lt;T&gt; {
+    fn <a href='#tymethod.add_scalar' class='fnname'>add_scalar</a>(&amp;mut self, rhs: T) -&gt; &amp;mut Self;
+    fn <a href='#tymethod.mul_scalar' class='fnname'>mul_scalar</a>(&amp;mut self, rhs: T) -&gt; &amp;mut Self;
+    fn <a href='#tymethod.div_scalar' class='fnname'>div_scalar</a>(&amp;mut self, rhs: T) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;&amp;mut Self&gt;;
+    fn <a href='#tymethod.scale_row_lt' class='fnname'>scale_row_lt</a>(&amp;mut self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, scale_factor: T) -&gt; &amp;mut Self;
+    fn <a href='#tymethod.scale_col_lt' class='fnname'>scale_col_lt</a>(&amp;mut self, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, scale_factor: T) -&gt; &amp;mut Self;
+    fn <a href='#tymethod.scale_row_ut' class='fnname'>scale_row_ut</a>(&amp;mut self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, scale_factor: T) -&gt; &amp;mut Self;
+    fn <a href='#tymethod.scale_col_ut' class='fnname'>scale_col_ut</a>(&amp;mut self, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, scale_factor: T) -&gt; &amp;mut Self;
+    fn <a href='#tymethod.scale_rows' class='fnname'>scale_rows</a>(&amp;mut self, scale_factors: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; &amp;mut Self;
+    fn <a href='#tymethod.scale_cols' class='fnname'>scale_cols</a>(&amp;mut self, scale_factors: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; &amp;mut Self;
+    fn <a href='#tymethod.sub_vec_from_cols' class='fnname'>sub_vec_from_cols</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+    fn <a href='#tymethod.sub_vec_from_rows' class='fnname'>sub_vec_from_rows</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+    fn <a href='#tymethod.add_vec_to_cols' class='fnname'>add_vec_to_cols</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+    fn <a href='#tymethod.add_vec_to_rows' class='fnname'>add_vec_to_rows</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+    fn <a href='#tymethod.mul_vec_to_cols' class='fnname'>mul_vec_to_cols</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+    fn <a href='#tymethod.mul_vec_to_rows' class='fnname'>mul_vec_to_rows</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+    fn <a href='#tymethod.ut_to_lt' class='fnname'>ut_to_lt</a>(&amp;mut self) -&gt; &amp;mut Self;
+
+    fn <a href='#method.set_diagonal' class='fnname'>set_diagonal</a>(&amp;mut self, value: T) -&gt; &amp;mut Self { ... }
+    fn <a href='#method.set_row' class='fnname'>set_row</a>(&amp;mut self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, value: T) -&gt; &amp;mut Self { ... }
+    fn <a href='#method.set_col' class='fnname'>set_col</a>(&amp;mut self, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, value: T) -&gt; &amp;mut Self { ... }
+    fn <a href='#method.set_block' class='fnname'>set_block</a>(&amp;mut self, start_row: <a href='http://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a>, start_col: <a href='http://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a>, num_rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, num_cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, value: T) -&gt; &amp;mut Self { ... }
+}</pre><div class='docblock'><p>Matrix In Place Updates API</p>
+
+<p>This trait defines various updates to the contents
+of a matrix in-place. Such updates include: </p>
+
+<ul>
+<li>Setting all the entries on a diagonal</li>
+<li>Setting all the entries on a row</li>
+<li>Setting all the entries on a column </li>
+<li>etc.</li>
+</ul>
+
+<p>These are not standard linear algebra operations, but since they
+are needed once in a while, hence the helper functions
+are provided to achieve them quickly. Further,
+optimizing the low level code can help a lot in improving performance
+of higher level functions.</p>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.add_scalar' class='method stab '><code>fn <a href='#tymethod.add_scalar' class='fnname'>add_scalar</a>(&amp;mut self, rhs: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Add the matrix by a scalar</p>
+</div><h3 id='tymethod.mul_scalar' class='method stab '><code>fn <a href='#tymethod.mul_scalar' class='fnname'>mul_scalar</a>(&amp;mut self, rhs: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Multiply the matrix by a scalar</p>
+</div><h3 id='tymethod.div_scalar' class='method stab '><code>fn <a href='#tymethod.div_scalar' class='fnname'>div_scalar</a>(&amp;mut self, rhs: T) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;&amp;mut Self&gt;</code></h3><div class='docblock'><p>Divide the matrix by a scalar</p>
+</div><h3 id='tymethod.scale_row_lt' class='method stab '><code>fn <a href='#tymethod.scale_row_lt' class='fnname'>scale_row_lt</a>(&amp;mut self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, scale_factor: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Scales a specific row in lower triangular part</p>
+</div><h3 id='tymethod.scale_col_lt' class='method stab '><code>fn <a href='#tymethod.scale_col_lt' class='fnname'>scale_col_lt</a>(&amp;mut self, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, scale_factor: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Scales a specific column in lower triangular part</p>
+</div><h3 id='tymethod.scale_row_ut' class='method stab '><code>fn <a href='#tymethod.scale_row_ut' class='fnname'>scale_row_ut</a>(&amp;mut self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, scale_factor: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Scales a specific row in upper triangular part</p>
+</div><h3 id='tymethod.scale_col_ut' class='method stab '><code>fn <a href='#tymethod.scale_col_ut' class='fnname'>scale_col_ut</a>(&amp;mut self, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, scale_factor: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Scales a specific column in upper triangular part</p>
+</div><h3 id='tymethod.scale_rows' class='method stab '><code>fn <a href='#tymethod.scale_rows' class='fnname'>scale_rows</a>(&amp;mut self, scale_factors: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Scale all rows as per the scale factors</p>
+</div><h3 id='tymethod.scale_cols' class='method stab '><code>fn <a href='#tymethod.scale_cols' class='fnname'>scale_cols</a>(&amp;mut self, scale_factors: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Scale all columns as per the scale factors</p>
+</div><h3 id='tymethod.sub_vec_from_cols' class='method stab '><code>fn <a href='#tymethod.sub_vec_from_cols' class='fnname'>sub_vec_from_cols</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Subtract a vector from each column</p>
+</div><h3 id='tymethod.sub_vec_from_rows' class='method stab '><code>fn <a href='#tymethod.sub_vec_from_rows' class='fnname'>sub_vec_from_rows</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Subtract a vector from each row</p>
+</div><h3 id='tymethod.add_vec_to_cols' class='method stab '><code>fn <a href='#tymethod.add_vec_to_cols' class='fnname'>add_vec_to_cols</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Subtract a vector from each column</p>
+</div><h3 id='tymethod.add_vec_to_rows' class='method stab '><code>fn <a href='#tymethod.add_vec_to_rows' class='fnname'>add_vec_to_rows</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Subtract a vector from each row</p>
+</div><h3 id='tymethod.mul_vec_to_cols' class='method stab '><code>fn <a href='#tymethod.mul_vec_to_cols' class='fnname'>mul_vec_to_cols</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Subtract a vector from each column</p>
+</div><h3 id='tymethod.mul_vec_to_rows' class='method stab '><code>fn <a href='#tymethod.mul_vec_to_rows' class='fnname'>mul_vec_to_rows</a>(&amp;mut self, vec: &amp;<a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='type' href='../../../../scirust/error/type.SRResult.html' title='scirust::error::SRResult'>SRResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Subtract a vector from each row</p>
+</div><h3 id='tymethod.ut_to_lt' class='method stab '><code>fn <a href='#tymethod.ut_to_lt' class='fnname'>ut_to_lt</a>(&amp;mut self) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Copies data from upper triangular part to lower triangular part</p>
+</div></div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.set_diagonal' class='method stab '><code>fn <a href='#method.set_diagonal' class='fnname'>set_diagonal</a>(&amp;mut self, value: T) -&gt; &amp;mut Self</code></h3><h3 id='method.set_row' class='method stab '><code>fn <a href='#method.set_row' class='fnname'>set_row</a>(&amp;mut self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, value: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Sets all the entries on a row to a particular value</p>
+</div><h3 id='method.set_col' class='method stab '><code>fn <a href='#method.set_col' class='fnname'>set_col</a>(&amp;mut self, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, value: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Sets all the entries on a column to a particular value</p>
+</div><h3 id='method.set_block' class='method stab '><code>fn <a href='#method.set_block' class='fnname'>set_block</a>(&amp;mut self, start_row: <a href='http://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a>, start_col: <a href='http://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a>, num_rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, num_cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, value: T) -&gt; &amp;mut Self</code></h3><div class='docblock'><p>Sets all the entries on a block to a particular value</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl&lt;T: <a class='trait' href='../../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.Num.html' title='num::traits::Num'>Num</a>&gt; <a class='trait' href='../../../../scirust/matrix/update/traits/trait.InPlaceUpdates.html' title='scirust::matrix::update::traits::InPlaceUpdates'>InPlaceUpdates</a>&lt;T&gt; for <a class='struct' href='../../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></li>
+</ul><script type="text/javascript" async
+                              src="../../../../implementors/scirust/matrix/update/traits/trait.InPlaceUpdates.js">
+                      </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../../../";
+        window.currentCrate = "scirust";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../../jquery.js"></script>
+    <script src="../../../../main.js"></script>
+    
+    <script async src="../../../../search-index.js"></script>
+</body>
+</html>

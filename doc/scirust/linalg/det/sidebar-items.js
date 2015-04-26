@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["det","Returns the determinant of a matrix."],["det_float","Returns the determinant of a matrix of floating point numbers."],["det_ge","Computes determinant using Gaussian elimination with partial pivoting"],["det_naive","Private implementation of determinant Assumes that matrix is indeed square."]]});

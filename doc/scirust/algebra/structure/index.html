@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `structure` mod in crate `scirust`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, structure">
+
+    <title>scirust::algebra::structure - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>algebra</a></p><script>window.sidebarCurrent = {name: 'structure', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>algebra</a>::<wbr><a class='mod' href=''>structure</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-940' class='srclink' href='../../../src/scirust/algebra/structure/mod.rs.html#1-160' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Defines generic traits for algebraic structures on which
+SciRust library works.</p>
+
+<p>Supporting modules</p>
+
+<ul>
+<li><code>ops</code>:  Some operations not defined in std</li>
+</ul>
+
+<p>Algebraic structures</p>
+
+<ul>
+<li>Magma : closure (set with an operation)</li>
+<li>Quasi-group: closure, division (a set where division is always possible)</li>
+<li>Loop: closure, identity, inverse (Quasigroup with identity)</li>
+<li>Semigroup: closure, associativity</li>
+<li>Monoid: closure, associativity, identity</li>
+<li>Commutative monoid: closure, associativity, identity, commutativity (Monoid with commutativity)</li>
+<li>Group: closure, associativity, identity, inverse<br></li>
+<li>Commutative group: closure, associativity, identity, inverse, commutativity</li>
+<li>Ring : commutative group under addition, monoid under multiplication, distributive</li>
+<li>Commutative Ring: commutative group under addition, commutative monoid under multiplication, distributive (ring + commutative monoid under multiplication)</li>
+</ul>
+
+<p>Modules:</p>
+
+<ul>
+<li><code>magma</code>: Magma</li>
+<li><code>quasigroup</code> : Quasi-group</li>
+<li><code>semigroup</code>: Semi-group</li>
+<li><code>loop_</code>: Loop</li>
+<li><code>monoid</code>: Monoid and commutative monoid</li>
+<li><code>group</code>: Group  and commutative group</li>
+<li><code>ring</code>: Ring</li>
+</ul>
+
+<p>References:</p>
+
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Algebraic_structure">http://en.wikipedia.org/wiki/Algebraic_structure</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Magma_(algebra)">http://en.wikipedia.org/wiki/Magma_(algebra)</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Quasigroup">http://en.wikipedia.org/wiki/Quasigroup</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Semigroup">http://en.wikipedia.org/wiki/Semigroup</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Monoid">http://en.wikipedia.org/wiki/Monoid</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Group_(mathematics)">http://en.wikipedia.org/wiki/Group_(mathematics)</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Abelian_group">http://en.wikipedia.org/wiki/Abelian_group</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Ring_(mathematics)">http://en.wikipedia.org/wiki/Ring_(mathematics)</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Integral_domain">http://en.wikipedia.org/wiki/Integral_domain</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Integrally_closed_domain">http://en.wikipedia.org/wiki/Integrally_closed_domain</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Unique_factorization_domain">http://en.wikipedia.org/wiki/Unique_factorization_domain</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Principal_ideal_domain">http://en.wikipedia.org/wiki/Principal_ideal_domain</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Euclidean_domain">http://en.wikipedia.org/wiki/Euclidean_domain</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Field_(mathematics)">http://en.wikipedia.org/wiki/Field_(mathematics)</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Lattice_(order)">http://en.wikipedia.org/wiki/Lattice_(order)</a></li>
+</ul>
+
+<p>Similar libraries</p>
+
+<ul>
+<li><a href="http://hackage.haskell.org/package/numeric-prelude">http://hackage.haskell.org/package/numeric-prelude</a></li>
+</ul>
+
+<p>Items on the agenda</p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
+<table><tr><td><code>pub use self::magma::{<a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a>, <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaAddPartial.html' title='scirust::algebra::structure::magma::MagmaAddPartial'>MagmaAddPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaAdd.html' title='scirust::algebra::structure::magma::MagmaAdd'>MagmaAdd</a>, <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaMulPartial.html' title='scirust::algebra::structure::magma::MagmaMulPartial'>MagmaMulPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaMul.html' title='scirust::algebra::structure::magma::MagmaMul'>MagmaMul</a>};</code></td></tr><tr><td><code>pub use self::quasigroup::{<a class='trait' href='../../../scirust/algebra/structure/quasigroup/trait.QuasiGroupAddPartial.html' title='scirust::algebra::structure::quasigroup::QuasiGroupAddPartial'>QuasiGroupAddPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/quasigroup/trait.QuasiGroupAdd.html' title='scirust::algebra::structure::quasigroup::QuasiGroupAdd'>QuasiGroupAdd</a>, <a class='trait' href='../../../scirust/algebra/structure/quasigroup/trait.QuasiGroupMulPartial.html' title='scirust::algebra::structure::quasigroup::QuasiGroupMulPartial'>QuasiGroupMulPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/quasigroup/trait.QuasiGroupMul.html' title='scirust::algebra::structure::quasigroup::QuasiGroupMul'>QuasiGroupMul</a>};</code></td></tr><tr><td><code>pub use self::semigroup::{<a class='trait' href='../../../scirust/algebra/structure/semigroup/trait.SemiGroupAddPartial.html' title='scirust::algebra::structure::semigroup::SemiGroupAddPartial'>SemiGroupAddPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/semigroup/trait.SemiGroupAdd.html' title='scirust::algebra::structure::semigroup::SemiGroupAdd'>SemiGroupAdd</a>, <a class='trait' href='../../../scirust/algebra/structure/semigroup/trait.SemiGroupMulPartial.html' title='scirust::algebra::structure::semigroup::SemiGroupMulPartial'>SemiGroupMulPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/semigroup/trait.SemiGroupMul.html' title='scirust::algebra::structure::semigroup::SemiGroupMul'>SemiGroupMul</a>};</code></td></tr><tr><td><code>pub use self::loop_::{<a class='trait' href='../../../scirust/algebra/structure/loop_/trait.LoopAddPartial.html' title='scirust::algebra::structure::loop_::LoopAddPartial'>LoopAddPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/loop_/trait.LoopAdd.html' title='scirust::algebra::structure::loop_::LoopAdd'>LoopAdd</a>, <a class='trait' href='../../../scirust/algebra/structure/loop_/trait.LoopMulPartial.html' title='scirust::algebra::structure::loop_::LoopMulPartial'>LoopMulPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/loop_/trait.LoopMul.html' title='scirust::algebra::structure::loop_::LoopMul'>LoopMul</a>};</code></td></tr><tr><td><code>pub use self::monoid::{<a class='trait' href='../../../scirust/algebra/structure/monoid/trait.MonoidAddPartial.html' title='scirust::algebra::structure::monoid::MonoidAddPartial'>MonoidAddPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.MonoidAdd.html' title='scirust::algebra::structure::monoid::MonoidAdd'>MonoidAdd</a>, <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.MonoidMulPartial.html' title='scirust::algebra::structure::monoid::MonoidMulPartial'>MonoidMulPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.MonoidMul.html' title='scirust::algebra::structure::monoid::MonoidMul'>MonoidMul</a>};</code></td></tr><tr><td><code>pub use self::monoid::{<a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidAddPartial.html' title='scirust::algebra::structure::monoid::CommutativeMonoidAddPartial'>CommutativeMonoidAddPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidAdd.html' title='scirust::algebra::structure::monoid::CommutativeMonoidAdd'>CommutativeMonoidAdd</a>, <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidMulPartial.html' title='scirust::algebra::structure::monoid::CommutativeMonoidMulPartial'>CommutativeMonoidMulPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidMul.html' title='scirust::algebra::structure::monoid::CommutativeMonoidMul'>CommutativeMonoidMul</a>};</code></td></tr><tr><td><code>pub use self::group::{<a class='trait' href='../../../scirust/algebra/structure/group/trait.GroupAddPartial.html' title='scirust::algebra::structure::group::GroupAddPartial'>GroupAddPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/group/trait.GroupAdd.html' title='scirust::algebra::structure::group::GroupAdd'>GroupAdd</a>, <a class='trait' href='../../../scirust/algebra/structure/group/trait.GroupMulPartial.html' title='scirust::algebra::structure::group::GroupMulPartial'>GroupMulPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/group/trait.GroupMul.html' title='scirust::algebra::structure::group::GroupMul'>GroupMul</a>};</code></td></tr><tr><td><code>pub use self::group::{<a class='trait' href='../../../scirust/algebra/structure/group/trait.CommutativeGroupAddPartial.html' title='scirust::algebra::structure::group::CommutativeGroupAddPartial'>CommutativeGroupAddPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/group/trait.CommutativeGroupAdd.html' title='scirust::algebra::structure::group::CommutativeGroupAdd'>CommutativeGroupAdd</a>, <a class='trait' href='../../../scirust/algebra/structure/group/trait.CommutativeGroupMulPartial.html' title='scirust::algebra::structure::group::CommutativeGroupMulPartial'>CommutativeGroupMulPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/group/trait.CommutativeGroupMul.html' title='scirust::algebra::structure::group::CommutativeGroupMul'>CommutativeGroupMul</a>};</code></td></tr><tr><td><code>pub use self::ring::{<a class='trait' href='../../../scirust/algebra/structure/ring/trait.RingPartial.html' title='scirust::algebra::structure::ring::RingPartial'>RingPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/ring/trait.Ring.html' title='scirust::algebra::structure::ring::Ring'>Ring</a>};</code></td></tr><tr><td><code>pub use self::commutative_ring::{<a class='trait' href='../../../scirust/algebra/structure/commutative_ring/trait.CommutativeRingPartial.html' title='scirust::algebra::structure::commutative_ring::CommutativeRingPartial'>CommutativeRingPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/commutative_ring/trait.CommutativeRing.html' title='scirust::algebra::structure::commutative_ring::CommutativeRing'>CommutativeRing</a>};</code></td></tr><tr><td><code>pub use self::integral_domain::{<a class='trait' href='../../../scirust/algebra/structure/integral_domain/trait.IntegralDomainPartial.html' title='scirust::algebra::structure::integral_domain::IntegralDomainPartial'>IntegralDomainPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/integral_domain/trait.IntegralDomain.html' title='scirust::algebra::structure::integral_domain::IntegralDomain'>IntegralDomain</a>};</code></td></tr><tr><td><code>pub use self::field::{<a class='trait' href='../../../scirust/algebra/structure/field/trait.FieldPartial.html' title='scirust::algebra::structure::field::FieldPartial'>FieldPartial</a>, <a class='trait' href='../../../scirust/algebra/structure/field/trait.Field.html' title='scirust::algebra::structure::field::Field'>Field</a>};</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='commutative_ring/index.html'
+                               title='scirust::algebra::structure::commutative_ring'>commutative_ring</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the commutative ring algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='field/index.html'
+                               title='scirust::algebra::structure::field'>field</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the field algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='group/index.html'
+                               title='scirust::algebra::structure::group'>group</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the group algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='integral_domain/index.html'
+                               title='scirust::algebra::structure::integral_domain'>integral_domain</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the integral domain algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='loop_/index.html'
+                               title='scirust::algebra::structure::loop_'>loop_</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the loop algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='magma/index.html'
+                               title='scirust::algebra::structure::magma'>magma</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the magma algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='monoid/index.html'
+                               title='scirust::algebra::structure::monoid'>monoid</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the monoid algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='quasigroup/index.html'
+                               title='scirust::algebra::structure::quasigroup'>quasigroup</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the quasi-group algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='ring/index.html'
+                               title='scirust::algebra::structure::ring'>ring</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the ring algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='semigroup/index.html'
+                               title='scirust::algebra::structure::semigroup'>semigroup</a></td>
+                        <td class='docblock short'>
+                             <p>Defines the semigroup algebraic structure.</p>
+
+                        </td>
+                    </tr>
+                </table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_commutative_group_add.html'
+                               title='scirust::algebra::structure::is_commutative_group_add'>is_commutative_group_add</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_commutative_group_add_partial.html'
+                               title='scirust::algebra::structure::is_commutative_group_add_partial'>is_commutative_group_add_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_commutative_group_mul.html'
+                               title='scirust::algebra::structure::is_commutative_group_mul'>is_commutative_group_mul</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_commutative_group_mul_partial.html'
+                               title='scirust::algebra::structure::is_commutative_group_mul_partial'>is_commutative_group_mul_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_commutative_ring.html'
+                               title='scirust::algebra::structure::is_commutative_ring'>is_commutative_ring</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_commutative_ring_partial.html'
+                               title='scirust::algebra::structure::is_commutative_ring_partial'>is_commutative_ring_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_field.html'
+                               title='scirust::algebra::structure::is_field'>is_field</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_field_partial.html'
+                               title='scirust::algebra::structure::is_field_partial'>is_field_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_group_add.html'
+                               title='scirust::algebra::structure::is_group_add'>is_group_add</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_group_add_partial.html'
+                               title='scirust::algebra::structure::is_group_add_partial'>is_group_add_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_group_mul.html'
+                               title='scirust::algebra::structure::is_group_mul'>is_group_mul</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_group_mul_partial.html'
+                               title='scirust::algebra::structure::is_group_mul_partial'>is_group_mul_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_integral_domain.html'
+                               title='scirust::algebra::structure::is_integral_domain'>is_integral_domain</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_integral_domain_partial.html'
+                               title='scirust::algebra::structure::is_integral_domain_partial'>is_integral_domain_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_loop_add.html'
+                               title='scirust::algebra::structure::is_loop_add'>is_loop_add</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_loop_add_partial.html'
+                               title='scirust::algebra::structure::is_loop_add_partial'>is_loop_add_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_loop_mul.html'
+                               title='scirust::algebra::structure::is_loop_mul'>is_loop_mul</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_loop_mul_partial.html'
+                               title='scirust::algebra::structure::is_loop_mul_partial'>is_loop_mul_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_magma_add.html'
+                               title='scirust::algebra::structure::is_magma_add'>is_magma_add</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_magma_add_partial.html'
+                               title='scirust::algebra::structure::is_magma_add_partial'>is_magma_add_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_magma_base.html'
+                               title='scirust::algebra::structure::is_magma_base'>is_magma_base</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_magma_mul.html'
+                               title='scirust::algebra::structure::is_magma_mul'>is_magma_mul</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_magma_mul_partial.html'
+                               title='scirust::algebra::structure::is_magma_mul_partial'>is_magma_mul_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_monoid_add.html'
+                               title='scirust::algebra::structure::is_monoid_add'>is_monoid_add</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_monoid_add_partial.html'
+                               title='scirust::algebra::structure::is_monoid_add_partial'>is_monoid_add_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_monoid_mul.html'
+                               title='scirust::algebra::structure::is_monoid_mul'>is_monoid_mul</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_monoid_mul_partial.html'
+                               title='scirust::algebra::structure::is_monoid_mul_partial'>is_monoid_mul_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_quasigroup_add.html'
+                               title='scirust::algebra::structure::is_quasigroup_add'>is_quasigroup_add</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_quasigroup_add_partial.html'
+                               title='scirust::algebra::structure::is_quasigroup_add_partial'>is_quasigroup_add_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_quasigroup_mul.html'
+                               title='scirust::algebra::structure::is_quasigroup_mul'>is_quasigroup_mul</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_quasigroup_mul_partial.html'
+                               title='scirust::algebra::structure::is_quasigroup_mul_partial'>is_quasigroup_mul_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_ring.html'
+                               title='scirust::algebra::structure::is_ring'>is_ring</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_ring_partial.html'
+                               title='scirust::algebra::structure::is_ring_partial'>is_ring_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_semigroup_add.html'
+                               title='scirust::algebra::structure::is_semigroup_add'>is_semigroup_add</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_semigroup_add_partial.html'
+                               title='scirust::algebra::structure::is_semigroup_add_partial'>is_semigroup_add_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_semigroup_mul.html'
+                               title='scirust::algebra::structure::is_semigroup_mul'>is_semigroup_mul</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.is_semigroup_mul_partial.html'
+                               title='scirust::algebra::structure::is_semigroup_mul_partial'>is_semigroup_mul_partial</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "scirust";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script async src="../../../search-index.js"></script>
+</body>
+</html>

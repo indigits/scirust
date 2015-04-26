@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["QuasiGroupAdd","Quasigroup with an addition operation with full equivalence"],["QuasiGroupAddPartial","Quasigroup with an addition operation with partial equivalence"],["QuasiGroupMul","Quasigroup with a multiplication operation with full equivalence"],["QuasiGroupMulPartial","Quasigroup with a multiplication operation with partial equivalence"]]});

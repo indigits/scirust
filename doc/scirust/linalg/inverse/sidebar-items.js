@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["inverse_eco","Computes the inverse of a matrix using elementary column operations"],["inverse_ero","Computes the inverse of a matrix using elementary row operations"]]});

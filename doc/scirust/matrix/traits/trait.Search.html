@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Search` trait in crate `scirust`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Search">
+
+    <title>scirust::matrix::traits::Search - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a>::<wbr><a href='index.html'>traits</a></p><script>window.sidebarCurrent = {name: 'Search', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a>::<wbr><a href='index.html'>traits</a>::<wbr><a class='trait' href=''>Search</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-16716' class='srclink' href='../../../src/scirust/matrix/traits.rs.html#270-320' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Search&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.Signed.html' title='num::traits::Signed'>Signed</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html' title='core::cmp::PartialOrd'>PartialOrd</a>&gt;: <a class='trait' href='../../../scirust/matrix/traits/trait.Shape.html' title='scirust::matrix::traits::Shape'>Shape</a>&lt;T&gt; + <a class='trait' href='../../../scirust/matrix/traits/trait.MatrixBuffer.html' title='scirust::matrix::traits::MatrixBuffer'>MatrixBuffer</a>&lt;T&gt; + <a class='trait' href='../../../scirust/matrix/traits/trait.Strided.html' title='scirust::matrix::traits::Strided'>Strided</a> {
+    fn <a href='#method.max_abs_scalar_in_row' class='fnname'>max_abs_scalar_in_row</a>(&amp;self, row: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, start_col: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, end_col: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(T, <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</a> { ... }
+    fn <a href='#method.max_abs_scalar_in_col' class='fnname'>max_abs_scalar_in_col</a>(&amp;self, col: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, start_row: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, end_row: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(T, <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</a> { ... }
+}</pre><div class='docblock'><p>Features for searching within the matrix</p>
+</div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.max_abs_scalar_in_row' class='method stab '><code>fn <a href='#method.max_abs_scalar_in_row' class='fnname'>max_abs_scalar_in_row</a>(&amp;self, row: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, start_col: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, end_col: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(T, <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</a></code></h3><div class='docblock'><p>Returns the largest entry (by magnitude) in the row between
+[start, end) columns</p>
+</div><h3 id='method.max_abs_scalar_in_col' class='method stab '><code>fn <a href='#method.max_abs_scalar_in_col' class='fnname'>max_abs_scalar_in_col</a>(&amp;self, col: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, start_row: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, end_row: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(T, <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</a></code></h3><div class='docblock'><p>Returns the largest entry (by magnitude) in the column between
+[start, end) rows</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.Signed.html' title='num::traits::Signed'>Signed</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html' title='core::cmp::PartialOrd'>PartialOrd</a>&gt; <a class='trait' href='../../../scirust/matrix/traits/trait.Search.html' title='scirust::matrix::traits::Search'>Search</a>&lt;T&gt; for <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></li>
+</ul><script type="text/javascript" async
+                              src="../../../implementors/scirust/matrix/traits/trait.Search.js">
+                      </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "scirust";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script async src="../../../search-index.js"></script>
+</body>
+</html>

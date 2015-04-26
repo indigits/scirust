@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Frame","Frame and Grammian operators for a matrix."],["Transpose","Implemented by matrix types which support transpose operations."]]});

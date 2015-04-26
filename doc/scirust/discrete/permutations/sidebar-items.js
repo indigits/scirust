@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["inverse_permutation","Finds the inverse permutation"],["is_permutation","Tells whether a vector is a permutation or not."]]});

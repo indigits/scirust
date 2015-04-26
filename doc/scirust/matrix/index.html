@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>scirust</a></p><div class='block mod'><h2>Modules</h2><a class='mod ' href='../audio/index.html'>audio</a><a class='mod ' href='../discrete/index.html'>discrete</a><a class='mod ' href='../dx/index.html'>dx</a><a class='mod ' href='../error/index.html'>error</a><a class='mod ' href='../external/index.html'>external</a><a class='mod ' href='../image/index.html'>image</a><a class='mod ' href='../linalg/index.html'>linalg</a><a class='mod current' href='../matrix/index.html'>matrix</a><a class='mod ' href='../number/index.html'>number</a><a class='mod ' href='../opt/index.html'>opt</a><a class='mod ' href='../signal/index.html'>signal</a><a class='mod ' href='../stat/index.html'>stat</a><a class='mod ' href='../util/index.html'>util</a></div>
+        <p class='location'><a href='../index.html'>scirust</a></p><script>window.sidebarCurrent = {name: 'matrix', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
     </section>
 
     <nav class="sub">
@@ -41,820 +41,150 @@
     </nav>
 
     <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>scirust</a>::<wbr><a class='mod' href=''>matrix</a><wbr></span><span class='out-of-band'><span id='render-detail'>
-            <a id="collapse-all" href="#">[-]
-            </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-525' href='../../src/scirust/work/projects/scirust/srmat/src/lib.rs.html#47-75'>[src]</a></span></h1>
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>scirust</a>::<wbr><a class='mod' href=''>matrix</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-5266' class='srclink' href='../../src/scirust/matrix/mod.rs.html#1-51' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Fundamental matrix structures</p>
-</div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
-<table><tr><td><code>pub use super::<a class='mod' href='../../scirust/number/index.html' title='scirust::number'>number</a>::*;</code></td></tr><tr><td><code>pub use super::<a class='mod' href='../../scirust/error/index.html' title='scirust::error'>error</a>::*;</code></td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+
+<p>Basic Matrix element: MagmaBase
+Support for addition with zero: CommutativeMonoidAddPartial
+Support of add, mul, 0, 1: CommutativeMonoidAddPartial+CommutativeMonoidMulPartial
+Support for addition and subtraction with zero: CommutativeGroupAddPartial
+Support for add, sub, mult: CommutativeRingPartial
+Support for add, sub, mult, div: FieldPartial</p>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.CellIterator.html'
-                               title='scirust::matrix::CellIterator'>CellIterator</a></td>
-                        <td class='docblock short'><p>A column major iterator over the elements of a matrix</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.ColIterator.html'
-                               title='scirust::matrix::ColIterator'>ColIterator</a></td>
-                        <td class='docblock short'><p>An iterator over the elements of a matrix in a column</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.Matrix.html'
-                               title='scirust::matrix::Matrix'>Matrix</a></td>
-                        <td class='docblock short'><p>Represents a matrix of numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.MatrixView.html'
-                               title='scirust::matrix::MatrixView'>MatrixView</a></td>
-                        <td class='docblock short'><p>Defines a view on a matrix. </p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.RowIterator.html'
-                               title='scirust::matrix::RowIterator'>RowIterator</a></td>
-                        <td class='docblock short'><p>An iterator over the elements of a matrix in a row</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.TriangularMatrix.html'
-                               title='scirust::matrix::TriangularMatrix'>TriangularMatrix</a></td>
-                        <td class='docblock short'><p>Represents a triangular square matrix of numbers.</p>
-</td>
-                    </tr>
-                </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
-<table>
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.Conversion.html'
-                               title='scirust::matrix::Conversion'>Conversion</a></td>
-                        <td class='docblock short'><p>Matrix conversion API</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.ECO.html'
-                               title='scirust::matrix::ECO'>ECO</a></td>
-                        <td class='docblock short'><p>Elementary column operations on a matrix</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.ERO.html'
-                               title='scirust::matrix::ERO'>ERO</a></td>
-                        <td class='docblock short'><p>Elementary row operations on a matrix</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.Extraction.html'
-                               title='scirust::matrix::Extraction'>Extraction</a></td>
-                        <td class='docblock short'><p>Matrix extraction API</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.Introspection.html'
-                               title='scirust::matrix::Introspection'>Introspection</a></td>
-                        <td class='docblock short'><p>These methods help in run time to query
-about the properties of the type which is implementing
-the trait. </p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.MatrixBuffer.html'
-                               title='scirust::matrix::MatrixBuffer'>MatrixBuffer</a></td>
-                        <td class='docblock short'><p>Defines the low level interface to the internal
-memory buffer of a matrix implementation.  Use it with
-caution. </p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.MatrixMul.html'
-                               title='scirust::matrix::MatrixMul'>MatrixMul</a></td>
-                        <td class='docblock short'><p>This is not yet implemented.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.MatrixType.html'
-                               title='scirust::matrix::MatrixType'>MatrixType</a></td>
-                        <td class='docblock short'><p>Defines the traits which all matrix types must implement.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.MinMax.html'
-                               title='scirust::matrix::MinMax'>MinMax</a></td>
-                        <td class='docblock short'><p>Matrix min-max API</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.MinMaxAbs.html'
-                               title='scirust::matrix::MinMaxAbs'>MinMaxAbs</a></td>
-                        <td class='docblock short'><p>Matrix min-max with absolute values API</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='trait' href='trait.Updates.html'
-                               title='scirust::matrix::Updates'>Updates</a></td>
-                        <td class='docblock short'><p>Various kind of updates to the matrix</p>
-</td>
-                    </tr>
-                </table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
-<table>
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.col_vector.html'
-                               title='scirust::matrix::col_vector'>col_vector</a></td>
-                        <td class='docblock short'><p>Returns a column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.ero_scale.html'
-                               title='scirust::matrix::ero_scale'>ero_scale</a></td>
-                        <td class='docblock short'><p>Returns elementary matrix which can scale
-a particular row by a factor on left multiplication.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.ero_scale_add.html'
-                               title='scirust::matrix::ero_scale_add'>ero_scale_add</a></td>
-                        <td class='docblock short'><p>Returns elementary matrix which can scale
-a particular row by a factor and add it to
-another row
-on left multiplication.
-r_i = r_i + k * r_j</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.ero_switch.html'
-                               title='scirust::matrix::ero_switch'>ero_switch</a></td>
-                        <td class='docblock short'><p>Returns elementary matrix which can
-exchange rows i and j
-on left multiplication.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw.html'
-                               title='scirust::matrix::from_range_cw'>from_range_cw</a></td>
-                        <td class='docblock short'><p>Returns a matrix whose entries are picked up from
-a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_f64.html'
-                               title='scirust::matrix::from_range_cw_f64'>from_range_cw_f64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit floating point matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_i16.html'
-                               title='scirust::matrix::from_range_cw_i16'>from_range_cw_i16</a></td>
-                        <td class='docblock short'><p>Returns an 16-bit signed integer matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_i32.html'
-                               title='scirust::matrix::from_range_cw_i32'>from_range_cw_i32</a></td>
-                        <td class='docblock short'><p>Returns an 32-bit signed integer matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_i64.html'
-                               title='scirust::matrix::from_range_cw_i64'>from_range_cw_i64</a></td>
-                        <td class='docblock short'><p>Returns an 64-bit signed integer matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_i8.html'
-                               title='scirust::matrix::from_range_cw_i8'>from_range_cw_i8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit signed integer matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_u16.html'
-                               title='scirust::matrix::from_range_cw_u16'>from_range_cw_u16</a></td>
-                        <td class='docblock short'><p>Returns an 16-bit unsigned integer matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_u32.html'
-                               title='scirust::matrix::from_range_cw_u32'>from_range_cw_u32</a></td>
-                        <td class='docblock short'><p>Returns an 32-bit unsigned integer matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_u64.html'
-                               title='scirust::matrix::from_range_cw_u64'>from_range_cw_u64</a></td>
-                        <td class='docblock short'><p>Returns an 64-bit unsigned integer matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_u8.html'
-                               title='scirust::matrix::from_range_cw_u8'>from_range_cw_u8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit unsigned integer matrix whose entries are
-picked up from a range in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_cw_uint.html'
-                               title='scirust::matrix::from_range_cw_uint'>from_range_cw_uint</a></td>
-                        <td class='docblock short'></td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw.html'
-                               title='scirust::matrix::from_range_rw'>from_range_rw</a></td>
-                        <td class='docblock short'><p>Returns a matrix whose entries are picked up from
-a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_f32.html'
-                               title='scirust::matrix::from_range_rw_f32'>from_range_rw_f32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit floating point matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_f64.html'
-                               title='scirust::matrix::from_range_rw_f64'>from_range_rw_f64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit floating point matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_i16.html'
-                               title='scirust::matrix::from_range_rw_i16'>from_range_rw_i16</a></td>
-                        <td class='docblock short'><p>Returns an 16-bit signed integer matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_i32.html'
-                               title='scirust::matrix::from_range_rw_i32'>from_range_rw_i32</a></td>
-                        <td class='docblock short'><p>Returns an 32-bit signed integer matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_i64.html'
-                               title='scirust::matrix::from_range_rw_i64'>from_range_rw_i64</a></td>
-                        <td class='docblock short'><p>Returns an 64-bit signed integer matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_i8.html'
-                               title='scirust::matrix::from_range_rw_i8'>from_range_rw_i8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit signed integer matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_u16.html'
-                               title='scirust::matrix::from_range_rw_u16'>from_range_rw_u16</a></td>
-                        <td class='docblock short'><p>Returns an 16-bit unsigned integer matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_u32.html'
-                               title='scirust::matrix::from_range_rw_u32'>from_range_rw_u32</a></td>
-                        <td class='docblock short'><p>Returns an 32-bit unsigned integer matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_u64.html'
-                               title='scirust::matrix::from_range_rw_u64'>from_range_rw_u64</a></td>
-                        <td class='docblock short'><p>Returns an 64-bit unsigned integer matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_u8.html'
-                               title='scirust::matrix::from_range_rw_u8'>from_range_rw_u8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit unsigned integer matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.from_range_rw_uint.html'
-                               title='scirust::matrix::from_range_rw_uint'>from_range_rw_uint</a></td>
-                        <td class='docblock short'><p>Returns a unsigned int matrix whose entries are
-picked up from a range in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.hadamard.html'
-                               title='scirust::matrix::hadamard'>hadamard</a></td>
-                        <td class='docblock short'><p>Returns a Hadamard matrix of size n x n</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.hilbert.html'
-                               title='scirust::matrix::hilbert'>hilbert</a></td>
-                        <td class='docblock short'><p>Returns a Hilbert matrix.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_c32.html'
-                               title='scirust::matrix::matrix_cw_c32'>matrix_cw_c32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit complex matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_c64.html'
-                               title='scirust::matrix::matrix_cw_c64'>matrix_cw_c64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit complex matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_f32.html'
-                               title='scirust::matrix::matrix_cw_f32'>matrix_cw_f32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit float matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_f64.html'
-                               title='scirust::matrix::matrix_cw_f64'>matrix_cw_f64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit float matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_i16.html'
-                               title='scirust::matrix::matrix_cw_i16'>matrix_cw_i16</a></td>
-                        <td class='docblock short'><p>Returns a 16-bit signed integer matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_i32.html'
-                               title='scirust::matrix::matrix_cw_i32'>matrix_cw_i32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit signed integer matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_i64.html'
-                               title='scirust::matrix::matrix_cw_i64'>matrix_cw_i64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit signed integer matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_i8.html'
-                               title='scirust::matrix::matrix_cw_i8'>matrix_cw_i8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit signed integer matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_u16.html'
-                               title='scirust::matrix::matrix_cw_u16'>matrix_cw_u16</a></td>
-                        <td class='docblock short'><p>Returns a 16-bit unsigned integer matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_u32.html'
-                               title='scirust::matrix::matrix_cw_u32'>matrix_cw_u32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit unsigned integer matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_u64.html'
-                               title='scirust::matrix::matrix_cw_u64'>matrix_cw_u64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit unsigned integer matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_cw_u8.html'
-                               title='scirust::matrix::matrix_cw_u8'>matrix_cw_u8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit unsigned integer matrix whose entries are
-picked up from a slice in column wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_c32.html'
-                               title='scirust::matrix::matrix_rw_c32'>matrix_rw_c32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit complex matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_c64.html'
-                               title='scirust::matrix::matrix_rw_c64'>matrix_rw_c64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit complex matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_f32.html'
-                               title='scirust::matrix::matrix_rw_f32'>matrix_rw_f32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit float matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_f64.html'
-                               title='scirust::matrix::matrix_rw_f64'>matrix_rw_f64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit float matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_i16.html'
-                               title='scirust::matrix::matrix_rw_i16'>matrix_rw_i16</a></td>
-                        <td class='docblock short'><p>Returns a 16-bit signed integer matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_i32.html'
-                               title='scirust::matrix::matrix_rw_i32'>matrix_rw_i32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit signed integer matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_i64.html'
-                               title='scirust::matrix::matrix_rw_i64'>matrix_rw_i64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit signed integer matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_i8.html'
-                               title='scirust::matrix::matrix_rw_i8'>matrix_rw_i8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit signed integer matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_u16.html'
-                               title='scirust::matrix::matrix_rw_u16'>matrix_rw_u16</a></td>
-                        <td class='docblock short'><p>Returns a 16-bit unsigned integer matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_u32.html'
-                               title='scirust::matrix::matrix_rw_u32'>matrix_rw_u32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit unsigned integer matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_u64.html'
-                               title='scirust::matrix::matrix_rw_u64'>matrix_rw_u64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit unsigned integer matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.matrix_rw_u8.html'
-                               title='scirust::matrix::matrix_rw_u8'>matrix_rw_u8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit unsigned integer matrix whose entries are
-picked up from a slice in row wise order.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.rand_std_normal.html'
-                               title='scirust::matrix::rand_std_normal'>rand_std_normal</a></td>
-                        <td class='docblock short'><p>Generate a random matrix of uniformly distributed numbers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_f32.html'
-                               title='scirust::matrix::vector_f32'>vector_f32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit float column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_f64.html'
-                               title='scirust::matrix::vector_f64'>vector_f64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit float column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_i16.html'
-                               title='scirust::matrix::vector_i16'>vector_i16</a></td>
-                        <td class='docblock short'><p>Returns a 16-bit signed int column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_i32.html'
-                               title='scirust::matrix::vector_i32'>vector_i32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit signed int column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_i64.html'
-                               title='scirust::matrix::vector_i64'>vector_i64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit signed int column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_i8.html'
-                               title='scirust::matrix::vector_i8'>vector_i8</a></td>
-                        <td class='docblock short'><p>Returns an 8-bit signed int column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_u16.html'
-                               title='scirust::matrix::vector_u16'>vector_u16</a></td>
-                        <td class='docblock short'><p>Returns a 16-bit unsigned int column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_u32.html'
-                               title='scirust::matrix::vector_u32'>vector_u32</a></td>
-                        <td class='docblock short'><p>Returns a 32-bit unsigned int column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_u64.html'
-                               title='scirust::matrix::vector_u64'>vector_u64</a></td>
-                        <td class='docblock short'><p>Returns a 64-bit unsigned int column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='fn' href='fn.vector_u8.html'
-                               title='scirust::matrix::vector_u8'>vector_u8</a></td>
-                        <td class='docblock short'><p>Returns a 8-bit unsigned int column vector with entries from a slice.</p>
-</td>
-                    </tr>
-                </table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
-<table>
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixC32.html'
-                               title='scirust::matrix::MatrixC32'>MatrixC32</a></td>
-                        <td class='docblock short'><p>A matrix of 32-bit complex numbers numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixC64.html'
-                               title='scirust::matrix::MatrixC64'>MatrixC64</a></td>
-                        <td class='docblock short'><p>A matrix of 64-bit complex numbers numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixF32.html'
-                               title='scirust::matrix::MatrixF32'>MatrixF32</a></td>
-                        <td class='docblock short'><p>A matrix of 32-bit floating point numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixF64.html'
-                               title='scirust::matrix::MatrixF64'>MatrixF64</a></td>
-                        <td class='docblock short'><p>A matrix of 64-bit floating point numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixI16.html'
-                               title='scirust::matrix::MatrixI16'>MatrixI16</a></td>
-                        <td class='docblock short'><p>A matrix of 16-bit signed integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixI32.html'
-                               title='scirust::matrix::MatrixI32'>MatrixI32</a></td>
-                        <td class='docblock short'><p>A matrix of 32-bit signed integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixI64.html'
-                               title='scirust::matrix::MatrixI64'>MatrixI64</a></td>
-                        <td class='docblock short'><p>A matrix of 64-bit signed integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixI8.html'
-                               title='scirust::matrix::MatrixI8'>MatrixI8</a></td>
-                        <td class='docblock short'><p>A matrix of 8-bit signed integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixU16.html'
-                               title='scirust::matrix::MatrixU16'>MatrixU16</a></td>
-                        <td class='docblock short'><p>A matrix of 16-bit unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixU32.html'
-                               title='scirust::matrix::MatrixU32'>MatrixU32</a></td>
-                        <td class='docblock short'><p>A matrix of 32-bit unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixU64.html'
-                               title='scirust::matrix::MatrixU64'>MatrixU64</a></td>
-                        <td class='docblock short'><p>A matrix of 64-bit unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixU8.html'
-                               title='scirust::matrix::MatrixU8'>MatrixU8</a></td>
-                        <td class='docblock short'><p>A matrix of 8-bit unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.MatrixUInt.html'
-                               title='scirust::matrix::MatrixUInt'>MatrixUInt</a></td>
-                        <td class='docblock short'><p>A matrix of  unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixC32.html'
-                               title='scirust::matrix::TriangularMatrixC32'>TriangularMatrixC32</a></td>
-                        <td class='docblock short'><p>A matrix of 32-bit complex numbers numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixC64.html'
-                               title='scirust::matrix::TriangularMatrixC64'>TriangularMatrixC64</a></td>
-                        <td class='docblock short'><p>A matrix of 64-bit complex numbers numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixF32.html'
-                               title='scirust::matrix::TriangularMatrixF32'>TriangularMatrixF32</a></td>
-                        <td class='docblock short'><p>A matrix of 32-bit floating point numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixF64.html'
-                               title='scirust::matrix::TriangularMatrixF64'>TriangularMatrixF64</a></td>
-                        <td class='docblock short'><p>A matrix of 64-bit floating point numbers.</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixI16.html'
-                               title='scirust::matrix::TriangularMatrixI16'>TriangularMatrixI16</a></td>
-                        <td class='docblock short'><p>A matrix of 16-bit signed integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixI32.html'
-                               title='scirust::matrix::TriangularMatrixI32'>TriangularMatrixI32</a></td>
-                        <td class='docblock short'><p>A matrix of 32-bit signed integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixI64.html'
-                               title='scirust::matrix::TriangularMatrixI64'>TriangularMatrixI64</a></td>
-                        <td class='docblock short'><p>A matrix of 64-bit signed integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixI8.html'
-                               title='scirust::matrix::TriangularMatrixI8'>TriangularMatrixI8</a></td>
-                        <td class='docblock short'><p>A matrix of 8-bit signed integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixU16.html'
-                               title='scirust::matrix::TriangularMatrixU16'>TriangularMatrixU16</a></td>
-                        <td class='docblock short'><p>A matrix of 16-bit unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixU32.html'
-                               title='scirust::matrix::TriangularMatrixU32'>TriangularMatrixU32</a></td>
-                        <td class='docblock short'><p>A matrix of 32-bit unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixU64.html'
-                               title='scirust::matrix::TriangularMatrixU64'>TriangularMatrixU64</a></td>
-                        <td class='docblock short'><p>A matrix of 64-bit unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixU8.html'
-                               title='scirust::matrix::TriangularMatrixU8'>TriangularMatrixU8</a></td>
-                        <td class='docblock short'><p>A matrix of 8-bit unsigned integers</p>
-</td>
-                    </tr>
-                
-                    <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TriangularMatrixUInt.html'
-                               title='scirust::matrix::TriangularMatrixUInt'>TriangularMatrixUInt</a></td>
-                        <td class='docblock short'><p>A matrix of  unsigned integers</p>
-</td>
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='constructors/index.html'
+                               title='scirust::matrix::constructors'>constructors</a></td>
+                        <td class='docblock short'>
+                             <p>Provides functions to create different types of matrices.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='eo/index.html'
+                               title='scirust::matrix::eo'>eo</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='extract/index.html'
+                               title='scirust::matrix::extract'>extract</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='iter/index.html'
+                               title='scirust::matrix::iter'>iter</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='matrix/index.html'
+                               title='scirust::matrix::matrix'>matrix</a></td>
+                        <td class='docblock short'>
+                             <p>Provides the basic Matrix data type</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='matrix_conversion/index.html'
+                               title='scirust::matrix::matrix_conversion'>matrix_conversion</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='matrix_minmax/index.html'
+                               title='scirust::matrix::matrix_minmax'>matrix_minmax</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='random/index.html'
+                               title='scirust::matrix::random'>random</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='traits/index.html'
+                               title='scirust::matrix::traits'>traits</a></td>
+                        <td class='docblock short'>
+                             <p>Traits for matrices</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='transpose/index.html'
+                               title='scirust::matrix::transpose'>transpose</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='triangular_matrix/index.html'
+                               title='scirust::matrix::triangular_matrix'>triangular_matrix</a></td>
+                        <td class='docblock short'>
+                             <p>Implements the triangular matrix data-type</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='update/index.html'
+                               title='scirust::matrix::update'>update</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='vector/index.html'
+                               title='scirust::matrix::vector'>vector</a></td>
+                        <td class='docblock short'>
+                             <p>Functions for vectors</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='view/index.html'
+                               title='scirust::matrix::view'>view</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='view_conversion/index.html'
+                               title='scirust::matrix::view_conversion'>view_conversion</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='view_minmax/index.html'
+                               title='scirust::matrix::view_minmax'>view_minmax</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
                     </tr>
                 </table></section>
     <section id='search' class="content hidden"></section>

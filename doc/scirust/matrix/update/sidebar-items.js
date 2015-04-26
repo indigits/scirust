@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["matrix_updates","Implementation of matrix updates"],["traits","Various kind of updates to the matrix"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["IntegralDomain","Marker trait for integral domains with full equivalence"],["IntegralDomainPartial","Marker trait for integral domains with partial equivalence"]]});

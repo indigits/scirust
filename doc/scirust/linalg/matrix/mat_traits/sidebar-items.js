@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["LAFloatMatrix","Linear algebra methods for float matrix"],["LAIntMatrix","Linear algebra methods for integer matrix"],["LANumberMatrix","Linear algebra methods for matrix of numbers"],["LASignedMatrix","Linear algebra methods for signed integer matrix"]]});

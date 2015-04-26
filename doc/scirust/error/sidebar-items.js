@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["SRError","Enum for errors related to SciRust library"]],"type":[["SRResult","A convenient typedef of the return value of SciRust API whenever applicable."]]});

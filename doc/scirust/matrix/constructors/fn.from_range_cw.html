@@ -1,8 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="refresh" content="0;URL=../../../scirust/matrix/fn.from_range_cw.html">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `from_range_cw` fn in crate `scirust`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, from_range_cw">
+
+    <title>scirust::matrix::constructors::from_range_cw - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+
+    
+    
 </head>
-<body>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a>::<wbr><a href='index.html'>constructors</a></p><script>window.sidebarCurrent = {name: 'from_range_cw', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content fn">
+<h1 class='fqn'><span class='in-band'>Function <a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a>::<wbr><a href='index.html'>constructors</a>::<wbr><a class='fn' href=''>from_range_cw</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
+        </span><a id='src-5512' class='srclink' href='../../../src/scirust/matrix/constructors.rs.html#111-127' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn from_range_cw&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.Num.html' title='num::traits::Num'>Num</a>&gt;(rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, start: T, stop: T) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</pre><div class='docblock'><p>Returns a matrix whose entries are picked up from
+a range in column wise order.</p>
+
+<h1 id="remarks" class='section-header'><a
+                           href="#remarks">Remarks</a></h1>
+<p>Say you wish to create a matrix of 100 elements. If you
+provide a range of 80 numbers, the first 80 entries in the
+matrix will be filled by the numbers from the range. The
+remaining 20 entries will be filled with zeros. On the
+other hand, if you provide a range with more than 100 numbers,
+then only the first 100 numbers will be used to fill the matrix
+(off course in column major order). The remaining numbers
+in the range will not be used. They will also not be generated.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1>
+<p>Constructing a 4x4 matrix of floating point numbers:</p>
+<pre id='rust-example-rendered' class='rust '>
+    <span class='kw'>use</span> <span class='ident'>scirust</span>::<span class='ident'>api</span>::{<span class='ident'>MatrixF64</span>, <span class='ident'>from_range_cw</span>, <span class='ident'>Shape</span>};
+    <span class='kw'>let</span> <span class='ident'>start</span>  <span class='op'>=</span> <span class='number'>0.0</span>;
+    <span class='kw'>let</span> <span class='ident'>stop</span> <span class='op'>=</span> <span class='number'>16.0</span>;
+    <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>MatrixF64</span> <span class='op'>=</span> <span class='ident'>from_range_cw</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='ident'>start</span>, <span class='ident'>stop</span>);
+    <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
+        <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
+        <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
+    }
+</pre>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "scirust";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script async src="../../../search-index.js"></script>
 </body>
 </html>

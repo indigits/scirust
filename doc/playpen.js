@@ -14,9 +14,8 @@
 (function() {
     if (window.playgroundUrl) {
         $('pre.rust').hover(function() {
-            var id = '#' + $(this).attr('id').replace('rendered', 'raw');
             var a = $('<a>').text('⇱').attr('class', 'test-arrow');
-            var code = $(id).text();
+            var code = $(this).prev(".rusttest").text();
             a.attr('href', window.playgroundUrl + '?code=' +
                            encodeURIComponent(code));
             a.attr('target', '_blank');
@@ -26,4 +25,3 @@
         });
     }
 }());
-

@@ -1,0 +1,86 @@
+   Compiling scirust v0.0.4 (file:///I:/work/projects/scirust/srmat)
+src\matrix\matrix.rs:13:5: 13:20 error: use of unstable library feature 'core'
+src\matrix\matrix.rs:13 use std::raw::Slice as RawSlice;
+                            ^~~~~~~~~~~~~~~
+src\matrix\matrix.rs:123:13: 123:21 error: use of unstable library feature 'alloc'
+src\matrix\matrix.rs:123             allocate(bytes, mem::min_align_of::<T>())
+                                     ^~~~~~~~
+src\matrix\matrix.rs:417:15: 417:23 error: use of unstable library feature 'core': Option is not clearly the right return type, and we may want to tie the return lifetime to a borrow of the raw pointer
+src\matrix\matrix.rs:417             v.as_ref().unwrap().clone()
+                                       ^~~~~~~~
+src\matrix\matrix.rs:994:13: 994:21 error: use of unstable library feature 'alloc'
+src\matrix\matrix.rs:994             allocate(new_bytes, mem::min_align_of::<T>())
+                                     ^~~~~~~~
+src\matrix\matrix.rs:1015:13: 1015:23 error: use of unstable library feature 'alloc'
+src\matrix\matrix.rs:1015             deallocate(self.ptr as *mut u8,
+                                      ^~~~~~~~~~
+src\matrix\matrix.rs:1323:17: 1323:52 error: use of unstable library feature 'core'
+src\matrix\matrix.rs:1323                 data: self.as_mut_ptr() as *const T,
+                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src\matrix\matrix.rs:1324:17: 1324:37 error: use of unstable library feature 'core'
+src\matrix\matrix.rs:1324                 len: self.capacity(),
+                                          ^~~~~~~~~~~~~~~~~~~~
+src\matrix\matrix.rs:1322:28: 1322:36 error: use of unstable library feature 'core'
+src\matrix\matrix.rs:1322             mem::transmute(RawSlice {
+                                                     ^~~~~~~~
+src\matrix\matrix.rs:1611:44: 1611:63 error: use of unstable library feature 'core'
+src\matrix\matrix.rs:1611         unsafe { mem::transmute(RawSlice { data: self.as_ptr(), len: self.capacity() }) }
+                                                                     ^~~~~~~~~~~~~~~~~~~
+src\matrix\matrix.rs:1611:65: 1611:85 error: use of unstable library feature 'core'
+src\matrix\matrix.rs:1611         unsafe { mem::transmute(RawSlice { data: self.as_ptr(), len: self.capacity() }) }
+                                                                                          ^~~~~~~~~~~~~~~~~~~~
+src\matrix\matrix.rs:1611:33: 1611:41 error: use of unstable library feature 'core'
+src\matrix\matrix.rs:1611         unsafe { mem::transmute(RawSlice { data: self.as_ptr(), len: self.capacity() }) }
+                                                          ^~~~~~~~
+src\matrix\view.rs:215:32: 215:40 error: use of unstable library feature 'core': Option is not clearly the right return type, and we may want to tie the return lifetime to a borrow of the raw pointer
+src\matrix\view.rs:215             ptr.offset(offset).as_ref().unwrap().clone()
+                                                      ^~~~~~~~
+src\matrix\transpose\matrix_transpose.rs:82:25: 82:44 error: use of unstable library feature 'step_by': recent addition
+src\matrix\transpose\matrix_transpose.rs:82     for cc in (0..cols).step_by(block_size){
+                                                                    ^~~~~~~~~~~~~~~~~~~
+src\matrix\transpose\matrix_transpose.rs:83:29: 83:48 error: use of unstable library feature 'step_by': recent addition
+src\matrix\transpose\matrix_transpose.rs:83         for rr in (0..rows).step_by(block_size){
+                                                                        ^~~~~~~~~~~~~~~~~~~
+src\util\memory.rs:16:9: 16:19 error: use of unstable library feature 'alloc'
+src\util\memory.rs:16         deallocate(ptr as *mut u8,
+                              ^~~~~~~~~~
+src\discrete\modular.rs:4:5: 4:24 warning: use of deprecated item: replaced by inherent methods; for generics, use rust-lang/num, #[warn(deprecated)] on by default
+src\discrete\modular.rs:4 use std::num::SignedInt;
+                              ^~~~~~~~~~~~~~~~~~~
+src\matrix\iter.rs:7:37: 7:49 warning: unused import, #[warn(unused_imports)] on by default
+src\matrix\iter.rs:7 use algebra::structure::{MagmaBase, FieldPartial};
+                                                         ^~~~~~~~~~~~
+src\matrix\matrix.rs:14:16: 14:19 warning: unused import, #[warn(unused_imports)] on by default
+src\matrix\matrix.rs:14 use std::ops::{Neg, Index};
+                                       ^~~
+src\matrix\matrix.rs:17:5: 17:18 warning: unused import, #[warn(unused_imports)] on by default
+src\matrix\matrix.rs:17 use num::Unsigned;
+                            ^~~~~~~~~~~~~
+src\matrix\matrix.rs:23:37: 23:53 warning: unused import, #[warn(unused_imports)] on by default
+src\matrix\matrix.rs:23 use algebra::structure::{MagmaBase, MonoidAddPartial, FieldPartial};
+                                                            ^~~~~~~~~~~~~~~~
+src\matrix\traits.rs:11:5: 11:29 warning: use of deprecated item: No longer needed, #[warn(deprecated)] on by default
+src\matrix\traits.rs:11 use std::marker::MarkerTrait;
+                            ^~~~~~~~~~~~~~~~~~~~~~~~
+src\matrix\traits.rs:323:23: 323:34 warning: use of deprecated item: No longer needed, #[warn(deprecated)] on by default
+src\matrix\traits.rs:323 pub trait IntMatrix : MarkerTrait {
+                                               ^~~~~~~~~~~
+src\matrix\traits.rs:329:24: 329:35 warning: use of deprecated item: No longer needed, #[warn(deprecated)] on by default
+src\matrix\traits.rs:329 pub trait FloatMatrix: MarkerTrait {
+                                                ^~~~~~~~~~~
+src\matrix\traits.rs:335:26: 335:37 warning: use of deprecated item: No longer needed, #[warn(deprecated)] on by default
+src\matrix\traits.rs:335 pub trait SignedMatrix : MarkerTrait {
+                                                  ^~~~~~~~~~~
+src\matrix\view.rs:9:30: 9:36 warning: unused import, #[warn(unused_imports)] on by default
+src\matrix\view.rs:9 use num::traits::{Zero, One, Signed};
+                                                  ^~~~~~
+src\matrix\transpose\traits.rs:3:26: 3:35 warning: unused import, #[warn(unused_imports)] on by default
+src\matrix\transpose\traits.rs:3 use algebra::structure::{MagmaBase, FieldPartial};
+                                                          ^~~~~~~~~
+src\matrix\transpose\matrix_transpose.rs:12:26: 12:35 warning: unused import, #[warn(unused_imports)] on by default
+src\matrix\transpose\matrix_transpose.rs:12 use algebra::structure::{MagmaBase, FieldPartial};
+                                                                     ^~~~~~~~~
+error: aborting due to 15 previous errors
+Could not compile `scirust`.
+
+To learn more, run the command again with --verbose.

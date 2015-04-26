@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["CommutativeRing","Commutative ring with full equivalence"],["CommutativeRingPartial","Commutative ring with partial equivalence"]]});
