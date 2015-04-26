@@ -7,7 +7,7 @@ use std::ptr;
 /// Performs insertion sort on a slice of type T
 pub fn insertion_sort_slice<T : PartialOrd>(data : &mut [T]){
     let n  = data.len();
-    for j in range(1, n){
+    for j in (1..n){
         // we insert data[j] into the sorted sequence 
         //data[0...j-1]
         let mut i = j -1;
@@ -23,7 +23,7 @@ pub fn insertion_sort_slice<T : PartialOrd>(data : &mut [T]){
 
 /// Performs insertion sort on a buffer of data
 pub unsafe fn insertion_sort_buffer<T : PartialOrd>(data : *mut T, n : usize){
-    for j in range(1, n){
+    for j in (1..n){
         // we insert data[j] into the sorted sequence 
         //data[0...j-1]
         let mut i = (j -1) as isize;

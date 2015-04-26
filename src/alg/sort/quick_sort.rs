@@ -50,7 +50,7 @@ pub fn quick_sort_slice<T: PartialOrd>(xs: &mut [T]){
 
 // Helper function for debugging
 pub unsafe fn  print_arr<T: PartialOrd + fmt::Display>(data : *mut T, n : usize){
-    for i in range(0, n){
+    for i in (0..n){
         print!("{} ", *data.offset(i as isize));
     }
     println!("");

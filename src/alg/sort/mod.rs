@@ -11,7 +11,7 @@ pub fn is_ascending_slice<T : PartialOrd>(data : & [T]) -> bool {
     if n == 0 {
         return true;
     }
-    for i in range(0, n-1){
+    for i in 0..(n-1){
         if data[i] > data[i + 1]{
             return false;
         }
@@ -25,7 +25,7 @@ pub fn is_descending_slice<T : PartialOrd>(data : & [T]) -> bool {
     if n == 0 {
         return true;
     }
-    for i in range(0, n-1){
+    for i in 0..(n-1){
         if data[i] < data[i + 1]{
             return false;
         }
@@ -39,7 +39,7 @@ pub unsafe fn is_ascending_buffer<T : PartialOrd>(data : *const T, n : usize) ->
         return true;
     }
     let mut ptr = data;
-    for _ in range(0, n-1){
+    for _ in 0..(n-1){
         if *ptr > *ptr.offset(1){
             return false;
         }
@@ -54,7 +54,7 @@ pub unsafe fn is_descending_buffer<T : PartialOrd>(data : *const T, n : usize) -
         return true;
     }
     let mut ptr = data;
-    for _ in range(0, n-1){
+    for _ in 0..(n-1){
         if *ptr < *ptr.offset(1){
             return false;
         }
@@ -75,7 +75,7 @@ pub unsafe fn is_ascending_buffer_strided<T : PartialOrd>(data : *const T,
     }
     let mut ptr = data;
     let stride = stride as isize;
-    for _ in range(0, n-1){
+    for _ in 0..(n-1){
         if *ptr > *ptr.offset(stride){
             return false;
         }
@@ -95,7 +95,7 @@ pub unsafe fn is_descending_buffer_strided<T : PartialOrd>(data : *const T,
     }
     let mut ptr = data;
     let stride = stride as isize;
-    for _ in range(0, n-1){
+    for _ in 0..(n-1){
         if *ptr < *ptr.offset(stride){
             return false;
         }
