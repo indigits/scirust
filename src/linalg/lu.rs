@@ -55,7 +55,7 @@ impl LUDecomposition{
         let d = &mut self.diag_vector;
         self.pre = true;
         let n = a.num_rows();
-        for k in range(0, n){
+        for k in 0..n{
             // We are working on k-th column.
             let (_, rr) = a.max_abs_scalar_in_col(k, k, n);
             if rr > k {
@@ -77,7 +77,7 @@ impl LUDecomposition{
             u_br.ero_scale(0, 1./ pivot);
             // The lower left part of L matrix
             let mut l_bl = a.view(k+1, k, n -k -1, 1);
-            for r in range(1, u_br.num_rows()){
+            for r in 1..u_br.num_rows(){
                 let first = u_br.get(r, 0);
                 u_br.ero_scale_add(r, 0, -first);
                 l_bl.set(r - 1, 0, first / pivot);
@@ -94,7 +94,7 @@ impl LUDecomposition{
         self.pre = false;
         let n = a.num_cols();
         // Iterate over rows
-        for k in range(0, n){
+        for k in 0..n{
             // We are working on k-th row.
             // Find the pivot position in the row
             let (_, cc) = a.max_abs_scalar_in_row(k, k, n);
@@ -121,7 +121,7 @@ impl LUDecomposition{
             l_tr.eco_scale(0, 1./pivot);
             // The lower right part of U matrix
             let mut u_bl = a.view(k, k + 1, 1, n -k -1);
-            for c in range(1, l_tr.num_cols()){
+            for c in 1..l_tr.num_cols(){
                 let first = l_tr.get(0, c);
                 let factor = first  / pivot;
                 l_tr.eco_scale_add(c, 0, -first);
@@ -139,21 +139,21 @@ impl LUDecomposition{
         let d = &mut self.diag_vector;
         let n = a.num_cols();
         // Iterate
-        for p in range(0, n){
-            for r in range(p, n){
+        for p in 0..n{
+            for r in p..n{
                 // We are computing l(r, p)
                 let mut v = a.get(r, p);
                 // subtract l(r, k) * u (k, p)
-                for k in range(0, p){
+                for k in 0..p{
                     v = v - a.get(r, k) * a.get(k, p);
                 }
                 a.set(r, p, v);
             }
-            for c in range(p + 1, n){
+            for c in (p + 1)..n{
                 // u(p, p) = 1. Hence we don't compute it.
                 // We are computing u(p, c)
                 let mut v = a.get(p, c);
-                for k in range(0, p){
+                for k in 0..p{
                     // subtract l(p, k) * u (k, c)
                     v = v - a.get(p, k) * a.get(k, c);
                 }
@@ -162,7 +162,7 @@ impl LUDecomposition{
                 a.set(p, c, v);
             }
         }
-        for r in range(0, n){
+        for r in 0..n{
             let pivot = a.get(r, r);
             d.set(r, 0, pivot);
             // scale down the r-th column of lower triangular matrix
@@ -230,7 +230,7 @@ impl LUDecomposition{
         let pv = &self.perm_vector;
         let n = pv.num_cells();
         let mut p : MatrixF64 = Matrix::zeros(n, n);
-        for i in range(0, n){
+        for i in 0..n{
             let index = pv.get(i, 0);
             if self.pre {
                 p.set(i, index as usize, 1.);

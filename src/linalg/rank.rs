@@ -17,7 +17,7 @@ pub fn rank_eco(a : & MatrixF64) -> usize {
     let m = a.num_rows();
     let n = a.num_cols();
     // forward elimination row wise
-    for k in range(0, m){
+    for k in 0..m{
         println!("a: {}", a);
         let (_, cc) = a.max_abs_scalar_in_row(k, k, n);
         if cc > k {
@@ -33,7 +33,7 @@ pub fn rank_eco(a : & MatrixF64) -> usize {
         }
         // We have a non-zero pivot
         rank += 1;
-        for c in range(1, v.num_cols()){
+        for c in 1..v.num_cols(){
             let first = v.get(0, c);
             let factor = first/pivot;
             v.eco_scale_add(c, 0, -factor);
@@ -115,7 +115,7 @@ mod test{
 
     #[test]
     fn test_rank_eco_hilbert(){
-        for i in range(4, 50){
+        for i in 4..50{
             let m = hilbert(i);
             let r = rank(&m);
             assert_eq!(r, i);

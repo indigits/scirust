@@ -5,15 +5,18 @@
 // std imports
 use std::cmp;
 
+// external imports
+use num::{Zero};
+
 // local imports
-use algebra::Zero;
-use algebra::Number;
+use algebra::structure::{CommutativeMonoidAddPartial,
+CommutativeMonoidMulPartial};
 //use error::SRError;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, NumberMatrix};
 
 /// Indicates if a lower triangular matrix is singular or not.
-pub fn is_singular_lt<T:Number>(m : &Matrix<T>) -> bool {
+pub fn is_singular_lt<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(m : &Matrix<T>) -> bool {
     if ! m.is_square() {
         return false;
     }
@@ -22,7 +25,7 @@ pub fn is_singular_lt<T:Number>(m : &Matrix<T>) -> bool {
 }
 
 /// Indicates if a upper triangular matrix is singular or not.
-pub fn is_singular_ut<T:Number>(m : &Matrix<T>) -> bool {
+pub fn is_singular_ut<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(m : &Matrix<T>) -> bool {
     if ! m.is_square() {
         return false;
     }
@@ -31,7 +34,7 @@ pub fn is_singular_ut<T:Number>(m : &Matrix<T>) -> bool {
 }
 
 /// Indicates if a triangular matrix is singular or not.
-pub fn is_singular_triangular<T:Number>(m : &Matrix<T>) -> bool {
+pub fn is_singular_triangular<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(m : &Matrix<T>) -> bool {
     if ! m.is_square() {
         return false;
     }
@@ -40,7 +43,7 @@ pub fn is_singular_triangular<T:Number>(m : &Matrix<T>) -> bool {
 }
 
 /// Indicates if a diagonal matrix is singular or not.
-pub fn is_singular_diagonal<T:Number>(m : &Matrix<T>) -> bool {
+pub fn is_singular_diagonal<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(m : &Matrix<T>) -> bool {
     if ! m.is_square() {
         return false;
     }
@@ -49,10 +52,10 @@ pub fn is_singular_diagonal<T:Number>(m : &Matrix<T>) -> bool {
 }
 
 /// Checks if any entry on the main diagonal is zero
-pub fn has_zero_on_diagonal<T:Number>(m : &Matrix<T>) -> bool {
+pub fn has_zero_on_diagonal<T:CommutativeMonoidAddPartial>(m : &Matrix<T>) -> bool {
     let n = cmp::min(m.num_rows(), m.num_cols());
     let z : T = Zero::zero();
-    for i in range(0, n){
+    for i in 0..n{
         if m.get(i, i) == z {
             return true;
         }

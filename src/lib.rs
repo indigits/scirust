@@ -45,7 +45,7 @@ pub mod algebra;
 pub mod external;
 pub mod discrete;
 pub mod matrix;
-// pub mod linalg;
+pub mod linalg;
 pub mod signal;
 pub mod dx;
 // pub mod stat;

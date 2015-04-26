@@ -43,7 +43,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
         // a vector to hold the positions
         //let mut v  = from_range_uint(rows, 1, 0, rows);
         // Forward elimination process.
-        for k in range(0, rows){
+        for k in 0..rows{
             // We are working on k-th column.
             let rr = {
                 // Create a view of the remaining elements in column
@@ -65,7 +65,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
             let mut lower_right  = m.view(k + 1, k, rows - k - 1, cols -k);
             //println!("Pivot: {}", pivot);
             //println!("lower_right: {}", lower_right);
-            for r in range(0, lower_right.num_rows()){
+            for r in 0..lower_right.num_rows(){
                 let first = lower_right.get(r, 0);
                 let factor = first  / pivot;
                 lower_right.ero_scale_add(r, -1, -factor);
@@ -85,7 +85,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
                 return Err(SRError::NoSolution);
             }
             b.ero_scale(r, 1.0/pivot);
-            for j in range(r+1, m.num_rows()){
+            for j in (r+1)..m.num_rows(){
                 let factor = m.get(r, j) / pivot;
                 b.ero_scale_add(r, j as isize, -factor);  
             }
@@ -117,14 +117,14 @@ pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) ->
     debug_assert!(l.is_lt());
     // Create a copy for the result
     let mut b = b.clone();
-    for r in range(0, n) {
+    for r in 0..n {
         let pivot = l.get(r, r);
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
             return Err(SRError::IsSingular);
         }
-        for k in range(0,  r){
+        for k in 0..r{
             b.ero_scale_add(r, k as isize, -l.get(r, k));
         }
         b.ero_scale(r, 1.0/pivot);
@@ -153,7 +153,7 @@ pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) ->
             return Err(SRError::IsSingular);
         }
         b.ero_scale(r, 1.0/pivot);
-        for j in range(r+1, u.num_rows()){
+        for j in (r+1)..u.num_rows(){
             let factor = u.get(r, j) / pivot;
             b.ero_scale_add(r, j as isize, -factor);  
         }
@@ -189,21 +189,21 @@ pub fn ldu_solve(l : &MatrixF64,
     let mut b = b.clone();
 
     // Solve forward substitution problem L X = B
-    for r in range(0, n) {
+    for r in 0..n {
         let pivot = l.get(r, r);
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
             return Err(SRError::IsSingular);
         }
-        for k in range(0,  r){
+        for k in 0..r{
             b.ero_scale_add(r, k as isize, -l.get(r, k));
         }
         b.ero_scale(r, 1.0/pivot);
     }
 
     // Perform inverse scaling D X = B
-    for r in range(0, n){
+    for r in 0..n{
         let factor = d.get(r, r);
         b.ero_scale(r, 1.0/factor);
     }
@@ -218,7 +218,7 @@ pub fn ldu_solve(l : &MatrixF64,
             return Err(SRError::IsSingular);
         }
         b.ero_scale(r, 1.0/pivot);
-        for j in range(r+1, u.num_rows()){
+        for j in (r+1)..u.num_rows(){
             let factor = u.get(r, j) / pivot;
             b.ero_scale_add(r, j as isize, -factor);  
         }

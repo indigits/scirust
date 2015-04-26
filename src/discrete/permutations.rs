@@ -2,20 +2,19 @@
 "]
 
 // std imports
-use std::num;
-use std::num::{Int, FromPrimitive};
+use num::{FromPrimitive, ToPrimitive};
 
 // local imports
-use algebra::Number;
+use algebra::structure::CommutativeMonoidAddPartial;
 use matrix::matrix::{Matrix, MatrixU8};
 use matrix::traits::Shape;
 
 /// Tells whether a vector is a permutation or not.
-pub fn is_permutation<T:Number+Int>(vector : &Matrix<T>)-> bool{
+pub fn is_permutation<T:CommutativeMonoidAddPartial+ToPrimitive>(vector : &Matrix<T>)-> bool{
     assert!(vector.is_vector());
     let n: usize = vector.num_cells();
     let mut flags : MatrixU8 = Matrix::zeros(n, 1);
-    for i in range(0, n){
+    for i in 0..n{
         let v = vector[i];
         let v2 : u64 = v.to_u64().unwrap();
         let v3 = v2 as usize;
@@ -33,16 +32,16 @@ pub fn is_permutation<T:Number+Int>(vector : &Matrix<T>)-> bool{
 }
 
 /// Finds the inverse permutation
-pub fn inverse_permutation<T:Number+Int+FromPrimitive>(vector : &Matrix<T>)-> Matrix<T>{
+pub fn inverse_permutation<T:CommutativeMonoidAddPartial+ToPrimitive+FromPrimitive>(vector : &Matrix<T>)-> Matrix<T>{
     assert!(vector.is_vector());
     debug_assert!(is_permutation(vector));
     let n = vector.num_cells();
     let mut result : Matrix<T> = Matrix::zeros(n, 1);
     // Reverse the order
-    for i in range(0, n){
+    for i in 0..n{
         let index = vector[i];
-        let index = index.to_uint().unwrap();
-        let value : T = num::from_uint(i).unwrap();
+        let index = index.to_usize().unwrap();
+        let value : T = FromPrimitive::from_usize(i).unwrap();
         result.set(index, 0, value);
     }
     result

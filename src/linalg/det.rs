@@ -1,10 +1,9 @@
 
 // Std imports
-use std::num::{Float};
+use num::traits::{Float, Signed, One};
 
 // local imports
-use algebra::One;
-pub use algebra::{Number, Signed};
+use algebra::structure::{CommutativeRingPartial};
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, Extraction, MatrixBuffer, Search};
 use matrix::eo::eo_traits::ECO;
@@ -27,7 +26,7 @@ The determinant of an empty matrix is 1.
 See http://en.wikipedia.org/wiki/Matrix_(mathematics)#Empty_matrices.
 
 "]
-pub fn  det<T:Signed>(m : &Matrix<T>)->Result<T,SRError>{
+pub fn  det<T:CommutativeRingPartial+Signed>(m : &Matrix<T>)->Result<T,SRError>{
     if !m.is_square(){
         return Err(SRError::IsNotSquareMatrix);
     }
@@ -41,7 +40,7 @@ pub fn  det<T:Signed>(m : &Matrix<T>)->Result<T,SRError>{
 
 # Remarks
 "]
-pub fn  det_float<T:Signed+Float>(m : &Matrix<T>)->Result<T,SRError>{
+pub fn  det_float<T:CommutativeRingPartial+Float+Signed>(m : &Matrix<T>)->Result<T,SRError>{
     if !m.is_square(){
         return Err(SRError::IsNotSquareMatrix);
     }
@@ -53,7 +52,7 @@ pub fn  det_float<T:Signed+Float>(m : &Matrix<T>)->Result<T,SRError>{
 
 /// Private implementation of determinant
 /// Assumes that matrix is indeed square.
-pub fn det_naive<T:Signed>(m : &Matrix<T>)->T{
+pub fn det_naive<T:CommutativeRingPartial>(m : &Matrix<T>)->T{
     let a0 = m.get(0, 0);
     //debug!("m: {}", m);
     if m.is_scalar(){
@@ -66,8 +65,8 @@ pub fn det_naive<T:Signed>(m : &Matrix<T>)->T{
     let mut sign : T  = One::one();
     let mut result = sign * a0 * det_naive(&m2);
     sign = -sign;
-    for c in range(0, n-1){
-        for r in range(1, n){
+    for c in 0..(n-1){
+        for r in 1..n{
             debug!("r : {}, c : {}", r , c);
             let src_offset = m.cell_to_offset(r, c);
             let dst_offset = m2.cell_to_offset(r - 1, c);
@@ -92,13 +91,13 @@ pub fn det_naive<T:Signed>(m : &Matrix<T>)->T{
 #[doc="Computes determinant using Gaussian 
 elimination with partial pivoting
 "]
-pub fn det_ge<T:Number+Signed+Float>(a : &mut Matrix<T>)->T{
+pub fn det_ge<T:CommutativeRingPartial+Signed+Float+PartialOrd>(a : &mut Matrix<T>)->T{
     assert!(a.is_square());
     let o = One::one();
     let mut result : T = o;
     let n = a.num_cols();
     // Iterate over rows
-    for k in range(0, n){
+    for k in 0..n{
         // We are working on k-th row.
         // Find the pivot position in the row
         let (_, cc) = a.max_abs_scalar_in_row(k, k, n);
@@ -128,7 +127,7 @@ pub fn det_ge<T:Number+Signed+Float>(a : &mut Matrix<T>)->T{
         result = result * pivot;
         // bring 1 in the diagonal 
         l_tr.eco_scale(0, o/pivot);
-        for c in range(1, l_tr.num_cols()){
+        for c in 1..l_tr.num_cols(){
             let first = l_tr.get(0, c);
             l_tr.eco_scale_add(c, 0, -first);
         }

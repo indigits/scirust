@@ -20,7 +20,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     let n = a.num_rows();
     let mut result  : MatrixF64 = Matrix::identity(n, n);
     // forward elimination
-    for k in range(0, n){
+    for k in 0..n{
         let (_, rr) = a.max_abs_scalar_in_col(k, k, n);
         if rr > k {
             // TODO : we can switch only part of row
@@ -36,7 +36,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         // bring 1 in the diagonal 
         v.ero_scale(0, 1./pivot);
         result.ero_scale(k, 1./pivot);
-        for r in range(1, v.num_rows()){
+        for r in (1..v.num_rows()){
             let first = v.get(r, 0);
             v.ero_scale_add(r, 0, -first);
             // TODO: ignore 0 entries in k-th row of result
@@ -52,7 +52,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     loop {
         // We are using (k, k) entry in a and
         // updating k-th column in a.
-        for r in range(0, k){
+        for r in 0..k{
             let factor = a.get(r, k);
             result.ero_scale_add(r, k as isize, -factor);
         }
@@ -75,7 +75,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     let n = a.num_rows();
     let mut result  : MatrixF64 = Matrix::identity(n, n);
     // forward elimination
-    for k in range(0, n){
+    for k in (0..n){
         let (_, cc) = a.max_abs_scalar_in_row(k, k, n);
         if cc > k {
             // TODO : we can switch only part of column
@@ -91,7 +91,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         // bring 1 in the diagonal 
         v.eco_scale(0, 1./pivot);
         result.eco_scale(k, 1./pivot);
-        for c in range(1, v.num_cols()){
+        for c in (1..v.num_cols()){
             let first = v.get(0, c);
             v.eco_scale_add(c, 0, -first);
             // TODO: ignore 0 entries in k-th col of result
@@ -107,7 +107,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
     loop {
         // We are using (k, k) entry in a and
         // updating k-th row in a.
-        for c in range(0, k){
+        for c in (0..k){
             let factor = a.get(k, c);
             result.eco_scale_add(c, k as isize, -factor);
         }
@@ -134,7 +134,6 @@ mod test{
     use matrix::matrix::*;
     use matrix::constructors::*;
     use matrix::traits::*;
-    use std::num::Int;
 
     #[test]
     fn test_inv_ero_0(){
@@ -160,8 +159,8 @@ mod test{
 
     #[test]
     fn test_inv_ero_hadamard(){
-        for i in range(2, 6){
-            let n = Int::pow(2,i);
+        for i in 2..6{
+            let n = 2.pow(i);
             let a = hadamard(n).unwrap();
             println!("n: {}", n);
             println!("a: {}", a);
@@ -177,8 +176,8 @@ mod test{
 
     #[test]
     fn test_inv_eco_hadamard(){
-        for i in range(2, 6){
-            let n = Int::pow(2,i);
+        for i in 2..6{
+            let n = 2.pow(i);
             let a = hadamard(n).unwrap();
             println!("n: {}", n);
             println!("a: {}", a);
@@ -194,7 +193,7 @@ mod test{
 
     #[test]
     fn test_inv_ero_hilbert(){
-        for n in range(2, 10){
+        for n in 2..10{
             let a = hilbert(n);
             println!("n: {}", n);
             println!("a: {}", a);
@@ -224,7 +223,7 @@ mod test{
 
     #[test]
     fn test_inv_eco_hilbert(){
-        for n in range(2, 10){
+        for n in 2..10{
             let a = hilbert(n);
             println!("n: {}", n);
             println!("a: {}", a);
