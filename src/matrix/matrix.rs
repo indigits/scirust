@@ -901,6 +901,9 @@ impl<T:MagmaBase> Matrix<T> {
             let rows = self.rows;
             self.reallocate(rows, new_cols);
         }
+        else{
+            //println!("Reallocation is not needed.");
+        }
         // Now create space for other matrix to be fitted in
         self.create_column_space(index, other.num_cols());
         // Finally copy the column data from the matrix.
@@ -999,7 +1002,7 @@ impl<T:MagmaBase> Matrix<T> {
         }
         assert!(new_capacity > 0);
         let new_bytes = new_capacity * mem::size_of::<T>();
-        //println!("Allocating {} bytes", new_bytes);
+        println!("Allocating {} bytes", new_bytes);
         let raw = unsafe {
             allocate(new_bytes, mem::min_align_of::<T>())
         };
@@ -1035,7 +1038,8 @@ impl<T:MagmaBase> Matrix<T> {
     //// Moves column data around and creates space for new columns
     fn create_column_space(&mut self, start: usize, count :usize){
         // The end must not be beyond capacity
-        assert!(start + count <= self.xcols);
+        debug_assert!(count + self.cols <= self.xcols);
+        debug_assert!(start + count <= self.xcols);
         if start >= self.cols {
             // Nothing to move.
             return;
@@ -1043,12 +1047,15 @@ impl<T:MagmaBase> Matrix<T> {
         let capacity = self.capacity() as isize;
         // count columns starting from start column need to be
         // shifted by count.
-        let mut cur_col = self.cols - 1;
         let ptr = self.ptr;
         // Number of columns to shift
         let cols_to_shift =  self.cols - (start + count - 1);
+        //println!("start: {:?} count: {:?}, cols to shift {:?}", start, count, cols_to_shift );
+        let mut cur_col = self.cols;
         for _ in 0..cols_to_shift{
+            cur_col -= 1;
             let dst_col = cur_col + count;
+            //println!("src_col: {:?} dst_col: {:?}", cur_col, dst_col);
             let src_offset = self.cell_to_offset(0, cur_col);
             let dst_offset = self.cell_to_offset(0, dst_col);
             debug_assert!(src_offset < capacity);
@@ -1062,7 +1069,6 @@ impl<T:MagmaBase> Matrix<T> {
                     *ptr.offset(dst_offset + ii) = *ptr.offset(src_offset + ii);
                 }
             }
-            cur_col -= 1;
         }
     }
 
@@ -1077,12 +1083,13 @@ impl<T:MagmaBase> Matrix<T> {
         let capacity = self.capacity() as isize;
         // count rows starting from start row need to be
         // shifted by count.
-        let mut cur_row = self.rows - 1;
         let ptr = self.ptr;
         // Number of rows to shift
         let rows_to_shift =  self.rows - (start + count - 1);
         let stride = self.stride();
+        let mut cur_row = self.rows;
         for _ in 0..rows_to_shift{
+            cur_row -= 1;
             let dst_row = cur_row + count;
             let src_offset = self.cell_to_offset(cur_row, 0);
             let dst_offset = self.cell_to_offset(dst_row, 0);
@@ -1098,7 +1105,6 @@ impl<T:MagmaBase> Matrix<T> {
                     *ptr.offset(src_offset + ii);
                 }
             }
-            cur_row -= 1;
         }
     }
 
@@ -2101,10 +2107,13 @@ mod test {
         let m3 : MatrixI64  = Matrix::from_iter_cw(2, 1, (17..100));
         let m4 :  MatrixI64 = Matrix::from_iter_cw(2, 5, (9..100));
         let m5 : MatrixI64  = Matrix::from_iter_cw(2, 1, (9..100));
+        // matrix size 2x3.
         println!("{}", m1);
+        // adding 2x1 to get 2x4.
         m1.append_columns(&m3);
         println!("{}", m1);
         assert_eq!(m1, m2);
+        // adding 2x1 to get 2x5.
         m1.prepend_columns(&m5);
         println!("{}", m1);
         assert_eq!(m1, m4);

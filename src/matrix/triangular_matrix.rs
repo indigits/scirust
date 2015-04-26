@@ -17,7 +17,7 @@ use num::complex::{Complex32, Complex64};
 use algebra::structure::{MagmaBase, 
     CommutativeMonoidAddPartial, 
     CommutativeMonoidMulPartial,
-    CommutativeRingPartial, FieldPartial};
+    CommutativeRingPartial};
 use matrix::matrix::Matrix;
 //use matrix::error::SRError;
 

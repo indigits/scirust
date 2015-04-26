@@ -100,7 +100,7 @@ Constructing a 4x4 matrix of floating point numbers:
         let start  = 0.0;
         let stop = 16.0;
         let m : MatrixF64 = from_range_cw(4, 4, start, stop);
-        for i in range(0, 16){
+        for i in 0..16{
             let c = i >> 2;
             let r = i & 3;
             assert_eq!(m.get(r, c), i as f64);
@@ -177,7 +177,7 @@ See from_range_cw function  for further discussion.
     use scirust::api::{from_range_cw_i64, Shape};
 
     let m = from_range_cw_i64(4, 4, 0, 16);
-    for i in range(0, 16){
+    for i in 0..16{
         let c = i >> 2;
         let r = i & 3;
         assert_eq!(m.get(r, c), i as i64);
@@ -229,7 +229,7 @@ See from_range_cw function  for further discussion.
     use scirust::api::{from_range_cw_u64, Shape};
 
     let m = from_range_cw_u64(4, 4, 0, 16);
-    for i in range(0, 16){
+    for i in 0..16{
         let c = i >> 2;
         let r = i & 3;
         assert_eq!(m.get(r, c), i as u64);
@@ -310,7 +310,7 @@ See from_range_rw function  for further discussion.
     use scirust::api::{from_range_rw_i64, Shape};
 
     let m = from_range_rw_i64(4, 4, 0, 16);
-    for i in range(0, 16){
+    for i in 0..16{
         let r = i >> 2;
         let c = i & 3;
         assert_eq!(m.get(r, c), i as i64);
@@ -362,7 +362,7 @@ See from_range_rw function  for further discussion.
     use scirust::api::{from_range_rw_u64, Shape};
 
     let m = from_range_rw_u64(4, 4, 0, 16);
-    for i in range(0, 16){
+    for i in 0..16{
         let r = i >> 2;
         let c = i & 3;
         assert_eq!(m.get(r, c), i as u64);

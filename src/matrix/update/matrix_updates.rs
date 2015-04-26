@@ -8,7 +8,7 @@ use num::traits::Num;
 
 
 /// local imports
-use algebra::structure::{MagmaBase, FieldPartial};
+use algebra::structure::{MagmaBase};
 use error::SRResult;
 use error::SRError;
 use matrix::traits::{Shape, MatrixBuffer, Strided};

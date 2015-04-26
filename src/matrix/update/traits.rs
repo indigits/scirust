@@ -9,9 +9,7 @@ use num::traits::Num;
 
 /// local imports
 use error::SRResult;
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial,
-        CommutativeMonoidMulPartial,
-        FieldPartial};
+use algebra::structure::{MagmaBase};
 use discrete::mod_n;
 use matrix::matrix::Matrix;
 use matrix::traits::{Shape, MatrixBuffer};
