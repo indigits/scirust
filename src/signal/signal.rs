@@ -2,13 +2,18 @@
 "]
 
 // std imports
-//use core::marker::PhantomData;
+
+
+// external imports
+use num::traits::{Zero, One};
 
 // local imports
-use algebra::*;
+use algebra::structure::CommutativeRingPartial;
+
+
 use matrix::matrix::{Matrix, MatrixF64};
 
-pub struct Impulse<T:Number> {
+pub struct Impulse<T:CommutativeRingPartial> {
     /// The location at which impulse will come
     location : usize,
     // Current iteration index
@@ -17,7 +22,7 @@ pub struct Impulse<T:Number> {
     dummy : T
 }
 
-impl <T:Number> Impulse<T> {
+impl <T:CommutativeRingPartial> Impulse<T> {
     pub fn new(location: usize) -> Impulse<T>{
         Impulse{location : location, index : 0, dummy : Zero::zero()}
     }
@@ -27,7 +32,7 @@ impl <T:Number> Impulse<T> {
     }
 }
 
-impl <T:Number> Iterator for Impulse<T> {
+impl <T:CommutativeRingPartial> Iterator for Impulse<T> {
     type Item = T;
     fn next(&mut self) -> Option<T> {
         let v : T = if self.index == self.location {
@@ -46,7 +51,7 @@ pub fn impulse_f64() -> Impulse<f64> {
     Impulse::new(0)
 }
 
-pub fn  impulse_vector<T:Number>(length: usize, 
+pub fn  impulse_vector<T:CommutativeRingPartial>(length: usize, 
     location: usize) -> Matrix<T> {
         let gen : Impulse<T> = Impulse::new(location);
         Matrix::from_iter_cw(length, 1, gen)
@@ -80,8 +85,8 @@ mod test{
     #[test]
     fn test_impulse_vector(){
         let  v1 = impulse_vector_f64(10, 2);
-        let v2 = vector_f64([0., 0., 1., 0., 0.,
-            0., 0., 0., 0., 0.].as_slice());
+        let v2 = vector_f64(&[0., 0., 1., 0., 0.,
+            0., 0., 0., 0., 0.]);
         assert_eq!(v1, v2);
     }
 
