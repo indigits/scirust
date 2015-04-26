@@ -468,152 +468,152 @@ mod test{
     fn test_set_diag(){
         let mut m = from_range_rw_f64(4, 4, 1., 100.);
         m.set_diagonal(0.);
-        let m2 = matrix_rw_f64(4, 4, [
+        let m2 = matrix_rw_f64(4, 4, &[
             0., 2., 3., 4., 
             5., 0., 7., 8.,
             9., 10., 0., 12.,
             13., 14., 15., 0.,
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
         m.set_row(0, 1.);
-        let m2 = matrix_rw_f64(4, 4, [
+        let m2 = matrix_rw_f64(4, 4, &[
             1., 1., 1., 1., 
             5., 0., 7., 8.,
             9., 10., 0., 12.,
             13., 14., 15., 0.,
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
         m.set_col(2, 20.);
-        let m2 = matrix_rw_f64(4, 4, [
+        let m2 = matrix_rw_f64(4, 4, &[
             1., 1., 20., 1., 
             5., 0., 20., 8.,
             9., 10., 20., 12.,
             13., 14., 20., 0.,
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
         m.set_block(2, 2, 2, 2, 30.);
-        let m2 = matrix_rw_f64(4, 4, [
+        let m2 = matrix_rw_f64(4, 4, &[
             1., 1., 20., 1., 
             5., 0., 20., 8.,
             9., 10., 30., 30.,
             13., 14., 30., 30.,
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
     }
 
     #[test]
     fn test_scale_row_lt(){
-        let mut m = matrix_rw_i64(3, 3, [
+        let mut m = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ].as_slice());
-        let m2 = matrix_rw_i64(3, 3, [
+            ]);
+        let m2 = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 5, 6,
             21, 24, 27
-            ].as_slice());
+            ]);
         m.scale_row_lt(2, 3);
         assert_eq!(m, m2);
     }
     #[test]
     fn test_scale_col_lt(){
-        let mut m = matrix_rw_i64(3, 3, [
+        let mut m = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ].as_slice());
-        let m2 = matrix_rw_i64(3, 3, [
+            ]);
+        let m2 = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 27
-            ].as_slice());
+            ]);
         m.scale_col_lt(2, 3);
         assert_eq!(m, m2);
-        let m2 = matrix_rw_i64(3, 3, [
+        let m2 = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 10, 6,
             7, 16, 27
-            ].as_slice());
+            ]);
         m.scale_col_lt(1, 2);
         assert_eq!(m, m2);
     }
 
     #[test]
     fn test_scale_row_ut(){
-        let mut m = matrix_rw_i64(3, 3, [
+        let mut m = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ].as_slice());
-        let m2 = matrix_rw_i64(3, 3, [
+            ]);
+        let m2 = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 27
-            ].as_slice());
+            ]);
         m.scale_row_ut(2, 3);
         assert_eq!(m, m2);
         m.scale_row_ut(1, 2);
-        let m2 = matrix_rw_i64(3, 3, [
+        let m2 = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 10, 12,
             7, 8, 27
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
     }
     #[test]
     fn test_scale_col_ut(){
-        let mut m = matrix_rw_i64(3, 3, [
+        let mut m = matrix_rw_i64(3, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9
-            ].as_slice());
-        let m2 = matrix_rw_i64(3, 3, [
+            ]);
+        let m2 = matrix_rw_i64(3, 3, &[
             1, 2, 9, 
             4, 5, 18,
             7, 8, 27
-            ].as_slice());
+            ]);
         m.scale_col_ut(2, 3);
         assert_eq!(m, m2);
-        let m2 = matrix_rw_i64(3, 3, [
+        let m2 = matrix_rw_i64(3, 3, &[
             1, 4, 9, 
             4, 10, 18,
             7, 8, 27
-            ].as_slice());
+            ]);
         m.scale_col_ut(1, 2);
         assert_eq!(m, m2);
     }
 
     #[test]
     fn test_scale_rows(){
-        let mut m = matrix_rw_i64(4, 3, [
+        let mut m = matrix_rw_i64(4, 3, &[
             1, 2, 3, 
             4, 5, 6,
             7, 8, 9,
             10, 11, 12
-            ].as_slice());
-        let factors = vector_i64([1, 2, 3, 4].as_slice());
+            ]);
+        let factors = vector_i64(&[1, 2, 3, 4]);
         m.scale_rows(&factors);
-        let m2 = matrix_rw_i64(4, 3, [
+        let m2 = matrix_rw_i64(4, 3, &[
             1, 2, 3, 
             8, 10, 12,
             21, 24, 27,
             40, 44, 48
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
     }
     #[test]
     fn test_scale_cols(){
-        let mut m = matrix_rw_i64(2, 3, [
+        let mut m = matrix_rw_i64(2, 3, &[
             1, 2, 3, 
             4, 5, 6,
-            ].as_slice());
-        let factors = vector_i64([1, 2, 3].as_slice());
+            ]);
+        let factors = vector_i64(&[1, 2, 3]);
         m.scale_cols(&factors);
-        let m2 = matrix_rw_i64(2, 3, [
+        let m2 = matrix_rw_i64(2, 3, &[
             1, 4, 9, 
             4, 10, 18,
-            ].as_slice());
+            ]);
         assert_eq!(m, m2);
     }
 

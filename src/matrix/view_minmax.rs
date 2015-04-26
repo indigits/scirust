@@ -6,12 +6,12 @@ use num::traits::Signed;
 
 // local imports
 use error::SRError;
-use algebra::structure::FieldPartial;
+use algebra::structure::CommutativeMonoidAddPartial;
 use matrix::view::MatrixView;
 use matrix::traits::*;
 
 /// Implementation of min-max with absolute values API for matrix view
-impl <'a, T:FieldPartial+Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
+impl <'a, T:CommutativeMonoidAddPartial+Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {
 
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, usize, usize){

@@ -10,7 +10,7 @@ use num::traits::{Zero, One};
 
 
 // local imports
-use algebra::structure::{MagmaBase, FieldPartial};
+use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
 use error::SRError;
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, NumberMatrix, 
@@ -353,7 +353,7 @@ impl<'a, T:FieldPartial+Float> StridedFloatMatrix<T> for MatrixView<'a, T> {
 
 
 /// Functions to construct new views out of a view and other conversions
-impl<'a, T:FieldPartial> MatrixView<'a, T> {
+impl<'a, T:MagmaBase> MatrixView<'a, T> {
 
     /// Returns the view as a new matrix.
     /// Creates a copy of the data.
@@ -384,7 +384,7 @@ impl<'a, T:MagmaBase> Introspection for MatrixView<'a, T> {
 }
 
 
-impl<'a, T:FieldPartial+PartialOrd> MatrixView<'a, T> {
+impl<'a, T:CommutativeMonoidAddPartial+PartialOrd> MatrixView<'a, T> {
     // Returns the minimum scalar value
     pub fn min_scalar(&self) -> (T, usize, usize){
         if self.is_empty(){
@@ -447,7 +447,7 @@ impl<'a, T:FieldPartial+PartialOrd> MatrixView<'a, T> {
 
 
 /// View + View =  Matrix addition
-impl<'a, 'b, 'c, 'd, T:FieldPartial> ops::Add<&'b MatrixView<'d, T>> for &'a MatrixView<'c, T> {
+impl<'a, 'b, 'c, 'd, T:CommutativeMonoidAddPartial> ops::Add<&'b MatrixView<'d, T>> for &'a MatrixView<'c, T> {
     type Output = Matrix<T>;
     fn add(self, rhs: &'b MatrixView<T>) -> Matrix<T> {
         // Validate dimensions are same.
@@ -473,7 +473,7 @@ impl<'a, 'b, 'c, 'd, T:FieldPartial> ops::Add<&'b MatrixView<'d, T>> for &'a Mat
 }
 
 
-impl <'a, T:FieldPartial> fmt::Debug for MatrixView<'a, T> {
+impl <'a, T:MagmaBase> fmt::Debug for MatrixView<'a, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let ptr = self.m.as_ptr();
         try!(write!(f, "["));
@@ -491,7 +491,7 @@ impl <'a, T:FieldPartial> fmt::Debug for MatrixView<'a, T> {
     }
 }
 
-impl <'a, T:FieldPartial> fmt::Display for MatrixView<'a, T> {
+impl <'a, T:MagmaBase> fmt::Display for MatrixView<'a, T> {
     /// Display and Debug versions are same
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Debug::fmt(self, f)

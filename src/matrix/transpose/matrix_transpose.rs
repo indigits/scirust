@@ -303,7 +303,7 @@ mod test{
 
     #[test]
     fn test_transpoe_block_hilbert(){
-        for n in (100, 1024).step_by(81){
+        for n in (100..1024).step_by(81){
             let h = hilbert(n);
             assert!(are_transpose(&h, & transpose_block(&h)));
         }

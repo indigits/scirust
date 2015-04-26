@@ -24,7 +24,7 @@ use error::SRError;
 pub use matrix::eo::eo_traits::{ERO, ECO};
 pub use matrix::update::traits::{
     InPlaceUpdates, CopyUpdates};
-pub use matrix::transpose::traits::{Transpose};
+pub use matrix::transpose::traits::{Transpose, Frame};
 pub use matrix::extract::traits::{Extraction};
 
 

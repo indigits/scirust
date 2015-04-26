@@ -14,7 +14,10 @@ use num::traits::{Zero, One};
 use num::complex::{Complex32, Complex64};
 
 // local imports
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeRingPartial, FieldPartial};
+use algebra::structure::{MagmaBase, 
+    CommutativeMonoidAddPartial, 
+    CommutativeMonoidMulPartial,
+    CommutativeRingPartial, FieldPartial};
 use matrix::matrix::Matrix;
 //use matrix::error::SRError;
 
@@ -197,7 +200,7 @@ impl<T:CommutativeMonoidAddPartial> Shape<T> for TriangularMatrix<T> {
 }
 
 /// Implementation of methods for matrices of numbers
-impl<T:FieldPartial> NumberMatrix<T> for TriangularMatrix<T> {
+impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> for TriangularMatrix<T> {
     /// Returns if the matrix is an identity matrix
     fn is_identity(&self) -> bool {
         let o : T = One::one();
@@ -665,23 +668,23 @@ mod tests {
         // upper triangular 
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
         let r = m.row(0);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(1,4, &[1, 1, 1, 1]));
         let r = m.row(1);
-        assert_eq!(r, matrix_cw_i64(1,4, [0, 1, 1, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(1,4, &[0, 1, 1, 1]));
         let r = m.row(2);
-        assert_eq!(r, matrix_cw_i64(1,4, [0, 0, 1, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(1,4, &[0, 0, 1, 1]));
         let r = m.row(3);
-        assert_eq!(r, matrix_cw_i64(1,4, [0, 0, 0, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(1,4, &[0, 0, 0, 1]));
         // lower triangular 
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
         let r = m.row(0);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 0, 0, 0].as_slice()));
+        assert_eq!(r, matrix_cw_i64(1,4, &[1, 0, 0, 0]));
         let r = m.row(1);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 0, 0].as_slice()));
+        assert_eq!(r, matrix_cw_i64(1,4, &[1, 1, 0, 0]));
         let r = m.row(2);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 0].as_slice()));
+        assert_eq!(r, matrix_cw_i64(1,4, &[1, 1, 1, 0]));
         let r = m.row(3);
-        assert_eq!(r, matrix_cw_i64(1,4, [1, 1, 1, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(1,4, &[1, 1, 1, 1]));
     }
 
     #[test]
@@ -690,23 +693,23 @@ mod tests {
         // lower triangular
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
         let r = m.col(0);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(4,1, &[1, 1, 1, 1]));
         let r = m.col(1);
-        assert_eq!(r, matrix_cw_i64(4,1, [0, 1, 1, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(4,1, &[0, 1, 1, 1]));
         let r = m.col(2);
-        assert_eq!(r, matrix_cw_i64(4,1, [0, 0, 1, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(4,1, &[0, 0, 1, 1]));
         let r = m.col(3);
-        assert_eq!(r, matrix_cw_i64(4,1, [0, 0, 0, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(4,1, &[0, 0, 0, 1]));
         // upper triangular 
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, true);
         let r = m.col(0);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 0, 0, 0].as_slice()));
+        assert_eq!(r, matrix_cw_i64(4,1, &[1, 0, 0, 0]));
         let r = m.col(1);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 0, 0].as_slice()));
+        assert_eq!(r, matrix_cw_i64(4,1, &[1, 1, 0, 0]));
         let r = m.col(2);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 0].as_slice()));
+        assert_eq!(r, matrix_cw_i64(4,1, &[1, 1, 1, 0]));
         let r = m.col(3);
-        assert_eq!(r, matrix_cw_i64(4,1, [1, 1, 1, 1].as_slice()));
+        assert_eq!(r, matrix_cw_i64(4,1, &[1, 1, 1, 1]));
     }
 
     #[test]
@@ -715,9 +718,9 @@ mod tests {
         // lower triangular
         let m : TriangularMatrixI64 = TriangularMatrix::ones(n, false);
         let m2 = m.sub_matrix(0, 0, 2, 2);
-        assert_eq!(m2, matrix_rw_i64(2,2, [
+        assert_eq!(m2, matrix_rw_i64(2,2, &[
             1, 0,
-            1, 1].as_slice()));
+            1, 1]));
     }
 
     #[test]

@@ -29,9 +29,9 @@ mod test{
 
     #[test]
     fn test_view_to_scalar(){
-        let m = matrix_rw_i32(3, 3, [1, 2, 3,
+        let m = matrix_rw_i32(3, 3, &[1, 2, 3,
             4, 5, 6,
-            7, 8, 9].as_slice());
+            7, 8, 9]);
         let v = m.view(2,1, 1, 1);
         assert_eq!(v.to_scalar(), 8);
     }

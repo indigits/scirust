@@ -28,6 +28,8 @@ C libraries like BLAS or LAPACK.
  #![feature(core)]
 #![feature(alloc)]
 #![feature(step_by)]
+#![feature(convert)]
+#![feature(test)]
 
 #[macro_use(plugin, link)] 
 #[macro_use] 
