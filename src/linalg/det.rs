@@ -152,9 +152,9 @@ mod test{
 
     #[test]
     fn test_det_0(){
-        let m = matrix_rw_f64(2,2, [
+        let m = matrix_rw_f64(2,2, &[
             1., 2., 
-            3., 4.].as_slice());
+            3., 4.]);
         let d = det_naive(&m);
         assert_eq!(d, -2.);
         let d = det_ge(&mut m.clone());
@@ -164,9 +164,9 @@ mod test{
 
     #[test]
     fn test_det_1(){
-        let m = matrix_rw_f64(3, 3, [1., 2., 3., 
+        let m = matrix_rw_f64(3, 3, &[1., 2., 3., 
             4., 5., 6., 
-            7., 8., 9.].as_slice());
+            7., 8., 9.]);
         let d = det_naive(&m);
         assert_eq!(d, 0.);
         let d = det_ge(&mut m.clone());
@@ -197,9 +197,9 @@ mod test{
         for (size, expected_value) in sizes.iter().zip(determinants.iter()){
             let m = hilbert(*size);
             let d = det_naive(&m);
-            assert!((d - *expected_value).abs_val() < threshold);
+            assert!((d - *expected_value).abs() < threshold);
             let d = det_ge(&mut m.clone());
-            assert!((d - *expected_value).abs_val() < threshold);
+            assert!((d - *expected_value).abs() < threshold);
         }
     }
 

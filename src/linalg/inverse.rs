@@ -130,6 +130,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
 
 #[cfg(test)]
 mod test{
+    use num;
     use super::*;
     use matrix::matrix::*;
     use matrix::constructors::*;
@@ -137,9 +138,9 @@ mod test{
 
     #[test]
     fn test_inv_ero_0(){
-        let a = matrix_rw_f64(2, 2, [
+        let a = matrix_rw_f64(2, 2, &[
             1., 0.,
-            1., 1.].as_slice());
+            1., 1.]);
         let b = inverse_ero(&mut a.clone()).unwrap();
         let c = &a * &b;
         assert!(c.is_identity());
@@ -148,9 +149,9 @@ mod test{
 
     #[test]
     fn test_inv_eco_0(){
-        let a = matrix_rw_f64(2, 2, [
+        let a = matrix_rw_f64(2, 2, &[
             1., 0.,
-            1., 1.].as_slice());
+            1., 1.]);
         let b = inverse_eco(&mut a.clone()).unwrap();
         let c = &a * &b;
         assert!(c.is_identity());
@@ -160,7 +161,7 @@ mod test{
     #[test]
     fn test_inv_ero_hadamard(){
         for i in 2..6{
-            let n = 2.pow(i);
+            let n = num::pow(2, i);
             let a = hadamard(n).unwrap();
             println!("n: {}", n);
             println!("a: {}", a);
@@ -177,7 +178,7 @@ mod test{
     #[test]
     fn test_inv_eco_hadamard(){
         for i in 2..6{
-            let n = 2.pow(i);
+            let n = num::pow(2, i);
             let a = hadamard(n).unwrap();
             println!("n: {}", n);
             println!("a: {}", a);

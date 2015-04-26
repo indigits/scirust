@@ -61,54 +61,54 @@ mod test{
 
     #[test]
     fn test_rank_eco_0(){
-        let a = matrix_rw_f64(2, 2, [
+        let a = matrix_rw_f64(2, 2, &[
             1., 0.,
-            1., 1.].as_slice());
+            1., 1.]);
         let r = rank(&a);
         assert_eq!(r, 2);
     }
 
     #[test]
     fn test_rank_eco_1(){
-        let a = matrix_rw_f64(4, 4, [
+        let a = matrix_rw_f64(4, 4, &[
         4.0, 3.0, 4.0, 4.0,
         4.0, 1.0, 4.0, 2.0,
         1.0, 2.0, 1.0, 4.0,
         4.0, 3.0, 4.0, 1.0
-        ].as_slice());
+        ]);
         let r = rank(&a);
         assert_eq!(r, 3);
     }
 
     #[test]
     fn test_rank_eco_2(){
-        let a = matrix_rw_f64(3, 5, [
+        let a = matrix_rw_f64(3, 5, &[
         2.0, 1.0, 3.0, 2.0, 1.0,
         4.0, 2.0, 3.0, 3.0, 1.0,
         4.0, 2.0, 4.0, 3.0, 2.0
-        ].as_slice());
+        ]);
         let r = rank(&a);
         assert_eq!(r, 3);
     }
 
     #[test]
     fn test_rank_eco_3(){
-        let a = matrix_rw_f64(4, 5, [
+        let a = matrix_rw_f64(4, 5, &[
         2.0, 1.0, 3.0, 2.0, 1.0,
         4.0, 2.0, 3.0, 3.0, 1.0,
         4.0, 2.0, 4.0, 3.0, 2.0,
         10.0, 5.0, 9.0, 8.0, 3.0
-        ].as_slice());
+        ]);
         let r = rank(&a);
         assert_eq!(r, 3);
     }
 
     #[test]
     fn test_rank_eco_4(){
-        let a = matrix_rw_f64(2, 3, [
+        let a = matrix_rw_f64(2, 3, &[
         1.0000000000000, 1.0000000000000, 1.0000000000000,
         2.0000000000000, 2.0000000000000, 2.0000000000002
-        ].as_slice());
+        ]);
         let r = rank(&a);
         assert_eq!(r, 2);
     }

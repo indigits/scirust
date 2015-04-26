@@ -316,9 +316,9 @@ mod test{
 
     #[test]
     fn test_lu_ero_0(){
-        let a = matrix_rw_f64(2, 2, [
+        let a = matrix_rw_f64(2, 2, &[
             1., 2.,
-            3., 8.].as_slice());
+            3., 8.]);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_ero();
         lu.print();
@@ -329,9 +329,9 @@ mod test{
 
     #[test]
     fn test_lu_eco_0(){
-        let a = matrix_rw_f64(2, 2, [
+        let a = matrix_rw_f64(2, 2, &[
             1., 2.,
-            3., 8.].as_slice());
+            3., 8.]);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_eco();
         lu.print();
@@ -341,11 +341,11 @@ mod test{
 
     #[test]
     fn test_lu_ero_1(){
-        let a = matrix_rw_f64(3, 3, [
+        let a = matrix_rw_f64(3, 3, &[
             1., 1., 1.,
             1., 2., 2.,
             1., 2., 3.
-            ].as_slice());
+            ]);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_ero();
         lu.print();
@@ -354,11 +354,11 @@ mod test{
 
     #[test]
     fn test_lu_eco_1(){
-        let a = matrix_rw_f64(3, 3, [
+        let a = matrix_rw_f64(3, 3, &[
             1., 1., 1.,
             1., 2., 2.,
             1., 2., 3.
-            ].as_slice());
+            ]);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_eco();
         lu.print();
@@ -369,12 +369,12 @@ mod test{
     #[test]
     fn test_lu_ero_tridiag(){
         // tri-diagonal matrix
-        let a = matrix_rw_f64(4, 4, [
+        let a = matrix_rw_f64(4, 4, &[
              1., -1.,  0., 0.,
             -1.,  2., -1., 0.,
              0., -1.,  2., -1.,
              0.,  0., -1., 2.,
-            ].as_slice());
+            ]);
         println!("a {}", a);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_ero();
@@ -386,12 +386,12 @@ mod test{
     #[test]
     fn test_lu_eco_tridiag(){
         // tri-diagonal matrix
-        let a = matrix_rw_f64(4, 4, [
+        let a = matrix_rw_f64(4, 4, &[
              1., -1.,  0., 0.,
             -1.,  2., -1., 0.,
              0., -1.,  2., -1.,
              0.,  0., -1., 2.,
-            ].as_slice());
+            ]);
         println!("a {}", a);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_eco();
@@ -466,11 +466,11 @@ mod test{
 
     #[test]
     fn test_lu_crout_1(){
-        let a = matrix_rw_f64(3, 3, [
+        let a = matrix_rw_f64(3, 3, &[
             1., 1., 1.,
             1., 2., 2.,
             1., 2., 3.
-            ].as_slice());
+            ]);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_crout().unwrap();
         lu.print();
@@ -479,11 +479,11 @@ mod test{
 
     #[test]
     fn test_lu_crout_2(){
-        let a = matrix_rw_f64(3, 3, [
+        let a = matrix_rw_f64(3, 3, &[
             25., 5., 1.,
             64., 8., 1.,
             144., 12., 1.
-            ].as_slice());
+            ]);
         println!("a: {}", a);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_crout().unwrap();
@@ -495,12 +495,12 @@ mod test{
     #[test]
     fn test_lu_crout_tridiag(){
         // tri-diagonal matrix
-        let a = matrix_rw_f64(4, 4, [
+        let a = matrix_rw_f64(4, 4, &[
              1., -1.,  0., 0.,
             -1.,  2., -1., 0.,
              0., -1.,  2., -1.,
              0.,  0., -1., 2.,
-            ].as_slice());
+            ]);
         let mut lu = LUDecomposition::new(a.clone());
         lu.decompose_crout().unwrap();
         lu.print();
