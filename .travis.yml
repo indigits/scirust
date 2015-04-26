@@ -1,15 +1,23 @@
+language: rust
+sudo: false
+version:
+  - nightly
 env:
   global:
     - secure: KbXw73rCC0fN4invitqpDHyKl8jY4ZBgwsf2p/Rp/EuMH0ViLB2ZBQoY3hbo+nTaTdIh+GaDnskp8ajjd0i5VjmCva5iHQXLild/tyJ692hMp21n2kx6uj8nFznrZc9PoeYsln9Y/3Hd1XEt46JHvm9bOoNFoq5XO+oNYIFlqbo=
-language: rust
 
 script:
   - rustc --version
   - cargo --version
-  - cargo build --verbose && cargo test --verbose
-  - cargo doc --verbose && mv target/doc doc
+  - cargo build --verbose 
+  - cargo test --verbose
+  - cargo build --release --verbose
+  - cargo doc --verbose
 
 after_script:
+  - cp -R target/doc doc
+  - echo $RUSTCI_TOKEN
+  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN
   - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
 
 
@@ -17,8 +25,6 @@ notifications:
   email:
     recipients:
         - shailesh@indigits.com
-        - shaileshk@gmail.com
-
 # whitelist of branches
 branches:
   only:
