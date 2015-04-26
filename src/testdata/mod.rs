@@ -3,6 +3,6 @@ pub mod matrix {
 
     pub use self::simple::*;
 
-    mod simple;
+    pub mod simple;
 
 }

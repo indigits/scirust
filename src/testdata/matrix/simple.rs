@@ -10,11 +10,11 @@ use matrix::constructors::{matrix_rw_f64};
 determinant = -13
 "]  
 pub fn square_0() -> MatrixF64 {
-    matrix_rw_f64(3,3,[
+    matrix_rw_f64(3,3,&[
         0. , 1., 2.,
         3., -1., 0.,
         1., -2., 1.
-        ].as_slice())
+        ])
 } 
 
 
@@ -22,9 +22,9 @@ pub fn square_0() -> MatrixF64 {
  
 determinant = 6
 "]pub fn square_1() -> MatrixF64 {
-    matrix_rw_f64(3,3,[
+    matrix_rw_f64(3,3, &[
         1. , -1., 1.,
         1., 1., 1.,
         1., 2., 4.
-        ].as_slice())
+        ])
 } 

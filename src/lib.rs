@@ -63,7 +63,7 @@ pub mod dx;
 
 // // for internal use only
 pub mod util;
-// mod testdata;
+mod testdata;
 
 // // Overall API of SciRust
 pub mod api;
