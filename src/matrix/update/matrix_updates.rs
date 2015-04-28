@@ -84,11 +84,11 @@ impl<T:MagmaBase + Num> InPlaceUpdates<T> for Matrix<T> {
         let ptr = self.as_mut_ptr();
         let mut offset = self.cell_to_offset(r, 0);
         for _ in 0..(r + 1){
+            debug_assert!(offset < self.capacity() as isize);
             unsafe{
                 let v = *ptr.offset(offset);
                 *ptr.offset(offset) = scale_factor * v;
                 offset += stride;
-                debug_assert!(offset < self.capacity() as isize);
             }
         }
         self

@@ -1,3 +1,5 @@
+#![doc="Support for algebraic structure traits on complex numbers.
+"]
 
 
 // external imports

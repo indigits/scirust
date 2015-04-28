@@ -54,10 +54,6 @@ pub struct Matrix<T:MagmaBase> {
     rows : usize,
     /// Number of columns in the matrix
     cols : usize, 
-    /// Number of allocated rows 
-    xrows : usize, 
-    /// Number of allocated columns
-    xcols : usize,
     /// The pointer to raw data array of the matrix
     ptr : *mut T
 }
@@ -82,9 +78,9 @@ pub type MatrixU64 = Matrix<u64>;
 pub type MatrixF32 = Matrix<f32>;
 /// A matrix of 64-bit floating point numbers.
 pub type MatrixF64 = Matrix<f64>;
-// A matrix of 32-bit complex numbers numbers.
+/// A matrix of 32-bit complex numbers numbers.
 pub type MatrixC32 = Matrix<Complex32>;
-// A matrix of 64-bit complex numbers numbers.
+/// A matrix of 64-bit complex numbers numbers.
 pub type MatrixC64 = Matrix<Complex64>;
 
 
@@ -105,9 +101,7 @@ the matrix differently.
 "]
     pub fn new(rows: usize, cols : usize)-> Matrix<T> {
         debug_assert! (mem::size_of::<T>() != 0);
-        let xrows = rows.next_power_of_two();
-        let xcols = cols.next_power_of_two();
-        let capacity = xrows *  xcols;
+        let capacity = rows *  cols;
 
         // Support for empty  matrices
         if capacity == 0{
@@ -115,8 +109,6 @@ the matrix differently.
             // We leave it as a NULL pointer.
             return Matrix { rows : rows, 
                 cols : cols,
-                xrows : xrows,
-                xcols : xcols, 
                 ptr : ptr::null_mut()
             };
         }
@@ -126,9 +118,7 @@ the matrix differently.
         };
         let ptr = raw as *mut T;
         Matrix { rows : rows, 
-                cols : cols,
-                xrows : xrows,
-                xcols : xcols, 
+                cols : cols, 
                 ptr : ptr}
     }
 
@@ -557,7 +547,7 @@ impl<T:MagmaBase> Strided for Matrix<T> {
     /// Returns the number of actual memory elements 
     /// per column stored in the memory
     fn stride (&self)->usize {
-        self.xrows
+        self.rows
     }
 
 }
@@ -601,7 +591,7 @@ impl<T:MagmaBase> Matrix<T> {
     /// Returns the capacity of the matrix 
     /// i.e. the number of elements it can hold
     pub fn capacity(&self)-> usize {
-        self.xrows * self.xcols
+        self.rows * self.cols
     }
 
 
@@ -894,14 +884,9 @@ impl<T:MagmaBase> Matrix<T> {
 
         // check the capacity.
         let new_cols = self.cols + other.cols;
-        if self.xcols < new_cols {
-            // We need to reallocate memory.
-            let rows = self.rows;
-            self.reallocate(rows, new_cols);
-        }
-        else{
-            //println!("Reallocation is not needed.");
-        }
+        let rows = self.rows;
+        // We need to reallocate memory.
+        self.reallocate(rows, new_cols);
         // Now create space for other matrix to be fitted in
         self.create_column_space(index, other.num_cols());
         // Finally copy the column data from the matrix.
@@ -917,8 +902,6 @@ impl<T:MagmaBase> Matrix<T> {
                 }
             }
         }
-        // Update the count of columns
-        self.cols += other.num_cols();
         self
     }
 
@@ -950,11 +933,9 @@ impl<T:MagmaBase> Matrix<T> {
 
         // check the capacity.
         let new_rows = self.rows + other.rows;
-        if self.xrows < new_rows {
-            // We need to reallocate memory.
-            let cols = self.cols;
-            self.reallocate(new_rows, cols);
-        }
+        // We need to reallocate memory.
+        let cols = self.cols;
+        self.reallocate(new_rows, cols);
         // Now create space for other matrix to be fitted in
         self.create_row_space(index, other.num_rows());
         // Finally copy the row data from the other matrix.
@@ -972,8 +953,6 @@ impl<T:MagmaBase> Matrix<T> {
                 }
             }
         }
-        // Update the count of rows
-        self.rows += other.num_rows();
         self
     }
 
@@ -990,10 +969,8 @@ impl<T:MagmaBase> Matrix<T> {
     Thus, the matrix elements need to be moved around.
     "] 
     fn reallocate(&mut self, rows : usize, cols : usize){
-        let new_xrows = rows.next_power_of_two();
-        let new_xcols = cols.next_power_of_two();
-        let old_capacity = self.xrows * self.xcols;
-        let new_capacity = new_xrows *  new_xcols;
+        let old_capacity = self.rows * self.cols;
+        let new_capacity = rows *  cols;
         if old_capacity >= new_capacity{
             // Nothing to do.
             return;
@@ -1007,8 +984,8 @@ impl<T:MagmaBase> Matrix<T> {
         let dst_ptr = raw as *mut T;
         let src_ptr = self.ptr;
         // Copy data from source to destination.
-        let src_stride = self.xrows;
-        let dst_stride = new_xrows;
+        let src_stride = self.rows;
+        let dst_stride = rows;
         for c in 0..self.cols{
             for r in 0..self.rows{
                 let src_offset = (c * src_stride + r) as isize;
@@ -1029,16 +1006,16 @@ impl<T:MagmaBase> Matrix<T> {
         }
         // Keep new data
         self.ptr = dst_ptr;
-        self.xrows = new_xrows;
-        self.xcols = new_xcols;
+        self.rows = rows;
+        self.cols = cols;
     }
 
     //// Moves column data around and creates space for new columns
     fn create_column_space(&mut self, start: usize, count :usize){
         // The end must not be beyond capacity
-        debug_assert!(count + self.cols <= self.xcols);
-        debug_assert!(start + count <= self.xcols);
-        if start >= self.cols {
+        let new_cols = self.cols;
+        let old_cols = new_cols - count;
+        if start >= new_cols {
             // Nothing to move.
             return;
         }
@@ -1047,9 +1024,9 @@ impl<T:MagmaBase> Matrix<T> {
         // shifted by count.
         let ptr = self.ptr;
         // Number of columns to shift
-        let cols_to_shift =  self.cols - (start + count - 1);
+        let cols_to_shift =  old_cols - (start + count - 1);
         //println!("start: {:?} count: {:?}, cols to shift {:?}", start, count, cols_to_shift );
-        let mut cur_col = self.cols;
+        let mut cur_col = old_cols;
         for _ in 0..cols_to_shift{
             cur_col -= 1;
             let dst_col = cur_col + count;
@@ -1073,8 +1050,9 @@ impl<T:MagmaBase> Matrix<T> {
     //// Moves rows around and creates space for new rows
     fn create_row_space(&mut self, start: usize, count :usize){
         // The end must not be beyond capacity
-        assert!(start + count <= self.xrows);
-        if start >= self.rows {
+        let new_rows = self.rows;
+        let old_rows = new_rows - count;
+        if start >= old_rows {
             // Nothing to move.
             return;
         }
@@ -1083,9 +1061,9 @@ impl<T:MagmaBase> Matrix<T> {
         // shifted by count.
         let ptr = self.ptr;
         // Number of rows to shift
-        let rows_to_shift =  self.rows - (start + count - 1);
+        let rows_to_shift =  old_rows - (start + count - 1);
         let stride = self.stride();
-        let mut cur_row = self.rows;
+        let mut cur_row = old_rows;
         for _ in 0..rows_to_shift{
             cur_row -= 1;
             let dst_row = cur_row + count;
@@ -1609,8 +1587,8 @@ impl<T:MagmaBase> Matrix<T> {
     pub fn print_state(&self){
         let capacity = self.capacity();
         let bytes = capacity * mem::size_of::<T>();
-        println!("Rows: {}, Cols: {}, XRows : {}, XCols {} , Capacity: {}, Bytes; {}, Buffer: {:p}, End : {:p}", 
-            self.rows, self.cols, self.xrows, self.xcols, 
+        println!("Rows: {}, Cols: {}, Capacity: {}, Bytes; {}, Buffer: {:p}, End : {:p}", 
+            self.rows, self.cols,
             capacity, bytes, self.ptr, unsafe {
                 self.ptr.offset(capacity as isize)
             });

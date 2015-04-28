@@ -7,9 +7,6 @@ use std::ops::{Add, Sub, Mul, Div};
 
 
 // local imports
-use algebra::entry::Entry;
-use algebra::zero::Zero;
-use algebra::one::One;
 
 
 /// Defines basic requirements for a matrix of numbers

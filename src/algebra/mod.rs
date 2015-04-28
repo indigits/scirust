@@ -1,7 +1,7 @@
+#![doc="Algebraic structures
+"]
 
-// Re-exporting symbols
-//pub use self::number::Number;
-//pub use self::number::num_range;
+
 
 //pub use self::complex::{Complex, Complex32, Complex64};
 
