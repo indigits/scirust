@@ -15,6 +15,7 @@ use std::raw::Slice;
 
 // external imports
 use num::traits::{Zero, One, Signed};
+use num::complex::{Complex32, Complex64};
 
 // local imports
 
@@ -36,9 +37,6 @@ use matrix::traits::{Shape, NumberMatrix,
     MatrixBuffer,
     Search};
 
-// complex numbers
-//use algebra::Complex32;
-//use algebra::Complex64;
 
 use util;
 
@@ -84,10 +82,10 @@ pub type MatrixU64 = Matrix<u64>;
 pub type MatrixF32 = Matrix<f32>;
 /// A matrix of 64-bit floating point numbers.
 pub type MatrixF64 = Matrix<f64>;
-/// A matrix of 32-bit complex numbers numbers.
-//pub type MatrixC32 = Matrix<Complex32>;
-/// A matrix of 64-bit complex numbers numbers.
-//pub type MatrixC64 = Matrix<Complex64>;
+// A matrix of 32-bit complex numbers numbers.
+pub type MatrixC32 = Matrix<Complex32>;
+// A matrix of 64-bit complex numbers numbers.
+pub type MatrixC64 = Matrix<Complex64>;
 
 
 
