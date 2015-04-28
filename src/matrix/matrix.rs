@@ -594,7 +594,19 @@ impl<T:MagmaBase> Matrix<T> {
         self.rows * self.cols
     }
 
-
+    /// Reshapes the matrix
+    pub fn reshape(&mut self, rows: usize, cols : usize) -> bool {
+        let new_capacity = rows * cols;
+        if new_capacity != self.capacity(){
+            false
+        }
+        else{
+            // Reshape the matrix
+            self.rows = rows;
+            self.cols = cols;
+            true
+        }
+    }
 
 }
 
@@ -1825,6 +1837,17 @@ mod test {
         assert!(m.is_logical());
         let m = &m + &m;
         assert!(!m.is_logical());
+    }
+
+    #[test]
+    fn test_reshape(){
+        let v = vec![1, 2, 3, 4, 
+        5, 6, 7, 8,
+        9, 10, 11, 12];
+        let mut m1 : MatrixI64 = Matrix::from_slice_cw(8, 1, v.as_slice());
+        m1.reshape(2, 4);
+        let m2 : MatrixI64 = Matrix::from_slice_cw(2, 4, v.as_slice());
+        assert_eq!(m1, m2);
     }
 
     #[test]
