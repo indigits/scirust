@@ -2,14 +2,14 @@
 "]
 
 // std imports
-use std::num::{Float, FromPrimitive};
+use num::{Float, FromPrimitive};
 
 // local imports
 use matrix::matrix::Matrix;
-use algebra::Number;
+use algebra::structure::{CommutativeMonoidAddPartial, CommutativeMonoidMulPartial, FieldPartial};
 
 
-pub trait Sums<T: Number> {
+pub trait Sums<T: CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> {
 
     /// Computes sum over columns and returns a row vector
     fn sum_cw(&self) -> Matrix<T>;
@@ -25,7 +25,7 @@ pub trait Sums<T: Number> {
 }
 
 
-pub trait Moments <T: Number + Float + FromPrimitive> {
+pub trait Moments <T: FieldPartial + Float + FromPrimitive> {
 
     /// Computes mean over columns and returns a row vector
     fn mean_cw(&self) -> Matrix<T>;
