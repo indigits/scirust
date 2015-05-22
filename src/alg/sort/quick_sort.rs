@@ -199,7 +199,7 @@ mod bench{
 
     #[bench]
     fn bench_quick_sort_slice_reverse_data(b: &mut Bencher){
-        let mut v = (0..10000).map(|idx| (20000 - idx)).collect::<Vec<i32>>();
+        let mut v = (0..1000).map(|idx| (20000 - idx)).collect::<Vec<i32>>();
         b.iter(|| {
             quick_sort_slice(v.as_mut_slice());
         });
