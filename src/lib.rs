@@ -1,4 +1,5 @@
 #![allow(unused_features)]
+#![feature(raw)]
 
 #![doc="A generics based scientific computing library for Rust
 
