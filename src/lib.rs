@@ -1,4 +1,7 @@
 #![allow(unused_features)]
+#![feature(raw)]
+#![feature(heap_api)]
+#![feature(ptr_as_ref)]
 
 #![doc="A generics based scientific computing library for Rust
 
