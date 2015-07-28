@@ -112,7 +112,7 @@ impl<T:MagmaBase> TriangularMatrix<T> {
         }
         let bytes = capacity * mem::size_of::<T>();
         let raw = unsafe {
-            allocate(bytes, mem::min_align_of::<T>())
+            allocate(bytes, mem::align_of::<T>())
         };
         let ptr = raw as *mut T;
         TriangularMatrix {size : size,

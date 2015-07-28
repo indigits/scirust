@@ -15,7 +15,7 @@ pub unsafe fn dealloc<T>(ptr: *mut T, len: usize) {
     if mem::size_of::<T>() != 0 {
         deallocate(ptr as *mut u8,
                    len * mem::size_of::<T>(),
-                   mem::min_align_of::<T>())
+                   mem::align_of::<T>())
     }
 }
 
