@@ -518,16 +518,13 @@ impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> 
 
     /// Returns the trace of the matrix
     fn trace(&self) -> T{
-        if self.is_empty() {
-            return Zero::zero()
-        }
-        let mut result = self.get(0, 0);
-        let stride = self.stride() as isize;
-        let mut offset = stride;
+        let step = (self.stride() as isize) + 1;
+        let mut result: T = Zero::zero();
+        let mut offset = 0;
         let ptr = self.as_ptr();
-        for i in 1..self.smaller_dim(){
-            result = result + unsafe{*ptr.offset(offset + i as isize)};
-            offset += stride;
+        for i in 0..self.smaller_dim(){
+            result = result + unsafe {*ptr.offset(offset)};
+            offset += step;
         }
         result
     }
@@ -2008,6 +2005,7 @@ mod test {
         let m = matrix_cw_f64(3, 3, &[1., 0., 0., 
             4., 5., 0.,
             6., 2., 3.]);
+        println!("{}", m.trace());
         assert_eq!(m.trace(), 9.);
     }
 
