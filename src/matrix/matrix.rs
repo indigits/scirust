@@ -114,7 +114,7 @@ the matrix differently.
         }
         let bytes = capacity * mem::size_of::<T>();
         let raw = unsafe {
-            allocate(bytes, mem::min_align_of::<T>())
+            allocate(bytes, mem::align_of::<T>())
         };
         let ptr = raw as *mut T;
         Matrix { rows : rows, 
@@ -988,7 +988,7 @@ impl<T:MagmaBase> Matrix<T> {
         let new_bytes = new_capacity * mem::size_of::<T>();
         println!("Allocating {} bytes", new_bytes);
         let raw = unsafe {
-            allocate(new_bytes, mem::min_align_of::<T>())
+            allocate(new_bytes, mem::align_of::<T>())
         };
         let dst_ptr = raw as *mut T;
         let src_ptr = self.ptr;
@@ -1011,7 +1011,7 @@ impl<T:MagmaBase> Matrix<T> {
             //println!("Allocating {} bytes", old_bytes);
             deallocate(self.ptr as *mut u8,
                    old_bytes,
-                   mem::min_align_of::<T>());
+                   mem::align_of::<T>());
         }
         // Keep new data
         self.ptr = dst_ptr;
