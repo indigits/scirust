@@ -530,6 +530,12 @@ impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> 
     }
 }
 
+/// Provide the main diagonal elements
+fn diagonal_iter<T: CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(a: &Matrix<T>) -> DiagIterator<T>{
+    DiagIterator::new(a.smaller_dim(),a.stride(), a.ptr)
+}
+
+
 /// Introspection support
 impl<T> Introspection for Matrix<T> {
     /// This is a standard matrix object

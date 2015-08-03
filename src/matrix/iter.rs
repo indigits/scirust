@@ -112,4 +112,31 @@ impl <T:MagmaBase> Iterator for CellIterator<T> {
     }
 }
 
+/// An iterator over the major diagonal of a matrix.
+pub struct DiagIterator<T:MagmaBase>{
+    min_dim_size : usize,
+    stride: usize,
+    pos  : usize, 
+    ptr : *const T
+}
+
+impl <T:MagmaBase> DiagIterator<T> {
+    /// Creates a new iterator object
+    pub fn new(min_dim_size : usize, stride : usize, ptr : *const T)-> DiagIterator<T>{
+        DiagIterator{min_dim_size : min_dim_size, stride : stride, pos : 0, ptr : ptr}
+    }
+}
+
+impl <T:MagmaBase> Iterator for DiagIterator<T> {
+    type Item = T;
+    fn next(&mut self) -> Option<T> {
+        if self.min_dim_size == self.pos{
+            // No more data
+            return None;
+        }
+        let offset = self.pos * (self.stride + 1);
+        self.pos += 1;
+        Some(unsafe{*self.ptr.offset(offset as isize).clone()})
+    }
+}
 
