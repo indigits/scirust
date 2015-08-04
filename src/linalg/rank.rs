@@ -26,7 +26,7 @@ pub fn rank_eco(a : & MatrixF64) -> usize {
         }
         let mut v = a.view(k, k, m - k, n - k);
         // Pick the pivot
-        let pivot  = v.get(0, 0);
+        let pivot  = unsafe { v.get_unchecked(0, 0) };
         if pivot == 0. {
             // Nothing to be done.
             continue;
@@ -34,7 +34,7 @@ pub fn rank_eco(a : & MatrixF64) -> usize {
         // We have a non-zero pivot
         rank += 1;
         for c in 1..v.num_cols(){
-            let first = v.get(0, c);
+            let first = unsafe { v.get_unchecked(0, c) };
             let factor = first/pivot;
             v.eco_scale_add(c, 0, -factor);
         }

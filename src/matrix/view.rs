@@ -204,16 +204,14 @@ impl <'a, T:MagmaBase> Shape<T> for MatrixView<'a, T> {
 
     /// Gets an element in the view
     #[inline]
-    fn get(&self, r : usize, c : usize) -> T  {
+    unsafe fn get_unchecked(&self, r : usize, c : usize) -> T  {
         debug_assert!(r < self.rows);
         debug_assert!(c < self.cols);
         let ptr = self.m.as_ptr();
         let offset = self.cell_to_offset(r, c);
         debug_assert!((offset as usize) < self.m.capacity());
-        unsafe {
-            // TODO : Optimize this
-            ptr.offset(offset).as_ref().unwrap().clone()
-        }
+        // TODO : Optimize this
+        ptr.offset(offset).as_ref().unwrap().clone()
     }
 
     /// Sets an element in the view
@@ -319,8 +317,10 @@ impl <'a, T:FieldPartial> NumberMatrix<T> for MatrixView<'a, T> {
         let n = self.num_rows();
         for i in 0..n{
             for j in (i + 1)..n{
-                if self.get(i, j) != self.get(j, i) {
-                    return false;
+                unsafe {
+                    if self.get_unchecked(i, j) != self.get_unchecked(j, i) {
+                        return false;
+                    }
                 }
             }
         }
@@ -390,7 +390,7 @@ impl<'a, T:CommutativeMonoidAddPartial+PartialOrd> MatrixView<'a, T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0);
+        let mut v = unsafe {self.get_unchecked(0, 0)};
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -414,7 +414,7 @@ impl<'a, T:CommutativeMonoidAddPartial+PartialOrd> MatrixView<'a, T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0);
+        let mut v = unsafe {self.get_unchecked(0, 0)};
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -522,9 +522,9 @@ mod test{
         assert_eq!(v1.is_vector(), false);
         assert_eq!(v1.is_row(), false);
         assert_eq!(v1.is_col(), false);
-        assert_eq!(v1.get(1,1), 44);
+        assert_eq!(v1.get(1,1).unwrap(), 44);
         v1.set(1,1, 300);
-        assert_eq!(v1.get(1,1), 300);
+        assert_eq!(v1.get(1,1).unwrap(), 300);
         assert!(m1.is_standard_matrix_type());
         assert!(!m1.is_matrix_view_type());
         assert!(!v1.is_standard_matrix_type());
@@ -537,9 +537,9 @@ mod test{
         let v1 = m1.view(1, 1, 4, 4);
         let v2 = m1.view(2, 2, 4, 4);
         let v3 = m1.view(2, 3, 4, 4);
-        assert_eq!(v1.get(0, 0), 12);
-        assert_eq!(v2.get(0, 0), 23);
-        assert_eq!(v3.get(0, 0), 33);
+        assert_eq!(v1.get(0, 0).unwrap(), 12);
+        assert_eq!(v2.get(0, 0).unwrap(), 23);
+        assert_eq!(v3.get(0, 0).unwrap(), 33);
     }
 
     #[test]
@@ -550,7 +550,7 @@ mod test{
             // The following line doesn't compile since we have borrowed an
             // immutable reference of m1 in v1.
             //m1.set(0, 0, 2);
-            assert_eq!(v1.get(0, 0), 23);
+            assert_eq!(v1.get(0, 0).unwrap(), 23);
         }
         m1.set(0, 0, 2);
     }

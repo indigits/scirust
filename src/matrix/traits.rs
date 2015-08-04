@@ -79,7 +79,18 @@ pub trait Shape<T:MagmaBase> {
 
 
     /// Gets an element by its row and column number
-    fn get(&self, r : usize, c : usize) -> T;
+    /// Assumes that the caller knows that (r, c) indices are proper
+    unsafe fn get_unchecked(&self, r : usize, c : usize) -> T;
+
+    /// Gets an element by its row and column number
+    /// Returns data if array bounds are followed.
+    fn get(&self, r : usize, c : usize) -> Option<T>{
+        if (r >= self.num_rows()) || (c >= self.num_cols()) {
+            return None;
+        }
+        Some(unsafe { self.get_unchecked(r, c) } )
+    }
+
 
     /// Sets an element in the view
     fn set(&mut self, r : usize, c : usize, value : T);
@@ -230,7 +241,7 @@ pub trait Conversion<T:MagmaBase> : Shape<T> {
         if !self.is_scalar() {
             panic! (SRError::DimensionsMismatch.to_string());
         }
-        self.get(0, 0)
+        unsafe { self.get_unchecked(0, 0)}
     }
 }
 

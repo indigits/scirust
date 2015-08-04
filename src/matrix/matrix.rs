@@ -401,16 +401,14 @@ impl<T:MagmaBase> Shape<T> for Matrix<T> {
     }
 
 
-    fn get(&self, r : usize, c : usize) -> T  {
+    unsafe fn get_unchecked(&self, r : usize, c : usize) -> T  {
         // These assertions help in checking matrix boundaries
         debug_assert!(r < self.rows);
         debug_assert!(c < self.cols);
         let offset = self.cell_to_offset(r, c);
-        unsafe {
-            let v = self.ptr.offset(offset);
-            // TODO : Optimize this
-            v.as_ref().unwrap().clone()
-        }
+        let v = self.ptr.offset(offset);
+        // TODO : Optimize this
+        v.as_ref().unwrap().clone()
     }
 
     fn set(&mut self, r : usize, c : usize, value : T) {
@@ -508,8 +506,10 @@ impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> 
         let n = self.num_rows();
         for i in 0..n{
             for j in (i + 1)..n{
-                if self.get(i, j) != self.get(j, i) {
-                    return false;
+                unsafe {
+                    if self.get_unchecked(i, j) != self.get_unchecked(j, i) {
+                        return false;
+                    }
                 }
             }
         }
@@ -518,16 +518,14 @@ impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> 
 
     /// Returns the trace of the matrix
     fn trace(&self) -> T{
-        if self.is_empty() {
-            return Zero::zero()
-        }
-        let mut result = self.get(0, 0);
         let stride = self.stride() as isize;
-        let mut offset = stride;
+        let mut offset = 0;
+        let step = stride + 1;
+        let mut result : T = Zero::zero();
         let ptr = self.as_ptr();
-        for i in 1..self.smaller_dim(){
-            result = result + unsafe{*ptr.offset(offset + i as isize)};
-            offset += stride;
+        for _ in 0..self.smaller_dim(){
+            result = result + unsafe{*ptr.offset(offset)};
+            offset += step;
         }
         result
     }
@@ -1128,7 +1126,7 @@ impl<T:CommutativeMonoidAddPartial+PartialOrd> Matrix<T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0);
+        let mut v = unsafe {self.get_unchecked(0, 0)};
         let ps = self.ptr;
         // The location
         let mut rr = 0;
@@ -1152,7 +1150,7 @@ impl<T:CommutativeMonoidAddPartial+PartialOrd> Matrix<T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0);
+        let mut v = unsafe {self.get_unchecked(0, 0)};
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1189,7 +1187,7 @@ impl<T:MagmaBase+Signed+PartialOrd> Matrix<T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs();
+        let mut v = unsafe {self.get_unchecked(0, 0)}.abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1213,7 +1211,7 @@ impl<T:MagmaBase+Signed+PartialOrd> Matrix<T> {
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs();
+        let mut v = unsafe {self.get_unchecked(0, 0)}.abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -1650,7 +1648,7 @@ mod test {
         // NOTE: we cannot use the contents of the
         // matrix as they are uninitialized.
         let m : MatrixI64 = Matrix::zeros(3, 4);
-        let v : i64 = m.get(0, 0);
+        let v : i64 = m.get(0, 0).unwrap();
         assert_eq!(v, 0i64);
     }
 
@@ -1661,14 +1659,14 @@ mod test {
             4, 5, 6,
             7, 8, 9
             ]);
-        assert_eq!(m.get(0, 0), 1);
-        assert_eq!(m.get(0, 1), 2);
-        assert_eq!(m.get(0, 2), 3);
-        assert_eq!(m.get(1, 0), 4);
-        assert_eq!(m.get(1, 1), 5);
-        assert_eq!(m.get(1, 2), 6);
-        assert_eq!(m.get(2, 0), 7);
-        assert_eq!(m.get(2, 1), 8);
+        assert_eq!(m.get(0, 0).unwrap(), 1);
+        assert_eq!(m.get(0, 1).unwrap(), 2);
+        assert_eq!(m.get(0, 2).unwrap(), 3);
+        assert_eq!(m.get(1, 0).unwrap(), 4);
+        assert_eq!(m.get(1, 1).unwrap(), 5);
+        assert_eq!(m.get(1, 2).unwrap(), 6);
+        assert_eq!(m.get(2, 0).unwrap(), 7);
+        assert_eq!(m.get(2, 1).unwrap(), 8);
     }
 
 
@@ -1679,8 +1677,8 @@ mod test {
             let b: Vec<i64> = (1..17).collect();
             assert!(m.as_slice_() == b.as_slice());
             let m : MatrixI64 = Matrix::from_iter_cw(4, 8, 1..16);
-            assert_eq!(m.get(0, 0), 1);
-            assert_eq!(m.get(2, 2), 11);
+            assert_eq!(m.get(0, 0).unwrap(), 1);
+            assert_eq!(m.get(2, 2).unwrap(), 11);
             let mut b: Vec<i64> = (1..16).collect();
             for _ in 0..17{
                 b.push(0);

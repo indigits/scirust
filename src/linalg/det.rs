@@ -53,7 +53,10 @@ pub fn  det_float<T:CommutativeRingPartial+Float+Signed>(m : &Matrix<T>)->Result
 /// Private implementation of determinant
 /// Assumes that matrix is indeed square.
 pub fn det_naive<T:CommutativeRingPartial>(m : &Matrix<T>)->T{
-    let a0 = m.get(0, 0);
+    if m.is_empty(){
+        return One::one();
+    }
+    let a0 = unsafe{m.get_unchecked(0, 0)};
     //debug!("m: {}", m);
     if m.is_scalar(){
         return a0;
@@ -78,7 +81,7 @@ pub fn det_naive<T:CommutativeRingPartial>(m : &Matrix<T>)->T{
                 *pd.offset(dst_offset) = v;
             }
         }
-        let ai = m.get(0, c+1);
+        let ai = unsafe{m.get_unchecked(0, c+1)};
         let ai_minor_det =  det_naive(&m2);
         //debug!("sign: {}, ai: {}, Ai : {}", sign, ai, ai_minor_det);
         result = result + sign * ai * ai_minor_det;
@@ -118,7 +121,7 @@ pub fn det_ge<T:CommutativeRingPartial+Signed+Float+PartialOrd>(a : &mut Matrix<
         // The top right part of L matrix
         let mut l_tr  = a.view(k, k, n - k, n -k);
         // Pick up the pivot
-        let pivot = l_tr.get(0, 0);
+        let pivot = unsafe {l_tr.get_unchecked(0, 0)};
         if pivot.is_zero() {
             // This is a singular matrix
             return pivot;
@@ -128,7 +131,7 @@ pub fn det_ge<T:CommutativeRingPartial+Signed+Float+PartialOrd>(a : &mut Matrix<
         // bring 1 in the diagonal 
         l_tr.eco_scale(0, o/pivot);
         for c in 1..l_tr.num_cols(){
-            let first = l_tr.get(0, c);
+            let first = unsafe {l_tr.get_unchecked(0, c)};
             l_tr.eco_scale_add(c, 0, -first);
         }
     }
