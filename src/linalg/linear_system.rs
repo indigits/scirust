@@ -61,12 +61,12 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
                 //v.ero_switch(k, rr);
             }
             // Pick up the pivot
-            let pivot = m.get(k, k);
+            let pivot = unsafe {m.get_unchecked(k, k)};
             let mut lower_right  = m.view(k + 1, k, rows - k - 1, cols -k);
             //println!("Pivot: {}", pivot);
             //println!("lower_right: {}", lower_right);
             for r in 0..lower_right.num_rows(){
-                let first = lower_right.get(r, 0);
+                let first = unsafe {lower_right.get_unchecked(r, 0)};
                 let factor = first  / pivot;
                 lower_right.ero_scale_add(r, -1, -factor);
             }
@@ -78,7 +78,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
             self.b.num_cols());
         let mut r = m.num_rows() - 1;
         loop {
-            let pivot = m.get(r, r);
+            let pivot = unsafe {m.get_unchecked(r, r)};
             if pivot == 0. {
                 // We have a problem here. We cannot find a solution.
                 // TODO: make it more robust for under-determined systems.
@@ -86,7 +86,7 @@ impl<'a, 'b> GaussElimination<'a, 'b>{
             }
             b.ero_scale(r, 1.0/pivot);
             for j in (r+1)..m.num_rows(){
-                let factor = m.get(r, j) / pivot;
+                let factor = unsafe {m.get_unchecked(r, j) } / pivot;
                 b.ero_scale_add(r, j as isize, -factor);  
             }
             if r == 0 {
@@ -118,14 +118,14 @@ pub fn lt_solve(l : &MatrixF64, b : &MatrixF64) ->
     // Create a copy for the result
     let mut b = b.clone();
     for r in 0..n {
-        let pivot = l.get(r, r);
+        let pivot = unsafe{l.get_unchecked(r, r)};
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
             return Err(SRError::IsSingular);
         }
         for k in 0..r{
-            b.ero_scale_add(r, k as isize, -l.get(r, k));
+            b.ero_scale_add(r, k as isize, - unsafe{l.get_unchecked(r, k)} );
         }
         b.ero_scale(r, 1.0/pivot);
     }
@@ -146,7 +146,7 @@ pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) ->
     let mut b = b.clone();
     let mut r = u.num_rows() - 1;
     loop {
-        let pivot = u.get(r, r);
+        let pivot = unsafe {u.get_unchecked(r, r)};
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
@@ -154,7 +154,7 @@ pub fn ut_solve(u : &MatrixF64, b : &MatrixF64) ->
         }
         b.ero_scale(r, 1.0/pivot);
         for j in (r+1)..u.num_rows(){
-            let factor = u.get(r, j) / pivot;
+            let factor = unsafe {u.get_unchecked(r, j)} / pivot;
             b.ero_scale_add(r, j as isize, -factor);  
         }
         if r == 0 {
@@ -190,28 +190,28 @@ pub fn ldu_solve(l : &MatrixF64,
 
     // Solve forward substitution problem L X = B
     for r in 0..n {
-        let pivot = l.get(r, r);
+        let pivot = unsafe {l.get_unchecked(r, r)};
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
             return Err(SRError::IsSingular);
         }
         for k in 0..r{
-            b.ero_scale_add(r, k as isize, -l.get(r, k));
+            b.ero_scale_add(r, k as isize, - unsafe{l.get_unchecked(r, k) });
         }
         b.ero_scale(r, 1.0/pivot);
     }
 
     // Perform inverse scaling D X = B
     for r in 0..n{
-        let factor = d.get(r, r);
+        let factor = unsafe {d.get_unchecked(r, r)};
         b.ero_scale(r, 1.0/factor);
     }
 
     // Solve backward substitution problem U X = B
     let mut r = u.num_rows() - 1;
     loop {
-        let pivot = u.get(r, r);
+        let pivot = unsafe {u.get_unchecked(r, r)};
         if pivot == 0. {
             // We have a problem here. We cannot find a solution.
             // TODO: make it more robust for under-determined systems.
@@ -219,7 +219,7 @@ pub fn ldu_solve(l : &MatrixF64,
         }
         b.ero_scale(r, 1.0/pivot);
         for j in (r+1)..u.num_rows(){
-            let factor = u.get(r, j) / pivot;
+            let factor = unsafe {u.get_unchecked(r, j)} / pivot;
             b.ero_scale_add(r, j as isize, -factor);  
         }
         if r == 0 {

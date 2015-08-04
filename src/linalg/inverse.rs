@@ -29,7 +29,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         }
         let mut v = a.view(k, k, n - k, n - k);
         // Pick the pivot
-        let pivot  = v.get(0, 0);
+        let pivot  = unsafe { v.get_unchecked(0, 0) } ;
         if pivot == 0. {
             return Err(SRError::IsSingular);
         }
@@ -37,7 +37,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         v.ero_scale(0, 1./pivot);
         result.ero_scale(k, 1./pivot);
         for r in (1..v.num_rows()){
-            let first = v.get(r, 0);
+            let first = unsafe { v.get_unchecked(r, 0) };
             v.ero_scale_add(r, 0, -first);
             // TODO: ignore 0 entries in k-th row of result
             result.ero_scale_add(k + r, k as isize, -first);
@@ -53,7 +53,7 @@ pub fn inverse_ero(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         // We are using (k, k) entry in a and
         // updating k-th column in a.
         for r in 0..k{
-            let factor = a.get(r, k);
+            let factor = unsafe { a.get_unchecked(r, k) };
             result.ero_scale_add(r, k as isize, -factor);
         }
         if k == 0 {
@@ -84,7 +84,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         }
         let mut v = a.view(k, k, n - k, n - k);
         // Pick the pivot
-        let pivot  = v.get(0, 0);
+        let pivot  = unsafe { v.get_unchecked(0, 0) };
         if pivot == 0. {
             return Err(SRError::IsSingular);
         }
@@ -92,7 +92,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         v.eco_scale(0, 1./pivot);
         result.eco_scale(k, 1./pivot);
         for c in (1..v.num_cols()){
-            let first = v.get(0, c);
+            let first = unsafe { v.get_unchecked(0, c) };
             v.eco_scale_add(c, 0, -first);
             // TODO: ignore 0 entries in k-th col of result
             result.eco_scale_add(k + c, k as isize, -first);
@@ -108,7 +108,7 @@ pub fn inverse_eco(a : &mut MatrixF64) ->  Result<MatrixF64, SRError>{
         // We are using (k, k) entry in a and
         // updating k-th row in a.
         for c in (0..k){
-            let factor = a.get(k, c);
+            let factor = unsafe { a.get_unchecked(k, c) };
             result.eco_scale_add(c, k as isize, -factor);
         }
         if k == 0 {

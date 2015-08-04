@@ -103,7 +103,7 @@ Constructing a 4x4 matrix of floating point numbers:
         for i in 0..16{
             let c = i >> 2;
             let r = i & 3;
-            assert_eq!(m.get(r, c), i as f64);
+            assert_eq!(m.get(r, c).unwrap(), i as f64);
         }
 
 
@@ -180,7 +180,7 @@ See from_range_cw function  for further discussion.
     for i in 0..16{
         let c = i >> 2;
         let r = i & 3;
-        assert_eq!(m.get(r, c), i as i64);
+        assert_eq!(m.get(r, c).unwrap(), i as i64);
     }
 "]
 #[inline]
@@ -232,7 +232,7 @@ See from_range_cw function  for further discussion.
     for i in 0..16{
         let c = i >> 2;
         let r = i & 3;
-        assert_eq!(m.get(r, c), i as u64);
+        assert_eq!(m.get(r, c).unwrap(), i as u64);
     }
 "]
 #[inline]
@@ -313,7 +313,7 @@ See from_range_rw function  for further discussion.
     for i in 0..16{
         let r = i >> 2;
         let c = i & 3;
-        assert_eq!(m.get(r, c), i as i64);
+        assert_eq!(m.get(r, c).unwrap(), i as i64);
     }
 "]
 #[inline]
@@ -365,7 +365,7 @@ See from_range_rw function  for further discussion.
     for i in 0..16{
         let r = i >> 2;
         let c = i & 3;
-        assert_eq!(m.get(r, c), i as u64);
+        assert_eq!(m.get(r, c).unwrap(), i as u64);
     }
 "]
 #[inline]
@@ -787,13 +787,13 @@ mod test{
     fn test_hadamard(){
         let m = hadamard(1).unwrap();
         assert_eq!(m.num_cells(), 1);
-        assert_eq!(m.get(0,0), 1.0);
+        assert_eq!(m.get(0,0).unwrap(), 1.0);
         let m = hadamard(2).unwrap();
         assert_eq!(m.num_cells(), 4);
-        assert_eq!(m.get(0,0), 1.0);
-        assert_eq!(m.get(0,1), 1.0);
-        assert_eq!(m.get(1,0), 1.0);
-        assert_eq!(m.get(1,1), -1.0);
+        assert_eq!(m.get(0,0).unwrap(), 1.0);
+        assert_eq!(m.get(0,1).unwrap(), 1.0);
+        assert_eq!(m.get(1,0).unwrap(), 1.0);
+        assert_eq!(m.get(1,1).unwrap(), -1.0);
         let m = hadamard(4).unwrap();
         assert!(m.is_square());
     }
@@ -804,7 +804,7 @@ mod test{
         for i in 0..16{
             let c = i >> 2;
             let r = i & 3;
-            assert_eq!(m.get(r, c), i as i64);
+            assert_eq!(m.get(r, c).unwrap(), i as i64);
         }
         let start  = 0.0;
         let stop = 16.0;
@@ -812,13 +812,13 @@ mod test{
         for i in 0..16{
             let c = i >> 2;
             let r = i & 3;
-            assert_eq!(m.get(r, c), i as f64);
+            assert_eq!(m.get(r, c).unwrap(), i as f64);
         }
         let m = from_range_cw_f64(4, 4, start, stop);
         for i in 0..16{
             let c = i >> 2;
             let r = i & 3;
-            assert_eq!(m.get(r, c), i as f64);
+            assert_eq!(m.get(r, c).unwrap(), i as f64);
         }
     }
 
@@ -830,31 +830,31 @@ mod test{
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as f64);
+            assert_eq!(m.get(r, c).unwrap(), i as f64);
         }
         let m = from_range_rw_i8(4, 4, 0, 16);
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as i8);
+            assert_eq!(m.get(r, c).unwrap(), i as i8);
         }
         let m = from_range_rw_i16(4, 4, 0, 16);
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as i16);
+            assert_eq!(m.get(r, c).unwrap(), i as i16);
         }
         let m = from_range_rw_i32(4, 4, 0, 16);
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as i32);
+            assert_eq!(m.get(r, c).unwrap(), i as i32);
         }
         let m = from_range_rw_i64(4, 4, 0, 16);
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as i64);
+            assert_eq!(m.get(r, c).unwrap(), i as i64);
         }
 
 
@@ -862,25 +862,25 @@ mod test{
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as u8);
+            assert_eq!(m.get(r, c).unwrap(), i as u8);
         }
         let m = from_range_rw_u16(4, 4, 0, 16);
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as u16);
+            assert_eq!(m.get(r, c).unwrap(), i as u16);
         }
         let m = from_range_rw_u32(4, 4, 0, 16);
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as u32);
+            assert_eq!(m.get(r, c).unwrap(), i as u32);
         }
         let m = from_range_rw_u64(4, 4, 0, 16);
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as u64);
+            assert_eq!(m.get(r, c).unwrap(), i as u64);
         }
 
 
@@ -888,14 +888,14 @@ mod test{
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as f64);
+            assert_eq!(m.get(r, c).unwrap(), i as f64);
         }
 
         let m = from_range_rw_f32(4, 4, 0.0, 16.0);
         for i in 0..16{
             let r = i >> 2;
             let c = i & 3;
-            assert_eq!(m.get(r, c), i as f32);
+            assert_eq!(m.get(r, c).unwrap(), i as f32);
         }
 
     }
@@ -907,55 +907,55 @@ mod test{
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as u8);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as u8);
         }
         let m = matrix_cw_u16(2,2, &[1,2,3,4]);
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as u16);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as u16);
         }
         let m = matrix_cw_u32(2,2, &[1,2,3,4]);
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as u32);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as u32);
         }
         let m = matrix_cw_u64(2,2, &[1,2,3,4]);
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as u64);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as u64);
         }
         let m = matrix_cw_i8(2,2, &[1,2,3,4]);
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as i8);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as i8);
         }
         let m = matrix_cw_i16(2,2, &[1,2,3,4]);
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as i16);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as i16);
         }
         let m = matrix_cw_i32(2,2, &[1,2,3,4]);
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as i32);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as i32);
         }
         let m = matrix_cw_i64(2,2, &[1,2,3,4]);
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as i64);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as i64);
         }
         let m = matrix_cw_f64(2,2, &[1.0,2.0,3.0,4.0]);
         for i in 0..4{
             let c = i >> 1;
             let r = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as f64);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as f64);
         }
 
         //  We will now test row wise construction functions.
@@ -965,55 +965,55 @@ mod test{
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as u8);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as u8);
         }
         let m = matrix_rw_u16(2,2, &[1,2,3,4]);
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as u16);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as u16);
         }
         let m = matrix_rw_u32(2,2, &[1,2,3,4]);
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as u32);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as u32);
         }
         let m = matrix_rw_u64(2,2, &[1,2,3,4]);
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as u64);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as u64);
         }
         let m = matrix_rw_i8(2,2, &[1,2,3,4]);
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as i8);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as i8);
         }
         let m = matrix_rw_i16(2,2, &[1,2,3,4]);
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as i16);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as i16);
         }
         let m = matrix_rw_i32(2,2, &[1,2,3,4]);
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as i32);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as i32);
         }
         let m = matrix_rw_i64(2,2, &[1,2,3,4]);
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as i64);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as i64);
         }
         let m = matrix_rw_f64(2,2, &[1.0,2.0,3.0,4.0]);
         for i in 0..4{
             let r = i >> 1;
             let c = i & 1;            
-            assert_eq!(m.get(r, c), (i + 1) as f64);
+            assert_eq!(m.get(r, c).unwrap(), (i + 1) as f64);
         }
     }
 
@@ -1023,70 +1023,70 @@ mod test{
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as u8);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as u8);
         }
 
         let v = vector_u16(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as u16);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as u16);
         }
 
         let v = vector_u32(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as u32);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as u32);
         }
 
         let v = vector_u64(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as u64);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as u64);
         }
 
         let v = vector_i8(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as i8);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as i8);
         }
 
         let v = vector_i16(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as i16);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as i16);
         }
 
         let v = vector_i32(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as i32);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as i32);
         }
 
         let v = vector_i64(&[1,2,3,4]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as i64);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as i64);
         }
 
         let v = vector_f32(&[1.,2.,3.,4.]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as f32);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as f32);
         }
 
         let v = vector_f64(&[1.,2.,3.,4.]);
         assert!(v.is_vector());
         assert!(v.is_col());
         for i in 0..4{
-            assert_eq!(v.get(i, 0), (i + 1) as f64);
+            assert_eq!(v.get(i, 0).unwrap(), (i + 1) as f64);
         }
 
     }

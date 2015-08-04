@@ -174,7 +174,7 @@ impl<T:CommutativeMonoidAddPartial> Shape<T> for TriangularMatrix<T> {
         self.size * self.size
     }
 
-    fn get(&self, r : usize, c : usize) -> T  {
+    unsafe fn get_unchecked(&self, r : usize, c : usize) -> T  {
         // These assertions help in checking matrix boundaries
         debug_assert!(r < self.size);
         debug_assert!(c < self.size);
@@ -182,10 +182,8 @@ impl<T:CommutativeMonoidAddPartial> Shape<T> for TriangularMatrix<T> {
             let v : T = Zero::zero();
             return v;
         }
-        unsafe {
-            // TODO : Optimize this
-            self.ptr.offset(self.cell_to_offset(r, c)).as_ref().unwrap().clone()
-        }
+        // TODO : Optimize this
+        self.ptr.offset(self.cell_to_offset(r, c)).as_ref().unwrap().clone()
     }
 
     fn set(&mut self, r : usize, c : usize, value : T) {
@@ -481,7 +479,7 @@ impl <T:CommutativeMonoidAddPartial> Extraction<T> for TriangularMatrix<T> {
         for c in (c..(c + num_cols)).map(|x | x % self.num_cols()) {
             let mut dr = 0;
             for r in (r..(r + num_rows)).map(|x|  x % self.num_rows()) {
-                let v = self.get(r, c);
+                let v = unsafe {self.get_unchecked(r, c)};
                 let dst_offset = result.cell_to_offset(dr, dc);
                 unsafe{
                     *pd.offset(dst_offset) = v;
@@ -600,10 +598,10 @@ mod tests {
         for r in 0..n {
             for c in 0..n{
                 if r > c {
-                    assert_eq!(m.get(r, c), 0);
+                    assert_eq!(m.get(r, c).unwrap(), 0);
                 }
                 else {
-                    assert_eq!(m.get(r, c), 1);
+                    assert_eq!(m.get(r, c).unwrap(), 1);
                 }
             }
         }
@@ -616,10 +614,10 @@ mod tests {
         for r in 0..n {
             for c in 0..n{
                 if r < c {
-                    assert_eq!(m.get(r, c), 0);
+                    assert_eq!(m.get(r, c).unwrap(), 0);
                 }
                 else {
-                    assert_eq!(m.get(r, c), 1);
+                    assert_eq!(m.get(r, c).unwrap(), 1);
                 }
             }
         }

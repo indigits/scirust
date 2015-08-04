@@ -1,0 +1,4 @@
+   Compiling scirust v0.0.4 (file:///I:/work/projects/scirust/srmat)
+     Running target\debug\scirust-bab943665c1b7cb4.exe
+thread '<main>' panicked at 'Some tests failed', ../src/libtest/lib.rs:253
+

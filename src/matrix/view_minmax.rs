@@ -18,7 +18,7 @@ impl <'a, T:CommutativeMonoidAddPartial+Signed+PartialOrd> MinMaxAbs<T> for Matr
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs();
+        let mut v = unsafe {self.get_unchecked(0, 0)}.abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;
@@ -42,7 +42,7 @@ impl <'a, T:CommutativeMonoidAddPartial+Signed+PartialOrd> MinMaxAbs<T> for Matr
         if self.is_empty(){
             panic!(SRError::EmptyMatrix.to_string());
         }
-        let mut v = self.get(0, 0).abs();
+        let mut v = unsafe {self.get_unchecked(0, 0)}.abs();
         // The location
         let mut rr = 0;
         let mut cc = 0;

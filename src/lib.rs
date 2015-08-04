@@ -33,6 +33,7 @@ C libraries like BLAS or LAPACK.
 #![feature(step_by)]
 #![feature(convert)]
 #![feature(test)]
+#![feature(associated_type_defaults)]
 
 #[macro_use(plugin, link)] 
 #[macro_use] 
