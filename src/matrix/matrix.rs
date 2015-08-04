@@ -518,18 +518,14 @@ impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> 
 
     /// Returns the trace of the matrix
     fn trace(&self) -> T{
-        let stride = self.stride() as isize;
-        let mut offset = 0;
-        let step = stride + 1;
-        let mut result : T = Zero::zero();
-        let ptr = self.as_ptr();
-        for _ in 0..self.smaller_dim(){
-            result = result + unsafe{*ptr.offset(offset)};
-            offset += step;
+        let mut result: T = Zero::zero();
+        for e in self.diagonal_iter(){
+            result = result + e;
         }
         result
     }
 }
+
 
 /// Introspection support
 impl<T> Introspection for Matrix<T> {
@@ -609,10 +605,11 @@ impl<T:MagmaBase> Matrix<T> {
 }
 
 
-/// Functions to construct new matrices out of a matrix and other conversions
-impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
 
+use std::fmt::Debug;
 
+/// Functions to access matrix elements safely and without bounds checking.
+impl<T: Debug + Clone + Copy + PartialEq> Matrix<T> {
 
     /// Returns an iterator over a specific row of matrix
     pub fn row_iter(&self, r : isize) -> RowIterator<T>{
@@ -642,6 +639,14 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
         iter
     }
 
+    /// Provide the main diagonal elements
+    pub fn diagonal_iter(&self) -> DiagIterator<T>{
+        DiagIterator::new(self.smaller_dim(),self.stride(), self.ptr)
+    }
+}
+
+/// Functions to construct new matrices out of a matrix and other conversions
+impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
 
     // Repeats this matrix in both horizontal and vertical directions 
     pub fn repeat_matrix(&self, num_rows : usize, num_cols : usize) -> Matrix<T> {
@@ -673,12 +678,10 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
     pub fn diagonal_vector(&self) -> Matrix<T> {
         let m  = self.smaller_dim();
         let result : Matrix<T> = Matrix::new(m, 1);
-        let src = self.ptr;
         let dst = result.ptr;
-        for i in 0..m{
-            let offset = self.cell_to_offset(i, i);
+        for (i, e) in (0..m).zip(self.diagonal_iter()){
             unsafe{
-                *dst.offset(i as isize) = *src.offset(offset);
+                *dst.offset(i as isize) = e;
             } 
         }
         result        
@@ -1979,6 +1982,7 @@ mod test {
     fn test_diagonal(){
         let m  : MatrixI64 = Matrix::from_iter_cw(4, 5, (10..30));
         let v = m.diagonal_vector();
+        println!("m: {} v: {}", m, v);
         assert!(v.is_vector());
         assert_eq!(v.num_cells(), 4);
         let v2 : MatrixI64 = Matrix::from_slice_cw(4, 1, vec![10, 15, 20, 25].as_slice());
@@ -2006,6 +2010,7 @@ mod test {
         let m = matrix_cw_f64(3, 3, &[1., 0., 0., 
             4., 5., 0.,
             6., 2., 3.]);
+        println!("{}", m.trace());
         assert_eq!(m.trace(), 9.);
     }
 
