@@ -4,8 +4,10 @@ rust:
   - beta
   - nightly
 matrix:
+  fast_finish: true
   allow_failure:
     - rust: beta
+    - rust: stable
 sudo: false
 env:
   global:
