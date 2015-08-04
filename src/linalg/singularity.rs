@@ -53,14 +53,7 @@ pub fn is_singular_diagonal<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPa
 
 /// Checks if any entry on the main diagonal is zero
 pub fn has_zero_on_diagonal<T:CommutativeMonoidAddPartial>(m : &Matrix<T>) -> bool {
-    let n = cmp::min(m.num_rows(), m.num_cols());
-    let z : T = Zero::zero();
-    for i in 0..n{
-        if unsafe { m.get_unchecked(i, i) } == z {
-            return true;
-        }
-    }
-    false
+    m.diagonal_iter().any(|x| x == T::zero())
 }
 
 #[cfg(test)]

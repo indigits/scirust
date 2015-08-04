@@ -605,10 +605,11 @@ impl<T:MagmaBase> Matrix<T> {
 }
 
 
-/// Functions to construct new matrices out of a matrix and other conversions
-impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
 
+use std::fmt::Debug;
 
+/// Functions to access matrix elements safely and without bounds checking.
+impl<T: Debug + Clone + Copy + PartialEq> Matrix<T> {
 
     /// Returns an iterator over a specific row of matrix
     pub fn row_iter(&self, r : isize) -> RowIterator<T>{
@@ -639,11 +640,13 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
     }
 
     /// Provide the main diagonal elements
-    fn diagonal_iter(&self) -> DiagIterator<T>{
+    pub fn diagonal_iter(&self) -> DiagIterator<T>{
         DiagIterator::new(self.smaller_dim(),self.stride(), self.ptr)
     }
+}
 
-
+/// Functions to construct new matrices out of a matrix and other conversions
+impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
 
     // Repeats this matrix in both horizontal and vertical directions 
     pub fn repeat_matrix(&self, num_rows : usize, num_cols : usize) -> Matrix<T> {
