@@ -518,13 +518,9 @@ impl<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> NumberMatrix<T> 
 
     /// Returns the trace of the matrix
     fn trace(&self) -> T{
-        let step = (self.stride() as isize) + 1;
         let mut result: T = Zero::zero();
-        let mut offset = 0;
-        let ptr = self.as_ptr();
-        for i in 0..self.smaller_dim(){
-            result = result + unsafe {*ptr.offset(offset)};
-            offset += step;
+        for e in self.diagonal_iter(){
+            result = result + e;
         }
         result
     }
