@@ -56,7 +56,7 @@ pub fn has_zero_on_diagonal<T:CommutativeMonoidAddPartial>(m : &Matrix<T>) -> bo
     let n = cmp::min(m.num_rows(), m.num_cols());
     let z : T = Zero::zero();
     for i in 0..n{
-        if unsafe { m.get_unchecked(i, i) } == z {
+        if m.get(i, i).unwrap() == z {
             return true;
         }
     }
