@@ -502,23 +502,43 @@ mod bench {
                 });
     }
 
-    #[bench]
-    fn bench_multiply_simple(b: &mut Bencher){
-        let m = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
-        b.iter(|| {
-                    // Matrix multiplication
-                    multiply_simple(&m, &m).is_ok();
-                });
+    macro_rules! make_multiply_bench {
+        ($simple_name:ident, $block_name:ident, $matrix_size:expr) => (
+            #[bench]
+            fn $simple_name(b: &mut Bencher){
+                let m = hadamard($matrix_size).unwrap();
+                b.iter(|| {
+                            // Matrix multiplication
+                            multiply_simple(&m, &m).is_ok();
+                        });
+            }
+            #[bench]
+            fn $block_name(b: &mut Bencher){
+                let m = hadamard($matrix_size).unwrap();
+                b.iter(|| {
+                            // Matrix multiplication
+                            multiply_block(&m, &m).is_ok();
+                        });
+            }
+        );
+        // ($name_end:ident, $matrix_size:expr) => (
+        //     make_multiply_bench(concat_idents!(bench_multiply_simple, $name_end),
+        //         concat_idents!(bench_multiply_block, $name_end),
+        //         $matrix_size);
+        //     )
     }
-
-    #[bench]
-    fn bench_multiply_block(b: &mut Bencher){
-        let m = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
-        b.iter(|| {
-                    // Matrix multiplication
-                    multiply_block(&m, &m).is_ok();
-                });
-    }
+    //the position of the numbers and the leading zeroes sort the benches intuitively
+    make_multiply_bench!(bench_multiply_0001_simple, bench_multiply_0001_block, 1);
+    make_multiply_bench!(bench_multiply_0002_simple, bench_multiply_0002_block, 2);
+    make_multiply_bench!(bench_multiply_0004_simple, bench_multiply_0004_block, 4);
+    make_multiply_bench!(bench_multiply_0008_simple, bench_multiply_0008_block, 8);
+    make_multiply_bench!(bench_multiply_0016_simple, bench_multiply_0016_block, 16);
+    make_multiply_bench!(bench_multiply_0032_simple, bench_multiply_0032_block, 32);
+    make_multiply_bench!(bench_multiply_0064_simple, bench_multiply_0064_block, 64);
+    make_multiply_bench!(bench_multiply_0128_simple, bench_multiply_0128_block, 128);
+    make_multiply_bench!(bench_multiply_0256_simple, bench_multiply_0256_block, 256);
+    make_multiply_bench!(bench_multiply_0512_simple, bench_multiply_0512_block, 512);
+    make_multiply_bench!(bench_multiply_1024_simple, bench_multiply_1024_block, 1024);
 
     #[bench]
     fn bench_multiply_transpose_simple(b: &mut Bencher){
