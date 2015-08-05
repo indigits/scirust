@@ -178,7 +178,7 @@ impl <T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Frame<T> for Ma
     rhs: &Matrix<T>)->SRResult<Matrix<T>>{
     use std::{cmp, slice};
     use std::ops::Add;
-    const BLOCK_SIZE:usize = 8;
+    const BLOCK_SIZE:usize = 16;
     // Validate dimensions match for multiplication
     if lhs.num_cols() != rhs.num_rows(){
         return Err(SRError::DimensionsMismatch);
