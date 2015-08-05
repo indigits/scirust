@@ -26,8 +26,10 @@ Current areas of focus
 
 For more details and examples, 
 see the 
-[API Documentation ](http://www.rust-ci.org/indigits/scirust/doc/scirust/).
+[API Documentation ](http://indigits.github.io/scirust/).
 
+A discussion group is setup at
+[SciRust Google Group](https://groups.google.com/forum/#!forum/scirust).
 
 # Features
 
