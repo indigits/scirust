@@ -1,12 +1,26 @@
 [package]
 
 name = "scirust"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Shailesh Kumar <shailesh@indigits.com>"]
+
+# A short blurb about the package. 
 description="A scientific computing library"
-documentation="http://www.rust-ci.org/indigits/scirust/doc/scirust/"
+
+# These URLs point to more information about the repository
+homepage = "https://github.com/indigits/scirust"
+repository = "https://github.com/indigits/scirust"
+documentation="http://indigits.github.io/scirust/doc/scirust/index.html"
+
+# This points to a file in the repository (relative to this Cargo.toml). The
+# contents of this file are stored and indexed in the registry.
 readme="./README.md"
-keywords=["math", "linear-algebra", "statistics", "matrix"]
+
+# This is a small list of keywords used to categorize and search for this
+# package.
+keywords=["math", "linear-algebra", "statistics", "matrix", "scientific-computing"]
+
+# This is a string description of the license for this package.
 license="Apache-2.0"
 
 
@@ -18,4 +32,5 @@ num = "*"
 [[bin]]
 
 name = "scirust_main"
+# The documentation for this target will not be generated.
 doc = false
