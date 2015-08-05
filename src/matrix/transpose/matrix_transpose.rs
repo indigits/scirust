@@ -174,11 +174,11 @@ impl <T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Frame<T> for Ma
  *******************************************************/
 
 
+const BLOCK_SIZE:usize = 16;
  pub fn multiply_block<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(lhs : &Matrix<T>,
     rhs: &Matrix<T>)->SRResult<Matrix<T>>{
     use std::{cmp, slice};
     use std::ops::Add;
-    const BLOCK_SIZE:usize = 16;
     // Validate dimensions match for multiplication
     if lhs.num_cols() != rhs.num_rows(){
         return Err(SRError::DimensionsMismatch);
@@ -323,7 +323,16 @@ pub fn multiply_transpose_simple<T:CommutativeMonoidAddPartial+CommutativeMonoid
 impl<'a, 'b, T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> ops::Mul<&'b Matrix<T>> for &'a Matrix<T>{
     type Output = Matrix<T>;
     fn mul(self, rhs: &Matrix<T>) -> Matrix<T> {
-        let result = multiply_simple(self, rhs);
+        let min_dimention = [self.num_cols(), self.num_rows(), rhs.num_cols(), rhs.num_rows()]
+            .iter()
+            .cloned()
+            .min().unwrap();
+        let use_block = min_dimention >= 2 * BLOCK_SIZE;
+        let result = if use_block {
+            multiply_block(self, rhs)
+        } else {
+            multiply_simple(self, rhs)
+        };
         match result {
             Ok(m) => m,
             Err(e) => panic!(e.to_string())
@@ -433,6 +442,19 @@ mod test{
         let m3 = multiply_block(&m1, &m2).unwrap();
         let m4 = multiply_transpose_simple(&m1.transpose(), &m2).unwrap();
         assert_eq!(m3, m4);
+    }
+
+    #[test]
+    fn test_small_mult_operator() {
+
+        let h =  hadamard(8).unwrap();
+        assert_eq!(&h * &h, *Matrix::identity(8, 8).mul_scalar(8.));
+    }
+
+    #[test]
+    fn test_big_mult_operator() {
+        let h = hadamard(64).unwrap();
+        assert_eq!(&h * &h, *Matrix::identity(64, 64).mul_scalar(64.));
     }
 }
 
