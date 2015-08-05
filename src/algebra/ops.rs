@@ -1,4 +1,3 @@
-#![feature(associated_type_defaults)]
 #![doc="Defines some operators.
 "]
 
