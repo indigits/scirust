@@ -25,13 +25,13 @@ pub use matrix::eo::*;
 
 
 // Linear algebra library
-// pub use linalg::linear_system::*;
-// pub use linalg::lu::*;
-// pub use linalg::singularity::*;
-// pub use linalg::inverse::*;
-// pub use linalg::rank::*;
+pub use linalg::linear_system::*;
+pub use linalg::lu::*;
+pub use linalg::singularity::*;
+pub use linalg::inverse::*;
+pub use linalg::rank::*;
 
 
 // Statistics library
-//pub use stat::moments::matrix_moments::*;
+pub use stat::moments::matrix_moments::*;
 
