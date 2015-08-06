@@ -1,10 +1,6 @@
 #![doc="Methods for checking singularity or invertibility of matrices.
 "]
 
-
-// std imports
-use std::cmp;
-
 // external imports
 use num::{Zero};
 

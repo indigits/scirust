@@ -581,7 +581,6 @@ mod bench {
     }
 
     #[bench]
-    #[ignore]
     fn bench_lu_ero_hadamard_512 (b: &mut Bencher){
         let a = hadamard(512).unwrap();
         let mut lus = LUDecomposition::new(a);

@@ -296,7 +296,6 @@ mod bench{
     }    
 
     #[bench]
-    #[ignore]
     fn bench_inverse_ero_hadamard_256 (b: &mut Bencher){
         let mut a = hadamard(256).unwrap();
         b.iter(|| {
