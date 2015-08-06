@@ -39,18 +39,28 @@ pub fn are_transpose<T:MagmaBase>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool{
 pub fn transpose_simple<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     let rows = src.num_rows();
     let cols = src.num_cols();
+    // Output matrix
     let mut result : Matrix<T> = Matrix::new(cols, rows);
+    // We will iterate the source matrix column wise
     let mut psrc_col = src.as_ptr();
+    // We will iterate the destination matrix row wise
     let mut pdst_row = result.as_mut_ptr();
+    // Source and destination strides
     let src_stride = src.stride() as isize;
     let dst_stride = result.stride() as isize;
+    // Iterate over source columns
     for _ in 0..cols{
+        // Pointer to the beginning of current column in source
         let mut psrc = psrc_col;
+        // Pointer to the beginning of current row in destination
         let mut pdst = pdst_row;
+        // Copy entries in the source column
         for _ in 0..rows{
             unsafe {
                 *pdst = *psrc;
+                // Move to next entry in source column
                 psrc = psrc.offset(1);
+                // Move to next entry in destination row
                 pdst = pdst.offset(dst_stride);
             }
         }
@@ -66,22 +76,26 @@ pub fn transpose_simple<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
 
 
 /// Block wise transpose
+/// This is more efficient than simple transpose for large matrices 
+/// due to caching considerations
 pub fn transpose_block<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     // Choose a block size
     let block_size = 32;
-    // Construct the destination
+    // Construct the destination result matrix
     let rows = src.num_rows();
     let cols = src.num_cols();
     let mut result : Matrix<T> = Matrix::new(cols, rows);
+    // Source and destination data pointers
     let psrc = src.as_ptr();
     let pdst = result.as_mut_ptr();
+    // Source and destination strides
     let src_stride = src.stride() as isize;
     let dst_stride = result.stride() as isize;
 
 
     for cc in (0..cols).step_by(block_size){
         for rr in (0..rows).step_by(block_size){
-            // We have to transpose a block of size blk x blk
+            // We have to transpose a block of size blk_rows x blk_cols
             let blk_cols = min (block_size, cols - cc);
             let blk_rows = min (block_size, rows - rr);
             unsafe{
