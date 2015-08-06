@@ -39,21 +39,21 @@
 //! Solving a linear system of equations using Gaussian elimination method
 //!
 //! ```
-//! # /// Import scirust library components
+//! # // Import scirust library components
 //! # use scirust::api::*;  
-//! /// Construct a 2x2 matrix 
+//! // Construct a 2x2 matrix 
 //! let a = matrix_cw_f64(2,2, &[1., 4., 2., 5.]);
-//! /// Print the contents of the matrix
+//! // Print the contents of the matrix
 //! println!("{}", a);
-//! /// A 2x1 vector.
+//! // A 2x1 vector.
 //! let b = vector_f64(&[3.0, 6.0]);
-//! /// Solve the linear equation A x = b.
+//! // Solve the linear equation A x = b.
 //! let x = GaussElimination::new(&a, &b).solve().unwrap();
-//! /// Print the solution vector.
+//! // Print the solution vector.
 //! println!("{}", x);
-//! /// Verify the solution
+//! // Verify the solution
 //! assert_eq!(x, vector_f64(&[-1., 2.]));
-//! /// Alternatively use the linear system validation algorithm.
+//! // Alternatively use the linear system validation algorithm.
 //! let lsv = LinearSystemValidator::new(&a, &x, &b);
 //! assert!(lsv.is_max_abs_val_below_threshold(1e-6));
 //! ```
