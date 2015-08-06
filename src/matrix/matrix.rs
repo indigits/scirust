@@ -126,13 +126,6 @@ the matrix differently.
 
 /// Static functions for creating  a matrix of numbers
 impl<T:CommutativeMonoidAddPartial> Matrix<T> {
-    /// Constructs a scalar matrix
-    pub fn from_scalar (scalar : T) -> Matrix <T>{
-        let m : Matrix<T> = Matrix::new(1, 1);
-        unsafe {*m.ptr = scalar;}
-        m
-    }
-
     /// Constructs a matrix of all zeros
     pub fn zeros(rows: usize, cols : usize)-> Matrix<T> {
         let m : Matrix<T> = Matrix::new(rows, cols);
@@ -151,6 +144,34 @@ impl<T:CommutativeMonoidAddPartial> Matrix<T> {
         m
     }
 
+    /// Construct a diagonal matrix from a vector
+    pub fn diag_from_vec(v : &Matrix<T>) -> Matrix<T>{
+        if !v.is_vector(){
+            panic!(SRError::IsNotAVector.to_string());
+        }
+        let n = v.num_cells();
+        let m : Matrix<T> = Matrix::zeros(n, n);
+        let src = v.ptr;
+        let dst = m.ptr;
+        // Copy the elements of v in the vector
+        for r in 0..n{
+            let offset = m.cell_to_offset(r, r);
+            unsafe{
+                *dst.offset(offset) =  *src.offset(r as isize);
+            }
+        }
+        m
+    }
+}
+
+impl<T: Debug + Clone + Copy + PartialEq> Matrix<T> {
+    /// Constructs a scalar matrix
+    pub fn from_scalar (scalar : T) -> Matrix <T>{
+        let m : Matrix<T> = Matrix::new(1, 1);
+        unsafe {*m.ptr = scalar;}
+        m
+    }
+
     #[doc = "Constructs a matrix from a slice of data reading
     data in column wise order.
     "]
@@ -163,7 +184,6 @@ impl<T:CommutativeMonoidAddPartial> Matrix<T> {
             let dst_slice = mat.as_mut_slice();
             // The number of entries we can copy
             let n_values = values.len();
-            let z : T = Zero::zero();
             let mut n = 0;
             let mut offset_dst = 0;
             for _ in 0..cols{
@@ -171,7 +191,7 @@ impl<T:CommutativeMonoidAddPartial> Matrix<T> {
                     let v = if n < n_values {
                         values[n]
                     }else{
-                        z
+                        panic!("While creating matrix, ran out of values early.")
                     };
                     dst_slice[offset_dst + r] = v;
                     n+=1;
@@ -199,14 +219,13 @@ by hand.
             let ptr = mat.ptr;
             // The number of entries we can copy
             let n_values = values.len();
-            let z : T = Zero::zero();
             let mut n = 0;
             for r in 0..rows{
                 for c in 0..cols{
                     let v = if n < n_values {
                         values[n]
                     }else{
-                        z
+                        panic!("While creating matrix, ran out of values early.")
                     };
                     let dst_offset = mat.cell_to_offset(r,c);
                     unsafe{
@@ -227,7 +246,6 @@ by hand.
         {
             let dst_slice = mat.as_mut_slice();
             let mut offset_dst = 0;
-            let z : T = Zero::zero();
             let mut completed_columns  = 0;
             'outer: for _ in 0..cols{
                 for r in 0..rows{
@@ -237,7 +255,7 @@ by hand.
                         None => {
                             // Finish this column with zeros
                             for _ in r..rows{
-                                dst_slice[offset_dst + r] = z;
+                                panic!("While creating matrix, ran out of values early.")
                             }
                             completed_columns += 1;
                             offset_dst += stride;
@@ -252,7 +270,7 @@ by hand.
                 // We  need to fill remaining columns with zeros
                 for _ in completed_columns..cols{
                     for r in 0..rows{
-                        dst_slice[offset_dst + r] = z;
+                        panic!("While creating matrix, ran out of values early.")
                     }
                     completed_columns += 1;
                     offset_dst += stride;
@@ -263,14 +281,12 @@ by hand.
         mat
     }
 
-
     /// Builds a matrix from an iterator reading numbers in a 
     /// row-wise order
     pub fn from_iter_rw< A : Iterator<Item=T>>(rows: usize, cols : usize, 
         iter: A) -> Matrix<T>{
         let m : Matrix<T> = Matrix::new(rows, cols);
         let ptr = m.ptr;
-        let z : T = Zero::zero();
         let mut r = 0;
         let mut c = 0;
         let nc = m.num_cols();
@@ -297,32 +313,9 @@ by hand.
             if r == nr {
                 break;
             }
-            let dst_offset = m.cell_to_offset(r, c);
-            unsafe{
-                *ptr.offset(dst_offset) = z;
-            }
-            c += 1;
+            panic!("While creating matrix, ran out of values early.")
         }
         // return
-        m
-    }
-
-    /// Construct a diagonal matrix from a vector
-    pub fn diag_from_vec(v : &Matrix<T>) -> Matrix<T>{
-        if !v.is_vector(){
-            panic!(SRError::IsNotAVector.to_string());
-        }
-        let n = v.num_cells();
-        let m : Matrix<T> = Matrix::zeros(n, n);
-        let src = v.ptr;
-        let dst = m.ptr;
-        // Copy the elements of v in the vector
-        for r in 0..n{
-            let offset = m.cell_to_offset(r, r);
-            unsafe{
-                *dst.offset(offset) =  *src.offset(r as isize);
-            }
-        }
         m
     }
 
