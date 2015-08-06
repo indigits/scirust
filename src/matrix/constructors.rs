@@ -12,12 +12,13 @@ use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
 use matrix::matrix::{Matrix, 
     MatrixI8, MatrixI16, MatrixI32, MatrixI64,
     MatrixU8, MatrixU16, MatrixU32, MatrixU64,
-    MatrixF32, MatrixF64};
+    MatrixF32, MatrixF64,
+    MatrixC32, MatrixC64};
 use matrix::traits::{Shape};
 use error::SRError;
 
 // complex numbers
-//use algebra::{Complex32, Complex64};
+use num::complex::{Complex32, Complex64};
 
 
 #[doc="Returns a Hadamard matrix of size n x n
@@ -485,7 +486,6 @@ pub fn matrix_cw_f64(rows : usize, cols : usize, values: &[f64])->MatrixF64 {
 }
 
 
-/*
 #[doc="Returns a 32-bit complex matrix whose entries are
 picked up from a slice in column wise order.
 "]
@@ -502,7 +502,6 @@ picked up from a slice in column wise order.
 pub fn matrix_cw_c64(rows : usize, cols : usize, values: &[Complex64])->MatrixC64 {
     Matrix::from_slice_cw(rows, cols, values)
 }
-*/
 
 #[doc="Returns an 8-bit unsigned integer matrix whose entries are
 picked up from a slice in row wise order.
