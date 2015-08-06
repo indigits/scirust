@@ -34,7 +34,7 @@
             <div class="search-container">
                 <input class="search-input" name="search"
                        autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
                        type="search">
             </div>
         </form>
@@ -42,17 +42,17 @@
 
     <section id='main' class="content struct">
 <h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>scirust</a>::<wbr><a href='../index.html'>matrix</a>::<wbr><a href='index.html'>matrix</a>::<wbr><a class='struct' href=''>Matrix</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="#" title="collapse all docs">[-]</a>
-        </span><a id='src-7246' class='srclink' href='../../../src/scirust/matrix/matrix.rs.html#54-65' title='goto source code'>[src]</a></span></h1>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-7394' class='srclink' href='../../../src/scirust/matrix/matrix.rs.html#52-59' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Matrix&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a>&gt; {
     // some fields omitted
 }</pre><div class='docblock'><p>Represents a matrix of numbers.</p>
 
 <p>The numbers are stored in column-major order.
 This is the standard in Fortran and MATLAB.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a>&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='docblock'><p>A matrix of 32-bit complex numbers numbers.
-A matrix of 64-bit complex numbers numbers.
-Static functions for creating  a matrix</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a>&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='docblock'><p>Static functions for creating  a matrix</p>
 </div><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Constructs a new matrix of given size (uninitialized).</p>
 
@@ -68,10 +68,10 @@ the matrix differently.</p>
 <div class='docblock'><p>Constructs a scalar matrix</p>
 </div><h4 id='method.zeros' class='method'><code>fn <a href='#method.zeros' class='fnname'>zeros</a>(rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Constructs a matrix of all zeros</p>
-</div><h4 id='method.from_slice_cw' class='method'><code>fn <a href='#method.from_slice_cw' class='fnname'>from_slice_cw</a>(rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, values: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[T]</a>) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+</div><h4 id='method.from_slice_cw' class='method'><code>fn <a href='#method.from_slice_cw' class='fnname'>from_slice_cw</a>(rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, values: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a>T<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Constructs a matrix from a slice of data reading
 data in column wise order.</p>
-</div><h4 id='method.from_slice_rw' class='method'><code>fn <a href='#method.from_slice_rw' class='fnname'>from_slice_rw</a>(rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, values: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[T]</a>) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+</div><h4 id='method.from_slice_rw' class='method'><code>fn <a href='#method.from_slice_rw' class='fnname'>from_slice_rw</a>(rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, values: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a>T<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Constructs a matrix from a slice of data reading data in row wise order.</p>
 
 <h1 id="remarks" class='section-header'><a
@@ -98,14 +98,19 @@ row-wise order</p>
 </div><div class='impl-items'><h4 id='method.capacity' class='method'><code>fn <a href='#method.capacity' class='fnname'>capacity</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
 <div class='docblock'><p>Returns the capacity of the matrix
 i.e. the number of elements it can hold</p>
-</div></div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidAddPartial.html' title='scirust::algebra::structure::monoid::CommutativeMonoidAddPartial'>CommutativeMonoidAddPartial</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.One.html' title='num::traits::One'>One</a>&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='docblock'><p>Functions to construct new matrices out of a matrix and other conversions</p>
+</div><h4 id='method.reshape' class='method'><code>fn <a href='#method.reshape' class='fnname'>reshape</a>(&amp;mut self, rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Reshapes the matrix</p>
+</div></div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='docblock'><p>Functions to access matrix elements safely and without bounds checking.</p>
 </div><div class='impl-items'><h4 id='method.row_iter' class='method'><code>fn <a href='#method.row_iter' class='fnname'>row_iter</a>(&amp;self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a>) -&gt; <a class='struct' href='../../../scirust/matrix/iter/struct.RowIterator.html' title='scirust::matrix::iter::RowIterator'>RowIterator</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Returns an iterator over a specific row of matrix</p>
 </div><h4 id='method.col_iter' class='method'><code>fn <a href='#method.col_iter' class='fnname'>col_iter</a>(&amp;self, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.isize.html'>isize</a>) -&gt; <a class='struct' href='../../../scirust/matrix/iter/struct.ColIterator.html' title='scirust::matrix::iter::ColIterator'>ColIterator</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Returns an iterator over a specific column of the matrix</p>
 </div><h4 id='method.cell_iter' class='method'><code>fn <a href='#method.cell_iter' class='fnname'>cell_iter</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/iter/struct.CellIterator.html' title='scirust::matrix::iter::CellIterator'>CellIterator</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Returns an iterator over all cells  of the matrix</p>
-</div><h4 id='method.repeat_matrix' class='method'><code>fn <a href='#method.repeat_matrix' class='fnname'>repeat_matrix</a>(&amp;self, num_rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, num_cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+</div><h4 id='method.diagonal_iter' class='method'><code>fn <a href='#method.diagonal_iter' class='fnname'>diagonal_iter</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/iter/struct.DiagIterator.html' title='scirust::matrix::iter::DiagIterator'>DiagIterator</a>&lt;T&gt;</code></h4>
+<div class='docblock'><p>Provide the main diagonal elements</p>
+</div></div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidAddPartial.html' title='scirust::algebra::structure::monoid::CommutativeMonoidAddPartial'>CommutativeMonoidAddPartial</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.One.html' title='num::traits::One'>One</a>&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='docblock'><p>Functions to construct new matrices out of a matrix and other conversions</p>
+</div><div class='impl-items'><h4 id='method.repeat_matrix' class='method'><code>fn <a href='#method.repeat_matrix' class='fnname'>repeat_matrix</a>(&amp;self, num_rows: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, num_cols: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 <h4 id='method.diagonal_vector' class='method'><code>fn <a href='#method.diagonal_vector' class='fnname'>diagonal_vector</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Extracts the primary diagonal from the matrix as a vector</p>
 </div><h4 id='method.diagonal_matrix' class='method'><code>fn <a href='#method.diagonal_matrix' class='fnname'>diagonal_matrix</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
@@ -182,14 +187,14 @@ ordering [at least partial ordering for floating point numbers].</p>
 </div></div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidMulPartial.html' title='scirust::algebra::structure::monoid::CommutativeMonoidMulPartial'>CommutativeMonoidMulPartial</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.Div.html' title='core::ops::Div'>Div</a>&lt;Output=T&gt;&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.div_elt' class='method'><code>fn <a href='#method.div_elt' class='fnname'>div_elt</a>(&amp;self, rhs: &amp;<a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 <div class='docblock'><p>Divides matrices element by element</p>
 </div></div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a>&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.print_state' class='method'><code>fn <a href='#method.print_state' class='fnname'>print_state</a>(&amp;self)</code></h4>
-</div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a>&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.as_slice_' class='method'><code>fn <a href='#method.as_slice_' class='fnname'>as_slice_</a>&lt;'a&gt;(&amp;'a self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [T]</a></code></h4>
-<div class='docblock'><p>Returns a slice into <code>self</code>.</p>
+</div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a>&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.as_slice_' class='method'><code>fn <a href='#method.as_slice_' class='fnname'>as_slice_</a>&lt;'a&gt;(&amp;'a self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a>T<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></h4>
+<div class='docblock'><p>Returns a slice into <code>self</code>`self`.</p>
 </div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/magma/trait.MagmaBase.html' title='scirust::algebra::structure::magma::MagmaBase'>MagmaBase</a>&gt; <a class='trait' href='../../../scirust/matrix/traits/trait.Shape.html' title='scirust::matrix::traits::Shape'>Shape</a>&lt;T&gt; for <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='docblock'><p>Core methods for all matrix types</p>
 </div><div class='impl-items'><h4 id='method.num_rows' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.num_rows' class='fnname'>num_rows</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
 <h4 id='method.num_cols' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.num_cols' class='fnname'>num_cols</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
 <h4 id='method.size' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.size' class='fnname'>size</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</a></code></h4>
 <h4 id='method.num_cells' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.num_cells' class='fnname'>num_cells</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
-<h4 id='method.get' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.get' class='fnname'>get</a>(&amp;self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; T</code></h4>
+<h4 id='method.get_unchecked' class='method'><code>unsafe fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.get_unchecked' class='fnname'>get_unchecked</a>(&amp;self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; T</code></h4>
 <h4 id='method.set' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.set' class='fnname'>set</a>(&amp;mut self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, value: T)</code></h4>
 <h4 id='method.is_row' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.is_row' class='fnname'>is_row</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
 <h4 id='method.is_col' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.is_col' class='fnname'>is_col</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
@@ -197,6 +202,7 @@ ordering [at least partial ordering for floating point numbers].</p>
 <h4 id='method.is_vector' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.is_vector' class='fnname'>is_vector</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
 <h4 id='method.is_empty' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
 <h4 id='method.is_square' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.is_square' class='fnname'>is_square</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.get' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.get' class='fnname'>get</a>(&amp;self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h4>
 <h4 id='method.index_to_cell' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.index_to_cell' class='fnname'>index_to_cell</a>(&amp;self, index: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</a></code></h4>
 <h4 id='method.cell_to_index' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.cell_to_index' class='fnname'>cell_to_index</a>(&amp;self, r: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, c: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
 <h4 id='method.smaller_dim' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.Shape.html#method.smaller_dim' class='fnname'>smaller_dim</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
@@ -302,39 +308,61 @@ TODO Optimize implementations.</p>
 <h4 id='method.max_col_wise' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.MinMax.html#method.max_col_wise' class='fnname'>max_col_wise</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 <h4 id='method.min_col_wise' class='method'><code>fn <a href='../../../scirust/matrix/traits/trait.MinMax.html#method.min_col_wise' class='fnname'>min_col_wise</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 </div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/commutative_ring/trait.CommutativeRingPartial.html' title='scirust::algebra::structure::commutative_ring::CommutativeRingPartial'>CommutativeRingPartial</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.Signed.html' title='num::traits::Signed'>Signed</a>&gt; <a class='trait' href='../../../scirust/linalg/matrix/mat_traits/trait.LANumberMatrix.html' title='scirust::linalg::matrix::mat_traits::LANumberMatrix'>LANumberMatrix</a>&lt;T&gt; for <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.det' class='method'><code>fn <a href='../../../scirust/linalg/matrix/mat_traits/trait.LANumberMatrix.html#method.det' class='fnname'>det</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='enum' href='../../../scirust/error/enum.SRError.html' title='scirust::error::SRError'>SRError</a>&gt;</code></h4>
+</div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidAddPartial.html' title='scirust::algebra::structure::monoid::CommutativeMonoidAddPartial'>CommutativeMonoidAddPartial</a> + <a class='trait' href='../../../scirust/algebra/structure/monoid/trait.CommutativeMonoidMulPartial.html' title='scirust::algebra::structure::monoid::CommutativeMonoidMulPartial'>CommutativeMonoidMulPartial</a>&gt; <a class='trait' href='../../../scirust/stat/moments/traits/trait.Sums.html' title='scirust::stat::moments::traits::Sums'>Sums</a>&lt;T&gt; for <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.sum_cw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Sums.html#method.sum_cw' class='fnname'>sum_cw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.sum_rw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Sums.html#method.sum_rw' class='fnname'>sum_rw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.sum_sqr_cw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Sums.html#method.sum_sqr_cw' class='fnname'>sum_sqr_cw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.sum_sqr_rw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Sums.html#method.sum_sqr_rw' class='fnname'>sum_sqr_rw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+</div><h3 class='impl'><code>impl&lt;T: <a class='trait' href='../../../scirust/algebra/structure/field/trait.FieldPartial.html' title='scirust::algebra::structure::field::FieldPartial'>FieldPartial</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.Float.html' title='num::traits::Float'>Float</a> + <a class='trait' href='http://doc.rust-lang.org/num/num/traits/trait.FromPrimitive.html' title='num::traits::FromPrimitive'>FromPrimitive</a>&gt; <a class='trait' href='../../../scirust/stat/moments/traits/trait.Moments.html' title='scirust::stat::moments::traits::Moments'>Moments</a>&lt;T&gt; for <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h3><div class='impl-items'><h4 id='method.mean_cw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Moments.html#method.mean_cw' class='fnname'>mean_cw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.mean_rw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Moments.html#method.mean_rw' class='fnname'>mean_rw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.mean_sqr_cw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Moments.html#method.mean_sqr_cw' class='fnname'>mean_sqr_cw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.mean_sqr_rw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Moments.html#method.mean_sqr_rw' class='fnname'>mean_sqr_rw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.var_cw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Moments.html#method.var_cw' class='fnname'>var_cw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.var_rw' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Moments.html#method.var_rw' class='fnname'>var_rw</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
+<h4 id='method.cov' class='method'><code>fn <a href='../../../scirust/stat/moments/traits/trait.Moments.html#method.cov' class='fnname'>cov</a>(&amp;self) -&gt; <a class='struct' href='../../../scirust/matrix/matrix/struct.Matrix.html' title='scirust::matrix::matrix::Matrix'>Matrix</a>&lt;T&gt;</code></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
 
     <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
         </div>
     </div>
 

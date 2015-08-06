@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["Division","Marker interface for restricting division to only those types which support full division"],["Recip",""]]});
+initSidebarItems({"trait":[["Division","Marker interface for restricting division to only those types which support exact division"],["Recip","A type for which computing the reciprocal is supported. Supported types include f32, f64, etc.. "]]});

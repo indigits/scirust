@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["complex",""],["ops","Defines some operators."],["structure","Defines generic traits for algebraic structures on which SciRust library works."]]});
+initSidebarItems({"mod":[["complex","Support for algebraic structure traits on complex numbers."],["ops","Defines some operators."],["structure","Defines generic traits for algebraic structures on which SciRust library works."]]});

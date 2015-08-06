@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["CellIterator","A column major iterator over the elements of a matrix"],["ColIterator","An iterator over the elements of a matrix in a column"],["RowIterator","An iterator over the elements of a matrix in a row"]]});
+initSidebarItems({"struct":[["CellIterator","A column major iterator over the elements of a matrix"],["ColIterator","An iterator over the elements of a matrix in a column"],["DiagIterator","An iterator over the major diagonal of a matrix."],["RowIterator","An iterator over the elements of a matrix in a row"]]});

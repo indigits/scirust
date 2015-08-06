@@ -34,7 +34,7 @@
             <div class="search-container">
                 <input class="search-input" name="search"
                        autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
                        type="search">
             </div>
         </form>
@@ -2300,11 +2300,13 @@
 <span id="2258">2258</span>
 <span id="2259">2259</span>
 <span id="2260">2260</span>
+<span id="2261">2261</span>
+<span id="2262">2262</span>
 </pre><pre class='rust '>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Provides the basic Matrix data type
 &quot;</span>]</span>
 
-<span class='comment'>// std imports</span>
+<span class='comment'>// std imports</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ptr</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>;
@@ -2316,10 +2318,11 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::{<span class='ident'>Index</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>raw</span>::<span class='ident'>Slice</span>;
 
-<span class='comment'>// external imports</span>
+<span class='comment'>// external imports</span>
 <span class='kw'>use</span> <span class='ident'>num</span>::<span class='ident'>traits</span>::{<span class='ident'>Zero</span>, <span class='ident'>One</span>, <span class='ident'>Signed</span>};
+<span class='kw'>use</span> <span class='ident'>num</span>::<span class='ident'>complex</span>::{<span class='ident'>Complex32</span>, <span class='ident'>Complex64</span>};
 
-<span class='comment'>// local imports</span>
+<span class='comment'>// local imports</span>
 
 <span class='kw'>use</span> <span class='ident'>discrete</span>::{<span class='ident'>mod_n</span>};
 <span class='kw'>use</span> <span class='ident'>algebra</span>::<span class='ident'>structure</span>::{<span class='ident'>MagmaBase</span>, 
@@ -2339,9 +2342,6 @@
     <span class='ident'>MatrixBuffer</span>,
     <span class='ident'>Search</span>};
 
-<span class='comment'>// complex numbers</span>
-<span class='comment'>//use algebra::Complex32;</span>
-<span class='comment'>//use algebra::Complex64;</span>
 
 <span class='kw'>use</span> <span class='ident'>util</span>;
 
@@ -2359,10 +2359,6 @@ This is the standard in Fortran and MATLAB.
     <span class='ident'>rows</span> : <span class='ident'>usize</span>,
     <span class='doccomment'>/// Number of columns in the matrix</span>
     <span class='ident'>cols</span> : <span class='ident'>usize</span>, 
-    <span class='doccomment'>/// Number of allocated rows </span>
-    <span class='ident'>xrows</span> : <span class='ident'>usize</span>, 
-    <span class='doccomment'>/// Number of allocated columns</span>
-    <span class='ident'>xcols</span> : <span class='ident'>usize</span>,
     <span class='doccomment'>/// The pointer to raw data array of the matrix</span>
     <span class='ident'>ptr</span> : <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span>
 }
@@ -2388,9 +2384,9 @@ This is the standard in Fortran and MATLAB.
 <span class='doccomment'>/// A matrix of 64-bit floating point numbers.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>MatrixF64</span> <span class='op'>=</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>f64</span><span class='op'>&gt;</span>;
 <span class='doccomment'>/// A matrix of 32-bit complex numbers numbers.</span>
-<span class='comment'>//pub type MatrixC32 = Matrix&lt;Complex32&gt;;</span>
+<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>MatrixC32</span> <span class='op'>=</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>Complex32</span><span class='op'>&gt;</span>;
 <span class='doccomment'>/// A matrix of 64-bit complex numbers numbers.</span>
-<span class='comment'>//pub type MatrixC64 = Matrix&lt;Complex64&gt;;</span>
+<span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>MatrixC64</span> <span class='op'>=</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>Complex64</span><span class='op'>&gt;</span>;
 
 
 
@@ -2410,30 +2406,24 @@ the matrix differently.
 &quot;</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>rows</span>: <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>)<span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='macro'>debug_assert</span><span class='macro'>!</span> (<span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>() <span class='op'>!=</span> <span class='number'>0</span>);
-        <span class='kw'>let</span> <span class='ident'>xrows</span> <span class='op'>=</span> <span class='ident'>rows</span>.<span class='ident'>next_power_of_two</span>();
-        <span class='kw'>let</span> <span class='ident'>xcols</span> <span class='op'>=</span> <span class='ident'>cols</span>.<span class='ident'>next_power_of_two</span>();
-        <span class='kw'>let</span> <span class='ident'>capacity</span> <span class='op'>=</span> <span class='ident'>xrows</span> <span class='op'>*</span>  <span class='ident'>xcols</span>;
+        <span class='kw'>let</span> <span class='ident'>capacity</span> <span class='op'>=</span> <span class='ident'>rows</span> <span class='op'>*</span>  <span class='ident'>cols</span>;
 
-        <span class='comment'>// Support for empty  matrices</span>
+        <span class='comment'>// Support for empty  matrices</span>
         <span class='kw'>if</span> <span class='ident'>capacity</span> <span class='op'>==</span> <span class='number'>0</span>{
-            <span class='comment'>// We do not allocate any memory for the buffer.</span>
-            <span class='comment'>// We leave it as a NULL pointer.</span>
+            <span class='comment'>// We do not allocate any memory for the buffer.</span>
+            <span class='comment'>// We leave it as a NULL pointer.</span>
             <span class='kw'>return</span> <span class='ident'>Matrix</span> { <span class='ident'>rows</span> : <span class='ident'>rows</span>, 
                 <span class='ident'>cols</span> : <span class='ident'>cols</span>,
-                <span class='ident'>xrows</span> : <span class='ident'>xrows</span>,
-                <span class='ident'>xcols</span> : <span class='ident'>xcols</span>, 
                 <span class='ident'>ptr</span> : <span class='ident'>ptr</span>::<span class='ident'>null_mut</span>()
             };
         }
         <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> <span class='ident'>capacity</span> <span class='op'>*</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>();
         <span class='kw'>let</span> <span class='ident'>raw</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
-            <span class='ident'>allocate</span>(<span class='ident'>bytes</span>, <span class='ident'>mem</span>::<span class='ident'>min_align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>())
+            <span class='ident'>allocate</span>(<span class='ident'>bytes</span>, <span class='ident'>mem</span>::<span class='ident'>align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>())
         };
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='ident'>raw</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span>;
         <span class='ident'>Matrix</span> { <span class='ident'>rows</span> : <span class='ident'>rows</span>, 
-                <span class='ident'>cols</span> : <span class='ident'>cols</span>,
-                <span class='ident'>xrows</span> : <span class='ident'>xrows</span>,
-                <span class='ident'>xcols</span> : <span class='ident'>xcols</span>, 
+                <span class='ident'>cols</span> : <span class='ident'>cols</span>, 
                 <span class='ident'>ptr</span> : <span class='ident'>ptr</span>}
     }
 
@@ -2452,7 +2442,7 @@ the matrix differently.
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>zeros</span>(<span class='ident'>rows</span>: <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>)<span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>ptr</span>;
-        <span class='comment'>// zero out the memory</span>
+        <span class='comment'>// zero out the memory</span>
         <span class='kw'>let</span> <span class='ident'>z</span> : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>();
         <span class='kw'>unsafe</span> {
             <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>cols</span>{
@@ -2471,12 +2461,12 @@ the matrix differently.
     &quot;</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_slice_cw</span>(<span class='ident'>rows</span>: <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>, <span class='ident'>values</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>T</span>]) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>mat</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
-        <span class='comment'>// stride of new matrix</span>
+        <span class='comment'>// stride of new matrix</span>
         <span class='kw'>let</span> <span class='ident'>stride</span> <span class='op'>=</span> <span class='ident'>mat</span>.<span class='ident'>stride</span>();
-        <span class='comment'>// get a mutable slice from m</span>
+        <span class='comment'>// get a mutable slice from m</span>
         {
             <span class='kw'>let</span> <span class='ident'>dst_slice</span> <span class='op'>=</span> <span class='ident'>mat</span>.<span class='ident'>as_mut_slice</span>();
-            <span class='comment'>// The number of entries we can copy</span>
+            <span class='comment'>// The number of entries we can copy</span>
             <span class='kw'>let</span> <span class='ident'>n_values</span> <span class='op'>=</span> <span class='ident'>values</span>.<span class='ident'>len</span>();
             <span class='kw'>let</span> <span class='ident'>z</span> : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>();
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='number'>0</span>;
@@ -2494,7 +2484,7 @@ the matrix differently.
                 <span class='ident'>offset_dst</span> <span class='op'>+=</span> <span class='ident'>stride</span>;
             }
         }
-        <span class='comment'>// return</span>
+        <span class='comment'>// return</span>
         <span class='ident'>mat</span>
     }
 
@@ -2509,10 +2499,10 @@ by hand.
 &quot;</span>]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_slice_rw</span>(<span class='ident'>rows</span>: <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>, <span class='ident'>values</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>T</span>]) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
         <span class='kw'>let</span> <span class='ident'>mat</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
-        <span class='comment'>// get a mutable slice from m</span>
+        <span class='comment'>// get a mutable slice from m</span>
         {
             <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='ident'>mat</span>.<span class='ident'>ptr</span>;
-            <span class='comment'>// The number of entries we can copy</span>
+            <span class='comment'>// The number of entries we can copy</span>
             <span class='kw'>let</span> <span class='ident'>n_values</span> <span class='op'>=</span> <span class='ident'>values</span>.<span class='ident'>len</span>();
             <span class='kw'>let</span> <span class='ident'>z</span> : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>();
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='number'>0</span>;
@@ -2531,14 +2521,14 @@ by hand.
                 }
             }
         }
-        <span class='comment'>// return</span>
+        <span class='comment'>// return</span>
         <span class='ident'>mat</span>
     }
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_iter_cw</span><span class='op'>&lt;</span> <span class='ident'>A</span> : <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span><span class='op'>=</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>(<span class='ident'>rows</span>: <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>, <span class='kw-2'>mut</span> <span class='ident'>iter</span>: <span class='ident'>A</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>mat</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
         <span class='kw'>let</span> <span class='ident'>stride</span> <span class='op'>=</span> <span class='ident'>mat</span>.<span class='ident'>stride</span>();
-        <span class='comment'>// get a mutable slice from m</span>
+        <span class='comment'>// get a mutable slice from m</span>
         {
             <span class='kw'>let</span> <span class='ident'>dst_slice</span> <span class='op'>=</span> <span class='ident'>mat</span>.<span class='ident'>as_mut_slice</span>();
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>offset_dst</span> <span class='op'>=</span> <span class='number'>0</span>;
@@ -2550,7 +2540,7 @@ by hand.
                     <span class='kw'>match</span> <span class='ident'>next_val</span>{
                         <span class='prelude-val'>Some</span>(<span class='ident'>val</span>) <span class='op'>=&gt;</span> <span class='ident'>dst_slice</span>[<span class='ident'>offset_dst</span> <span class='op'>+</span> <span class='ident'>r</span>] <span class='op'>=</span> <span class='ident'>val</span>,
                         <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
-                            <span class='comment'>// Finish this column with zeros</span>
+                            <span class='comment'>// Finish this column with zeros</span>
                             <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='ident'>r</span>..<span class='ident'>rows</span>{
                                 <span class='ident'>dst_slice</span>[<span class='ident'>offset_dst</span> <span class='op'>+</span> <span class='ident'>r</span>] <span class='op'>=</span> <span class='ident'>z</span>;
                             }
@@ -2564,7 +2554,7 @@ by hand.
                 <span class='ident'>offset_dst</span> <span class='op'>+=</span> <span class='ident'>stride</span>;
             }
             <span class='kw'>if</span> <span class='ident'>completed_columns</span> <span class='op'>&lt;</span> <span class='ident'>cols</span> {
-                <span class='comment'>// We  need to fill remaining columns with zeros</span>
+                <span class='comment'>// We  need to fill remaining columns with zeros</span>
                 <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='ident'>completed_columns</span>..<span class='ident'>cols</span>{
                     <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>rows</span>{
                         <span class='ident'>dst_slice</span>[<span class='ident'>offset_dst</span> <span class='op'>+</span> <span class='ident'>r</span>] <span class='op'>=</span> <span class='ident'>z</span>;
@@ -2574,7 +2564,7 @@ by hand.
                 }
             }
         }
-        <span class='comment'>// return</span>
+        <span class='comment'>// return</span>
         <span class='ident'>mat</span>
     }
 
@@ -2618,7 +2608,7 @@ by hand.
             }
             <span class='ident'>c</span> <span class='op'>+=</span> <span class='number'>1</span>;
         }
-        <span class='comment'>// return</span>
+        <span class='comment'>// return</span>
         <span class='ident'>m</span>
     }
 
@@ -2631,7 +2621,7 @@ by hand.
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>zeros</span>(<span class='ident'>n</span>, <span class='ident'>n</span>);
         <span class='kw'>let</span> <span class='ident'>src</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>ptr</span>;
         <span class='kw'>let</span> <span class='ident'>dst</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>ptr</span>;
-        <span class='comment'>// Copy the elements of v in the vector</span>
+        <span class='comment'>// Copy the elements of v in the vector</span>
         <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span>{
             <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>r</span>);
             <span class='kw'>unsafe</span>{
@@ -2649,7 +2639,7 @@ by hand.
     <span class='doccomment'>/// Constructs a matrix of all ones.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>ones</span>(<span class='ident'>rows</span>: <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>)<span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
-        <span class='comment'>// fill with ones</span>
+        <span class='comment'>// fill with ones</span>
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>ptr</span>;
         <span class='kw'>let</span> <span class='ident'>o</span> : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>One</span>::<span class='ident'>one</span>();
         <span class='kw'>unsafe</span> {
@@ -2668,7 +2658,7 @@ by hand.
     <span class='doccomment'>/// Constructs an identity matrix</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>identity</span>(<span class='ident'>rows</span>: <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>zeros</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
-        <span class='comment'>// fill with ones</span>
+        <span class='comment'>// fill with ones</span>
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>ptr</span>;
         <span class='kw'>let</span> <span class='ident'>one</span> : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>One</span>::<span class='ident'>one</span>();
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='ident'>cmp</span>::<span class='ident'>min</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
@@ -2716,20 +2706,18 @@ by hand.
     }
 
 
-    <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>usize</span>, <span class='ident'>c</span> : <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span>  {
-        <span class='comment'>// These assertions help in checking matrix boundaries</span>
+    <span class='kw'>unsafe</span> <span class='kw'>fn</span> <span class='ident'>get_unchecked</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>usize</span>, <span class='ident'>c</span> : <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span>  {
+        <span class='comment'>// These assertions help in checking matrix boundaries</span>
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>r</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>rows</span>);
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>c</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>cols</span>);
         <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
-        <span class='kw'>unsafe</span> {
-            <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>);
-            <span class='comment'>// TODO : Optimize this</span>
-            <span class='ident'>v</span>.<span class='ident'>as_ref</span>().<span class='ident'>unwrap</span>().<span class='ident'>clone</span>()
-        }
+        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>);
+        <span class='comment'>// TODO : Optimize this</span>
+        <span class='ident'>v</span>.<span class='ident'>as_ref</span>().<span class='ident'>unwrap</span>().<span class='ident'>clone</span>()
     }
 
     <span class='kw'>fn</span> <span class='ident'>set</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>usize</span>, <span class='ident'>c</span> : <span class='ident'>usize</span>, <span class='ident'>value</span> : <span class='ident'>T</span>) {
-        <span class='comment'>// These assertions help in checking matrix boundaries</span>
+        <span class='comment'>// These assertions help in checking matrix boundaries</span>
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>r</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>rows</span>);
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>c</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>cols</span>);
         <span class='kw'>unsafe</span> {
@@ -2816,15 +2804,17 @@ by hand.
     <span class='doccomment'>/// Returns if the matrix is symmetric</span>
     <span class='kw'>fn</span> <span class='ident'>is_symmetric</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span>{
         <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>is_square</span>(){
-            <span class='comment'>// Only square matrices can be symmetric</span>
+            <span class='comment'>// Only square matrices can be symmetric</span>
             <span class='kw'>return</span> <span class='boolval'>false</span>;
         }
-        <span class='comment'>// size of the square matrix</span>
+        <span class='comment'>// size of the square matrix</span>
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>num_rows</span>();
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span>{
             <span class='kw'>for</span> <span class='ident'>j</span> <span class='kw'>in</span> (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>)..<span class='ident'>n</span>{
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='ident'>j</span>) <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='ident'>j</span>, <span class='ident'>i</span>) {
-                    <span class='kw'>return</span> <span class='boolval'>false</span>;
+                <span class='kw'>unsafe</span> {
+                    <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>get_unchecked</span>(<span class='ident'>i</span>, <span class='ident'>j</span>) <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>get_unchecked</span>(<span class='ident'>j</span>, <span class='ident'>i</span>) {
+                        <span class='kw'>return</span> <span class='boolval'>false</span>;
+                    }
                 }
             }
         }
@@ -2833,20 +2823,14 @@ by hand.
 
     <span class='doccomment'>/// Returns the trace of the matrix</span>
     <span class='kw'>fn</span> <span class='ident'>trace</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span>{
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>() {
-            <span class='kw'>return</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>()
-        }
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>);
-        <span class='kw'>let</span> <span class='ident'>stride</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>stride</span>() <span class='kw'>as</span> <span class='ident'>isize</span>;
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='ident'>stride</span>;
-        <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>as_ptr</span>();
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>1</span>..<span class='self'>self</span>.<span class='ident'>smaller_dim</span>(){
-            <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>result</span> <span class='op'>+</span> <span class='kw'>unsafe</span>{<span class='op'>*</span><span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span> <span class='op'>+</span> <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>isize</span>)};
-            <span class='ident'>offset</span> <span class='op'>+=</span> <span class='ident'>stride</span>;
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span>: <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>();
+        <span class='kw'>for</span> <span class='ident'>e</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>diagonal_iter</span>(){
+            <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>result</span> <span class='op'>+</span> <span class='ident'>e</span>;
         }
         <span class='ident'>result</span>
     }
 }
+
 
 <span class='doccomment'>/// Introspection support</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>Introspection</span> <span class='kw'>for</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
@@ -2862,7 +2846,7 @@ by hand.
     <span class='doccomment'>/// Returns the number of actual memory elements </span>
     <span class='doccomment'>/// per column stored in the memory</span>
     <span class='kw'>fn</span> <span class='ident'>stride</span> (<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span><span class='ident'>usize</span> {
-        <span class='self'>self</span>.<span class='ident'>xrows</span>
+        <span class='self'>self</span>.<span class='ident'>rows</span>
     }
 
 }
@@ -2906,23 +2890,36 @@ by hand.
     <span class='doccomment'>/// Returns the capacity of the matrix </span>
     <span class='doccomment'>/// i.e. the number of elements it can hold</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>capacity</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='self'>self</span>.<span class='ident'>xrows</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>xcols</span>
+        <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>cols</span>
     }
 
-
+    <span class='doccomment'>/// Reshapes the matrix</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>reshape</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>rows</span>: <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>let</span> <span class='ident'>new_capacity</span> <span class='op'>=</span> <span class='ident'>rows</span> <span class='op'>*</span> <span class='ident'>cols</span>;
+        <span class='kw'>if</span> <span class='ident'>new_capacity</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>capacity</span>(){
+            <span class='boolval'>false</span>
+        }
+        <span class='kw'>else</span>{
+            <span class='comment'>// Reshape the matrix</span>
+            <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>=</span> <span class='ident'>rows</span>;
+            <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>=</span> <span class='ident'>cols</span>;
+            <span class='boolval'>true</span>
+        }
+    }
 
 }
 
 
-<span class='doccomment'>/// Functions to construct new matrices out of a matrix and other conversions</span>
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>CommutativeMonoidAddPartial</span><span class='op'>+</span><span class='ident'>One</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
 
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::<span class='ident'>Debug</span>;
 
+<span class='doccomment'>/// Functions to access matrix elements safely and without bounds checking.</span>
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>PartialEq</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
 
     <span class='doccomment'>/// Returns an iterator over a specific row of matrix</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>row_iter</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>isize</span>) <span class='op'>-&gt;</span> <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>mod_n</span>(<span class='ident'>r</span>, <span class='self'>self</span>.<span class='ident'>rows</span> <span class='kw'>as</span> <span class='ident'>isize</span>);        
-        <span class='comment'>// Lets find the offset of the begging of the row</span>
+        <span class='comment'>// Lets find the offset of the begging of the row</span>
         <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='number'>0</span>);
         <span class='kw'>let</span> <span class='ident'>iter</span> : <span class='ident'>RowIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>RowIterator</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>cols</span>,
             <span class='self'>self</span>.<span class='ident'>stride</span>(), <span class='kw'>unsafe</span> {<span class='self'>self</span>.<span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>)} <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>);
@@ -2932,7 +2929,7 @@ by hand.
     <span class='doccomment'>/// Returns an iterator over a specific column of the matrix</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>col_iter</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>c</span> : <span class='ident'>isize</span>) <span class='op'>-&gt;</span> <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
         <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>mod_n</span>(<span class='ident'>c</span>, <span class='self'>self</span>.<span class='ident'>cols</span> <span class='kw'>as</span> <span class='ident'>isize</span>);        
-        <span class='comment'>// Lets find the offset of the begging of the column</span>
+        <span class='comment'>// Lets find the offset of the begging of the column</span>
         <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='number'>0</span>, <span class='ident'>c</span>);
         <span class='kw'>let</span> <span class='ident'>iter</span> : <span class='ident'>ColIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>ColIterator</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>rows</span>,
             <span class='kw'>unsafe</span> {<span class='self'>self</span>.<span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>)} <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>);
@@ -2947,8 +2944,16 @@ by hand.
         <span class='ident'>iter</span>
     }
 
+    <span class='doccomment'>/// Provide the main diagonal elements</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>diagonal_iter</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>DiagIterator</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
+        <span class='ident'>DiagIterator</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>smaller_dim</span>(),<span class='self'>self</span>.<span class='ident'>stride</span>(), <span class='self'>self</span>.<span class='ident'>ptr</span>)
+    }
+}
 
-    <span class='comment'>// Repeats this matrix in both horizontal and vertical directions </span>
+<span class='doccomment'>/// Functions to construct new matrices out of a matrix and other conversions</span>
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>CommutativeMonoidAddPartial</span><span class='op'>+</span><span class='ident'>One</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+
+    <span class='comment'>// Repeats this matrix in both horizontal and vertical directions </span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>repeat_matrix</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>num_rows</span> : <span class='ident'>usize</span>, <span class='ident'>num_cols</span> : <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>rows</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>*</span> <span class='ident'>num_rows</span>;
         <span class='kw'>let</span> <span class='ident'>cols</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>*</span> <span class='ident'>num_cols</span>;
@@ -2978,12 +2983,10 @@ by hand.
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>diagonal_vector</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>m</span>  <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>smaller_dim</span>();
         <span class='kw'>let</span> <span class='ident'>result</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>m</span>, <span class='number'>1</span>);
-        <span class='kw'>let</span> <span class='ident'>src</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
         <span class='kw'>let</span> <span class='ident'>dst</span> <span class='op'>=</span> <span class='ident'>result</span>.<span class='ident'>ptr</span>;
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>m</span>{
-            <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>i</span>, <span class='ident'>i</span>);
+        <span class='kw'>for</span> (<span class='ident'>i</span>, <span class='ident'>e</span>) <span class='kw'>in</span> (<span class='number'>0</span>..<span class='ident'>m</span>).<span class='ident'>zip</span>(<span class='self'>self</span>.<span class='ident'>diagonal_iter</span>()){
             <span class='kw'>unsafe</span>{
-                <span class='op'>*</span><span class='ident'>dst</span>.<span class='ident'>offset</span>(<span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>isize</span>) <span class='op'>=</span> <span class='op'>*</span><span class='ident'>src</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>);
+                <span class='op'>*</span><span class='ident'>dst</span>.<span class='ident'>offset</span>(<span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>isize</span>) <span class='op'>=</span> <span class='ident'>e</span>;
             } 
         }
         <span class='ident'>result</span>        
@@ -3151,7 +3154,7 @@ by hand.
 
 }
 
-<span class='comment'>//+Neg&lt;Output=T&gt;</span>
+<span class='comment'>//+Neg&lt;Output=T&gt;</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>CommutativeGroupAddPartial</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Computes the unary minus of a matrix</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>unary_minus</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>)<span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
@@ -3197,19 +3200,14 @@ by hand.
         <span class='macro'>debug_assert_eq</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>num_rows</span>() , <span class='ident'>other</span>.<span class='ident'>num_rows</span>());
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>other</span>.<span class='ident'>num_cols</span>() <span class='op'>&gt;</span> <span class='number'>0</span>);
 
-        <span class='comment'>// check the capacity.</span>
+        <span class='comment'>// check the capacity.</span>
         <span class='kw'>let</span> <span class='ident'>new_cols</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>+</span> <span class='ident'>other</span>.<span class='ident'>cols</span>;
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>xcols</span> <span class='op'>&lt;</span> <span class='ident'>new_cols</span> {
-            <span class='comment'>// We need to reallocate memory.</span>
-            <span class='kw'>let</span> <span class='ident'>rows</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rows</span>;
-            <span class='self'>self</span>.<span class='ident'>reallocate</span>(<span class='ident'>rows</span>, <span class='ident'>new_cols</span>);
-        }
-        <span class='kw'>else</span>{
-            <span class='comment'>//println!(&quot;Reallocation is not needed.&quot;);</span>
-        }
-        <span class='comment'>// Now create space for other matrix to be fitted in</span>
+        <span class='kw'>let</span> <span class='ident'>rows</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rows</span>;
+        <span class='comment'>// We need to reallocate memory.</span>
+        <span class='self'>self</span>.<span class='ident'>reallocate</span>(<span class='ident'>rows</span>, <span class='ident'>new_cols</span>);
+        <span class='comment'>// Now create space for other matrix to be fitted in</span>
         <span class='self'>self</span>.<span class='ident'>create_column_space</span>(<span class='ident'>index</span>, <span class='ident'>other</span>.<span class='ident'>num_cols</span>());
-        <span class='comment'>// Finally copy the column data from the matrix.</span>
+        <span class='comment'>// Finally copy the column data from the matrix.</span>
         <span class='kw'>let</span> <span class='ident'>src_ptr</span> <span class='op'>=</span> <span class='ident'>other</span>.<span class='ident'>ptr</span>;
         <span class='kw'>let</span> <span class='ident'>dst_ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>other</span>.<span class='ident'>num_cols</span>(){
@@ -3222,8 +3220,6 @@ by hand.
                 }
             }
         }
-        <span class='comment'>// Update the count of columns</span>
-        <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>+=</span> <span class='ident'>other</span>.<span class='ident'>num_cols</span>();
         <span class='self'>self</span>
     }
 
@@ -3248,21 +3244,19 @@ by hand.
         <span class='ident'>index</span>  : <span class='ident'>usize</span>,
         <span class='ident'>other</span> : <span class='kw-2'>&amp;</span><span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> 
         )<span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Make sure that the dimensions are compatible.</span>
+        <span class='comment'>// Make sure that the dimensions are compatible.</span>
         <span class='macro'>debug_assert_eq</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>num_cols</span>() , <span class='ident'>other</span>.<span class='ident'>num_cols</span>());
-        <span class='comment'>// Make sure that there is data to be added.</span>
+        <span class='comment'>// Make sure that there is data to be added.</span>
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>other</span>.<span class='ident'>num_rows</span>() <span class='op'>&gt;</span> <span class='number'>0</span>);
 
-        <span class='comment'>// check the capacity.</span>
+        <span class='comment'>// check the capacity.</span>
         <span class='kw'>let</span> <span class='ident'>new_rows</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>+</span> <span class='ident'>other</span>.<span class='ident'>rows</span>;
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>xrows</span> <span class='op'>&lt;</span> <span class='ident'>new_rows</span> {
-            <span class='comment'>// We need to reallocate memory.</span>
-            <span class='kw'>let</span> <span class='ident'>cols</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cols</span>;
-            <span class='self'>self</span>.<span class='ident'>reallocate</span>(<span class='ident'>new_rows</span>, <span class='ident'>cols</span>);
-        }
-        <span class='comment'>// Now create space for other matrix to be fitted in</span>
+        <span class='comment'>// We need to reallocate memory.</span>
+        <span class='kw'>let</span> <span class='ident'>cols</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cols</span>;
+        <span class='self'>self</span>.<span class='ident'>reallocate</span>(<span class='ident'>new_rows</span>, <span class='ident'>cols</span>);
+        <span class='comment'>// Now create space for other matrix to be fitted in</span>
         <span class='self'>self</span>.<span class='ident'>create_row_space</span>(<span class='ident'>index</span>, <span class='ident'>other</span>.<span class='ident'>num_rows</span>());
-        <span class='comment'>// Finally copy the row data from the other matrix.</span>
+        <span class='comment'>// Finally copy the row data from the other matrix.</span>
         <span class='kw'>let</span> <span class='ident'>src_ptr</span> <span class='op'>=</span> <span class='ident'>other</span>.<span class='ident'>ptr</span>;
         <span class='kw'>let</span> <span class='ident'>dst_ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
         <span class='kw'>let</span> <span class='ident'>src_stride</span> <span class='op'>=</span> <span class='ident'>other</span>.<span class='ident'>stride</span>();
@@ -3277,8 +3271,6 @@ by hand.
                 }
             }
         }
-        <span class='comment'>// Update the count of rows</span>
-        <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>+=</span> <span class='ident'>other</span>.<span class='ident'>num_rows</span>();
         <span class='self'>self</span>
     }
 
@@ -3295,25 +3287,23 @@ by hand.
     Thus, the matrix elements need to be moved around.
     &quot;</span>]</span> 
     <span class='kw'>fn</span> <span class='ident'>reallocate</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>rows</span> : <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>){
-        <span class='kw'>let</span> <span class='ident'>new_xrows</span> <span class='op'>=</span> <span class='ident'>rows</span>.<span class='ident'>next_power_of_two</span>();
-        <span class='kw'>let</span> <span class='ident'>new_xcols</span> <span class='op'>=</span> <span class='ident'>cols</span>.<span class='ident'>next_power_of_two</span>();
-        <span class='kw'>let</span> <span class='ident'>old_capacity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>xrows</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>xcols</span>;
-        <span class='kw'>let</span> <span class='ident'>new_capacity</span> <span class='op'>=</span> <span class='ident'>new_xrows</span> <span class='op'>*</span>  <span class='ident'>new_xcols</span>;
+        <span class='kw'>let</span> <span class='ident'>old_capacity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>cols</span>;
+        <span class='kw'>let</span> <span class='ident'>new_capacity</span> <span class='op'>=</span> <span class='ident'>rows</span> <span class='op'>*</span>  <span class='ident'>cols</span>;
         <span class='kw'>if</span> <span class='ident'>old_capacity</span> <span class='op'>&gt;=</span> <span class='ident'>new_capacity</span>{
-            <span class='comment'>// Nothing to do.</span>
+            <span class='comment'>// Nothing to do.</span>
             <span class='kw'>return</span>;
         }
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>new_capacity</span> <span class='op'>&gt;</span> <span class='number'>0</span>);
         <span class='kw'>let</span> <span class='ident'>new_bytes</span> <span class='op'>=</span> <span class='ident'>new_capacity</span> <span class='op'>*</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>();
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;Allocating {} bytes&quot;</span>, <span class='ident'>new_bytes</span>);
         <span class='kw'>let</span> <span class='ident'>raw</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
-            <span class='ident'>allocate</span>(<span class='ident'>new_bytes</span>, <span class='ident'>mem</span>::<span class='ident'>min_align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>())
+            <span class='ident'>allocate</span>(<span class='ident'>new_bytes</span>, <span class='ident'>mem</span>::<span class='ident'>align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>())
         };
         <span class='kw'>let</span> <span class='ident'>dst_ptr</span> <span class='op'>=</span> <span class='ident'>raw</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span>;
         <span class='kw'>let</span> <span class='ident'>src_ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
-        <span class='comment'>// Copy data from source to destination.</span>
-        <span class='kw'>let</span> <span class='ident'>src_stride</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>xrows</span>;
-        <span class='kw'>let</span> <span class='ident'>dst_stride</span> <span class='op'>=</span> <span class='ident'>new_xrows</span>;
+        <span class='comment'>// Copy data from source to destination.</span>
+        <span class='kw'>let</span> <span class='ident'>src_stride</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rows</span>;
+        <span class='kw'>let</span> <span class='ident'>dst_stride</span> <span class='op'>=</span> <span class='ident'>rows</span>;
         <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>cols</span>{
             <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>rows</span>{
                 <span class='kw'>let</span> <span class='ident'>src_offset</span> <span class='op'>=</span> (<span class='ident'>c</span> <span class='op'>*</span> <span class='ident'>src_stride</span> <span class='op'>+</span> <span class='ident'>r</span>) <span class='kw'>as</span> <span class='ident'>isize</span>;
@@ -3324,48 +3314,48 @@ by hand.
             }
 
         }
-        <span class='comment'>// Drop older data.</span>
+        <span class='comment'>// Drop older data.</span>
         <span class='kw'>unsafe</span> {
             <span class='kw'>let</span> <span class='ident'>old_bytes</span> <span class='op'>=</span> <span class='ident'>old_capacity</span> <span class='op'>*</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>();
-            <span class='comment'>//println!(&quot;Allocating {} bytes&quot;, old_bytes);</span>
+            <span class='comment'>//println!(&quot;Allocating {} bytes&quot;, old_bytes);</span>
             <span class='ident'>deallocate</span>(<span class='self'>self</span>.<span class='ident'>ptr</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>u8</span>,
                    <span class='ident'>old_bytes</span>,
-                   <span class='ident'>mem</span>::<span class='ident'>min_align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>());
+                   <span class='ident'>mem</span>::<span class='ident'>align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>());
         }
-        <span class='comment'>// Keep new data</span>
+        <span class='comment'>// Keep new data</span>
         <span class='self'>self</span>.<span class='ident'>ptr</span> <span class='op'>=</span> <span class='ident'>dst_ptr</span>;
-        <span class='self'>self</span>.<span class='ident'>xrows</span> <span class='op'>=</span> <span class='ident'>new_xrows</span>;
-        <span class='self'>self</span>.<span class='ident'>xcols</span> <span class='op'>=</span> <span class='ident'>new_xcols</span>;
+        <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>=</span> <span class='ident'>rows</span>;
+        <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>=</span> <span class='ident'>cols</span>;
     }
 
     <span class='comment'>//// Moves column data around and creates space for new columns</span>
     <span class='kw'>fn</span> <span class='ident'>create_column_space</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>start</span>: <span class='ident'>usize</span>, <span class='ident'>count</span> :<span class='ident'>usize</span>){
-        <span class='comment'>// The end must not be beyond capacity</span>
-        <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>count</span> <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>&lt;=</span> <span class='self'>self</span>.<span class='ident'>xcols</span>);
-        <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='self'>self</span>.<span class='ident'>xcols</span>);
-        <span class='kw'>if</span> <span class='ident'>start</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>cols</span> {
-            <span class='comment'>// Nothing to move.</span>
+        <span class='comment'>// The end must not be beyond capacity</span>
+        <span class='kw'>let</span> <span class='ident'>new_cols</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cols</span>;
+        <span class='kw'>let</span> <span class='ident'>old_cols</span> <span class='op'>=</span> <span class='ident'>new_cols</span> <span class='op'>-</span> <span class='ident'>count</span>;
+        <span class='kw'>if</span> <span class='ident'>start</span> <span class='op'>&gt;=</span> <span class='ident'>new_cols</span> {
+            <span class='comment'>// Nothing to move.</span>
             <span class='kw'>return</span>;
         }
         <span class='kw'>let</span> <span class='ident'>capacity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>capacity</span>() <span class='kw'>as</span> <span class='ident'>isize</span>;
-        <span class='comment'>// count columns starting from start column need to be</span>
-        <span class='comment'>// shifted by count.</span>
+        <span class='comment'>// count columns starting from start column need to be</span>
+        <span class='comment'>// shifted by count.</span>
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
-        <span class='comment'>// Number of columns to shift</span>
-        <span class='kw'>let</span> <span class='ident'>cols_to_shift</span> <span class='op'>=</span>  <span class='self'>self</span>.<span class='ident'>cols</span> <span class='op'>-</span> (<span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>count</span> <span class='op'>-</span> <span class='number'>1</span>);
-        <span class='comment'>//println!(&quot;start: {:?} count: {:?}, cols to shift {:?}&quot;, start, count, cols_to_shift );</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cur_col</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cols</span>;
+        <span class='comment'>// Number of columns to shift</span>
+        <span class='kw'>let</span> <span class='ident'>cols_to_shift</span> <span class='op'>=</span>  <span class='ident'>old_cols</span> <span class='op'>-</span> (<span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>count</span> <span class='op'>-</span> <span class='number'>1</span>);
+        <span class='comment'>//println!(&quot;start: {:?} count: {:?}, cols to shift {:?}&quot;, start, count, cols_to_shift );</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cur_col</span> <span class='op'>=</span> <span class='ident'>old_cols</span>;
         <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>cols_to_shift</span>{
             <span class='ident'>cur_col</span> <span class='op'>-=</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>dst_col</span> <span class='op'>=</span> <span class='ident'>cur_col</span> <span class='op'>+</span> <span class='ident'>count</span>;
-            <span class='comment'>//println!(&quot;src_col: {:?} dst_col: {:?}&quot;, cur_col, dst_col);</span>
+            <span class='comment'>//println!(&quot;src_col: {:?} dst_col: {:?}&quot;, cur_col, dst_col);</span>
             <span class='kw'>let</span> <span class='ident'>src_offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='number'>0</span>, <span class='ident'>cur_col</span>);
             <span class='kw'>let</span> <span class='ident'>dst_offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='number'>0</span>, <span class='ident'>dst_col</span>);
             <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>src_offset</span> <span class='op'>&lt;</span> <span class='ident'>capacity</span>);
             <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>dst_offset</span> <span class='op'>&lt;</span> <span class='ident'>capacity</span>);
             <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>rows</span>{
                 <span class='kw'>let</span> <span class='ident'>ii</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>isize</span>;
-                <span class='comment'>// Some validations</span>
+                <span class='comment'>// Some validations</span>
                 <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>src_offset</span> <span class='op'>+</span> <span class='ident'>ii</span> <span class='op'>&lt;</span> <span class='ident'>capacity</span>);
                 <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>dst_offset</span> <span class='op'>+</span> <span class='ident'>ii</span> <span class='op'>&lt;</span> <span class='ident'>capacity</span>);
                 <span class='kw'>unsafe</span> {
@@ -3377,20 +3367,21 @@ by hand.
 
     <span class='comment'>//// Moves rows around and creates space for new rows</span>
     <span class='kw'>fn</span> <span class='ident'>create_row_space</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>start</span>: <span class='ident'>usize</span>, <span class='ident'>count</span> :<span class='ident'>usize</span>){
-        <span class='comment'>// The end must not be beyond capacity</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>count</span> <span class='op'>&lt;=</span> <span class='self'>self</span>.<span class='ident'>xrows</span>);
-        <span class='kw'>if</span> <span class='ident'>start</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>rows</span> {
-            <span class='comment'>// Nothing to move.</span>
+        <span class='comment'>// The end must not be beyond capacity</span>
+        <span class='kw'>let</span> <span class='ident'>new_rows</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rows</span>;
+        <span class='kw'>let</span> <span class='ident'>old_rows</span> <span class='op'>=</span> <span class='ident'>new_rows</span> <span class='op'>-</span> <span class='ident'>count</span>;
+        <span class='kw'>if</span> <span class='ident'>start</span> <span class='op'>&gt;=</span> <span class='ident'>old_rows</span> {
+            <span class='comment'>// Nothing to move.</span>
             <span class='kw'>return</span>;
         }
         <span class='kw'>let</span> <span class='ident'>capacity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>capacity</span>() <span class='kw'>as</span> <span class='ident'>isize</span>;
-        <span class='comment'>// count rows starting from start row need to be</span>
-        <span class='comment'>// shifted by count.</span>
+        <span class='comment'>// count rows starting from start row need to be</span>
+        <span class='comment'>// shifted by count.</span>
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
-        <span class='comment'>// Number of rows to shift</span>
-        <span class='kw'>let</span> <span class='ident'>rows_to_shift</span> <span class='op'>=</span>  <span class='self'>self</span>.<span class='ident'>rows</span> <span class='op'>-</span> (<span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>count</span> <span class='op'>-</span> <span class='number'>1</span>);
+        <span class='comment'>// Number of rows to shift</span>
+        <span class='kw'>let</span> <span class='ident'>rows_to_shift</span> <span class='op'>=</span>  <span class='ident'>old_rows</span> <span class='op'>-</span> (<span class='ident'>start</span> <span class='op'>+</span> <span class='ident'>count</span> <span class='op'>-</span> <span class='number'>1</span>);
         <span class='kw'>let</span> <span class='ident'>stride</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>stride</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cur_row</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rows</span>;
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cur_row</span> <span class='op'>=</span> <span class='ident'>old_rows</span>;
         <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>rows_to_shift</span>{
             <span class='ident'>cur_row</span> <span class='op'>-=</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>dst_row</span> <span class='op'>=</span> <span class='ident'>cur_row</span> <span class='op'>+</span> <span class='ident'>count</span>;
@@ -3400,7 +3391,7 @@ by hand.
             <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>dst_offset</span> <span class='op'>&lt;</span> <span class='ident'>capacity</span>);
             <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>cols</span>{
                 <span class='kw'>let</span> <span class='ident'>ii</span> <span class='op'>=</span> (<span class='ident'>i</span><span class='op'>*</span><span class='ident'>stride</span>) <span class='kw'>as</span> <span class='ident'>isize</span>;
-                <span class='comment'>// Some validations</span>
+                <span class='comment'>// Some validations</span>
                 <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>src_offset</span> <span class='op'>+</span> <span class='ident'>ii</span> <span class='op'>&lt;</span> <span class='ident'>capacity</span>);
                 <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>dst_offset</span> <span class='op'>+</span> <span class='ident'>ii</span> <span class='op'>&lt;</span> <span class='ident'>capacity</span>);
                 <span class='kw'>unsafe</span> {
@@ -3438,14 +3429,14 @@ by hand.
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>CommutativeMonoidAddPartial</span><span class='op'>+</span><span class='ident'>PartialOrd</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
 
 
-    <span class='comment'>// Returns the minimum scalar value with location</span>
+    <span class='comment'>// Returns the minimum scalar value with location</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>min_scalar</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>T</span>, <span class='ident'>usize</span>, <span class='ident'>usize</span>){
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>EmptyMatrix</span>.<span class='ident'>to_string</span>());
         }
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {<span class='self'>self</span>.<span class='ident'>get_unchecked</span>(<span class='number'>0</span>, <span class='number'>0</span>)};
         <span class='kw'>let</span> <span class='ident'>ps</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
-        <span class='comment'>// The location</span>
+        <span class='comment'>// The location</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rr</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cc</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>cols</span>{
@@ -3462,13 +3453,13 @@ by hand.
         (<span class='ident'>v</span>, <span class='ident'>rr</span>, <span class='ident'>cc</span>)
     }
 
-    <span class='comment'>// Returns the maximum scalar value with location</span>
+    <span class='comment'>// Returns the maximum scalar value with location</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>max_scalar</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>T</span>, <span class='ident'>usize</span>, <span class='ident'>usize</span>){
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>EmptyMatrix</span>.<span class='ident'>to_string</span>());
         }
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>);
-        <span class='comment'>// The location</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {<span class='self'>self</span>.<span class='ident'>get_unchecked</span>(<span class='number'>0</span>, <span class='number'>0</span>)};
+        <span class='comment'>// The location</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rr</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cc</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='ident'>ps</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
@@ -3499,13 +3490,13 @@ by hand.
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MagmaBase</span><span class='op'>+</span><span class='ident'>Signed</span><span class='op'>+</span><span class='ident'>PartialOrd</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
 
-    <span class='comment'>// Returns the absolute minimum scalar value</span>
+    <span class='comment'>// Returns the absolute minimum scalar value</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>min_abs_scalar</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>T</span>, <span class='ident'>usize</span>, <span class='ident'>usize</span>){
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>EmptyMatrix</span>.<span class='ident'>to_string</span>());
         }
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>).<span class='ident'>abs</span>();
-        <span class='comment'>// The location</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {<span class='self'>self</span>.<span class='ident'>get_unchecked</span>(<span class='number'>0</span>, <span class='number'>0</span>)}.<span class='ident'>abs</span>();
+        <span class='comment'>// The location</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rr</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cc</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='ident'>ps</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
@@ -3523,13 +3514,13 @@ by hand.
         (<span class='ident'>v</span>, <span class='ident'>rr</span>, <span class='ident'>cc</span>)
     }
 
-    <span class='comment'>// Returns the maximum scalar value</span>
+    <span class='comment'>// Returns the maximum scalar value</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>max_abs_scalar</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>T</span>, <span class='ident'>usize</span>, <span class='ident'>usize</span>){
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>EmptyMatrix</span>.<span class='ident'>to_string</span>());
         }
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>).<span class='ident'>abs</span>();
-        <span class='comment'>// The location</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {<span class='self'>self</span>.<span class='ident'>get_unchecked</span>(<span class='number'>0</span>, <span class='number'>0</span>)}.<span class='ident'>abs</span>();
+        <span class='comment'>// The location</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rr</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cc</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='ident'>ps</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
@@ -3622,7 +3613,7 @@ by hand.
     <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>T</span>;
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>index</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='self'>self</span>, <span class='ident'>index</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>T</span> {
-        <span class='comment'>// The matrix is column major order</span>
+        <span class='comment'>// The matrix is column major order</span>
         <span class='kw'>let</span> (<span class='ident'>r</span>, <span class='ident'>c</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>index_to_cell</span>(<span class='ident'>index</span>);
         <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='ident'>c</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>stride</span>() <span class='op'>+</span> <span class='ident'>r</span>;
         <span class='kw'>unsafe</span> {
@@ -3669,9 +3660,9 @@ by hand.
 
 <span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MagmaBase</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>f</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>fmt</span>::<span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
-        <span class='comment'>// We need to find out the number of characters needed</span>
-        <span class='comment'>// to show each value.</span>
-        <span class='comment'>// maximum value</span>
+        <span class='comment'>// We need to find out the number of characters needed</span>
+        <span class='comment'>// to show each value.</span>
+        <span class='comment'>// maximum value</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>strings</span> : <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='self'>self</span>.<span class='ident'>num_cells</span>());
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>n</span> : <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
@@ -3687,9 +3678,9 @@ by hand.
                 }
             }
         }
-        <span class='comment'>//println!(&quot;{}, {}, {}&quot;, v, s, n);</span>
+        <span class='comment'>//println!(&quot;{}, {}, {}&quot;, v, s, n);</span>
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;[&quot;</span>));
-        <span class='comment'>// Here we print row by row</span>
+        <span class='comment'>// Here we print row by row</span>
         <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>rows</span> {
            <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;\n  &quot;</span>));
             <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>cols</span>{
@@ -3719,7 +3710,7 @@ by hand.
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='ident'>T</span>:<span class='ident'>CommutativeMonoidAddPartial</span><span class='op'>&gt;</span> <span class='ident'>ops</span>::<span class='ident'>Add</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='kw'>for</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
     <span class='kw'>fn</span> <span class='ident'>add</span>(<span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Validate dimensions are same.</span>
+        <span class='comment'>// Validate dimensions are same.</span>
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>DimensionsMismatch</span>.<span class='ident'>to_string</span>());
         }
@@ -3743,7 +3734,7 @@ by hand.
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='lifetime'>&#39;b</span>, <span class='ident'>T</span>:<span class='ident'>QuasiGroupAddPartial</span><span class='op'>&gt;</span> <span class='ident'>ops</span>::<span class='ident'>Sub</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='kw'>for</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
     <span class='kw'>type</span> <span class='ident'>Output</span> <span class='op'>=</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
     <span class='kw'>fn</span> <span class='ident'>sub</span>(<span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;b</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Validate dimensions are same.</span>
+        <span class='comment'>// Validate dimensions are same.</span>
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>DimensionsMismatch</span>.<span class='ident'>to_string</span>());
         }
@@ -3785,11 +3776,11 @@ by hand.
     }
 }
 
-<span class='comment'>// Element wise operations.</span>
+<span class='comment'>// Element wise operations.</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>CommutativeMonoidAddPartial</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Adds matrices element by element</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_elt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Validate dimensions are same.</span>
+        <span class='comment'>// Validate dimensions are same.</span>
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>DimensionsMismatch</span>.<span class='ident'>to_string</span>());
         }
@@ -3811,7 +3802,7 @@ by hand.
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>CommutativeMonoidAddPartial</span><span class='op'>+</span><span class='ident'>ops</span>::<span class='ident'>Sub</span><span class='op'>&lt;</span><span class='ident'>Output</span><span class='op'>=</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Subtracts matrices element by element</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sub_elt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Validate dimensions are same.</span>
+        <span class='comment'>// Validate dimensions are same.</span>
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>DimensionsMismatch</span>.<span class='ident'>to_string</span>());
         }
@@ -3832,7 +3823,7 @@ by hand.
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>CommutativeMonoidMulPartial</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Multiplies matrices element by element</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>mul_elt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Validate dimensions are same.</span>
+        <span class='comment'>// Validate dimensions are same.</span>
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>DimensionsMismatch</span>.<span class='ident'>to_string</span>());
         }
@@ -3874,7 +3865,7 @@ by hand.
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>CommutativeMonoidMulPartial</span><span class='op'>+</span><span class='ident'>ops</span>::<span class='ident'>Div</span><span class='op'>&lt;</span><span class='ident'>Output</span><span class='op'>=</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Divides matrices element by element</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>div_elt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Validate dimensions are same.</span>
+        <span class='comment'>// Validate dimensions are same.</span>
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>size</span>() <span class='op'>!=</span> <span class='ident'>rhs</span>.<span class='ident'>size</span>(){
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>SRError</span>::<span class='ident'>DimensionsMismatch</span>.<span class='ident'>to_string</span>());
         }
@@ -3914,8 +3905,8 @@ by hand.
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>print_state</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>){
         <span class='kw'>let</span> <span class='ident'>capacity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>capacity</span>();
         <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> <span class='ident'>capacity</span> <span class='op'>*</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>();
-        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;Rows: {}, Cols: {}, XRows : {}, XCols {} , Capacity: {}, Bytes; {}, Buffer: {:p}, End : {:p}&quot;</span>, 
-            <span class='self'>self</span>.<span class='ident'>rows</span>, <span class='self'>self</span>.<span class='ident'>cols</span>, <span class='self'>self</span>.<span class='ident'>xrows</span>, <span class='self'>self</span>.<span class='ident'>xcols</span>, 
+        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;Rows: {}, Cols: {}, Capacity: {}, Bytes; {}, Buffer: {:p}, End : {:p}&quot;</span>, 
+            <span class='self'>self</span>.<span class='ident'>rows</span>, <span class='self'>self</span>.<span class='ident'>cols</span>,
             <span class='ident'>capacity</span>, <span class='ident'>bytes</span>, <span class='self'>self</span>.<span class='ident'>ptr</span>, <span class='kw'>unsafe</span> {
                 <span class='self'>self</span>.<span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>capacity</span> <span class='kw'>as</span> <span class='ident'>isize</span>)
             });
@@ -3931,7 +3922,7 @@ by hand.
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MagmaBase</span><span class='op'>&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='doccomment'>/// Returns a slice into `self`.</span>
-    <span class='comment'>//#[inline]</span>
+    <span class='comment'>//#[inline]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>as_slice_</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>T</span>] {
         <span class='kw'>unsafe</span> { <span class='ident'>mem</span>::<span class='ident'>transmute</span>(<span class='ident'>Slice</span> { <span class='ident'>data</span>: <span class='self'>self</span>.<span class='ident'>as_ptr</span>(), <span class='ident'>len</span>: <span class='self'>self</span>.<span class='ident'>capacity</span>() }) }
     }
@@ -3962,10 +3953,10 @@ by hand.
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>size</span>(), (<span class='number'>3</span>, <span class='number'>4</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>smaller_dim</span>(), <span class='number'>3</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>larger_dim</span>(), <span class='number'>4</span>);
-        <span class='comment'>// NOTE: we cannot use the contents of the</span>
-        <span class='comment'>// matrix as they are uninitialized.</span>
+        <span class='comment'>// NOTE: we cannot use the contents of the</span>
+        <span class='comment'>// matrix as they are uninitialized.</span>
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>zeros</span>(<span class='number'>3</span>, <span class='number'>4</span>);
-        <span class='kw'>let</span> <span class='ident'>v</span> : <span class='ident'>i64</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>v</span> : <span class='ident'>i64</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>, <span class='number'>0i64</span>);
     }
 
@@ -3976,14 +3967,14 @@ by hand.
             <span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>6</span>,
             <span class='number'>7</span>, <span class='number'>8</span>, <span class='number'>9</span>
             ]);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>1</span>), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>2</span>), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>, <span class='number'>0</span>), <span class='number'>4</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>, <span class='number'>1</span>), <span class='number'>5</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>, <span class='number'>2</span>), <span class='number'>6</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>2</span>, <span class='number'>0</span>), <span class='number'>7</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>2</span>, <span class='number'>1</span>), <span class='number'>8</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>1</span>).<span class='ident'>unwrap</span>(), <span class='number'>2</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>2</span>).<span class='ident'>unwrap</span>(), <span class='number'>3</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), <span class='number'>4</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>, <span class='number'>1</span>).<span class='ident'>unwrap</span>(), <span class='number'>5</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>, <span class='number'>2</span>).<span class='ident'>unwrap</span>(), <span class='number'>6</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>2</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), <span class='number'>7</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>2</span>, <span class='number'>1</span>).<span class='ident'>unwrap</span>(), <span class='number'>8</span>);
     }
 
 
@@ -3994,8 +3985,8 @@ by hand.
             <span class='kw'>let</span> <span class='ident'>b</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>i64</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>1</span>..<span class='number'>17</span>).<span class='ident'>collect</span>();
             <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>as_slice_</span>() <span class='op'>==</span> <span class='ident'>b</span>.<span class='ident'>as_slice</span>());
             <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>4</span>, <span class='number'>8</span>, <span class='number'>1</span>..<span class='number'>16</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>), <span class='number'>1</span>);
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>2</span>, <span class='number'>2</span>), <span class='number'>11</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>2</span>, <span class='number'>2</span>).<span class='ident'>unwrap</span>(), <span class='number'>11</span>);
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>b</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>i64</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>1</span>..<span class='number'>16</span>).<span class='ident'>collect</span>();
             <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>17</span>{
                 <span class='ident'>b</span>.<span class='ident'>push</span>(<span class='number'>0</span>);
@@ -4155,9 +4146,20 @@ by hand.
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>test_reshape</span>(){
+        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, 
+        <span class='number'>5</span>, <span class='number'>6</span>, <span class='number'>7</span>, <span class='number'>8</span>,
+        <span class='number'>9</span>, <span class='number'>10</span>, <span class='number'>11</span>, <span class='number'>12</span>];
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>m1</span> : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_slice_cw</span>(<span class='number'>8</span>, <span class='number'>1</span>, <span class='ident'>v</span>.<span class='ident'>as_slice</span>());
+        <span class='ident'>m1</span>.<span class='ident'>reshape</span>(<span class='number'>2</span>, <span class='number'>4</span>);
+        <span class='kw'>let</span> <span class='ident'>m2</span> : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_slice_cw</span>(<span class='number'>2</span>, <span class='number'>4</span>, <span class='ident'>v</span>.<span class='ident'>as_slice</span>());
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m1</span>, <span class='ident'>m2</span>);
+    }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_max</span>(){
-        <span class='comment'>// Note the first 4 entries in v form the first column</span>
-        <span class='comment'>// in the matrix.</span>
+        <span class='comment'>// Note the first 4 entries in v form the first column</span>
+        <span class='comment'>// in the matrix.</span>
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>11</span>, <span class='number'>12</span>, 
         <span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, 
         <span class='number'>19</span>, <span class='number'>17</span>, <span class='number'>3</span>, <span class='number'>1</span>, 
@@ -4245,7 +4247,7 @@ by hand.
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m3</span>.<span class='ident'>to_std_vec</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>6</span>, <span class='number'>11</span>, <span class='number'>22</span>, <span class='number'>39</span>]);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>pow</span>(<span class='number'>1</span>).<span class='ident'>to_std_vec</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>]);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>pow</span>(<span class='number'>2</span>), <span class='kw-2'>&amp;</span><span class='ident'>m</span> <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>);
-        <span class='comment'>// This is UGLY. I wish I could fix it.</span>
+        <span class='comment'>// This is UGLY. I wish I could fix it.</span>
         <span class='kw'>let</span> <span class='ident'>x</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span><span class='ident'>m</span> <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>) <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>;
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>pow</span>(<span class='number'>10</span>), <span class='ident'>x</span>);
     }
@@ -4262,7 +4264,7 @@ by hand.
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_diag_from_vector</span>(){
-        <span class='comment'>// repeat the same test a hundred times</span>
+        <span class='comment'>// repeat the same test a hundred times</span>
         <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>100</span>{
             <span class='kw'>let</span> <span class='ident'>v</span>  : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>4</span>, <span class='number'>1</span>, (<span class='number'>20</span>..<span class='number'>30</span>));
             <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
@@ -4285,6 +4287,7 @@ by hand.
     <span class='kw'>fn</span> <span class='ident'>test_diagonal</span>(){
         <span class='kw'>let</span> <span class='ident'>m</span>  : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>4</span>, <span class='number'>5</span>, (<span class='number'>10</span>..<span class='number'>30</span>));
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>diagonal_vector</span>();
+        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;m: {} v: {}&quot;</span>, <span class='ident'>m</span>, <span class='ident'>v</span>);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>num_cells</span>(), <span class='number'>4</span>);
         <span class='kw'>let</span> <span class='ident'>v2</span> : <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_slice_cw</span>(<span class='number'>4</span>, <span class='number'>1</span>, <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>10</span>, <span class='number'>15</span>, <span class='number'>20</span>, <span class='number'>25</span>].<span class='ident'>as_slice</span>());
@@ -4312,6 +4315,7 @@ by hand.
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_f64</span>(<span class='number'>3</span>, <span class='number'>3</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1.</span>, <span class='number'>0.</span>, <span class='number'>0.</span>, 
             <span class='number'>4.</span>, <span class='number'>5.</span>, <span class='number'>0.</span>,
             <span class='number'>6.</span>, <span class='number'>2.</span>, <span class='number'>3.</span>]);
+        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>m</span>.<span class='ident'>trace</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>trace</span>(), <span class='number'>9.</span>);
     }
 
@@ -4350,7 +4354,7 @@ by hand.
             ]);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>diagonal_matrix</span>(), <span class='ident'>md</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>diagonal_vector</span>(), <span class='ident'>vector_i64</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>5</span>, <span class='number'>9</span>]));
-        <span class='comment'>// More columns than rows</span>
+        <span class='comment'>// More columns than rows</span>
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_i64</span>(<span class='number'>3</span>,<span class='number'>4</span>,<span class='kw-2'>&amp;</span>[
             <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>11</span>,
             <span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>6</span>, <span class='number'>12</span>,
@@ -4363,7 +4367,7 @@ by hand.
             ]);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>diagonal_matrix</span>(), <span class='ident'>md</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>diagonal_vector</span>(), <span class='ident'>vector_i64</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>5</span>, <span class='number'>9</span>]));
-        <span class='comment'>// More rows than columns</span>
+        <span class='comment'>// More rows than columns</span>
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_i64</span>(<span class='number'>4</span>,<span class='number'>3</span>,<span class='kw-2'>&amp;</span>[
             <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>,
             <span class='number'>4</span>, <span class='number'>5</span>, <span class='number'>6</span>,
@@ -4410,13 +4414,13 @@ by hand.
         <span class='kw'>let</span> <span class='ident'>m3</span> : <span class='ident'>MatrixI64</span>  <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>2</span>, <span class='number'>1</span>, (<span class='number'>17</span>..<span class='number'>100</span>));
         <span class='kw'>let</span> <span class='ident'>m4</span> :  <span class='ident'>MatrixI64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>2</span>, <span class='number'>5</span>, (<span class='number'>9</span>..<span class='number'>100</span>));
         <span class='kw'>let</span> <span class='ident'>m5</span> : <span class='ident'>MatrixI64</span>  <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>from_iter_cw</span>(<span class='number'>2</span>, <span class='number'>1</span>, (<span class='number'>9</span>..<span class='number'>100</span>));
-        <span class='comment'>// matrix size 2x3.</span>
+        <span class='comment'>// matrix size 2x3.</span>
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>m1</span>);
-        <span class='comment'>// adding 2x1 to get 2x4.</span>
+        <span class='comment'>// adding 2x1 to get 2x4.</span>
         <span class='ident'>m1</span>.<span class='ident'>append_columns</span>(<span class='kw-2'>&amp;</span><span class='ident'>m3</span>);
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>m1</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m1</span>, <span class='ident'>m2</span>);
-        <span class='comment'>// adding 2x1 to get 2x5.</span>
+        <span class='comment'>// adding 2x1 to get 2x5.</span>
         <span class='ident'>m1</span>.<span class='ident'>prepend_columns</span>(<span class='kw-2'>&amp;</span><span class='ident'>m5</span>);
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>m1</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m1</span>, <span class='ident'>m4</span>);
@@ -4447,7 +4451,7 @@ by hand.
         <span class='ident'>m1</span>.<span class='ident'>print_state</span>();
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;m4: {}&quot;</span>, <span class='ident'>m4</span>);
         <span class='ident'>m4</span>.<span class='ident'>print_state</span>();
-        <span class='comment'>//assert_eq!(m1, m2);</span>
+        <span class='comment'>//assert_eq!(m1, m2);</span>
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;\nm4 {}&quot;</span>, <span class='ident'>m4</span>);
         <span class='ident'>m4</span>.<span class='ident'>print_state</span>();
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;m5 {}&quot;</span>, <span class='ident'>m5</span>);
@@ -4557,8 +4561,8 @@ by hand.
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>bench</span> {
-    <span class='comment'>//extern crate test;</span>
-    <span class='comment'>//use self::test::Bencher;</span>
+    <span class='comment'>//extern crate test;</span>
+    <span class='comment'>//use self::test::Bencher;</span>
 
 }
 </pre>
@@ -4568,33 +4572,44 @@ by hand.
     <section class="footer"></section>
 
     <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
         </div>
     </div>
 

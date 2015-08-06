@@ -34,7 +34,7 @@
             <div class="search-container">
                 <input class="search-input" name="search"
                        autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
                        type="search">
             </div>
         </form>
@@ -775,31 +775,29 @@
 <span id="733">733</span>
 <span id="734">734</span>
 <span id="735">735</span>
-<span id="736">736</span>
-<span id="737">737</span>
 </pre><pre class='rust '>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Implements the triangular matrix data-type
 &quot;</span>]</span>
 
 
-<span class='comment'>// std imports</span>
+<span class='comment'>// std imports</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ptr</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>rt</span>::<span class='ident'>heap</span>::<span class='ident'>allocate</span>;
 
-<span class='comment'>// external imports</span>
+<span class='comment'>// external imports</span>
 <span class='kw'>use</span> <span class='ident'>num</span>::<span class='ident'>traits</span>::{<span class='ident'>Zero</span>, <span class='ident'>One</span>};
-<span class='comment'>// complex numbers</span>
+<span class='comment'>// complex numbers</span>
 <span class='kw'>use</span> <span class='ident'>num</span>::<span class='ident'>complex</span>::{<span class='ident'>Complex32</span>, <span class='ident'>Complex64</span>};
 
-<span class='comment'>// local imports</span>
+<span class='comment'>// local imports</span>
 <span class='kw'>use</span> <span class='ident'>algebra</span>::<span class='ident'>structure</span>::{<span class='ident'>MagmaBase</span>, 
     <span class='ident'>CommutativeMonoidAddPartial</span>, 
     <span class='ident'>CommutativeMonoidMulPartial</span>,
     <span class='ident'>CommutativeRingPartial</span>};
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>matrix</span>::<span class='ident'>Matrix</span>;
-<span class='comment'>//use matrix::error::SRError;</span>
+<span class='comment'>//use matrix::error::SRError;</span>
 
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>traits</span>::{<span class='ident'>Shape</span>, <span class='ident'>NumberMatrix</span>,
     <span class='ident'>Introspection</span>, 
@@ -882,8 +880,8 @@ Thus, the size of the matrix remains same.
         <span class='ident'>ut_flag</span> : <span class='ident'>bool</span> )<span class='op'>-&gt;</span> <span class='ident'>TriangularMatrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>capacity</span> <span class='op'>=</span> <span class='ident'>size</span> <span class='op'>*</span> (<span class='ident'>size</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='op'>/</span> <span class='number'>2</span>;
         <span class='kw'>if</span> <span class='ident'>capacity</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='comment'>// Support for empty matrices.</span>
-            <span class='comment'>// The buffer remains a null pointer.</span>
+            <span class='comment'>// Support for empty matrices.</span>
+            <span class='comment'>// The buffer remains a null pointer.</span>
             <span class='kw'>return</span> <span class='ident'>TriangularMatrix</span>{
                 <span class='ident'>size</span> : <span class='ident'>size</span>, 
                 <span class='ident'>ut_flag</span> : <span class='ident'>ut_flag</span>,
@@ -892,7 +890,7 @@ Thus, the size of the matrix remains same.
         }
         <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> <span class='ident'>capacity</span> <span class='op'>*</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>();
         <span class='kw'>let</span> <span class='ident'>raw</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {
-            <span class='ident'>allocate</span>(<span class='ident'>bytes</span>, <span class='ident'>mem</span>::<span class='ident'>min_align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>())
+            <span class='ident'>allocate</span>(<span class='ident'>bytes</span>, <span class='ident'>mem</span>::<span class='ident'>align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>())
         };
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='ident'>raw</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw-2'>mut</span> <span class='ident'>T</span>;
         <span class='ident'>TriangularMatrix</span> {<span class='ident'>size</span> : <span class='ident'>size</span>,
@@ -906,7 +904,7 @@ Thus, the size of the matrix remains same.
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>zeros</span>(<span class='ident'>size</span>: <span class='ident'>usize</span>, 
         <span class='ident'>ut</span> : <span class='ident'>bool</span>)<span class='op'>-&gt;</span> <span class='ident'>TriangularMatrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>TriangularMatrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>TriangularMatrix</span>::<span class='ident'>new</span>(<span class='ident'>size</span>, <span class='ident'>ut</span>);
-        <span class='comment'>// zero out the memory</span>
+        <span class='comment'>// zero out the memory</span>
         <span class='kw'>unsafe</span> { <span class='ident'>ptr</span>::<span class='ident'>write_bytes</span>(<span class='ident'>m</span>.<span class='ident'>ptr</span>, <span class='number'>0</span>, <span class='ident'>m</span>.<span class='ident'>capacity</span>())};
         <span class='ident'>m</span>
     }
@@ -917,7 +915,7 @@ Thus, the size of the matrix remains same.
     <span class='doccomment'>/// Constructs a matrix of all ones.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>ones</span>(<span class='ident'>size</span>: <span class='ident'>usize</span>, <span class='ident'>ut</span> : <span class='ident'>bool</span>)<span class='op'>-&gt;</span> <span class='ident'>TriangularMatrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>TriangularMatrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>TriangularMatrix</span>::<span class='ident'>new</span>(<span class='ident'>size</span>, <span class='ident'>ut</span>);
-        <span class='comment'>// fill with ones</span>
+        <span class='comment'>// fill with ones</span>
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>ptr</span>;
         <span class='kw'>let</span> <span class='ident'>o</span> : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>One</span>::<span class='ident'>one</span>();
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>capacity</span>() <span class='kw'>as</span> <span class='ident'>isize</span>;
@@ -954,22 +952,20 @@ Thus, the size of the matrix remains same.
         <span class='self'>self</span>.<span class='ident'>size</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>size</span>
     }
 
-    <span class='kw'>fn</span> <span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>usize</span>, <span class='ident'>c</span> : <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span>  {
-        <span class='comment'>// These assertions help in checking matrix boundaries</span>
+    <span class='kw'>unsafe</span> <span class='kw'>fn</span> <span class='ident'>get_unchecked</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>usize</span>, <span class='ident'>c</span> : <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span>  {
+        <span class='comment'>// These assertions help in checking matrix boundaries</span>
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>r</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>size</span>);
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>c</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>size</span>);
         <span class='kw'>if</span> (<span class='self'>self</span>.<span class='ident'>ut_flag</span> <span class='op'>&amp;&amp;</span> <span class='ident'>r</span> <span class='op'>&gt;</span> <span class='ident'>c</span>) <span class='op'>||</span> (<span class='op'>!</span><span class='self'>self</span>.<span class='ident'>ut_flag</span> <span class='op'>&amp;&amp;</span> <span class='ident'>r</span> <span class='op'>&lt;</span> <span class='ident'>c</span>) {
             <span class='kw'>let</span> <span class='ident'>v</span> : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>();
             <span class='kw'>return</span> <span class='ident'>v</span>;
         }
-        <span class='kw'>unsafe</span> {
-            <span class='comment'>// TODO : Optimize this</span>
-            <span class='self'>self</span>.<span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>)).<span class='ident'>as_ref</span>().<span class='ident'>unwrap</span>().<span class='ident'>clone</span>()
-        }
+        <span class='comment'>// TODO : Optimize this</span>
+        <span class='self'>self</span>.<span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>)).<span class='ident'>as_ref</span>().<span class='ident'>unwrap</span>().<span class='ident'>clone</span>()
     }
 
     <span class='kw'>fn</span> <span class='ident'>set</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>usize</span>, <span class='ident'>c</span> : <span class='ident'>usize</span>, <span class='ident'>value</span> : <span class='ident'>T</span>) {
-        <span class='comment'>// These assertions help in checking matrix boundaries</span>
+        <span class='comment'>// These assertions help in checking matrix boundaries</span>
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>r</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>size</span>);
         <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>c</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>size</span>);
         <span class='kw'>unsafe</span> {
@@ -986,7 +982,7 @@ Thus, the size of the matrix remains same.
         <span class='kw'>let</span> <span class='ident'>o</span> : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>One</span>::<span class='ident'>one</span>();
         <span class='kw'>let</span> <span class='ident'>z</span>  : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>();
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
-        <span class='comment'>// Check the 0, 0 element</span>
+        <span class='comment'>// Check the 0, 0 element</span>
         <span class='kw'>if</span> <span class='kw'>unsafe</span>{<span class='op'>*</span><span class='ident'>ptr</span>} <span class='op'>!=</span> <span class='ident'>o</span> {
             <span class='kw'>return</span> <span class='boolval'>false</span>;
         }
@@ -997,15 +993,15 @@ Thus, the size of the matrix remains same.
                 <span class='kw'>if</span> <span class='ident'>v</span> <span class='op'>!=</span> <span class='ident'>z</span> {
                     <span class='kw'>return</span> <span class='boolval'>false</span>;
                 }
-                <span class='comment'>// Move on to next element in the row (l t) </span>
-                <span class='comment'>// or column (u t).</span>
+                <span class='comment'>// Move on to next element in the row (l t) </span>
+                <span class='comment'>// or column (u t).</span>
                 <span class='ident'>offset</span> <span class='op'>+=</span> <span class='number'>1</span>;
             }
-            <span class='comment'>// Check the diagonal element</span>
+            <span class='comment'>// Check the diagonal element</span>
             <span class='kw'>if</span> <span class='kw'>unsafe</span> {<span class='op'>*</span><span class='ident'>ptr</span>.<span class='ident'>offset</span>(<span class='ident'>offset</span>)} <span class='op'>!=</span> <span class='ident'>o</span> {
                 <span class='kw'>return</span> <span class='boolval'>false</span>;
             }
-            <span class='comment'>// Skip the diagonal element</span>
+            <span class='comment'>// Skip the diagonal element</span>
             <span class='ident'>offset</span> <span class='op'>+=</span> <span class='number'>1</span>;
         }
         <span class='boolval'>true</span>
@@ -1015,8 +1011,8 @@ Thus, the size of the matrix remains same.
     <span class='kw'>fn</span> <span class='ident'>is_diagonal</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>let</span> <span class='ident'>z</span>  : <span class='ident'>T</span> <span class='op'>=</span> <span class='ident'>Zero</span>::<span class='ident'>zero</span>();
         <span class='kw'>let</span> <span class='ident'>ptr</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ptr</span>;
-        <span class='comment'>// We ignore the a[0,0] position. </span>
-        <span class='comment'>// We start working with 2nd row (l t) or column (u t)</span>
+        <span class='comment'>// We ignore the a[0,0] position. </span>
+        <span class='comment'>// We start working with 2nd row (l t) or column (u t)</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='number'>1</span>;
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>1</span>..<span class='self'>self</span>.<span class='ident'>size</span>{
             <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>i</span>{
@@ -1024,11 +1020,11 @@ Thus, the size of the matrix remains same.
                 <span class='kw'>if</span> <span class='ident'>v</span> <span class='op'>!=</span> <span class='ident'>z</span> {
                     <span class='kw'>return</span> <span class='boolval'>false</span>;
                 }
-                <span class='comment'>// Move on to next element in the row (l t) </span>
-                <span class='comment'>// or column (u t).</span>
+                <span class='comment'>// Move on to next element in the row (l t) </span>
+                <span class='comment'>// or column (u t).</span>
                 <span class='ident'>offset</span> <span class='op'>+=</span> <span class='number'>1</span>;
             }
-            <span class='comment'>// Skip the diagonal element</span>
+            <span class='comment'>// Skip the diagonal element</span>
             <span class='ident'>offset</span> <span class='op'>+=</span> <span class='number'>1</span>;
         }
         <span class='boolval'>true</span>
@@ -1152,8 +1148,8 @@ Thus, the size of the matrix remains same.
 
     <span class='doccomment'>/// Returns the r&#39;th row vector</span>
     <span class='kw'>fn</span> <span class='ident'>row</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>r</span> : <span class='ident'>isize</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Lets ensure that the row value is mapped to</span>
-        <span class='comment'>// a value in the range [0, rows - 1]</span>
+        <span class='comment'>// Lets ensure that the row value is mapped to</span>
+        <span class='comment'>// a value in the range [0, rows - 1]</span>
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>mod_n</span>(<span class='ident'>r</span>, <span class='self'>self</span>.<span class='ident'>num_rows</span>() <span class='kw'>as</span> <span class='ident'>isize</span>);        
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='number'>1</span>, <span class='self'>self</span>.<span class='ident'>num_cols</span>());
         <span class='kw'>let</span> <span class='ident'>pd</span> <span class='op'>=</span> <span class='ident'>result</span>.<span class='ident'>as_mut_ptr</span>();
@@ -1162,8 +1158,8 @@ Thus, the size of the matrix remains same.
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>dst_offset</span> : <span class='ident'>isize</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>size</span>;
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>ut_flag</span> {
-            <span class='comment'>// The triangle is stored in column major order.</span>
-            <span class='comment'>// We have zeros in the beginning r zeros</span>
+            <span class='comment'>// The triangle is stored in column major order.</span>
+            <span class='comment'>// We have zeros in the beginning r zeros</span>
             <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>r</span> {
                 <span class='kw'>unsafe</span>{
                     <span class='op'>*</span><span class='ident'>pd</span>.<span class='ident'>offset</span>(<span class='ident'>dst_offset</span>) <span class='op'>=</span> <span class='ident'>z</span>;
@@ -1179,8 +1175,8 @@ Thus, the size of the matrix remains same.
             }
         }
         <span class='kw'>else</span> {
-            <span class='comment'>// the lower triangle is stored in row major order.</span>
-            <span class='comment'>// r-th row contains r + 1 entries. Rest are zero.</span>
+            <span class='comment'>// the lower triangle is stored in row major order.</span>
+            <span class='comment'>// r-th row contains r + 1 entries. Rest are zero.</span>
             <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='number'>0</span>..(<span class='ident'>r</span> <span class='op'>+</span> <span class='number'>1</span>) {
                 <span class='kw'>let</span> <span class='ident'>src_offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
                 <span class='kw'>unsafe</span>{
@@ -1200,8 +1196,8 @@ Thus, the size of the matrix remains same.
 
     <span class='doccomment'>/// Returns the c&#39;th column vector</span>
     <span class='kw'>fn</span> <span class='ident'>col</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>c</span> : <span class='ident'>isize</span>) <span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>{
-        <span class='comment'>// Lets ensure that the col value is mapped to</span>
-        <span class='comment'>// a value in the range [0, cols - 1]</span>
+        <span class='comment'>// Lets ensure that the col value is mapped to</span>
+        <span class='comment'>// a value in the range [0, cols - 1]</span>
         <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>mod_n</span>(<span class='ident'>c</span>, <span class='self'>self</span>.<span class='ident'>num_cols</span>() <span class='kw'>as</span> <span class='ident'>isize</span>);        
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>num_rows</span>(), <span class='number'>1</span>);
         <span class='kw'>let</span> <span class='ident'>pd</span> <span class='op'>=</span> <span class='ident'>result</span>.<span class='ident'>as_mut_ptr</span>();
@@ -1210,8 +1206,8 @@ Thus, the size of the matrix remains same.
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>dst_offset</span> : <span class='ident'>isize</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>size</span>;
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>ut_flag</span> {
-            <span class='comment'>// The upper triangle is stored in column major order.</span>
-            <span class='comment'>// c-th col contains c + 1 entries. Rest are zero.</span>
+            <span class='comment'>// The upper triangle is stored in column major order.</span>
+            <span class='comment'>// c-th col contains c + 1 entries. Rest are zero.</span>
             <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..(<span class='ident'>c</span> <span class='op'>+</span> <span class='number'>1</span>) {
                 <span class='kw'>let</span> <span class='ident'>src_offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
                 <span class='kw'>unsafe</span>{
@@ -1227,8 +1223,8 @@ Thus, the size of the matrix remains same.
             }
         }
         <span class='kw'>else</span> {
-            <span class='comment'>// the lower triangle is stored in row major order.</span>
-            <span class='comment'>// We have zeros in the beginning c zeros</span>
+            <span class='comment'>// the lower triangle is stored in row major order.</span>
+            <span class='comment'>// We have zeros in the beginning c zeros</span>
             <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>c</span> {
                 <span class='kw'>unsafe</span>{
                     <span class='op'>*</span><span class='ident'>pd</span>.<span class='ident'>offset</span>(<span class='ident'>dst_offset</span>) <span class='op'>=</span> <span class='ident'>z</span>;
@@ -1261,7 +1257,7 @@ Thus, the size of the matrix remains same.
         <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> (<span class='ident'>c</span>..(<span class='ident'>c</span> <span class='op'>+</span> <span class='ident'>num_cols</span>)).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>x</span> <span class='op'>|</span> <span class='ident'>x</span> <span class='op'>%</span> <span class='self'>self</span>.<span class='ident'>num_cols</span>()) {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>dr</span> <span class='op'>=</span> <span class='number'>0</span>;
             <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> (<span class='ident'>r</span>..(<span class='ident'>r</span> <span class='op'>+</span> <span class='ident'>num_rows</span>)).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>x</span><span class='op'>|</span>  <span class='ident'>x</span> <span class='op'>%</span> <span class='self'>self</span>.<span class='ident'>num_rows</span>()) {
-                <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
+                <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='kw'>unsafe</span> {<span class='self'>self</span>.<span class='ident'>get_unchecked</span>(<span class='ident'>r</span>, <span class='ident'>c</span>)};
                 <span class='kw'>let</span> <span class='ident'>dst_offset</span> <span class='op'>=</span> <span class='ident'>result</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>dr</span>, <span class='ident'>dc</span>);
                 <span class='kw'>unsafe</span>{
                     <span class='op'>*</span><span class='ident'>pd</span>.<span class='ident'>offset</span>(<span class='ident'>dst_offset</span>) <span class='op'>=</span> <span class='ident'>v</span>;
@@ -1288,9 +1284,9 @@ Thus, the size of the matrix remains same.
 <span class='doccomment'>/// Formatting of the triangular matrix on screen</span>
 <span class='kw'>impl</span> <span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MagmaBase</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>TriangularMatrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>f</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>fmt</span>::<span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
-        <span class='comment'>// We need to find out the number of characters needed</span>
-        <span class='comment'>// to show each value.</span>
-        <span class='comment'>// maximum value</span>
+        <span class='comment'>// We need to find out the number of characters needed</span>
+        <span class='comment'>// to show each value.</span>
+        <span class='comment'>// maximum value</span>
         <span class='kw'>let</span> <span class='ident'>cap</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>capacity</span>();
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>strings</span> : <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>cap</span>);
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>max_len</span> : <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>0</span>;
@@ -1305,7 +1301,7 @@ Thus, the size of the matrix remains same.
             }
         }
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;[&quot;</span>));
-        <span class='comment'>// Here we print row by row</span>
+        <span class='comment'>// Here we print row by row</span>
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>size</span>;
         <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span> {
            <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;\n  &quot;</span>));
@@ -1328,7 +1324,7 @@ Thus, the size of the matrix remains same.
                         <span class='kw'>continue</span>;
                     }
                 }
-                <span class='comment'>// This is something from within the matrix.</span>
+                <span class='comment'>// This is something from within the matrix.</span>
                 <span class='kw'>let</span> <span class='ident'>offset</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>cell_to_offset</span>(<span class='ident'>r</span>, <span class='ident'>c</span>);
                 <span class='kw'>let</span> <span class='kw-2'>ref</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>strings</span>[<span class='ident'>offset</span> <span class='kw'>as</span> <span class='ident'>usize</span>];
                 <span class='kw'>let</span> <span class='ident'>extra</span> <span class='op'>=</span> <span class='ident'>max_len</span> <span class='op'>+</span> <span class='number'>2</span> <span class='op'>-</span> <span class='ident'>s</span>.<span class='ident'>len</span>();
@@ -1380,10 +1376,10 @@ Thus, the size of the matrix remains same.
         <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span> {
             <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span>{
                 <span class='kw'>if</span> <span class='ident'>r</span> <span class='op'>&gt;</span> <span class='ident'>c</span> {
-                    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='number'>0</span>);
+                    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
                 }
                 <span class='kw'>else</span> {
-                    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='number'>1</span>);
+                    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
                 }
             }
         }
@@ -1396,10 +1392,10 @@ Thus, the size of the matrix remains same.
         <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span> {
             <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span>{
                 <span class='kw'>if</span> <span class='ident'>r</span> <span class='op'>&lt;</span> <span class='ident'>c</span> {
-                    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='number'>0</span>);
+                    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='number'>0</span>);
                 }
                 <span class='kw'>else</span> {
-                    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='number'>1</span>);
+                    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='number'>1</span>);
                 }
             }
         }
@@ -1445,7 +1441,7 @@ Thus, the size of the matrix remains same.
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_extract_row</span>(){
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='number'>4</span>;
-        <span class='comment'>// upper triangular </span>
+        <span class='comment'>// upper triangular </span>
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>TriangularMatrixI64</span> <span class='op'>=</span> <span class='ident'>TriangularMatrix</span>::<span class='ident'>ones</span>(<span class='ident'>n</span>, <span class='boolval'>true</span>);
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>row</span>(<span class='number'>0</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>, <span class='ident'>matrix_cw_i64</span>(<span class='number'>1</span>,<span class='number'>4</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>]));
@@ -1455,7 +1451,7 @@ Thus, the size of the matrix remains same.
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>, <span class='ident'>matrix_cw_i64</span>(<span class='number'>1</span>,<span class='number'>4</span>, <span class='kw-2'>&amp;</span>[<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>1</span>]));
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>row</span>(<span class='number'>3</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>, <span class='ident'>matrix_cw_i64</span>(<span class='number'>1</span>,<span class='number'>4</span>, <span class='kw-2'>&amp;</span>[<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>1</span>]));
-        <span class='comment'>// lower triangular </span>
+        <span class='comment'>// lower triangular </span>
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>TriangularMatrixI64</span> <span class='op'>=</span> <span class='ident'>TriangularMatrix</span>::<span class='ident'>ones</span>(<span class='ident'>n</span>, <span class='boolval'>false</span>);
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>row</span>(<span class='number'>0</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>, <span class='ident'>matrix_cw_i64</span>(<span class='number'>1</span>,<span class='number'>4</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>]));
@@ -1470,7 +1466,7 @@ Thus, the size of the matrix remains same.
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_extract_col</span>(){
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='number'>4</span>;
-        <span class='comment'>// lower triangular</span>
+        <span class='comment'>// lower triangular</span>
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>TriangularMatrixI64</span> <span class='op'>=</span> <span class='ident'>TriangularMatrix</span>::<span class='ident'>ones</span>(<span class='ident'>n</span>, <span class='boolval'>false</span>);
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>col</span>(<span class='number'>0</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>, <span class='ident'>matrix_cw_i64</span>(<span class='number'>4</span>,<span class='number'>1</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>, <span class='number'>1</span>]));
@@ -1480,7 +1476,7 @@ Thus, the size of the matrix remains same.
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>, <span class='ident'>matrix_cw_i64</span>(<span class='number'>4</span>,<span class='number'>1</span>, <span class='kw-2'>&amp;</span>[<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>1</span>]));
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>col</span>(<span class='number'>3</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>, <span class='ident'>matrix_cw_i64</span>(<span class='number'>4</span>,<span class='number'>1</span>, <span class='kw-2'>&amp;</span>[<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>1</span>]));
-        <span class='comment'>// upper triangular </span>
+        <span class='comment'>// upper triangular </span>
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>TriangularMatrixI64</span> <span class='op'>=</span> <span class='ident'>TriangularMatrix</span>::<span class='ident'>ones</span>(<span class='ident'>n</span>, <span class='boolval'>true</span>);
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>col</span>(<span class='number'>0</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>r</span>, <span class='ident'>matrix_cw_i64</span>(<span class='number'>4</span>,<span class='number'>1</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>]));
@@ -1495,7 +1491,7 @@ Thus, the size of the matrix remains same.
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_extract_sub_matrix</span>(){
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='number'>4</span>;
-        <span class='comment'>// lower triangular</span>
+        <span class='comment'>// lower triangular</span>
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>TriangularMatrixI64</span> <span class='op'>=</span> <span class='ident'>TriangularMatrix</span>::<span class='ident'>ones</span>(<span class='ident'>n</span>, <span class='boolval'>false</span>);
         <span class='kw'>let</span> <span class='ident'>m2</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>sub_matrix</span>(<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>2</span>, <span class='number'>2</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m2</span>, <span class='ident'>matrix_rw_i64</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[
@@ -1506,7 +1502,7 @@ Thus, the size of the matrix remains same.
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_trace</span>(){
         <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='number'>4</span>;
-        <span class='comment'>// lower triangular</span>
+        <span class='comment'>// lower triangular</span>
         <span class='kw'>let</span> <span class='ident'>m</span> : <span class='ident'>TriangularMatrixI64</span> <span class='op'>=</span> <span class='ident'>TriangularMatrix</span>::<span class='ident'>ones</span>(<span class='ident'>n</span>, <span class='boolval'>false</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>trace</span>(), <span class='number'>4</span>);
     }
@@ -1522,33 +1518,44 @@ Thus, the size of the matrix remains same.
     <section class="footer"></section>
 
     <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
         </div>
     </div>
 

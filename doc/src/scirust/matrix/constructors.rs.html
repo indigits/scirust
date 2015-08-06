@@ -34,7 +34,7 @@
             <div class="search-container">
                 <input class="search-input" name="search"
                        autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
                        type="search">
             </div>
         </form>
@@ -1169,28 +1169,28 @@
 <span id="1127">1127</span>
 <span id="1128">1128</span>
 <span id="1129">1129</span>
-<span id="1130">1130</span>
 </pre><pre class='rust '>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Provides functions to create different types of matrices.
 &quot;</span>]</span>
 
-<span class='comment'>// std imports</span>
+<span class='comment'>// std imports</span>
 
-<span class='comment'>// external imports</span>
+<span class='comment'>// external imports</span>
 <span class='kw'>use</span> <span class='ident'>num</span>::{<span class='ident'>Num</span>, <span class='ident'>One</span>, <span class='ident'>Zero</span>};
 
 
-<span class='comment'>// local imports</span>
+<span class='comment'>// local imports</span>
 <span class='kw'>use</span> <span class='ident'>algebra</span>::<span class='ident'>structure</span>::{<span class='ident'>MagmaBase</span>, <span class='ident'>CommutativeMonoidAddPartial</span>, <span class='ident'>FieldPartial</span>};
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>matrix</span>::{<span class='ident'>Matrix</span>, 
     <span class='ident'>MatrixI8</span>, <span class='ident'>MatrixI16</span>, <span class='ident'>MatrixI32</span>, <span class='ident'>MatrixI64</span>,
     <span class='ident'>MatrixU8</span>, <span class='ident'>MatrixU16</span>, <span class='ident'>MatrixU32</span>, <span class='ident'>MatrixU64</span>,
-    <span class='ident'>MatrixF32</span>, <span class='ident'>MatrixF64</span>};
+    <span class='ident'>MatrixF32</span>, <span class='ident'>MatrixF64</span>,
+    <span class='ident'>MatrixC32</span>, <span class='ident'>MatrixC64</span>};
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>traits</span>::{<span class='ident'>Shape</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>SRError</span>;
 
-<span class='comment'>// complex numbers</span>
-<span class='comment'>//use algebra::{Complex32, Complex64};</span>
+<span class='comment'>// complex numbers</span>
+<span class='kw'>use</span> <span class='ident'>num</span>::<span class='ident'>complex</span>::{<span class='ident'>Complex32</span>, <span class='ident'>Complex64</span>};
 
 
 <span class='attribute'>#[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Returns a Hadamard matrix of size n x n
@@ -1203,24 +1203,24 @@ n must be a power of 2.
         <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>SRError</span>::<span class='ident'>IsNotPowerOfTwo</span>);
     }
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>m</span> : <span class='ident'>MatrixF64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>n</span>, <span class='ident'>n</span>);
-    <span class='comment'>// Take the log of n with respect to 2.</span>
+    <span class='comment'>// Take the log of n with respect to 2.</span>
     <span class='kw'>let</span> <span class='ident'>order</span> <span class='op'>=</span> <span class='ident'>n</span>.<span class='ident'>trailing_zeros</span>();
-    <span class='comment'>// We are going to use Sylvester&#39;s construction</span>
-    <span class='comment'>// http://en.wikipedia.org/wiki/Hadamard_matrix</span>
+    <span class='comment'>// We are going to use Sylvester&#39;s construction</span>
+    <span class='comment'>// http://en.wikipedia.org/wiki/Hadamard_matrix</span>
 
 
-    <span class='comment'>// Let&#39;s fill the first level Hadamard matrix</span>
+    <span class='comment'>// Let&#39;s fill the first level Hadamard matrix</span>
     <span class='ident'>m</span>.<span class='ident'>set</span>(<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>1.0</span>);
     <span class='kw'>for</span>  <span class='ident'>o</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>order</span>{
-        <span class='comment'>// We will construct four views.</span>
+        <span class='comment'>// We will construct four views.</span>
         <span class='kw'>let</span> <span class='ident'>size</span> : <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>2i32</span>.<span class='ident'>pow</span>(<span class='ident'>o</span>) <span class='kw'>as</span> <span class='ident'>usize</span>;
-        <span class='comment'>// top left block</span>
+        <span class='comment'>// top left block</span>
         <span class='kw'>let</span> <span class='ident'>tl</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>0</span>, <span class='number'>0</span>, <span class='ident'>size</span>, <span class='ident'>size</span>);
-        <span class='comment'>// top right block</span>
+        <span class='comment'>// top right block</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tr</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='number'>0</span>, <span class='ident'>size</span>, <span class='ident'>size</span>, <span class='ident'>size</span>);
-        <span class='comment'>// bottom left block</span>
+        <span class='comment'>// bottom left block</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>bl</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='ident'>size</span>, <span class='number'>0</span>, <span class='ident'>size</span>, <span class='ident'>size</span>);
-        <span class='comment'>// bottom right block</span>
+        <span class='comment'>// bottom right block</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>br</span> <span class='op'>=</span> <span class='ident'>m</span>.<span class='ident'>view</span>(<span class='ident'>size</span>, <span class='ident'>size</span>, <span class='ident'>size</span>, <span class='ident'>size</span>);
         <span class='ident'>tr</span>.<span class='ident'>copy_from</span>(<span class='kw-2'>&amp;</span><span class='ident'>tl</span>);
         <span class='ident'>bl</span>.<span class='ident'>copy_from</span>(<span class='kw-2'>&amp;</span><span class='ident'>tl</span>);
@@ -1276,15 +1276,15 @@ Constructing a 4x4 matrix of floating point numbers:
         for i in 0..16{
             let c = i &gt;&gt; 2;
             let r = i &amp; 3;
-            assert_eq!(m.get(r, c), i as f64);
+            assert_eq!(m.get(r, c).unwrap(), i as f64);
         }
 
 
 &quot;</span>]</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_range_cw</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MagmaBase</span><span class='op'>+</span><span class='ident'>Num</span><span class='op'>&gt;</span>(<span class='ident'>rows</span> : <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>, 
     <span class='ident'>start</span> : <span class='ident'>T</span>, <span class='ident'>stop</span> : <span class='ident'>T</span> )<span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='comment'>// TODO this is not working.</span>
-    <span class='comment'>//let m : Matrix&lt;T&gt; = Matrix::from_iter_cw(rows, cols, range);</span>
+    <span class='comment'>// TODO this is not working.</span>
+    <span class='comment'>//let m : Matrix&lt;T&gt; = Matrix::from_iter_cw(rows, cols, range);</span>
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>m</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cur</span> <span class='op'>=</span> <span class='ident'>start</span>;
     <span class='lifetime'>&#39;outer</span>: <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>cols</span>{
@@ -1353,7 +1353,7 @@ See from_range_cw function  for further discussion.
     for i in 0..16{
         let c = i &gt;&gt; 2;
         let r = i &amp; 3;
-        assert_eq!(m.get(r, c), i as i64);
+        assert_eq!(m.get(r, c).unwrap(), i as i64);
     }
 &quot;</span>]</span>
 <span class='attribute'>#[<span class='ident'>inline</span>]</span>
@@ -1405,7 +1405,7 @@ See from_range_cw function  for further discussion.
     for i in 0..16{
         let c = i &gt;&gt; 2;
         let r = i &amp; 3;
-        assert_eq!(m.get(r, c), i as u64);
+        assert_eq!(m.get(r, c).unwrap(), i as u64);
     }
 &quot;</span>]</span>
 <span class='attribute'>#[<span class='ident'>inline</span>]</span>
@@ -1426,8 +1426,8 @@ a range in row wise order.
 &quot;</span>]</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_range_rw</span><span class='op'>&lt;</span><span class='ident'>T</span>:<span class='ident'>MagmaBase</span><span class='op'>+</span><span class='ident'>Num</span><span class='op'>&gt;</span>(<span class='ident'>rows</span> : <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>, 
     <span class='ident'>start</span> : <span class='ident'>T</span>, <span class='ident'>stop</span> : <span class='ident'>T</span> )<span class='op'>-&gt;</span> <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='comment'>// TODO make it work.</span>
-    <span class='comment'>//let m : Matrix&lt;T&gt; = Matrix::from_iter_rw(rows, cols, start..stop);</span>
+    <span class='comment'>// TODO make it work.</span>
+    <span class='comment'>//let m : Matrix&lt;T&gt; = Matrix::from_iter_rw(rows, cols, start..stop);</span>
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>m</span> : <span class='ident'>Matrix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>new</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>);
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cur</span> <span class='op'>=</span> <span class='ident'>start</span>;
     <span class='lifetime'>&#39;outer</span>: <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>rows</span>{
@@ -1486,7 +1486,7 @@ See from_range_rw function  for further discussion.
     for i in 0..16{
         let r = i &gt;&gt; 2;
         let c = i &amp; 3;
-        assert_eq!(m.get(r, c), i as i64);
+        assert_eq!(m.get(r, c).unwrap(), i as i64);
     }
 &quot;</span>]</span>
 <span class='attribute'>#[<span class='ident'>inline</span>]</span>
@@ -1538,7 +1538,7 @@ See from_range_rw function  for further discussion.
     for i in 0..16{
         let r = i &gt;&gt; 2;
         let c = i &amp; 3;
-        assert_eq!(m.get(r, c), i as u64);
+        assert_eq!(m.get(r, c).unwrap(), i as u64);
     }
 &quot;</span>]</span>
 <span class='attribute'>#[<span class='ident'>inline</span>]</span>
@@ -1658,24 +1658,22 @@ picked up from a slice in column wise order.
 }
 
 
-<span class='comment'>/*
-#[doc=&quot;Returns a 32-bit complex matrix whose entries are
+<span class='attribute'>#[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Returns a 32-bit complex matrix whose entries are
 picked up from a slice in column wise order.
-&quot;]
-#[inline]
-pub fn matrix_cw_c32(rows : usize, cols : usize, values: &amp;[Complex32])-&gt;MatrixC32 {
-    Matrix::from_slice_cw(rows, cols, values)
+&quot;</span>]</span>
+<span class='attribute'>#[<span class='ident'>inline</span>]</span>
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>matrix_cw_c32</span>(<span class='ident'>rows</span> : <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>, <span class='ident'>values</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Complex32</span>])<span class='op'>-&gt;</span><span class='ident'>MatrixC32</span> {
+    <span class='ident'>Matrix</span>::<span class='ident'>from_slice_cw</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>, <span class='ident'>values</span>)
 }
 
 
-#[doc=&quot;Returns a 64-bit complex matrix whose entries are
+<span class='attribute'>#[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Returns a 64-bit complex matrix whose entries are
 picked up from a slice in column wise order.
-&quot;]
-#[inline]
-pub fn matrix_cw_c64(rows : usize, cols : usize, values: &amp;[Complex64])-&gt;MatrixC64 {
-    Matrix::from_slice_cw(rows, cols, values)
+&quot;</span>]</span>
+<span class='attribute'>#[<span class='ident'>inline</span>]</span>
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>matrix_cw_c64</span>(<span class='ident'>rows</span> : <span class='ident'>usize</span>, <span class='ident'>cols</span> : <span class='ident'>usize</span>, <span class='ident'>values</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>Complex64</span>])<span class='op'>-&gt;</span><span class='ident'>MatrixC64</span> {
+    <span class='ident'>Matrix</span>::<span class='ident'>from_slice_cw</span>(<span class='ident'>rows</span>, <span class='ident'>cols</span>, <span class='ident'>values</span>)
 }
-*/</span>
 
 <span class='attribute'>#[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Returns an 8-bit unsigned integer matrix whose entries are
 picked up from a slice in row wise order.
@@ -1879,17 +1877,17 @@ pub fn matrix_rw_c64(rows : usize, cols : usize, values: &amp;[Complex64])-&gt;M
     <span class='ident'>col_vector</span>(<span class='ident'>values</span>)
 }
 
-<span class='comment'>//pub fn vec_f64&lt;T:Number+ToPrimitive&gt;(values: &amp;[T])-&gt;MatrixF64 {</span>
-<span class='comment'>//    let n = values.len();</span>
-<span class='comment'>//    let iter = values.iter().map(|&amp;x| x.to_f64().unwrap());</span>
-<span class='comment'>//    col_vector_from_iter(iter, n)</span>
-<span class='comment'>//}</span>
+<span class='comment'>//pub fn vec_f64&lt;T:Number+ToPrimitive&gt;(values: &amp;[T])-&gt;MatrixF64 {</span>
+<span class='comment'>//    let n = values.len();</span>
+<span class='comment'>//    let iter = values.iter().map(|&amp;x| x.to_f64().unwrap());</span>
+<span class='comment'>//    col_vector_from_iter(iter, n)</span>
+<span class='comment'>//}</span>
 
 <span class='comment'>/////////////////////////////////////////////////////////////////////////</span>
 <span class='comment'>/////////////////////////////////////////////////////////////////////////</span>
-<span class='comment'>//</span>
-<span class='comment'>//              Elementary row operation matrices</span>
-<span class='comment'>//</span>
+<span class='comment'>//</span>
+<span class='comment'>//              Elementary row operation matrices</span>
+<span class='comment'>//</span>
 <span class='comment'>/////////////////////////////////////////////////////////////////////////</span>
 <span class='comment'>/////////////////////////////////////////////////////////////////////////</span>
 
@@ -1946,9 +1944,9 @@ r_i = r_i + k * r_j
 
 <span class='comment'>/////////////////////////////////////////////////////////////////////////</span>
 <span class='comment'>/////////////////////////////////////////////////////////////////////////</span>
-<span class='comment'>//</span>
-<span class='comment'>//              Unit tests follow</span>
-<span class='comment'>//</span>
+<span class='comment'>//</span>
+<span class='comment'>//              Unit tests follow</span>
+<span class='comment'>//</span>
 <span class='comment'>/////////////////////////////////////////////////////////////////////////</span>
 <span class='comment'>/////////////////////////////////////////////////////////////////////////</span>
 
@@ -1960,13 +1958,13 @@ r_i = r_i + k * r_j
     <span class='kw'>fn</span> <span class='ident'>test_hadamard</span>(){
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>hadamard</span>(<span class='number'>1</span>).<span class='ident'>unwrap</span>();
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>num_cells</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>,<span class='number'>0</span>), <span class='number'>1.0</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>,<span class='number'>0</span>).<span class='ident'>unwrap</span>(), <span class='number'>1.0</span>);
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>hadamard</span>(<span class='number'>2</span>).<span class='ident'>unwrap</span>();
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>num_cells</span>(), <span class='number'>4</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>,<span class='number'>0</span>), <span class='number'>1.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>,<span class='number'>1</span>), <span class='number'>1.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>,<span class='number'>0</span>), <span class='number'>1.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>,<span class='number'>1</span>), <span class='op'>-</span><span class='number'>1.0</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>,<span class='number'>0</span>).<span class='ident'>unwrap</span>(), <span class='number'>1.0</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>0</span>,<span class='number'>1</span>).<span class='ident'>unwrap</span>(), <span class='number'>1.0</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>,<span class='number'>0</span>).<span class='ident'>unwrap</span>(), <span class='number'>1.0</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='number'>1</span>,<span class='number'>1</span>).<span class='ident'>unwrap</span>(), <span class='op'>-</span><span class='number'>1.0</span>);
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>hadamard</span>(<span class='number'>4</span>).<span class='ident'>unwrap</span>();
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>is_square</span>());
     }
@@ -1977,7 +1975,7 @@ r_i = r_i + k * r_j
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i64</span>);
         }
         <span class='kw'>let</span> <span class='ident'>start</span>  <span class='op'>=</span> <span class='number'>0.0</span>;
         <span class='kw'>let</span> <span class='ident'>stop</span> <span class='op'>=</span> <span class='number'>16.0</span>;
@@ -1985,13 +1983,13 @@ r_i = r_i + k * r_j
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_cw_f64</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='ident'>start</span>, <span class='ident'>stop</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
         }
     }
 
@@ -2003,31 +2001,31 @@ r_i = r_i + k * r_j
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_rw_i8</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>0</span>, <span class='number'>16</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i8</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i8</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_rw_i16</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>0</span>, <span class='number'>16</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i16</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i16</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_rw_i32</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>0</span>, <span class='number'>16</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i32</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_rw_i64</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>0</span>, <span class='number'>16</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>i64</span>);
         }
 
 
@@ -2035,25 +2033,25 @@ r_i = r_i + k * r_j
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u8</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u8</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_rw_u16</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>0</span>, <span class='number'>16</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u16</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u16</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_rw_u32</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>0</span>, <span class='number'>16</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u32</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_rw_u64</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>0</span>, <span class='number'>16</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u64</span>);
         }
 
 
@@ -2061,14 +2059,14 @@ r_i = r_i + k * r_j
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f64</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>from_range_rw_f32</span>(<span class='number'>4</span>, <span class='number'>4</span>, <span class='number'>0.0</span>, <span class='number'>16.0</span>);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>16</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>2</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>3</span>;
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>f32</span>);
         }
 
     }
@@ -2080,113 +2078,113 @@ r_i = r_i + k * r_j
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u8</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u8</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_u16</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u16</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u16</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_u32</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u32</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_u64</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u64</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_i8</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i8</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i8</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_i16</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i16</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i16</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_i32</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i32</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_i64</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i64</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_cw_f64</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1.0</span>,<span class='number'>2.0</span>,<span class='number'>3.0</span>,<span class='number'>4.0</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f64</span>);
         }
 
-        <span class='comment'>//  We will now test row wise construction functions.</span>
+        <span class='comment'>//  We will now test row wise construction functions.</span>
 
 
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_u8</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u8</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u8</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_u16</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u16</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u16</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_u32</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u32</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_u64</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u64</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_i8</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i8</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i8</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_i16</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i16</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i16</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_i32</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i32</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_i64</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i64</span>);
         }
         <span class='kw'>let</span> <span class='ident'>m</span> <span class='op'>=</span> <span class='ident'>matrix_rw_f64</span>(<span class='number'>2</span>,<span class='number'>2</span>, <span class='kw-2'>&amp;</span>[<span class='number'>1.0</span>,<span class='number'>2.0</span>,<span class='number'>3.0</span>,<span class='number'>4.0</span>]);
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
             <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
             <span class='kw'>let</span> <span class='ident'>c</span> <span class='op'>=</span> <span class='ident'>i</span> <span class='kw-2'>&amp;</span> <span class='number'>1</span>;            
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>m</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f64</span>);
         }
     }
 
@@ -2196,70 +2194,70 @@ r_i = r_i + k * r_j
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u8</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u8</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_u16</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u16</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u16</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_u32</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u32</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_u64</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>u64</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_i8</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i8</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i8</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_i16</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i16</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i16</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_i32</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i32</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_i64</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>i64</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_f32</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1.</span>,<span class='number'>2.</span>,<span class='number'>3.</span>,<span class='number'>4.</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f32</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f32</span>);
         }
 
         <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>vector_f64</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1.</span>,<span class='number'>2.</span>,<span class='number'>3.</span>,<span class='number'>4.</span>]);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_vector</span>());
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_col</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span>{
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f64</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>i</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>(), (<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='kw'>as</span> <span class='ident'>f64</span>);
         }
 
     }
@@ -2272,11 +2270,11 @@ r_i = r_i + k * r_j
             <span class='number'>4.</span>, <span class='number'>5.</span>, <span class='number'>6.</span>, <span class='number'>7.</span>,
             <span class='number'>8.</span>, <span class='number'>9.</span>, <span class='number'>10.</span>, <span class='number'>11.</span>,
             <span class='number'>12.</span>, <span class='number'>13.</span>, <span class='number'>14.</span>, <span class='number'>15.</span>]);
-        <span class='comment'>// Carry out transformation through multiplying</span>
-        <span class='comment'>// elementary matrices </span>
+        <span class='comment'>// Carry out transformation through multiplying</span>
+        <span class='comment'>// elementary matrices </span>
         <span class='kw'>let</span> <span class='ident'>m2</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>eswitch</span> <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m</span>;
         <span class='kw'>let</span> <span class='ident'>m3</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>escale</span> <span class='op'>*</span> <span class='kw-2'>&amp;</span><span class='ident'>m2</span>;
-        <span class='comment'>// Do ERO operations directly.</span>
+        <span class='comment'>// Do ERO operations directly.</span>
         <span class='ident'>m</span>.<span class='ident'>ero_switch</span>(<span class='number'>1</span>, <span class='number'>3</span>);
         <span class='ident'>m</span>.<span class='ident'>ero_scale</span>(<span class='number'>2</span>, <span class='number'>2.0</span>);
         <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;eswitch: {:?}&quot;</span>, <span class='ident'>eswitch</span>);
@@ -2308,33 +2306,44 @@ r_i = r_i + k * r_j
     <section class="footer"></section>
 
     <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
         </div>
     </div>
 

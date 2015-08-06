@@ -34,7 +34,7 @@
             <div class="search-container">
                 <input class="search-input" name="search"
                        autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
                        type="search">
             </div>
         </form>
@@ -422,9 +422,9 @@
 
 
 
-<span class='comment'>// std imports</span>
+<span class='comment'>// std imports</span>
 
-<span class='comment'>// local imports</span>
+<span class='comment'>// local imports</span>
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>matrix</span>::{<span class='ident'>Matrix</span>, <span class='ident'>MatrixF64</span>};
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>traits</span>::{<span class='ident'>Shape</span>, <span class='ident'>Search</span>};
 <span class='kw'>use</span> <span class='ident'>matrix</span>::<span class='ident'>eo</span>::<span class='ident'>eo_traits</span>::{<span class='ident'>ERO</span>, <span class='ident'>ECO</span>};
@@ -438,41 +438,41 @@
     }
     <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>num_rows</span>();
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span>  : <span class='ident'>MatrixF64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>identity</span>(<span class='ident'>n</span>, <span class='ident'>n</span>);
-    <span class='comment'>// forward elimination</span>
+    <span class='comment'>// forward elimination</span>
     <span class='kw'>for</span> <span class='ident'>k</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span>{
         <span class='kw'>let</span> (_, <span class='ident'>rr</span>) <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>max_abs_scalar_in_col</span>(<span class='ident'>k</span>, <span class='ident'>k</span>, <span class='ident'>n</span>);
         <span class='kw'>if</span> <span class='ident'>rr</span> <span class='op'>&gt;</span> <span class='ident'>k</span> {
-            <span class='comment'>// TODO : we can switch only part of row</span>
+            <span class='comment'>// TODO : we can switch only part of row</span>
             <span class='ident'>a</span>.<span class='ident'>ero_switch</span>(<span class='ident'>k</span>, <span class='ident'>rr</span>);
             <span class='ident'>result</span>.<span class='ident'>ero_switch</span>(<span class='ident'>k</span>, <span class='ident'>rr</span>);
         }
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>view</span>(<span class='ident'>k</span>, <span class='ident'>k</span>, <span class='ident'>n</span> <span class='op'>-</span> <span class='ident'>k</span>, <span class='ident'>n</span> <span class='op'>-</span> <span class='ident'>k</span>);
-        <span class='comment'>// Pick the pivot</span>
-        <span class='kw'>let</span> <span class='ident'>pivot</span>  <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>);
+        <span class='comment'>// Pick the pivot</span>
+        <span class='kw'>let</span> <span class='ident'>pivot</span>  <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
         <span class='kw'>if</span> <span class='ident'>pivot</span> <span class='op'>==</span> <span class='number'>0.</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>SRError</span>::<span class='ident'>IsSingular</span>);
         }
-        <span class='comment'>// bring 1 in the diagonal </span>
+        <span class='comment'>// bring 1 in the diagonal </span>
         <span class='ident'>v</span>.<span class='ident'>ero_scale</span>(<span class='number'>0</span>, <span class='number'>1.</span><span class='op'>/</span><span class='ident'>pivot</span>);
         <span class='ident'>result</span>.<span class='ident'>ero_scale</span>(<span class='ident'>k</span>, <span class='number'>1.</span><span class='op'>/</span><span class='ident'>pivot</span>);
         <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> (<span class='number'>1</span>..<span class='ident'>v</span>.<span class='ident'>num_rows</span>()){
-            <span class='kw'>let</span> <span class='ident'>first</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='number'>0</span>);
+            <span class='kw'>let</span> <span class='ident'>first</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
             <span class='ident'>v</span>.<span class='ident'>ero_scale_add</span>(<span class='ident'>r</span>, <span class='number'>0</span>, <span class='op'>-</span><span class='ident'>first</span>);
-            <span class='comment'>// TODO: ignore 0 entries in k-th row of result</span>
+            <span class='comment'>// TODO: ignore 0 entries in k-th row of result</span>
             <span class='ident'>result</span>.<span class='ident'>ero_scale_add</span>(<span class='ident'>k</span> <span class='op'>+</span> <span class='ident'>r</span>, <span class='ident'>k</span> <span class='kw'>as</span> <span class='ident'>isize</span>, <span class='op'>-</span><span class='ident'>first</span>);
         }
-        <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
-        <span class='comment'>//println!(&quot;b: {}&quot;, result);</span>
+        <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
+        <span class='comment'>//println!(&quot;b: {}&quot;, result);</span>
     }
-    <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
-    <span class='comment'>//println!(&quot;b: {}&quot;, result);</span>
-    <span class='comment'>// back substitution</span>
+    <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
+    <span class='comment'>//println!(&quot;b: {}&quot;, result);</span>
+    <span class='comment'>// back substitution</span>
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>k</span> <span class='op'>=</span> <span class='ident'>n</span> <span class='op'>-</span><span class='number'>1</span>;
     <span class='kw'>loop</span> {
-        <span class='comment'>// We are using (k, k) entry in a and</span>
-        <span class='comment'>// updating k-th column in a.</span>
+        <span class='comment'>// We are using (k, k) entry in a and</span>
+        <span class='comment'>// updating k-th column in a.</span>
         <span class='kw'>for</span> <span class='ident'>r</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>k</span>{
-            <span class='kw'>let</span> <span class='ident'>factor</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>k</span>);
+            <span class='kw'>let</span> <span class='ident'>factor</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>get</span>(<span class='ident'>r</span>, <span class='ident'>k</span>).<span class='ident'>unwrap</span>();
             <span class='ident'>result</span>.<span class='ident'>ero_scale_add</span>(<span class='ident'>r</span>, <span class='ident'>k</span> <span class='kw'>as</span> <span class='ident'>isize</span>, <span class='op'>-</span><span class='ident'>factor</span>);
         }
         <span class='kw'>if</span> <span class='ident'>k</span> <span class='op'>==</span> <span class='number'>0</span> {
@@ -480,8 +480,8 @@
         }
         <span class='ident'>k</span> <span class='op'>-=</span> <span class='number'>1</span>;
     }
-    <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
-    <span class='comment'>//println!(&quot;result: {}&quot;, result);</span>
+    <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
+    <span class='comment'>//println!(&quot;result: {}&quot;, result);</span>
     <span class='prelude-val'>Ok</span>(<span class='ident'>result</span>)
 }
 
@@ -493,41 +493,41 @@
     }
     <span class='kw'>let</span> <span class='ident'>n</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>num_rows</span>();
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span>  : <span class='ident'>MatrixF64</span> <span class='op'>=</span> <span class='ident'>Matrix</span>::<span class='ident'>identity</span>(<span class='ident'>n</span>, <span class='ident'>n</span>);
-    <span class='comment'>// forward elimination</span>
+    <span class='comment'>// forward elimination</span>
     <span class='kw'>for</span> <span class='ident'>k</span> <span class='kw'>in</span> (<span class='number'>0</span>..<span class='ident'>n</span>){
         <span class='kw'>let</span> (_, <span class='ident'>cc</span>) <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>max_abs_scalar_in_row</span>(<span class='ident'>k</span>, <span class='ident'>k</span>, <span class='ident'>n</span>);
         <span class='kw'>if</span> <span class='ident'>cc</span> <span class='op'>&gt;</span> <span class='ident'>k</span> {
-            <span class='comment'>// TODO : we can switch only part of column</span>
+            <span class='comment'>// TODO : we can switch only part of column</span>
             <span class='ident'>a</span>.<span class='ident'>eco_switch</span>(<span class='ident'>k</span>, <span class='ident'>cc</span>);
             <span class='ident'>result</span>.<span class='ident'>eco_switch</span>(<span class='ident'>k</span>, <span class='ident'>cc</span>);
         }
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>view</span>(<span class='ident'>k</span>, <span class='ident'>k</span>, <span class='ident'>n</span> <span class='op'>-</span> <span class='ident'>k</span>, <span class='ident'>n</span> <span class='op'>-</span> <span class='ident'>k</span>);
-        <span class='comment'>// Pick the pivot</span>
-        <span class='kw'>let</span> <span class='ident'>pivot</span>  <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>);
+        <span class='comment'>// Pick the pivot</span>
+        <span class='kw'>let</span> <span class='ident'>pivot</span>  <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
         <span class='kw'>if</span> <span class='ident'>pivot</span> <span class='op'>==</span> <span class='number'>0.</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>SRError</span>::<span class='ident'>IsSingular</span>);
         }
-        <span class='comment'>// bring 1 in the diagonal </span>
+        <span class='comment'>// bring 1 in the diagonal </span>
         <span class='ident'>v</span>.<span class='ident'>eco_scale</span>(<span class='number'>0</span>, <span class='number'>1.</span><span class='op'>/</span><span class='ident'>pivot</span>);
         <span class='ident'>result</span>.<span class='ident'>eco_scale</span>(<span class='ident'>k</span>, <span class='number'>1.</span><span class='op'>/</span><span class='ident'>pivot</span>);
         <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> (<span class='number'>1</span>..<span class='ident'>v</span>.<span class='ident'>num_cols</span>()){
-            <span class='kw'>let</span> <span class='ident'>first</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='ident'>c</span>);
+            <span class='kw'>let</span> <span class='ident'>first</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>get</span>(<span class='number'>0</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>();
             <span class='ident'>v</span>.<span class='ident'>eco_scale_add</span>(<span class='ident'>c</span>, <span class='number'>0</span>, <span class='op'>-</span><span class='ident'>first</span>);
-            <span class='comment'>// TODO: ignore 0 entries in k-th col of result</span>
+            <span class='comment'>// TODO: ignore 0 entries in k-th col of result</span>
             <span class='ident'>result</span>.<span class='ident'>eco_scale_add</span>(<span class='ident'>k</span> <span class='op'>+</span> <span class='ident'>c</span>, <span class='ident'>k</span> <span class='kw'>as</span> <span class='ident'>isize</span>, <span class='op'>-</span><span class='ident'>first</span>);
         }
-        <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
-        <span class='comment'>//println!(&quot;b: {}&quot;, result);</span>
+        <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
+        <span class='comment'>//println!(&quot;b: {}&quot;, result);</span>
     }
-    <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
-    <span class='comment'>//println!(&quot;b: {}&quot;, result);</span>
-    <span class='comment'>// back substitution</span>
+    <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
+    <span class='comment'>//println!(&quot;b: {}&quot;, result);</span>
+    <span class='comment'>// back substitution</span>
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>k</span> <span class='op'>=</span> <span class='ident'>n</span> <span class='op'>-</span><span class='number'>1</span>;
     <span class='kw'>loop</span> {
-        <span class='comment'>// We are using (k, k) entry in a and</span>
-        <span class='comment'>// updating k-th row in a.</span>
+        <span class='comment'>// We are using (k, k) entry in a and</span>
+        <span class='comment'>// updating k-th row in a.</span>
         <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> (<span class='number'>0</span>..<span class='ident'>k</span>){
-            <span class='kw'>let</span> <span class='ident'>factor</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>get</span>(<span class='ident'>k</span>, <span class='ident'>c</span>);
+            <span class='kw'>let</span> <span class='ident'>factor</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>get</span>(<span class='ident'>k</span>, <span class='ident'>c</span>).<span class='ident'>unwrap</span>();
             <span class='ident'>result</span>.<span class='ident'>eco_scale_add</span>(<span class='ident'>c</span>, <span class='ident'>k</span> <span class='kw'>as</span> <span class='ident'>isize</span>, <span class='op'>-</span><span class='ident'>factor</span>);
         }
         <span class='kw'>if</span> <span class='ident'>k</span> <span class='op'>==</span> <span class='number'>0</span> {
@@ -535,8 +535,8 @@
         }
         <span class='ident'>k</span> <span class='op'>-=</span> <span class='number'>1</span>;
     }
-    <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
-    <span class='comment'>//println!(&quot;result: {}&quot;, result);</span>
+    <span class='comment'>//println!(&quot;a: {}&quot;, a);</span>
+    <span class='comment'>//println!(&quot;result: {}&quot;, result);</span>
     <span class='prelude-val'>Ok</span>(<span class='ident'>result</span>)
 }
 
@@ -800,33 +800,44 @@
     <section class="footer"></section>
 
     <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
         </div>
     </div>
 

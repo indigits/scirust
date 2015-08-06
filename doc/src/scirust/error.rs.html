@@ -34,7 +34,7 @@
             <div class="search-container">
                 <input class="search-input" name="search"
                        autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
                        type="search">
             </div>
         </form>
@@ -194,11 +194,11 @@
 &quot;</span>]</span>
 
 
-<span class='comment'>// std imports</span>
+<span class='comment'>// std imports</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
 
 
-<span class='comment'>// local imports</span>
+<span class='comment'>// local imports</span>
 
 
 
@@ -224,9 +224,9 @@
     <span class='ident'>IsNotSquareMatrix</span>,
     <span class='doccomment'>/// The matrix is not a vector</span>
     <span class='ident'>IsNotAVector</span>,
-    <span class='comment'>// The matrix is not a column vector</span>
+    <span class='comment'>// The matrix is not a column vector</span>
     <span class='ident'>IsNotAColVector</span>,
-    <span class='comment'>// The matrix is not a row vector</span>
+    <span class='comment'>// The matrix is not a row vector</span>
     <span class='ident'>IsNotARowVector</span>,
     <span class='doccomment'>/// Indicates that a matrix is not full rank</span>
     <span class='ident'>IsNotFullRankMatrix</span>,
@@ -266,7 +266,7 @@
      *   Arithmetic related stuff
      *
      *******************************************************/</span>
-    <span class='comment'>//  Divide by zero</span>
+    <span class='comment'>//  Divide by zero</span>
     <span class='ident'>DivideByZero</span>,
 
 
@@ -292,7 +292,7 @@
     <span class='doccomment'>/// Converts enum values to string representation</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_string</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span>{
-            <span class='comment'>//  Matrices</span>
+            <span class='comment'>//  Matrices</span>
             <span class='ident'>SRError</span>::<span class='ident'>EmptyMatrix</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Matrix is empty&quot;</span>),
             <span class='ident'>SRError</span>::<span class='ident'>DimensionsMismatch</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Dimensions don&#39;t match&quot;</span>),
             <span class='ident'>SRError</span>::<span class='ident'>RowsMismatch</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Number of rows don&#39;t match&quot;</span>),
@@ -310,13 +310,13 @@
             <span class='ident'>SRError</span>::<span class='ident'>IsNegativeDefinite</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Matrix is negative definite&quot;</span>),
             <span class='ident'>SRError</span>::<span class='ident'>IsNegativeSemiDefinite</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Matrix is negative semi-definite&quot;</span>),
             <span class='ident'>SRError</span>::<span class='ident'>IsNonDefinite</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Matrix is non-definite&quot;</span>),
-            <span class='comment'>// Linear systems</span>
+            <span class='comment'>// Linear systems</span>
             <span class='ident'>SRError</span>::<span class='ident'>LRDimensionMismatch</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;The dimensions of LHS and RHS don&#39;t match&quot;</span>),
             <span class='ident'>SRError</span>::<span class='ident'>NoSolution</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;No solution&quot;</span>),
             <span class='ident'>SRError</span>::<span class='ident'>InfiniteSolutions</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Infinite solutions&quot;</span>),
-            <span class='comment'>// Arithmetic</span>
+            <span class='comment'>// Arithmetic</span>
             <span class='ident'>SRError</span>::<span class='ident'>DivideByZero</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Attempt to divide by zero&quot;</span>),
-            <span class='comment'>// Discrete numbers</span>
+            <span class='comment'>// Discrete numbers</span>
             <span class='ident'>SRError</span>::<span class='ident'>IsNotPowerOfTwo</span> <span class='op'>=&gt;</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Number is not power of two&quot;</span>),
 
 
@@ -346,33 +346,44 @@ impl fmt::Debug for SRError {
     <section class="footer"></section>
 
     <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
         </div>
     </div>
 
