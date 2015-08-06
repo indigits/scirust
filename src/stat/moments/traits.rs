@@ -17,10 +17,10 @@ pub trait Sums<T: CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> {
     /// Computes sum over rows and returns a column vector
     fn sum_rw(&self) -> Matrix<T>;
 
-    /// Computes sum over columns and returns a row vector
+    /// Computes sum of squares over columns and returns a row vector
     fn sum_sqr_cw(&self) -> Matrix<T>;
 
-    /// Computes sum over rows and returns a column vector
+    /// Computes sum of squares over rows and returns a column vector
     fn sum_sqr_rw(&self) -> Matrix<T>;
 }
 
