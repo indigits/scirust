@@ -69,7 +69,7 @@ impl LUDecomposition{
                 p.ero_switch(k, rr);
             }
             // Pick up the pivot
-            let pivot = unsafe {a.get_unchecked(k, k) };
+            let pivot = a.get(k, k).unwrap();
             // Put it in the diagonal vector
             d.set(k, 0, pivot);
             // The lower right part of U matrix
@@ -78,7 +78,7 @@ impl LUDecomposition{
             // The lower left part of L matrix
             let mut l_bl = a.view(k+1, k, n -k -1, 1);
             for r in 1..u_br.num_rows(){
-                let first = unsafe { u_br.get_unchecked(r, 0) } ;
+                let first = u_br.get(r, 0).unwrap();
                 u_br.ero_scale_add(r, 0, -first);
                 l_bl.set(r - 1, 0, first / pivot);
             }
@@ -111,7 +111,7 @@ impl LUDecomposition{
             // The top right part of L matrix
             let mut l_tr  = a.view(k, k, n - k, n -k);
             // Pick up the pivot
-            let pivot = unsafe { l_tr.get_unchecked(0, 0) };
+            let pivot = l_tr.get(0, 0).unwrap();
             if pivot == 0. {
                 continue;
             }
@@ -122,7 +122,7 @@ impl LUDecomposition{
             // The lower right part of U matrix
             let mut u_bl = a.view(k, k + 1, 1, n -k -1);
             for c in 1..l_tr.num_cols(){
-                let first = unsafe { l_tr.get_unchecked(0, c) };
+                let first = l_tr.get(0, c).unwrap();
                 let factor = first  / pivot;
                 l_tr.eco_scale_add(c, 0, -first);
                 u_bl.set(0, c-1, factor); 
@@ -142,32 +142,28 @@ impl LUDecomposition{
         for p in 0..n{
             for r in p..n{
                 // We are computing l(r, p)
-                let mut v = unsafe { a.get_unchecked(r, p) };
+                let mut v = a.get(r, p).unwrap();
                 // subtract l(r, k) * u (k, p)
                 for k in 0..p{
-                    unsafe {
-                        v = v - a.get_unchecked(r, k) * a.get_unchecked(k, p);
-                    }
+                    v = v - a.get(r, k).unwrap() * a.get(k, p).unwrap();
                 }
                 a.set(r, p, v);
             }
             for c in (p + 1)..n{
                 // u(p, p) = 1. Hence we don't compute it.
                 // We are computing u(p, c)
-                let mut v = unsafe { a.get_unchecked(p, c) };
+                let mut v = a.get(p, c).unwrap();
                 for k in 0..p{
                     // subtract l(p, k) * u (k, c)
-                    unsafe {
-                        v = v - a.get_unchecked(p, k) * a.get_unchecked(k, c);
-                    }
+                    v = v - a.get(p, k).unwrap() * a.get(k, c).unwrap();
                 }
                 // divide by l (p, p)
-                v = v / unsafe { a.get_unchecked(p, p) } ;
+                v = v / a.get(p, p).unwrap();
                 a.set(p, c, v);
             }
         }
         for r in 0..n{
-            let pivot = unsafe { a.get_unchecked(r, r) };
+            let pivot = a.get(r, r).unwrap();
             d.set(r, 0, pivot);
             // scale down the r-th column of lower triangular matrix
             a.eco_scale_slice(r, 1./pivot, r, n);
@@ -235,7 +231,7 @@ impl LUDecomposition{
         let n = pv.num_cells();
         let mut p : MatrixF64 = Matrix::zeros(n, n);
         for i in 0..n{
-            let index = unsafe { pv.get_unchecked(i, 0) };
+            let index = pv.get(i, 0).unwrap();
             if self.pre {
                 p.set(i, index as usize, 1.);
             }

@@ -39,18 +39,28 @@ pub fn are_transpose<T:MagmaBase>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool{
 pub fn transpose_simple<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     let rows = src.num_rows();
     let cols = src.num_cols();
+    // Output matrix
     let mut result : Matrix<T> = Matrix::new(cols, rows);
+    // We will iterate the source matrix column wise
     let mut psrc_col = src.as_ptr();
+    // We will iterate the destination matrix row wise
     let mut pdst_row = result.as_mut_ptr();
+    // Source and destination strides
     let src_stride = src.stride() as isize;
     let dst_stride = result.stride() as isize;
+    // Iterate over source columns
     for _ in 0..cols{
+        // Pointer to the beginning of current column in source
         let mut psrc = psrc_col;
+        // Pointer to the beginning of current row in destination
         let mut pdst = pdst_row;
+        // Copy entries in the source column
         for _ in 0..rows{
             unsafe {
                 *pdst = *psrc;
+                // Move to next entry in source column
                 psrc = psrc.offset(1);
+                // Move to next entry in destination row
                 pdst = pdst.offset(dst_stride);
             }
         }
@@ -66,23 +76,27 @@ pub fn transpose_simple<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
 
 
 /// Block wise transpose
+/// This is more efficient than simple transpose for large matrices 
+/// due to caching considerations
 pub fn transpose_block<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     // Choose a block size
     let block_size = 32;
-    // Construct the destination
+    // Construct the destination result matrix
     let rows = src.num_rows();
     let cols = src.num_cols();
     let mut result : Matrix<T> = Matrix::new(cols, rows);
+    // Source and destination data pointers
     let psrc = src.as_ptr();
     let pdst = result.as_mut_ptr();
+    // Source and destination strides
     let src_stride = src.stride() as isize;
     let dst_stride = result.stride() as isize;
 
 
     for cc in (0..cols).step_by(block_size){
         for rr in (0..rows).step_by(block_size){
-            // We have to transpose a block of size blk x blk
-            let blk_cols = min (block_size, cols - cc); 
+            // We have to transpose a block of size blk_rows x blk_cols
+            let blk_cols = min (block_size, cols - cc);
             let blk_rows = min (block_size, rows - rr);
             unsafe{
                 // Get our pointers to the beginning of the block
@@ -111,7 +125,7 @@ pub fn transpose_block<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
                 }
             }
         }
-    } 
+    }
     result
 }
 
@@ -140,7 +154,7 @@ impl <T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Frame<T> for Ma
         let stride = self.stride() as isize;
         let z : T = Zero::zero();
         // We take advantage of the fact that the gram matrix
-        // is symmetric. 
+        // is symmetric.
         // We only compute one half of it.
         for i in 0..cols{
             for j in i..cols{
@@ -173,7 +187,77 @@ impl <T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Frame<T> for Ma
  *
  *******************************************************/
 
- pub fn multiply_simple<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(lhs : &Matrix<T>, 
+
+const BLOCK_SIZE:usize = 16;
+ pub fn multiply_block<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(lhs : &Matrix<T>,
+    rhs: &Matrix<T>)->SRResult<Matrix<T>>{
+    use std::{cmp, slice};
+    use std::ops::Add;
+    // Validate dimensions match for multiplication
+    if lhs.num_cols() != rhs.num_rows(){
+        return Err(SRError::DimensionsMismatch);
+    }
+    let mut result : Matrix<T> = Matrix::new(lhs.num_rows(), rhs.num_cols());
+    let zero : T = Zero::zero();
+    let pa = lhs.as_ptr();
+    let pb = rhs.as_ptr();
+    let pc = result.as_mut_ptr();
+    for row_start in (0..lhs.num_rows()).step_by(BLOCK_SIZE) {
+        for col_start in (0..rhs.num_cols()).step_by(BLOCK_SIZE) {
+            let row_end = cmp::min(row_start + BLOCK_SIZE, lhs.num_rows());
+            let col_end = cmp::min(col_start + BLOCK_SIZE, rhs.num_cols());
+
+            let mut res_block = [[zero; BLOCK_SIZE]; BLOCK_SIZE];
+
+            for k_start in (0..lhs.num_cols()).step_by(BLOCK_SIZE) {
+                let k_end = cmp::min(k_start + BLOCK_SIZE, lhs.num_cols());
+
+                let mut lhs_block = [[zero; BLOCK_SIZE]; BLOCK_SIZE];
+                let mut rhs_block = [[zero; BLOCK_SIZE]; BLOCK_SIZE];
+
+                for k in k_start..k_end {
+                    let k_offs = k - k_start;
+                    let col_slice = unsafe {
+                        slice::from_raw_parts(pa.offset(lhs.cell_to_offset(row_start, k)), row_end - row_start)
+                    };
+                    for (row_offs, value) in col_slice.iter().cloned().enumerate() {
+                        lhs_block[row_offs][k_offs] = value;
+                    }
+                }
+                for col in col_start..col_end {
+                    let col_offs = col - col_start;
+                    let col_slice = unsafe {
+                        slice::from_raw_parts(pb.offset(rhs.cell_to_offset(k_start, col)), k_end - k_start)
+                    };
+                    for (k_offs, value) in  col_slice.iter().cloned().enumerate() {
+                        // Note the inverted indices
+                        rhs_block[col_offs][k_offs] = value;
+                    }
+                }
+                for i in 0..(row_end - row_start) {
+                    for j in 0..(col_end - col_start) {
+                        let cell = lhs_block[i][0..(k_end - k_start)].iter().cloned()
+                            .zip(rhs_block[j][0..(k_end - k_start)].iter().cloned())
+                            .map(|(l, r)| l * r)
+                            .fold(zero, Add::add);
+                        res_block[i][j] = res_block[i][j] + cell;
+                    }
+                }
+            }
+            for col in col_start..col_end {
+                let col_slice = unsafe {
+                    slice::from_raw_parts_mut(pc.offset(result.cell_to_offset(row_start, col)), row_end - row_start)
+                };
+                for (row_offs, res_ptr) in col_slice.iter_mut().enumerate() {
+                    *res_ptr = res_block[row_offs][col - col_start];
+                }
+            }
+        }
+    }
+    return Ok(result);
+}
+
+ pub fn multiply_simple<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(lhs : &Matrix<T>,
     rhs: &Matrix<T>)->SRResult<Matrix<T>>{
     // Validate dimensions match for multiplication
     if lhs.num_cols() != rhs.num_rows(){
@@ -209,12 +293,12 @@ impl <T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Frame<T> for Ma
 
 We don't have to compute the transpose directly. We note that this
 essentially means taking the inner product of columns of A with
-columns of B. We carry out the same. This is highly advantageous. 
+columns of B. We carry out the same. This is highly advantageous.
 Since the matrix is stored in column major order, hence multiplying
 columns with each other is highly efficient from locality of data
 perspective. This benefit shows up more as the matrix size increases.
 "]
-pub fn multiply_transpose_simple<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(lhs : &Matrix<T>, 
+pub fn multiply_transpose_simple<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(lhs : &Matrix<T>,
     rhs: &Matrix<T>)->SRResult<Matrix<T>>{
     // Validate dimensions match for multiplication
     if lhs.num_rows() != rhs.num_rows(){
@@ -253,7 +337,16 @@ pub fn multiply_transpose_simple<T:CommutativeMonoidAddPartial+CommutativeMonoid
 impl<'a, 'b, T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> ops::Mul<&'b Matrix<T>> for &'a Matrix<T>{
     type Output = Matrix<T>;
     fn mul(self, rhs: &Matrix<T>) -> Matrix<T> {
-        let result = multiply_simple(self, rhs);
+        let min_dimention = [self.num_cols(), self.num_rows(), rhs.num_cols(), rhs.num_rows()]
+            .iter()
+            .cloned()
+            .min().unwrap();
+        let use_block = min_dimention >= 2 * BLOCK_SIZE;
+        let result = if use_block {
+            multiply_block(self, rhs)
+        } else {
+            multiply_simple(self, rhs)
+        };
         match result {
             Ok(m) => m,
             Err(e) => panic!(e.to_string())
@@ -333,6 +426,8 @@ mod test{
     }
 
 
+
+
     #[test]
     fn test_mult_4(){
         let m1 : MatrixI64 = Matrix::from_iter_cw(10, 20, (0..400));
@@ -342,6 +437,39 @@ mod test{
         assert_eq!(m3, m4);
     }
 
+    #[test]
+    fn test_mult_block_1(){
+        let m1 : MatrixI64 = Matrix::from_iter_cw(2, 2, (0..4));
+        let m2 : MatrixI64 = Matrix::from_iter_cw(2, 2, (0..4));
+        let m3 = &m1 * &m2;
+        let v = vec![2i64, 3, 6, 11];
+        assert_eq!(m3.to_std_vec(), v);
+        let m3 = multiply_block(&m1, &m2).unwrap();
+        let m4 = multiply_transpose_simple(&m1.transpose(), &m2).unwrap();
+        assert_eq!(m3, m4);
+    }
+
+    #[test]
+    fn test_mult_block_4(){
+        let m1 : MatrixI64 = Matrix::from_iter_cw(10, 20, (0..400));
+        let m2 : MatrixI64 = Matrix::from_iter_cw(20, 5, (0..400));
+        let m3 = multiply_block(&m1, &m2).unwrap();
+        let m4 = multiply_transpose_simple(&m1.transpose(), &m2).unwrap();
+        assert_eq!(m3, m4);
+    }
+
+    #[test]
+    fn test_small_mult_operator() {
+
+        let h =  hadamard(8).unwrap();
+        assert_eq!(&h * &h, *Matrix::identity(8, 8).mul_scalar(8.));
+    }
+
+    #[test]
+    fn test_big_mult_operator() {
+        let h = hadamard(64).unwrap();
+        assert_eq!(&h * &h, *Matrix::identity(64, 64).mul_scalar(64.));
+    }
 }
 
 
@@ -410,14 +538,43 @@ mod bench {
                 });
     }
 
-    #[bench]
-    fn bench_multiply_simple(b: &mut Bencher){
-        let m = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
-        b.iter(|| {
-                    // Matrix multiplication
-                    multiply_simple(&m, &m).is_ok();
-                });
+    macro_rules! make_multiply_bench {
+        ($simple_name:ident, $block_name:ident, $matrix_size:expr) => (
+            #[bench]
+            fn $simple_name(b: &mut Bencher){
+                let m = hadamard($matrix_size).unwrap();
+                b.iter(|| {
+                            // Matrix multiplication
+                            multiply_simple(&m, &m).is_ok();
+                        });
+            }
+            #[bench]
+            fn $block_name(b: &mut Bencher){
+                let m = hadamard($matrix_size).unwrap();
+                b.iter(|| {
+                            // Matrix multiplication
+                            multiply_block(&m, &m).is_ok();
+                        });
+            }
+        );
+        // ($name_end:ident, $matrix_size:expr) => (
+        //     make_multiply_bench(concat_idents!(bench_multiply_simple, $name_end),
+        //         concat_idents!(bench_multiply_block, $name_end),
+        //         $matrix_size);
+        //     )
     }
+    //the position of the numbers and the leading zeroes sort the benches intuitively
+    make_multiply_bench!(bench_multiply_0001_simple, bench_multiply_0001_block, 1);
+    make_multiply_bench!(bench_multiply_0002_simple, bench_multiply_0002_block, 2);
+    make_multiply_bench!(bench_multiply_0004_simple, bench_multiply_0004_block, 4);
+    make_multiply_bench!(bench_multiply_0008_simple, bench_multiply_0008_block, 8);
+    make_multiply_bench!(bench_multiply_0016_simple, bench_multiply_0016_block, 16);
+    make_multiply_bench!(bench_multiply_0032_simple, bench_multiply_0032_block, 32);
+    make_multiply_bench!(bench_multiply_0064_simple, bench_multiply_0064_block, 64);
+    make_multiply_bench!(bench_multiply_0128_simple, bench_multiply_0128_block, 128);
+    make_multiply_bench!(bench_multiply_0256_simple, bench_multiply_0256_block, 256);
+    make_multiply_bench!(bench_multiply_0512_simple, bench_multiply_0512_block, 512);
+    make_multiply_bench!(bench_multiply_1024_simple, bench_multiply_1024_block, 1024);
 
     #[bench]
     fn bench_multiply_transpose_simple(b: &mut Bencher){

@@ -218,7 +218,7 @@ impl <T:FieldPartial + Float + FromPrimitive> Moments<T> for Matrix<T> {
         offset = self.start_offset();
         for c in (0..cols){
             let mut sum_sqr : T = Zero::zero(); 
-            let mean = unsafe { sum_vec.get_unchecked(0, c) } ;
+            let mean = sum_vec.get(0, c).unwrap();
             for r in (0..rows){
                 let v  = unsafe{*ptr.offset(offset + r as isize)} - mean;
                 sum_sqr = sum_sqr + v * v;
@@ -259,7 +259,7 @@ impl <T:FieldPartial + Float + FromPrimitive> Moments<T> for Matrix<T> {
         for r in (0..rows) {
             let mut sum_sqr : T = Zero::zero(); 
             let mut src_offset  = offset; 
-            let mean = unsafe { result.get_unchecked(r, 0) };
+            let mean = result.get(r, 0).unwrap();
             for _ in (0..cols){
                 let v  = unsafe{*ptr.offset(src_offset)} - mean;
                 sum_sqr = sum_sqr + v * v;

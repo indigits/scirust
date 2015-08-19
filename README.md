@@ -10,7 +10,7 @@ Current emphasis is less on performance and more on providing a comprehensive AP
 
 
 [![Build Status](https://travis-ci.org/indigits/scirust.svg?branch=master)](https://travis-ci.org/indigits/scirust)
-
+[![](http://meritbadge.herokuapp.com/scirust)](https://crates.io/crates/scirust)
 
 NOTE: The library currently doesn't build against the stable release of Rust. It builds
 against the nightly release of Rust. This scenario is likely to stay till Q3 2015.
@@ -26,8 +26,10 @@ Current areas of focus
 
 For more details and examples, 
 see the 
-[API Documentation ](http://www.rust-ci.org/indigits/scirust/doc/scirust/).
+[API Documentation ](http://indigits.github.io/scirust/).
 
+A discussion group is setup at
+[SciRust Google Group](https://groups.google.com/forum/#!forum/scirust).
 
 # Features
 

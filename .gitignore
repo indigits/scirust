@@ -12,3 +12,4 @@
 src/main.rs
 Cargo.lock
 buildlog.txt
+*.txt
