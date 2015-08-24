@@ -1530,7 +1530,7 @@ impl<T:CommutativeMonoidMulPartial> Matrix<T> {
     }
 
     /// Computs power of matrix elements
-    pub fn pow_elt(&self, n : usize) -> Matrix<T> {
+    pub fn powi_elt(&self, n : usize) -> Matrix<T> {
         let result : Matrix<T> = Matrix::new(self.rows, self.cols);
         let pa = self.ptr;
         let pc = result.ptr;
@@ -1541,9 +1541,28 @@ impl<T:CommutativeMonoidMulPartial> Matrix<T> {
                 let v = *pa.offset(i);
                 let mut result : T = One::one();
                 for _ in 1..n{
-                    result = result * v; 
+                    result = result * v;
                 }
                 *pc.offset(i) = result;
+            }
+        }
+        result
+    }
+
+}
+
+extern crate num;
+impl<T: Debug+Float> Matrix<T> {
+    pub fn powf_elt(&self, n : T) -> Matrix<T> {
+        let result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let pa = self.ptr;
+        let pc = result.ptr;
+        let cap = self.capacity();
+        unsafe{
+            for i_ in 0..cap{
+                let i = i_ as isize;
+                let v = *pa.offset(i);
+                *pc.offset(i) = v.powf(n);
             }
         }
         result
