@@ -1,6 +1,8 @@
 SciRust
 ==============
 
+[![Join the chat at https://gitter.im/indigits/scirust](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/indigits/scirust?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Scientific computing library written in 
 [Rust](http://www.rust-lang.org/) programming language. 
 
