@@ -11,6 +11,7 @@ Current emphasis is less on performance and more on providing a comprehensive AP
 
 [![Build Status](https://travis-ci.org/indigits/scirust.svg?branch=master)](https://travis-ci.org/indigits/scirust)
 [![](http://meritbadge.herokuapp.com/scirust)](https://crates.io/crates/scirust)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/indigits/scirust?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 NOTE: The library currently doesn't build against the stable release of Rust. It builds
 against the nightly release of Rust. This scenario is likely to stay till Q3 2015.
