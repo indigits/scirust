@@ -2,7 +2,7 @@
 
 name = "scirust"
 version = "0.0.5"
-authors = ["Shailesh Kumar <shailesh@indigits.com>"]
+authors = ["SciRust Developers"]
 
 # A short blurb about the package. 
 description="A scientific computing library"
