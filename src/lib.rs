@@ -73,6 +73,7 @@
 extern crate log;
 extern crate rand;
 extern crate num;
+extern crate alloc;
 
 // Common modules
 pub mod error;

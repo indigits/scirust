@@ -6,10 +6,10 @@
 use std::ptr;
 use std::mem;
 use std::fmt;
-use std::rt::heap::allocate;
 
 // external imports
 use num::traits::{Zero, One};
+use alloc::heap::allocate;
 // complex numbers
 use num::complex::{Complex32, Complex64};
 
