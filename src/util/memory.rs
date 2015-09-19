@@ -1,7 +1,9 @@
 
 // std imports
 use std::mem;
-use std::rt::heap::{deallocate};
+
+// external imports
+use alloc::heap::{deallocate};
 
 
 

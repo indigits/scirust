@@ -9,13 +9,13 @@ use std::cmp;
 use std::fmt;
 use num::{Float};
 use std::iter::Iterator;
-use std::rt::heap::{allocate, deallocate};
 use std::ops::{Index};
 use std::raw::Slice;
 
 // external imports
 use num::traits::{Zero, One, Signed};
 use num::complex::{Complex32, Complex64};
+use alloc::heap::{allocate, deallocate};
 
 // local imports
 
