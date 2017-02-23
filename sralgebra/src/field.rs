@@ -58,12 +58,12 @@ use std::ops::Div;
 use num::traits::{Zero, One};
 
 // local imports
-use algebra::ops::Recip;
-use algebra::structure::integral_domain::{IntegralDomainPartial, IntegralDomain};
-use algebra::structure::semigroup::{SemiGroupAdd, SemiGroupAddPartial, 
+use ops::Recip;
+use integral_domain::{IntegralDomainPartial, IntegralDomain};
+use semigroup::{SemiGroupAdd, SemiGroupAddPartial, 
     SemiGroupMulPartial};
-use algebra::structure::group::{CommutativeGroupAdd, CommutativeGroupAddPartial};
-use algebra::structure::monoid::{CommutativeMonoidMulPartial, CommutativeMonoidMul};
+use group::{CommutativeGroupAdd, CommutativeGroupAddPartial};
+use monoid::{CommutativeMonoidMulPartial, CommutativeMonoidMul};
 
 
 /// Marker trait for fields with partial equivalence

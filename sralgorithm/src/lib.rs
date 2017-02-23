@@ -13,4 +13,16 @@ the correctness of the implementation.
 "]
 
 
+// external dependencies
+extern crate log;
+extern crate rand;
+extern crate util;
+
+#[macro_use]
+extern crate bencher;
+
+
+// public modules
 pub mod sort;
+
+

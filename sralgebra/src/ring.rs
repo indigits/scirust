@@ -44,9 +44,9 @@ References:
 
 // local imports
 use num::traits::{Zero, One};
-use algebra::structure::group::{CommutativeGroupAddPartial, CommutativeGroupAdd};
-use algebra::structure::monoid::{MonoidMulPartial, MonoidMul};
-use algebra::structure::semigroup::{SemiGroupAddPartial, SemiGroupMulPartial};
+use group::{CommutativeGroupAddPartial, CommutativeGroupAdd};
+use monoid::{MonoidMulPartial, MonoidMul};
+use semigroup::{SemiGroupAddPartial, SemiGroupMulPartial};
 
 
 ///////////////////////////////////////////////////////////

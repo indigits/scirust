@@ -35,8 +35,8 @@ References:
 
 "]
 
-use algebra::structure::monoid::{CommutativeMonoidMulPartial, CommutativeMonoidMul};
-use algebra::structure::ring::{RingPartial, Ring};
+use monoid::{CommutativeMonoidMulPartial, CommutativeMonoidMul};
+use ring::{RingPartial, Ring};
 
 
 /// Commutative ring with partial equivalence

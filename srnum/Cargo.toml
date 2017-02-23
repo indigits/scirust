@@ -1,0 +1,6 @@
+[package]
+name = "srnum"
+version = "0.1.0"
+authors = ["Shailesh Kumar <shailesh@indigits.com>"]
+
+[dependencies]

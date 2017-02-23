@@ -28,7 +28,7 @@ References:
 
 // local imports
 use num::traits::{Zero, One};
-use algebra::structure::semigroup::{SemiGroupAddPartial, SemiGroupAdd, 
+use semigroup::{SemiGroupAddPartial, SemiGroupAdd, 
     SemiGroupMulPartial, SemiGroupMul};
 
 ///////////////////////////////////////////////////////////

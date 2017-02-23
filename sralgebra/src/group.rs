@@ -43,11 +43,11 @@ References:
 // std imports
 
 // local imports
-use algebra::structure::monoid::{MonoidAddPartial, MonoidAdd, 
+use monoid::{MonoidAddPartial, MonoidAdd, 
     MonoidMulPartial, MonoidMul};
-use algebra::structure::monoid::{CommutativeMonoidAddPartial, CommutativeMonoidAdd, 
+use monoid::{CommutativeMonoidAddPartial, CommutativeMonoidAdd, 
     CommutativeMonoidMulPartial, CommutativeMonoidMul};
-use algebra::structure::loop_::{LoopAddPartial, LoopAdd, 
+use loop_::{LoopAddPartial, LoopAdd, 
     LoopMulPartial, LoopMul};
 
 

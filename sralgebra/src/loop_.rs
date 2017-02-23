@@ -29,8 +29,8 @@ use std::ops::{Neg};
 use num::traits::{Zero, One};
 
 // local imports
-use algebra::ops::{Recip};
-use algebra::structure::quasigroup::{QuasiGroupAddPartial, QuasiGroupAdd, 
+use ops::{Recip};
+use quasigroup::{QuasiGroupAddPartial, QuasiGroupAdd, 
     QuasiGroupMulPartial, QuasiGroupMul};
 
 ///////////////////////////////////////////////////////////

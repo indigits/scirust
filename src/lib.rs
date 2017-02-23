@@ -1,7 +1,4 @@
 #![allow(unused_features)]
-#![feature(raw)]
-#![feature(heap_api)]
-#![feature(ptr_as_ref)]
 
 //! A generics based scientific computing library for Rust
 //!
@@ -61,12 +58,12 @@
 
 
 
-#![feature(core)]
-#![feature(alloc)]
-#![feature(step_by)]
-#![feature(convert)]
-#![feature(test)]
-#![feature(associated_type_defaults)]
+// #![feature(core)]
+// #![feature(alloc)]
+// #![feature(step_by)]
+// #![feature(convert)]
+// #![feature(test)]
+// #![feature(associated_type_defaults)]
 
 #[macro_use(plugin, link)] 
 #[macro_use] 
@@ -79,14 +76,12 @@ pub mod error;
 pub mod algebra;
 
 // Main libraries
-pub mod external;
 pub mod discrete;
 pub mod matrix;
 pub mod linalg;
 pub mod signal;
 pub mod dx;
 pub mod stat;
-pub mod alg;
 // // pub mod opt;
 // pub mod image {
 // #![doc="Image processing
@@ -98,8 +93,6 @@ pub mod alg;
 // "]
 // }
 
-// // for internal use only
-pub mod util;
 mod testdata;
 
 // // Overall API of SciRust

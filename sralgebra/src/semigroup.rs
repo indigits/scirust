@@ -29,7 +29,7 @@ References:
 
 
 // local imports
-use algebra::structure::magma::{MagmaAddPartial, MagmaAdd,
+use magma::{MagmaAddPartial, MagmaAdd,
     MagmaMulPartial, MagmaMul};
 
 

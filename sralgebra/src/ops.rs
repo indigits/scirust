@@ -3,12 +3,13 @@
 
 // std imports
 use std::ops::Div;
+use std::marker::Sized;
 
 /// A type for which computing the reciprocal is supported.
 /// Supported types include f32, f64, etc.. 
 pub trait Recip {
     /// The resulting type after computing 1 / x.
-    type Output = Self;
+    type Output;
 
     /// The method for the computing 1 / x.
     fn recip(self) -> Self::Output;
@@ -34,7 +35,7 @@ impl Recip for f64 {
 
 /// Marker interface for restricting division to only those types which
 /// support exact division
-pub trait Division : Div
+pub trait Division : Div where Self: Sized
 {
 
 }

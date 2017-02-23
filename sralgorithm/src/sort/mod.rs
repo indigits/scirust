@@ -211,47 +211,4 @@ mod test{
 }
 
 
-/******************************************************
- *
- *   Bench marks
- *
- *******************************************************/
-
-
-#[cfg(test)]
-mod bench{
-    extern crate test;
-    use self::test::Bencher;
-    use super::*;
-    #[bench]
-    fn bench_is_ascending_slice(b: &mut Bencher){
-        let v = (0..10000).collect::<Vec<i32>>();
-        b.iter(|| {
-            assert!(is_ascending_slice(v.as_slice()));
-                });
-    }
-    #[bench]
-    fn bench_is_ascending_buffer(b: &mut Bencher){
-        let v = (0..10000).collect::<Vec<i32>>();
-        b.iter(|| unsafe {
-            assert!(is_ascending_buffer(v.as_ptr(), v.len()));
-                });
-    }
-    #[bench]
-    fn bench_is_descending_slice(b: &mut Bencher){
-        let v = (0..10000).map(|idx| (20000 - idx)).collect::<Vec<i32>>();
-        b.iter(|| {
-            assert!(is_descending_slice(v.as_slice()));
-                });
-    }
-    #[bench]
-    fn bench_is_descending_buffer(b: &mut Bencher){
-        let v = (0..10000).map(|idx| (20000 - idx)).collect::<Vec<i32>>();
-        b.iter(|| unsafe {
-            assert!(is_descending_buffer(v.as_ptr(), v.len()));
-                });
-    }
-}
-
-
 

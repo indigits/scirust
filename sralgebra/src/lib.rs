@@ -60,6 +60,8 @@ Items on the agenda
 
 "]
 
+extern crate num;
+
 pub use self::magma::{MagmaBase, MagmaAddPartial, MagmaAdd, 
     MagmaMulPartial, MagmaMul};
 
@@ -93,6 +95,8 @@ pub use self::integral_domain::{IntegralDomainPartial, IntegralDomain};
 pub use self::field::{FieldPartial, Field};
 
 
+pub mod ops;
+pub mod properties;
 pub mod magma;
 pub mod quasigroup;
 pub mod semigroup;

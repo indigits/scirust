@@ -7,7 +7,7 @@ use std::ptr;
 /// Performs insertion sort on a slice of type T
 pub fn insertion_sort_slice<T : PartialOrd>(data : &mut [T]){
     let n  = data.len();
-    for j in (1..n){
+    for j in 1..n{
         // we insert data[j] into the sorted sequence 
         //data[0...j-1]
         let mut i = j -1;
@@ -23,7 +23,7 @@ pub fn insertion_sort_slice<T : PartialOrd>(data : &mut [T]){
 
 /// Performs insertion sort on a buffer of data
 pub unsafe fn insertion_sort_buffer<T : PartialOrd>(data : *mut T, n : usize){
-    for j in (1..n){
+    for j in 1..n{
         // we insert data[j] into the sorted sequence 
         //data[0...j-1]
         let mut i = (j -1) as isize;
@@ -51,7 +51,7 @@ pub unsafe fn insertion_sort_buffer<T : PartialOrd>(data : *mut T, n : usize){
 #[cfg(test)]
 mod test{
     use super::*;
-    use alg::sort::*; 
+    use sort::*; 
 
     #[test]
     fn test_insertion_sort_slice_1() {
@@ -85,48 +85,6 @@ mod test{
 }
 
 
-/******************************************************
- *
- *   Bench marks
- *
- *******************************************************/
 
-
-#[cfg(test)]
-mod bench{
-    extern crate test;
-    use self::test::Bencher;
-    use super::*;
-    use rand;
-    use rand::Rng;
-
-    #[bench]
-    fn bench_insertion_sort_slice_reverse_data(b: &mut Bencher){
-        let mut v = (0..10000).map(|idx| (20000 - idx)).collect::<Vec<i32>>();
-        b.iter(|| {
-            insertion_sort_slice(v.as_mut_slice());
-        });
-    }
-
-    #[bench]
-    fn bench_insertion_sort_slice_random_data(b: &mut Bencher){
-        // create a task-local Random Number Generator
-        let mut rng = rand::thread_rng();
-        let mut v: Vec<usize> = rng.gen_iter::<usize>().take(10000).collect();
-        b.iter(|| {
-            insertion_sort_slice(v.as_mut_slice());
-        });
-    }
-
-    #[bench]
-    fn bench_insertion_sort_buffer_reverse_data(b: &mut Bencher){
-        let mut v = (0..10000).map(|idx| (20000 - idx)).collect::<Vec<i32>>();
-        b.iter(|| {
-            unsafe {
-                insertion_sort_buffer(v.as_mut_ptr(), v.len());
-            }
-        });
-    }
-}
 
 
