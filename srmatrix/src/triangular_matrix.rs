@@ -9,6 +9,7 @@ use std::fmt;
 
 // external imports
 use num::traits::{Zero, One};
+use alloc::heap::allocate;
 // complex numbers
 use num::complex::{Complex32, Complex64};
 
