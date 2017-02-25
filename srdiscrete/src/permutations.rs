@@ -6,8 +6,8 @@ use num::{FromPrimitive, ToPrimitive};
 
 // local imports
 use sralgebra::CommutativeMonoidAddPartial;
-use matrix::matrix::{Matrix, MatrixU8};
-use matrix::traits::Shape;
+use srmatrix::api::{Matrix, MatrixU8};
+use srmatrix::api::Shape;
 
 /// Tells whether a vector is a permutation or not.
 pub fn is_permutation<T:CommutativeMonoidAddPartial+ToPrimitive>(vector : &Matrix<T>)-> bool{
@@ -57,7 +57,7 @@ pub fn inverse_permutation<T:CommutativeMonoidAddPartial+ToPrimitive+FromPrimiti
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::constructors::*;
+    use srmatrix::api::*;
 
     #[test]
     fn test_permutation(){

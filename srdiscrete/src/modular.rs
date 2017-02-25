@@ -3,7 +3,6 @@
 // std imports
 
 // external imports
-use num::traits::Signed;
 
 // local imports
 
