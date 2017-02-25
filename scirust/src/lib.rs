@@ -28,7 +28,7 @@
 //! 
 //! Constructing a simple matrix: 
 //! 
-//!     use constructors::*;
+//!     use scirust::api::*;
 //!     let a = matrix_cw_f64(2,2, &[1., 4., 2., 8.]);
 //!     println!("{}", a);
 //!
@@ -37,7 +37,7 @@
 //!
 //! ```
 //! # // Import scirust library components
-//! # use constructors::*;  
+//! # use scirust::api::*;  
 //! // Construct a 2x2 matrix 
 //! let a = matrix_cw_f64(2,2, &[1., 4., 2., 5.]);
 //! // Print the contents of the matrix
@@ -71,28 +71,16 @@ extern crate log;
 extern crate rand;
 extern crate num;
 
+extern crate sralgebra;
+extern crate srdiscrete;
+extern crate sralgorithm;
+extern crate srmatrix;
+extern crate srlinalg;
+extern crate srsignal;
+extern crate srstat;
+
 // Common modules
-pub mod error;
 
-// Main libraries
-// pub mod discrete;
-// pub mod matrix;
-// pub mod linalg;
-// pub mod signal;
-// pub mod dx;
-// pub mod stat;
-// // pub mod opt;
-// pub mod image {
-// #![doc="Image processing
-// "]
-// }
-
-// pub mod audio {
-// #![doc="Audio signal processing
-// "]
-// }
-
-//mod testdata;
 
 // // Overall API of SciRust
-//pub mod api;
+pub mod api;

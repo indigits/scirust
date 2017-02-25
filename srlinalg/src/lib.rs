@@ -18,5 +18,6 @@ pub mod matrix{
     pub mod mat_impl;
     pub mod mat_traits;
 }
+pub mod api;
 
-pub mod testdata;
+mod testdata;
