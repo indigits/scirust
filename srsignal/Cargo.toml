@@ -1,0 +1,18 @@
+[package]
+name = "srsignal"
+version = "0.1.0"
+authors = ["Shailesh Kumar <shailesh@indigits.com>"]
+
+[dependencies]
+num = "0.1.36"
+bencher = "*"
+sralgebra = { path = "../sralgebra" }
+srmatrix = { path = "../srmatrix" }
+
+
+[lib]
+bench = false
+
+[[bench]]
+name = "example"
+harness = false

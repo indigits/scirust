@@ -9,9 +9,7 @@ use num::traits::{Zero, One};
 
 // local imports
 use sralgebra::CommutativeRingPartial;
-
-
-use matrix::matrix::{Matrix, MatrixF64};
+use srmatrix::api::{Matrix, MatrixF64};
 
 pub struct Impulse<T:CommutativeRingPartial> {
     /// The location at which impulse will come
@@ -65,7 +63,7 @@ pub fn impulse_vector_f64(length: usize,
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::constructors::*;
+    use srmatrix::api::*;
 
     #[test]
     fn test_impulse_f64(){
