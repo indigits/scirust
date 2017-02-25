@@ -97,7 +97,7 @@ in the range will not be used. They will also not be generated.
 
 Constructing a 4x4 matrix of floating point numbers:
 
-        use scirust::api::{MatrixF64, from_range_cw, Shape};
+        use srmatrix::api::{MatrixF64, from_range_cw, Shape};
         let start  = 0.0;
         let stop = 16.0;
         let m : MatrixF64 = from_range_cw(4, 4, start, stop);
@@ -175,7 +175,7 @@ See from_range_cw function  for further discussion.
 
 # Examples
 
-    use scirust::api::{from_range_cw_i64, Shape};
+    use srmatrix::api::{from_range_cw_i64, Shape};
 
     let m = from_range_cw_i64(4, 4, 0, 16);
     for i in 0..16{
@@ -227,7 +227,7 @@ See from_range_cw function  for further discussion.
 
 # Examples
 
-    use scirust::api::{from_range_cw_u64, Shape};
+    use srmatrix::api::{from_range_cw_u64, Shape};
 
     let m = from_range_cw_u64(4, 4, 0, 16);
     for i in 0..16{
@@ -308,7 +308,7 @@ See from_range_rw function  for further discussion.
 
 # Examples
 
-    use scirust::api::{from_range_rw_i64, Shape};
+    use srmatrix::api::{from_range_rw_i64, Shape};
 
     let m = from_range_rw_i64(4, 4, 0, 16);
     for i in 0..16{
@@ -360,7 +360,7 @@ See from_range_rw function  for further discussion.
 
 # Examples
 
-    use scirust::api::{from_range_rw_u64, Shape};
+    use srmatrix::api::{from_range_rw_u64, Shape};
 
     let m = from_range_rw_u64(4, 4, 0, 16);
     for i in 0..16{

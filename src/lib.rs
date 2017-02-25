@@ -28,7 +28,7 @@
 //! 
 //! Constructing a simple matrix: 
 //! 
-//!     use scirust::api::*;
+//!     use constructors::*;
 //!     let a = matrix_cw_f64(2,2, &[1., 4., 2., 8.]);
 //!     println!("{}", a);
 //!
@@ -37,7 +37,7 @@
 //!
 //! ```
 //! # // Import scirust library components
-//! # use scirust::api::*;  
+//! # use constructors::*;  
 //! // Construct a 2x2 matrix 
 //! let a = matrix_cw_f64(2,2, &[1., 4., 2., 5.]);
 //! // Print the contents of the matrix

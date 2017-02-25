@@ -18,6 +18,7 @@ use num::complex::{Complex32, Complex64};
 // local imports
 use mod_n; 
 use cell_to_loc;
+use loc_to_cell;
 
 use sralgebra::{MagmaBase, 
     CommutativeMonoidAddPartial, 
@@ -716,7 +717,7 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
     /// Extracts the primary diagonal from the matrix as a vector
     pub fn diagonal_vector(&self) -> Matrix<T> {
         let m  = self.smaller_dim();
-        let mut result : Matrix<T> = Matrix::new(m, 1);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(m, 1);
         {
             let ref mut dst = result.vec;
             for (i, e) in (0..m).zip(self.diagonal_iter()){
@@ -743,7 +744,7 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
 
     /// Returns the upper triangular part of the matrix as a new matrix
     pub fn ut(&self)->Matrix<T>{
-        let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(self.rows, self.cols);
         {
             let ref src = self.vec;
             let ref mut dst = result.vec;
@@ -764,7 +765,7 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
 
     /// Returns the lower triangular part of the matrix as a new matrix
     pub fn lt(&self)->Matrix<T>{
-        let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(self.rows, self.cols);
         {
             let ref src = self.vec;
             let ref mut dst = result.vec;
@@ -772,11 +773,11 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
             for c in 0..self.cols{
                 for r in 0..c{
                     let offset = self.cell_to_location(r, c);
-                    dst[offset] = src[offset];
+                    dst[offset] = z;
                 }
                 for r in c..self.rows{
                     let offset = self.cell_to_location(r, c);
-                    dst[offset] = z;
+                    dst[offset] = src[offset];
                 }
             }
         }
@@ -787,7 +788,7 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
     pub fn permuted_rows(&self, permutation : &MatrixU16)->Matrix<T>{
         debug_assert!(permutation.is_col());
         debug_assert_eq!(permutation.num_cells(), self.num_rows());
-        let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(self.rows, self.cols);
         let res_stride = result.stride();
         {
             let ref src = self.vec;
@@ -809,7 +810,7 @@ impl<T:CommutativeMonoidAddPartial+One> Matrix<T> {
     pub fn permuted_cols(&self, permutation : &MatrixU16)->Matrix<T>{
         debug_assert!(permutation.is_col());
         debug_assert_eq!(permutation.num_cells(), self.num_cols());
-        let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(self.rows, self.cols);
         let res_stride = result.stride();
         {
             let ref src = self.vec;
@@ -969,16 +970,8 @@ impl<T:MagmaBase> Matrix<T> {
         let old_cols = self.cols;
         let count = other.cols;
         let stride = self.stride();
-        let old_capacity = self.capacity();
         let rows = self.rows;
         self.reallocate(rows, old_cols + count);
-        let new_capacity = self.capacity();
-        // just get the first element of second matrix
-        let z = other.vec[0];
-        let extra = new_capacity - old_capacity;
-        // copy it around
-        self.vec.extend((0..extra).map(|_| z));
-        debug_assert_eq!(self.vec.len(), self.capacity());
         // now move things around
         self.create_column_space(index, other.num_cols());
         debug_assert_eq!(self.vec.len(), self.capacity());
@@ -1074,6 +1067,10 @@ impl<T:MagmaBase> Matrix<T> {
         self.rows = rows;
         self.cols = cols;
         debug_assert_eq!(self.vec.capacity(), new_capacity);
+        // make sure that new uninitialized memory is part of 
+        // vector length
+        unsafe{self.vec.set_len(new_capacity)};
+        debug_assert_eq!(self.vec.len(), self.capacity());
     }
 
     //// Moves column data around and creates space for new columns
@@ -1119,36 +1116,25 @@ impl<T:MagmaBase> Matrix<T> {
     //// Moves rows around and creates space for new rows
     fn create_row_space(&mut self, start: usize, count :usize){
         // The end must not be beyond capacity
-        let new_rows = self.rows;
-        let old_rows = new_rows - count;
-        if start >= old_rows {
+        if count == 0 {
             // Nothing to move.
             return;
         }
-        let capacity = self.capacity();
-        // Number of rows to shift
-        let rows_to_shift =  old_rows - (start + count - 1);
-        let stride = self.stride();
-        // count rows starting from start row need to be
-        // shifted by count.
-        {
-            let ref mut vec = self.vec;
-            let mut cur_row = old_rows;
-            for _ in 0..rows_to_shift{
-                cur_row -= 1;
-                let dst_row = cur_row + count;
-                let src_offset = cell_to_loc(stride, cur_row, 0);
-                let dst_offset = cell_to_loc(stride, dst_row, 0);
-                debug_assert!(src_offset < capacity);
-                debug_assert!(dst_offset < capacity);
-                for i in 0..self.cols{
-                    let ii = i*stride;
-                    // Some validations
-                    debug_assert!(src_offset + ii < capacity);
-                    debug_assert!(dst_offset + ii < capacity);
-                    vec[dst_offset + ii] = vec[src_offset + ii];
-                }
+        let new_rows = self.rows;
+        let old_rows = new_rows - count;
+        let old_capacity = self.cols * old_rows;
+        let ref mut vec = self.vec;
+        let mut loc = old_capacity;
+        while loc > 0{
+            loc -= 1;
+            let (r, c) = loc_to_cell(old_rows, loc);
+            // update row number of this cell
+            let mut new_r = r;
+            if r >= start{
+                new_r += count;
             }
+            let new_loc = cell_to_loc(new_rows, new_r, c);
+            vec[new_loc] = vec[loc];
         }
     }
 

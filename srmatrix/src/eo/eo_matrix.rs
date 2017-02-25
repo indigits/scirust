@@ -32,7 +32,6 @@ mod test{
     use matrix::*;
     use traits::*;
     use constructors::*;
-    use eo::eo_traits::*;
 
     #[test]
     fn test_row_switch(){

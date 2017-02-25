@@ -146,7 +146,6 @@ mod test{
     use matrix::*;
     use constructors::*;
     use traits::*;
-    use extract::traits::*;
 
 
     #[test]

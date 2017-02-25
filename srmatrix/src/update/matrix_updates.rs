@@ -465,7 +465,6 @@ mod test{
     use matrix::*;
     use constructors::*;
     use traits::*;
-    use update::traits::*;
 
     #[test]
     fn test_set_diag(){

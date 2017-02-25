@@ -96,7 +96,6 @@ mod test{
     use matrix::*;
     use constructors::*;
     use traits::*;
-    use extract::traits::*;
     
     #[test]
     fn test_extract_row(){

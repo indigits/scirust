@@ -61,6 +61,8 @@ pub mod extract{
 pub mod matrix_conversion;
 pub mod matrix_minmax;
 
+pub mod api;
+
 
 #[inline]
 fn mod_n (x : isize, n : isize) -> usize {
@@ -78,3 +80,9 @@ fn cell_to_loc(stride: usize, r : usize,  c: usize)-> usize {
     (c * stride + r)
 }
  
+#[inline]
+fn loc_to_cell(stride: usize, location : usize) -> (usize, usize){
+    let c = location / stride;
+    let r = location - c*stride;
+    (r, c)
+}
