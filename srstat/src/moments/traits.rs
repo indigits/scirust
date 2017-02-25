@@ -5,7 +5,7 @@
 use num::{Float, FromPrimitive};
 
 // local imports
-use matrix::matrix::Matrix;
+use srmatrix::api::Matrix;
 use sralgebra::{CommutativeMonoidAddPartial, CommutativeMonoidMulPartial, FieldPartial};
 
 

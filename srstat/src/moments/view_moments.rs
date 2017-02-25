@@ -9,7 +9,7 @@
 mod test{
 
     use super::*;
-    use api::*;
+    use srmatrix::api::*;
 
 
     #[test]
