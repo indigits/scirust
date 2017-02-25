@@ -1,0 +1,15 @@
+[package]
+name = "srdx"
+version = "0.1.0"
+authors = ["Shailesh Kumar <shailesh@indigits.com>"]
+
+[dependencies]
+srmatrix = { path = "../srmatrix" }
+
+
+[lib]
+bench = false
+
+[[bench]]
+name = "example"
+harness = false
