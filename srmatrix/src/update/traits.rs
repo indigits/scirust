@@ -8,11 +8,11 @@ use std::cmp;
 use num::traits::Num;
 
 /// local imports
+use mod_n;
 use error::SRResult;
-use algebra::structure::{MagmaBase};
-use discrete::mod_n;
-use matrix::matrix::Matrix;
-use matrix::traits::{Shape, MatrixBuffer};
+use sralgebra::{MagmaBase};
+use matrix::Matrix;
+use traits::{Shape, MatrixBuffer};
 
 
 #[doc="Matrix In Place Updates API
@@ -148,7 +148,8 @@ save processing cycles.
 These methods require immutable reference to the
 matrix being updated.
 "]
-pub trait CopyUpdates<T:MagmaBase + Num> : Shape<T>+MatrixBuffer<T> {
+pub trait CopyUpdates<T:MagmaBase + Num> : Shape<T>+MatrixBuffer<T> 
+where Self: Sized {
      /// Add the matrix by a scalar
     fn copy_add_scalar(&self, rhs: T) -> Self;
      /// Multiply the matrix by a scalar

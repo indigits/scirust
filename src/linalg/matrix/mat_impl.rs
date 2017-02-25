@@ -5,7 +5,7 @@
 use num::Signed;
 
 // local imports
-use algebra::structure::{CommutativeRingPartial};
+use sralgebra::{CommutativeRingPartial};
 use super::mat_traits::LANumberMatrix;
 use linalg;
 use matrix::matrix::Matrix;

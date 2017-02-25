@@ -2,14 +2,13 @@
 use rand;
 use rand::Rng;
 use rand::distributions::normal::{StandardNormal};
-use super::matrix::*;
-use matrix::traits::*;
-
+use traits::*;
+use matrix::{Matrix, MatrixF64};
 
 #[allow(deprecated)]
 /// Generate a random matrix of uniformly distributed numbers
 pub fn rand_std_normal(rows: usize, cols : usize)-> MatrixF64 {
-    let mut m : Matrix<f64> = Matrix::new(rows, cols);
+    let mut m : MatrixF64 = Matrix::zeros(rows, cols);
     let mut rng = rand::thread_rng();
     for c in 0..cols{
         for r in 0..rows{
@@ -33,8 +32,8 @@ pub fn rand_std_normal(rows: usize, cols : usize)-> MatrixF64 {
 #[allow(unused_imports)]
 mod tests {
 
-    use api::*;
-
+    use traits::*;
+    
     #[test]
     fn test_rand_std_normal(){
         let m1  = super::rand_std_normal(10, 10);

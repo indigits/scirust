@@ -10,10 +10,10 @@ use num::traits::{Zero, One};
 
 
 // local imports
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
+use sralgebra::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
 use error::SRError;
-use matrix::matrix::{Matrix};
-use matrix::traits::{Shape, NumberMatrix, 
+use matrix::{Matrix};
+use traits::{Shape, NumberMatrix, 
     Strided,
     StridedNumberMatrix,
     StridedFloatMatrix,
@@ -167,6 +167,14 @@ impl <'a, T:MagmaBase> MatrixBuffer<T> for MatrixView<'a, T> {
         let r = self.start_row + r;
         let c = self.start_col + c;
         (c * self.m.stride() + r) as isize
+    } 
+
+    /// Maps a cell index to actual location in the vector
+    #[inline]
+    fn cell_to_location(&self, r : usize,  c: usize)-> usize {
+        let r = self.start_row + r;
+        let c = self.start_col + c;
+        (c * self.m.stride() + r)
     } 
 
     /// Returns the offset of the first cell in the buffer
@@ -358,7 +366,7 @@ impl<'a, T:MagmaBase> MatrixView<'a, T> {
     /// Returns the view as a new matrix.
     /// Creates a copy of the data.
     pub fn to_matrix(&self,) -> Matrix<T> {
-        let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(self.rows, self.cols);
         let pd = result.as_mut_ptr();
         let ps = self.m.as_ptr();
         for c in 0..self.cols {
@@ -454,7 +462,7 @@ impl<'a, 'b, 'c, 'd, T:CommutativeMonoidAddPartial> ops::Add<&'b MatrixView<'d, 
         if self.size() != rhs.size(){
             panic!(SRError::DimensionsMismatch.to_string());
         }
-        let mut result : Matrix<T> = Matrix::new(self.rows, self.cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(self.rows, self.cols);
         let pa = self.m.as_ptr();
         let pb = rhs.m.as_ptr();
         let pc = result.as_mut_ptr();
@@ -509,7 +517,9 @@ impl <'a, T:MagmaBase> fmt::Display for MatrixView<'a, T> {
 
 #[cfg(test)]
 mod test{
-    use api::*;
+    use matrix::*;
+    use constructors::*;
+    use traits::*;
 
     #[test]
     fn test_basic(){
@@ -559,7 +569,7 @@ mod test{
     fn test_cell_index_mapping(){
         let rows = 20;
         let cols = 10;
-        let m : MatrixI64 = Matrix::new(rows, cols);
+        let m : MatrixI64 = Matrix::new_uninitialized(rows, cols);
         let vrows = 4;
         let vcols = 3;
         let v = m.view(1, 1, vrows, vcols);

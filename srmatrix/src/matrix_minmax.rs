@@ -1,9 +1,9 @@
 
 
 // local imports
-use matrix::matrix::Matrix;
-use matrix::traits::*;
-use algebra::structure::CommutativeMonoidAddPartial;
+use matrix::Matrix;
+use traits::*;
+use sralgebra::CommutativeMonoidAddPartial;
 
 /// Implements matrix extraction API
 impl <T:CommutativeMonoidAddPartial+PartialOrd> MinMax<T> for Matrix<T> {

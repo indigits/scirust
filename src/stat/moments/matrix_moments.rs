@@ -7,7 +7,7 @@
 use num::{Float, FromPrimitive, Zero, One};
 
 // local imports
-use algebra::structure::{CommutativeMonoidAddPartial, 
+use sralgebra::{CommutativeMonoidAddPartial, 
     CommutativeMonoidMulPartial,
     FieldPartial};
 

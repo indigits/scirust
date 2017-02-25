@@ -8,7 +8,7 @@
 use num::traits::{Zero, One};
 
 // local imports
-use algebra::structure::CommutativeRingPartial;
+use sralgebra::CommutativeRingPartial;
 
 
 use matrix::matrix::{Matrix, MatrixF64};

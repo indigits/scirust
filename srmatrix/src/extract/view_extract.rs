@@ -3,13 +3,12 @@
 
 
 // local imports
-use algebra::structure::{CommutativeMonoidAddPartial};
-use matrix::matrix::Matrix;
-use matrix::view::MatrixView;
-use matrix::extract::traits::Extraction;
-use matrix::traits::{Shape, MatrixBuffer};
-
-use discrete::{mod_n};
+use sralgebra::{CommutativeMonoidAddPartial};
+use matrix::Matrix;
+use view::MatrixView;
+use extract::traits::Extraction;
+use traits::{Shape, MatrixBuffer};
+use mod_n;
 
 
 /// Implement extraction API for matrix view 
@@ -20,7 +19,7 @@ impl <'a, T:CommutativeMonoidAddPartial> Extraction<T> for MatrixView<'a, T> {
         // Lets ensure that the row value is mapped to
         // a value in the range [0, rows - 1]
         let r = mod_n(r, self.num_rows() as isize);        
-        let mut result : Matrix<T> = Matrix::new(1, self.num_cols());
+        let mut result : Matrix<T> = Matrix::new_uninitialized(1, self.num_cols());
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
         for c in 0..self.num_cols(){
@@ -38,7 +37,7 @@ impl <'a, T:CommutativeMonoidAddPartial> Extraction<T> for MatrixView<'a, T> {
         // Lets ensure that the col value is mapped to
         // a value in the range [0, cols - 1]
         let c = mod_n(c, self.num_cols() as isize);        
-        let mut result : Matrix<T> = Matrix::new(self.num_rows(), 1);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(self.num_rows(), 1);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
         for r in 0..self.num_rows(){
@@ -60,7 +59,7 @@ impl <'a, T:CommutativeMonoidAddPartial> Extraction<T> for MatrixView<'a, T> {
         num_cols : usize) -> Matrix<T>{
         let r = mod_n(start_row, self.num_rows() as isize);        
         let c = mod_n(start_col, self.num_cols() as isize);
-        let mut result : Matrix<T> = Matrix::new(num_rows, num_cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(num_rows, num_cols);
         let pd = result.as_mut_ptr();
         let ps = self.as_ptr();
         let mut dc = 0;
@@ -94,7 +93,11 @@ impl <'a, T:CommutativeMonoidAddPartial> Extraction<T> for MatrixView<'a, T> {
 
 #[cfg(test)]
 mod test{
-    use api::*;
+    use matrix::*;
+    use constructors::*;
+    use traits::*;
+    use extract::traits::*;
+    
     #[test]
     fn test_extract_row(){
         let m :  MatrixI64 = Matrix::from_iter_cw(20, 20, (-100..400));

@@ -5,7 +5,7 @@
 use num::{FromPrimitive, ToPrimitive};
 
 // local imports
-use algebra::structure::CommutativeMonoidAddPartial;
+use sralgebra::CommutativeMonoidAddPartial;
 use matrix::matrix::{Matrix, MatrixU8};
 use matrix::traits::Shape;
 

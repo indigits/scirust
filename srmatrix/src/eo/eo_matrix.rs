@@ -7,9 +7,9 @@ use num::traits::Num;
 
 
 // local imports
-use algebra::structure::MagmaBase;
+use sralgebra::MagmaBase;
 use super::eo_traits::{ERO, ECO};
-use matrix::matrix::Matrix;
+use matrix::Matrix;
 
 /// Implementation of Elementary row operations.
 impl<T:MagmaBase + Num> ERO<T> for Matrix<T> {
@@ -29,7 +29,10 @@ impl<T:MagmaBase + Num> ECO<T> for Matrix<T> {
 
 #[cfg(test)]
 mod test{
-    use api::*;
+    use matrix::*;
+    use traits::*;
+    use constructors::*;
+    use eo::eo_traits::*;
 
     #[test]
     fn test_row_switch(){
@@ -142,43 +145,42 @@ mod test{
  *******************************************************/
 
 
-#[cfg(test)]
-mod bench{
-    extern crate test;
-    use self::test::Bencher;
-    use matrix::eo::eo_traits::*;
-    use matrix::constructors::*;
-    #[bench]
-    fn bench_eo_col_switch(b: &mut Bencher){
-        let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
-        b.iter(|| {
-                    m.eco_switch(1, 100);
-                });
-    }
+// #[cfg(test)]
+// mod bench{
+//     use self::test::Bencher;
+//     use eo::eo_traits::*;
+//     use constructors::*;
+//     #[bench]
+//     fn bench_eo_col_switch(b: &mut Bencher){
+//         let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
+//         b.iter(|| {
+//                     m.eco_switch(1, 100);
+//                 });
+//     }
 
-    #[bench]
-    fn bench_eo_row_switch(b: &mut Bencher){
-        let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
-        b.iter(|| {
-                    m.ero_switch(1, 100);
-                });
-    }
+//     #[bench]
+//     fn bench_eo_row_switch(b: &mut Bencher){
+//         let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
+//         b.iter(|| {
+//                     m.ero_switch(1, 100);
+//                 });
+//     }
 
-    #[bench]
-    fn bench_eo_col_scale(b: &mut Bencher){
-        let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
-        b.iter(|| {
-                    m.eco_scale(50, 10.);
-                });
-    }
+//     #[bench]
+//     fn bench_eo_col_scale(b: &mut Bencher){
+//         let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
+//         b.iter(|| {
+//                     m.eco_scale(50, 10.);
+//                 });
+//     }
 
-    #[bench]
-    fn bench_eo_row_scale(b: &mut Bencher){
-        let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
-        b.iter(|| {
-                    m.ero_scale(50, 10.);
-                });
-    }
-}
+//     #[bench]
+//     fn bench_eo_row_scale(b: &mut Bencher){
+//         let mut m = from_range_rw_f64(1024, 1024, 0., 10000000.);
+//         b.iter(|| {
+//                     m.ero_scale(50, 10.);
+//                 });
+//     }
+// }
 
 

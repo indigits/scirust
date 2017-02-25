@@ -1,0 +1,20 @@
+[package]
+name = "srmatrix"
+version = "0.1.0"
+authors = ["Shailesh Kumar <shailesh@indigits.com>"]
+
+[dependencies]
+rand = "0.3.7"
+bencher = "*"
+num = "0.1.36"
+util = { path = "../util" }
+sralgebra = { path = "../sralgebra" }
+
+
+
+[lib]
+bench = false
+
+[[bench]]
+name = "example"
+harness = false

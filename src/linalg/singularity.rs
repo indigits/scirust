@@ -8,7 +8,7 @@
 use num::{Zero};
 
 // local imports
-use algebra::structure::{CommutativeMonoidAddPartial,
+use sralgebra::{CommutativeMonoidAddPartial,
 CommutativeMonoidMulPartial};
 //use error::SRError;
 use matrix::matrix::Matrix;

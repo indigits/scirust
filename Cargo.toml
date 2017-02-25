@@ -29,8 +29,7 @@ log = "0.3.1"
 rand = "0.3.7"
 num = "*"
 
-[[bin]]
-
-name = "scirust_main"
+#[[bin]]
+#name = "scirust_main"
 # The documentation for this target will not be generated.
-doc = false
+# doc = false

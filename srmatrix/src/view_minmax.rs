@@ -6,9 +6,9 @@ use num::traits::Signed;
 
 // local imports
 use error::SRError;
-use algebra::structure::CommutativeMonoidAddPartial;
-use matrix::view::MatrixView;
-use matrix::traits::*;
+use sralgebra::CommutativeMonoidAddPartial;
+use view::MatrixView;
+use traits::*;
 
 /// Implementation of min-max with absolute values API for matrix view
 impl <'a, T:CommutativeMonoidAddPartial+Signed+PartialOrd> MinMaxAbs<T> for MatrixView<'a, T> {

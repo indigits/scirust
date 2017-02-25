@@ -8,10 +8,10 @@ use num::traits::Num;
 
 
 // local imports
-use algebra::structure::MagmaBase;
+use sralgebra::MagmaBase;
 use super::eo_traits::{ERO, ECO};
-use matrix::view::MatrixView;
-use matrix::traits::{Shape, MatrixBuffer, Strided};
+use view::MatrixView;
+use traits::{Shape, MatrixBuffer, Strided};
 
 
 /// Implementation of Elementary row operations.

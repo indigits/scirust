@@ -8,13 +8,13 @@ use num::{Num, One, Zero};
 
 
 // local imports
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
-use matrix::matrix::{Matrix, 
+use sralgebra::{MagmaBase, CommutativeMonoidAddPartial, FieldPartial};
+use matrix::{Matrix, 
     MatrixI8, MatrixI16, MatrixI32, MatrixI64,
     MatrixU8, MatrixU16, MatrixU32, MatrixU64,
     MatrixF32, MatrixF64,
     MatrixC32, MatrixC64};
-use matrix::traits::{Shape};
+use traits::{Shape};
 use error::SRError;
 
 // complex numbers
@@ -30,7 +30,7 @@ pub fn hadamard(n : usize) -> Result<MatrixF64, SRError>{
     if !n.is_power_of_two(){
         return Err(SRError::IsNotPowerOfTwo);
     }
-    let mut m : MatrixF64 = Matrix::new(n, n);
+    let mut m : MatrixF64 = Matrix::zeros(n, n);
     // Take the log of n with respect to 2.
     let order = n.trailing_zeros();
     // We are going to use Sylvester's construction
@@ -61,7 +61,7 @@ pub fn hadamard(n : usize) -> Result<MatrixF64, SRError>{
 #[doc="Returns a Hilbert matrix.
 "]
 pub fn hilbert(n : usize) -> MatrixF64{
-    let mut m : MatrixF64 = Matrix::new(n, n);
+    let mut m : MatrixF64 = Matrix::zeros(n, n);
     for r in 0..n{
         for c in 0..n{
             let l = (r + c + 1) as f64;
@@ -113,7 +113,7 @@ pub fn from_range_cw<T:MagmaBase+Num>(rows : usize, cols : usize,
     start : T, stop : T )-> Matrix<T> {
     // TODO this is not working.
     //let m : Matrix<T> = Matrix::from_iter_cw(rows, cols, range);
-    let mut m : Matrix<T> = Matrix::new(rows, cols);
+    let mut m : Matrix<T> = Matrix::new_with(rows, cols, start);
     let mut cur = start;
     'outer: for c in 0..cols{
         for r in 0..rows{
@@ -256,7 +256,7 @@ pub fn from_range_rw<T:MagmaBase+Num>(rows : usize, cols : usize,
     start : T, stop : T )-> Matrix<T> {
     // TODO make it work.
     //let m : Matrix<T> = Matrix::from_iter_rw(rows, cols, start..stop);
-    let mut m : Matrix<T> = Matrix::new(rows, cols);
+    let mut m : Matrix<T> = Matrix::new_with(rows, cols, start);
     let mut cur = start;
     'outer: for r in 0..rows{
         for c in 0..cols{
@@ -780,7 +780,8 @@ pub fn ero_scale_add<T:FieldPartial>(n : usize,
 
 #[cfg(test)]
 mod test{
-    use api::*;
+    use constructors::*;
+    use eo::eo_traits::{ERO};
 
     #[test]
     fn test_hadamard(){

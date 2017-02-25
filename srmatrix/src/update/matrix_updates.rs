@@ -8,13 +8,13 @@ use num::traits::Num;
 
 
 /// local imports
-use algebra::structure::{MagmaBase};
+use sralgebra::{MagmaBase};
 use error::SRResult;
 use error::SRError;
-use matrix::traits::{Shape, MatrixBuffer, Strided};
-use matrix::update::traits::{InPlaceUpdates, CopyUpdates};
-use matrix::eo::eo_traits::{ERO, ECO};
-use matrix::matrix::Matrix;
+use traits::{Shape, MatrixBuffer, Strided};
+use update::traits::{InPlaceUpdates, CopyUpdates};
+use eo::eo_traits::{ERO, ECO};
+use matrix::Matrix;
 
 /// Implementation of Matrix general update operations.
 impl<T:MagmaBase + Num> InPlaceUpdates<T> for Matrix<T> {
@@ -340,7 +340,7 @@ impl<T:MagmaBase + Num> CopyUpdates<T> for Matrix<T> {
     fn copy_add_scalar(&self, rhs: T) -> Matrix<T> {
         let rows = self.num_rows();
         let cols = self.num_cols();
-        let mut result : Matrix<T> = Matrix::new(rows, cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(rows, cols);
         let pa = self.as_ptr();
         let pc = result.as_mut_ptr();
         for r in 0..rows{
@@ -360,7 +360,7 @@ impl<T:MagmaBase + Num> CopyUpdates<T> for Matrix<T> {
     fn copy_mul_scalar(&self, rhs: T) -> Matrix<T> {
         let rows = self.num_rows();
         let cols = self.num_cols();
-        let mut result : Matrix<T> = Matrix::new(rows, cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(rows, cols);
         let pa = self.as_ptr();
         let pc = result.as_mut_ptr();
         for r in 0..rows{
@@ -379,7 +379,7 @@ impl<T:MagmaBase + Num> CopyUpdates<T> for Matrix<T> {
     fn copy_div_scalar(&self, rhs: T) -> Matrix<T> {
         let rows = self.num_rows();
         let cols = self.num_cols();
-        let mut result : Matrix<T> = Matrix::new(rows, cols);
+        let mut result : Matrix<T> = Matrix::new_uninitialized(rows, cols);
         let pa = self.as_ptr();
         let pc = result.as_mut_ptr();
         for r in 0..rows{
@@ -462,7 +462,10 @@ impl<T:MagmaBase + Num> CopyUpdates<T> for Matrix<T> {
 #[cfg(test)]
 mod test{
 
-    use api::*;
+    use matrix::*;
+    use constructors::*;
+    use traits::*;
+    use update::traits::*;
 
     #[test]
     fn test_set_diag(){
@@ -850,22 +853,19 @@ mod test{
  *******************************************************/
 
 
-#[cfg(test)]
-mod bench{
-    extern crate test;
-    use self::test::Bencher;
-    use matrix::constructors::*;
-    use matrix::traits::*;
+// #[cfg(test)]
+// mod bench{
+//     use constructors::*;
 
-    #[bench]
-    fn bench_ut_to_lt(b: &mut Bencher){
-        let a = hadamard(4096).unwrap();
-        let mut ut = a.ut_matrix(); 
-        b.iter(|| {
-                    ut.ut_to_lt();
-                });
-    }
-}
+//     #[bench]
+//     fn bench_ut_to_lt(b: &mut Bencher){
+//         let a = hadamard(4096).unwrap();
+//         let mut ut = a.ut_matrix(); 
+//         b.iter(|| {
+//                     ut.ut_to_lt();
+//                 });
+//     }
+// }
 
 
 

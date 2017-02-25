@@ -1,8 +1,8 @@
 
 // local imports
-use algebra::structure::{CommutativeMonoidAddPartial};
-use matrix::matrix::Matrix;
-use matrix::traits::{Shape};
+use sralgebra::{CommutativeMonoidAddPartial};
+use matrix::Matrix;
+use traits::{Shape};
 
 
 

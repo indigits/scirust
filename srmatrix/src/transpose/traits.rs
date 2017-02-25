@@ -1,7 +1,7 @@
 
 // local imports
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeMonoidMulPartial};
-use matrix::traits::Shape;
+use sralgebra::{MagmaBase, CommutativeMonoidAddPartial, CommutativeMonoidMulPartial};
+use traits::Shape;
 
 #[doc="Implemented by matrix types
 which support transpose operations.

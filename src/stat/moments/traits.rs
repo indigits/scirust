@@ -6,7 +6,7 @@ use num::{Float, FromPrimitive};
 
 // local imports
 use matrix::matrix::Matrix;
-use algebra::structure::{CommutativeMonoidAddPartial, CommutativeMonoidMulPartial, FieldPartial};
+use sralgebra::{CommutativeMonoidAddPartial, CommutativeMonoidMulPartial, FieldPartial};
 
 
 pub trait Sums<T: CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> {

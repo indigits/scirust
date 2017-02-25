@@ -1,7 +1,7 @@
 // local imports
-use matrix::matrix::Matrix;
-use matrix::traits::*;
-use algebra::structure::MagmaBase;
+use matrix::Matrix;
+use traits::*;
+use sralgebra::MagmaBase;
 
 /// Implements matrix conversion API
 impl <T:MagmaBase> Conversion<T> for Matrix<T> {

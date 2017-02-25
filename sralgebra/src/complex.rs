@@ -9,18 +9,17 @@ use std::fmt::Debug;
 
 
 // local imports
-use algebra::ops::Division;
-use algebra::structure::semigroup::{SemiGroupAddPartial, 
+use ops::Division;
+use semigroup::{SemiGroupAddPartial, 
     SemiGroupMulPartial};
-use algebra::structure::quasigroup::{QuasiGroupAddPartial};
-use algebra::structure::monoid::{CommutativeMonoidAddPartial
+use quasigroup::{QuasiGroupAddPartial};
+use monoid::{CommutativeMonoidAddPartial
 , CommutativeMonoidMulPartial};
-use algebra::structure::group::{CommutativeGroupAddPartial};
-use algebra::structure::integral_domain::{IntegralDomainPartial};
-use algebra::structure::field::{FieldPartial};
+use group::{CommutativeGroupAddPartial};
+use integral_domain::{IntegralDomainPartial};
+use field::{FieldPartial};
 
-
-use algebra::ops::Recip;
+use ops::Recip;
 
 
 
@@ -76,7 +75,7 @@ impl <T: Float + Debug> FieldPartial for Complex<T>  {
 #[cfg(test)]
 mod tests {
     use num::complex::{Complex, Complex32};
-    use algebra::structure::*;
+    use sralgebra::*;
 
     #[test]
     fn test_complex_traits() {

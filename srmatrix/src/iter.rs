@@ -4,7 +4,7 @@
 
 
 // local imports
-use algebra::structure::{MagmaBase};
+use sralgebra::{MagmaBase};
 
 
 /******************************************************

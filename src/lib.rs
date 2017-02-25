@@ -73,15 +73,14 @@ extern crate num;
 
 // Common modules
 pub mod error;
-pub mod algebra;
 
 // Main libraries
-pub mod discrete;
-pub mod matrix;
-pub mod linalg;
-pub mod signal;
-pub mod dx;
-pub mod stat;
+// pub mod discrete;
+// pub mod matrix;
+// pub mod linalg;
+// pub mod signal;
+// pub mod dx;
+// pub mod stat;
 // // pub mod opt;
 // pub mod image {
 // #![doc="Image processing
@@ -93,7 +92,7 @@ pub mod stat;
 // "]
 // }
 
-mod testdata;
+//mod testdata;
 
 // // Overall API of SciRust
-pub mod api;
+//pub mod api;

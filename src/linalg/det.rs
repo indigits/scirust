@@ -3,7 +3,7 @@
 use num::traits::{Float, Signed, One};
 
 // local imports
-use algebra::structure::{CommutativeRingPartial};
+use sralgebra::{CommutativeRingPartial};
 use matrix::matrix::{Matrix};
 use matrix::traits::{Shape, Extraction, MatrixBuffer, Search};
 use matrix::eo::eo_traits::ECO;

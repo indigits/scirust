@@ -9,10 +9,10 @@ use std::ops;
 use num::traits::{Zero};
 
 // local imports
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeMonoidMulPartial};
-use matrix::traits::{Shape, MatrixBuffer, Strided};
-use matrix::matrix::Matrix;
-use matrix::transpose::traits::{Transpose, Frame};
+use sralgebra::{MagmaBase, CommutativeMonoidAddPartial, CommutativeMonoidMulPartial};
+use traits::{Shape, MatrixBuffer, Strided};
+use matrix::Matrix;
+use transpose::traits::{Transpose, Frame};
 use error::{SRError, SRResult};
 
 
@@ -39,8 +39,9 @@ pub fn are_transpose<T:MagmaBase>(lhs: & Matrix<T>, rhs: & Matrix<T>) -> bool{
 pub fn transpose_simple<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     let rows = src.num_rows();
     let cols = src.num_cols();
-    // Output matrix
-    let mut result : Matrix<T> = Matrix::new(cols, rows);
+    // Output matrix [initialized with the dummy value]
+    let v  = src.get(0,0).unwrap();
+    let mut result : Matrix<T> = Matrix::new_with(cols, rows, v);
     // We will iterate the source matrix column wise
     let mut psrc_col = src.as_ptr();
     // We will iterate the destination matrix row wise
@@ -84,7 +85,9 @@ pub fn transpose_block<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     // Construct the destination result matrix
     let rows = src.num_rows();
     let cols = src.num_cols();
-    let mut result : Matrix<T> = Matrix::new(cols, rows);
+    // Output matrix [initialized with the dummy value]
+    let v  = src.get(0,0).unwrap();
+    let mut result : Matrix<T> = Matrix::new_with(cols, rows, v);
     // Source and destination data pointers
     let psrc = src.as_ptr();
     let pdst = result.as_mut_ptr();
@@ -92,9 +95,12 @@ pub fn transpose_block<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
     let src_stride = src.stride() as isize;
     let dst_stride = result.stride() as isize;
 
-
-    for cc in (0..cols).step_by(block_size){
-        for rr in (0..rows).step_by(block_size){
+    let mut cc = 0;
+    while cc < cols{
+    // for cc in (0..cols).step_by(block_size){
+        let mut rr = 0;
+        while rr < rows {
+        //for rr in (0..rows).step_by(block_size){
             // We have to transpose a block of size blk_rows x blk_cols
             let blk_cols = min (block_size, cols - cc);
             let blk_rows = min (block_size, rows - rr);
@@ -124,7 +130,9 @@ pub fn transpose_block<T:MagmaBase>(src: & Matrix<T>)->Matrix <T>{
                     pdst_row = pdst_row.offset(1);
                 }
             }
+            rr += block_size;
         }
+        cc += block_size;
     }
     result
 }
@@ -149,7 +157,7 @@ impl <T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> Frame<T> for Ma
         //b * *self
         let cols = self.num_cols();
         let rows = self.num_rows();
-        let mut result = Matrix::new(cols, cols);
+        let mut result = Matrix::zeros(cols, cols);
         let ps = self.as_ptr();
         let stride = self.stride() as isize;
         let z : T = Zero::zero();
@@ -197,19 +205,24 @@ const BLOCK_SIZE:usize = 16;
     if lhs.num_cols() != rhs.num_rows(){
         return Err(SRError::DimensionsMismatch);
     }
-    let mut result : Matrix<T> = Matrix::new(lhs.num_rows(), rhs.num_cols());
+    let mut result : Matrix<T> = Matrix::zeros(lhs.num_rows(), rhs.num_cols());
     let zero : T = Zero::zero();
     let pa = lhs.as_ptr();
     let pb = rhs.as_ptr();
     let pc = result.as_mut_ptr();
-    for row_start in (0..lhs.num_rows()).step_by(BLOCK_SIZE) {
-        for col_start in (0..rhs.num_cols()).step_by(BLOCK_SIZE) {
+    let mut row_start  = 0;
+    while row_start < lhs.num_rows(){
+    //for row_start in (0..lhs.num_rows()).step_by(BLOCK_SIZE) {
+        let mut col_start = 0;
+        while col_start < rhs.num_cols(){
+        //for col_start in (0..rhs.num_cols()).step_by(BLOCK_SIZE) {
             let row_end = cmp::min(row_start + BLOCK_SIZE, lhs.num_rows());
             let col_end = cmp::min(col_start + BLOCK_SIZE, rhs.num_cols());
 
             let mut res_block = [[zero; BLOCK_SIZE]; BLOCK_SIZE];
-
-            for k_start in (0..lhs.num_cols()).step_by(BLOCK_SIZE) {
+            let mut k_start = 0;
+            while k_start < lhs.num_cols(){
+            //for k_start in (0..lhs.num_cols()).step_by(BLOCK_SIZE) {
                 let k_end = cmp::min(k_start + BLOCK_SIZE, lhs.num_cols());
 
                 let mut lhs_block = [[zero; BLOCK_SIZE]; BLOCK_SIZE];
@@ -243,6 +256,7 @@ const BLOCK_SIZE:usize = 16;
                         res_block[i][j] = res_block[i][j] + cell;
                     }
                 }
+                k_start += BLOCK_SIZE;
             }
             for col in col_start..col_end {
                 let col_slice = unsafe {
@@ -252,7 +266,9 @@ const BLOCK_SIZE:usize = 16;
                     *res_ptr = res_block[row_offs][col - col_start];
                 }
             }
+            col_start += BLOCK_SIZE;
         }
+        row_start += BLOCK_SIZE;
     }
     return Ok(result);
 }
@@ -263,7 +279,7 @@ const BLOCK_SIZE:usize = 16;
     if lhs.num_cols() != rhs.num_rows(){
         return Err(SRError::DimensionsMismatch);
     }
-    let mut result : Matrix<T> = Matrix::new(lhs.num_rows(), rhs.num_cols());
+    let mut result : Matrix<T> = Matrix::zeros(lhs.num_rows(), rhs.num_cols());
     let pa = lhs.as_ptr();
     let pb = rhs.as_ptr();
     let pc = result.as_mut_ptr();
@@ -304,7 +320,7 @@ pub fn multiply_transpose_simple<T:CommutativeMonoidAddPartial+CommutativeMonoid
     if lhs.num_rows() != rhs.num_rows(){
         return Err(SRError::DimensionsMismatch);
     }
-    let mut result : Matrix<T> = Matrix::new(lhs.num_cols(), rhs.num_cols());
+    let mut result : Matrix<T> = Matrix::zeros(lhs.num_cols(), rhs.num_cols());
     let pa = lhs.as_ptr();
     let pb = rhs.as_ptr();
     let pc = result.as_mut_ptr();
@@ -365,9 +381,9 @@ impl<'a, 'b, T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial> ops::Mul
 #[cfg(test)]
 mod test{
 
-    use matrix::matrix::*;
-    use matrix::traits::*;
-    use matrix::constructors::*;
+    use matrix::*;
+    use traits::*;
+    use constructors::*;
     use super::*;
 
     #[test]
@@ -388,17 +404,21 @@ mod test{
 
     #[test]
     fn test_transpoe_simple_hilbert(){
-        for n in (100..1024).step_by(81){
+        let mut n = 100;
+        while n < 1024 {
             let h = hilbert(n);
             assert!(are_transpose(&h, &h.transpose()));
+            n += 81;
         }
     }
 
     #[test]
     fn test_transpoe_block_hilbert(){
-        for n in (100..1024).step_by(81){
+        let mut n = 100;
+        while n < 1024 {
             let h = hilbert(n);
             assert!(are_transpose(&h, & transpose_block(&h)));
+            n += 81;
         }
     }
 
@@ -481,109 +501,109 @@ mod test{
  *******************************************************/
 
 
-#[cfg(test)]
-mod bench {
-    extern crate test;
-    use self::test::Bencher;
-    use matrix::constructors::*;
-    use matrix::traits::*;
-    use super::*;
+// #[cfg(test)]
+// mod bench {
+//     extern crate test;
+//     use self::test::Bencher;
+//     use constructors::*;
+//     use traits::*;
+//     use super::*;
 
-    #[bench]
-    fn bench_transpose_simple(b: &mut Bencher){
-        let a = hadamard(4096).unwrap();
-        b.iter(|| {
-                    transpose_simple(&a);
-                });
-    }
+//     #[bench]
+//     fn bench_transpose_simple(b: &mut Bencher){
+//         let a = hadamard(4096).unwrap();
+//         b.iter(|| {
+//                     transpose_simple(&a);
+//                 });
+//     }
 
-    #[bench]
-    fn bench_transpose_block(b: &mut Bencher){
-        let a = hadamard(4096).unwrap();
-        b.iter(|| {
-                    transpose_block(&a);
-                });
-    }
+//     #[bench]
+//     fn bench_transpose_block(b: &mut Bencher){
+//         let a = hadamard(4096).unwrap();
+//         b.iter(|| {
+//                     transpose_block(&a);
+//                 });
+//     }
 
 
-    #[bench]
-    fn bench_gram_simple(b: &mut Bencher){
-        let m = hadamard(128).unwrap();
-        let m = m.repeat_matrix(1, 2);
-        b.iter(|| {
-                    // computation of gram matrix
-                    &(m.transpose()) * &m;
-                });
+//     #[bench]
+//     fn bench_gram_simple(b: &mut Bencher){
+//         let m = hadamard(128).unwrap();
+//         let m = m.repeat_matrix(1, 2);
+//         b.iter(|| {
+//                     // computation of gram matrix
+//                     &(m.transpose()) * &m;
+//                 });
 
-    }
+//     }
 
-    #[bench]
-    fn bench_gram_optimized(b: &mut Bencher){
-        let m = hadamard(128).unwrap();
-        let m = m.repeat_matrix(1, 2);
-        b.iter(|| {
-                    // computation of gram matrix
-                    m.gram();
-                });
+//     #[bench]
+//     fn bench_gram_optimized(b: &mut Bencher){
+//         let m = hadamard(128).unwrap();
+//         let m = m.repeat_matrix(1, 2);
+//         b.iter(|| {
+//                     // computation of gram matrix
+//                     m.gram();
+//                 });
 
-    }
+//     }
 
-    static MULTIPLY_MATRIX_SIZE : usize = 512;
+//     static MULTIPLY_MATRIX_SIZE : usize = 512;
 
-    #[bench]
-    fn bench_transpose_block_mult_mat_size(b: &mut Bencher){
-        let a = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
-        b.iter(|| {
-                    transpose_block(&a);
-                });
-    }
+//     #[bench]
+//     fn bench_transpose_block_mult_mat_size(b: &mut Bencher){
+//         let a = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
+//         b.iter(|| {
+//                     transpose_block(&a);
+//                 });
+//     }
 
-    macro_rules! make_multiply_bench {
-        ($simple_name:ident, $block_name:ident, $matrix_size:expr) => (
-            #[bench]
-            fn $simple_name(b: &mut Bencher){
-                let m = hadamard($matrix_size).unwrap();
-                b.iter(|| {
-                            // Matrix multiplication
-                            multiply_simple(&m, &m).is_ok();
-                        });
-            }
-            #[bench]
-            fn $block_name(b: &mut Bencher){
-                let m = hadamard($matrix_size).unwrap();
-                b.iter(|| {
-                            // Matrix multiplication
-                            multiply_block(&m, &m).is_ok();
-                        });
-            }
-        );
-        // ($name_end:ident, $matrix_size:expr) => (
-        //     make_multiply_bench(concat_idents!(bench_multiply_simple, $name_end),
-        //         concat_idents!(bench_multiply_block, $name_end),
-        //         $matrix_size);
-        //     )
-    }
-    //the position of the numbers and the leading zeroes sort the benches intuitively
-    make_multiply_bench!(bench_multiply_0001_simple, bench_multiply_0001_block, 1);
-    make_multiply_bench!(bench_multiply_0002_simple, bench_multiply_0002_block, 2);
-    make_multiply_bench!(bench_multiply_0004_simple, bench_multiply_0004_block, 4);
-    make_multiply_bench!(bench_multiply_0008_simple, bench_multiply_0008_block, 8);
-    make_multiply_bench!(bench_multiply_0016_simple, bench_multiply_0016_block, 16);
-    make_multiply_bench!(bench_multiply_0032_simple, bench_multiply_0032_block, 32);
-    make_multiply_bench!(bench_multiply_0064_simple, bench_multiply_0064_block, 64);
-    make_multiply_bench!(bench_multiply_0128_simple, bench_multiply_0128_block, 128);
-    make_multiply_bench!(bench_multiply_0256_simple, bench_multiply_0256_block, 256);
-    make_multiply_bench!(bench_multiply_0512_simple, bench_multiply_0512_block, 512);
-    make_multiply_bench!(bench_multiply_1024_simple, bench_multiply_1024_block, 1024);
+//     macro_rules! make_multiply_bench {
+//         ($simple_name:ident, $block_name:ident, $matrix_size:expr) => (
+//             #[bench]
+//             fn $simple_name(b: &mut Bencher){
+//                 let m = hadamard($matrix_size).unwrap();
+//                 b.iter(|| {
+//                             // Matrix multiplication
+//                             multiply_simple(&m, &m).is_ok();
+//                         });
+//             }
+//             #[bench]
+//             fn $block_name(b: &mut Bencher){
+//                 let m = hadamard($matrix_size).unwrap();
+//                 b.iter(|| {
+//                             // Matrix multiplication
+//                             multiply_block(&m, &m).is_ok();
+//                         });
+//             }
+//         );
+//         // ($name_end:ident, $matrix_size:expr) => (
+//         //     make_multiply_bench(concat_idents!(bench_multiply_simple, $name_end),
+//         //         concat_idents!(bench_multiply_block, $name_end),
+//         //         $matrix_size);
+//         //     )
+//     }
+//     //the position of the numbers and the leading zeroes sort the benches intuitively
+//     make_multiply_bench!(bench_multiply_0001_simple, bench_multiply_0001_block, 1);
+//     make_multiply_bench!(bench_multiply_0002_simple, bench_multiply_0002_block, 2);
+//     make_multiply_bench!(bench_multiply_0004_simple, bench_multiply_0004_block, 4);
+//     make_multiply_bench!(bench_multiply_0008_simple, bench_multiply_0008_block, 8);
+//     make_multiply_bench!(bench_multiply_0016_simple, bench_multiply_0016_block, 16);
+//     make_multiply_bench!(bench_multiply_0032_simple, bench_multiply_0032_block, 32);
+//     make_multiply_bench!(bench_multiply_0064_simple, bench_multiply_0064_block, 64);
+//     make_multiply_bench!(bench_multiply_0128_simple, bench_multiply_0128_block, 128);
+//     make_multiply_bench!(bench_multiply_0256_simple, bench_multiply_0256_block, 256);
+//     make_multiply_bench!(bench_multiply_0512_simple, bench_multiply_0512_block, 512);
+//     make_multiply_bench!(bench_multiply_1024_simple, bench_multiply_1024_block, 1024);
 
-    #[bench]
-    fn bench_multiply_transpose_simple(b: &mut Bencher){
-        let m = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
-        b.iter(|| {
-                    // take transpose
-                    let m2 = m.transpose();
-                    // Matrix multiplication with transpose
-                    multiply_transpose_simple(&m2, &m).is_ok();
-                });
-    }
-}
+//     #[bench]
+//     fn bench_multiply_transpose_simple(b: &mut Bencher){
+//         let m = hadamard(MULTIPLY_MATRIX_SIZE).unwrap();
+//         b.iter(|| {
+//                     // take transpose
+//                     let m2 = m.transpose();
+//                     // Matrix multiplication with transpose
+//                     multiply_transpose_simple(&m2, &m).is_ok();
+//                 });
+//     }
+// }

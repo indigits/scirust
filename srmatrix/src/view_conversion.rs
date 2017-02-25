@@ -1,8 +1,8 @@
 
 // local imports
-use matrix::view::MatrixView;
-use matrix::traits::*;
-use algebra::structure::MagmaBase;
+use view::MatrixView;
+use traits::*;
+use sralgebra::MagmaBase;
 
 /// Implements matrix conversion API
 impl <'a, T:MagmaBase> Conversion<T> for MatrixView<'a, T> {
@@ -24,8 +24,8 @@ impl <'a, T:MagmaBase> Conversion<T> for MatrixView<'a, T> {
 
 #[cfg(test)]
 mod test{
-    use matrix::traits::*;
-    use matrix::constructors::*;
+    use traits::*;
+    use constructors::*;
 
     #[test]
     fn test_view_to_scalar(){

@@ -13,19 +13,19 @@ use num::{Float};
 use num::traits::{Signed};
 
 // local imports
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial,
+use sralgebra::{MagmaBase, CommutativeMonoidAddPartial,
         CommutativeMonoidMulPartial,
         FieldPartial};
-use matrix::matrix::Matrix;
+use matrix::Matrix;
 use error::SRError;
 
 
 // Reexports
-pub use matrix::eo::eo_traits::{ERO, ECO};
-pub use matrix::update::traits::{
+pub use eo::eo_traits::{ERO, ECO};
+pub use update::traits::{
     InPlaceUpdates, CopyUpdates};
-pub use matrix::transpose::traits::{Transpose, Frame};
-pub use matrix::extract::traits::{Extraction};
+pub use transpose::traits::{Transpose, Frame};
+pub use extract::traits::{Extraction};
 
 
 #[doc="Defines the features which all matrix types must implement.
@@ -143,6 +143,9 @@ pub trait MatrixBuffer<T:MagmaBase> {
 
     /// Maps a cell index to actual offset in buffer
     fn cell_to_offset(&self, r : usize,  c: usize)-> isize;
+
+    /// Maps a cell index to actual location in the internal vector
+    fn cell_to_location(&self, r : usize,  c: usize)-> usize;
 
     /// Returns the offset of the first cell in the buffer
     #[inline]
@@ -265,7 +268,7 @@ pub trait MinMax<T:CommutativeMonoidAddPartial+PartialOrd> : Shape<T> {
 
 
 /// Matrix min-max with absolute values API
-pub trait MinMaxAbs<T:Signed> : Shape<T> {
+pub trait MinMaxAbs<T:Signed+MagmaBase> : Shape<T> {
 
     // Returns the absolute minimum scalar value
     fn min_abs_scalar(&self) -> (T, usize, usize);

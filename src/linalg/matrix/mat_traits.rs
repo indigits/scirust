@@ -4,7 +4,7 @@
 
 
 // local imports
-use algebra::structure::{CommutativeRingPartial};
+use sralgebra::{CommutativeRingPartial};
 
 use error::SRError;
 

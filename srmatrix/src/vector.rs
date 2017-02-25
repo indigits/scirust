@@ -13,9 +13,9 @@ use num::traits::{One, Zero};
 
 
 // local imports
-use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeRingPartial};
-use matrix::matrix::Matrix;
-use matrix::traits::{Shape, MatrixBuffer};
+use sralgebra::{MagmaBase, CommutativeMonoidAddPartial, CommutativeRingPartial};
+use matrix::Matrix;
+use traits::{Shape, MatrixBuffer};
 
 pub struct VecIterator<T:MagmaBase> {
     ptr : *const T,
@@ -86,8 +86,8 @@ pub fn vec_reduce_product<T:CommutativeRingPartial>(v : &Matrix<T>) -> T{
 mod test{
 
     use super::*;
-    use matrix::traits::*;
-    use matrix::constructors::*;
+    use traits::*;
+    use constructors::*;
 
     #[test]
     fn test_vec_iter(){

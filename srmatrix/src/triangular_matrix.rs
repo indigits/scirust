@@ -6,7 +6,6 @@
 use std::ptr;
 use std::mem;
 use std::fmt;
-use std::rt::heap::allocate;
 
 // external imports
 use num::traits::{Zero, One};
@@ -14,21 +13,20 @@ use num::traits::{Zero, One};
 use num::complex::{Complex32, Complex64};
 
 // local imports
-use algebra::structure::{MagmaBase, 
+use sralgebra::{MagmaBase, 
     CommutativeMonoidAddPartial, 
     CommutativeMonoidMulPartial,
     CommutativeRingPartial};
-use matrix::matrix::Matrix;
+use matrix::Matrix;
 //use matrix::error::SRError;
 
-use matrix::traits::{Shape, NumberMatrix,
+use traits::{Shape, NumberMatrix,
     Introspection, 
     MatrixBuffer, Extraction};
 
 
 
 use util;
-use discrete::mod_n;
 
 #[doc = "
 Represents a triangular square matrix of numbers.

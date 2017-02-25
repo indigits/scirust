@@ -13,10 +13,11 @@ use num::traits::Num;
 
 
 /// local imports
-use discrete::mod_n;
-//use algebra::structure::{MagmaBase, CommutativeMonoidAddPartial, CommutativeRingPartial, FieldPartial};
-use algebra::structure::{MagmaBase};
-use matrix::traits::{Shape, MatrixBuffer, Strided};
+use mod_n;
+
+//use sralgebra::{MagmaBase, CommutativeMonoidAddPartial, CommutativeRingPartial, FieldPartial};
+use sralgebra::{MagmaBase};
+use traits::{Shape, MatrixBuffer, Strided};
 
 
 
