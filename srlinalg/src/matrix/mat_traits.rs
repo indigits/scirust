@@ -6,7 +6,7 @@
 // local imports
 use sralgebra::{CommutativeRingPartial};
 
-use error::SRError;
+use srmatrix::api::SRError;
 
 
 /// Linear algebra methods for matrix of numbers

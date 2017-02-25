@@ -2,8 +2,7 @@
 useful for testing purposes.
 "]
 
-use matrix::matrix::MatrixF64;
-use matrix::constructors::{matrix_rw_f64};
+use srmatrix::api::*;
 
 #[doc="Matrix properties:
  

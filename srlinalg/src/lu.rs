@@ -8,14 +8,8 @@
 
 // local imports
 //use error::SRError;
-use matrix::matrix::{Matrix, MatrixF64, MatrixU16};
-use matrix::constructors::from_range_rw_u16;
-use error::SRError;
-use discrete::permutations::*;
-use matrix::vector::*;
-use matrix::traits::{Shape, Search};
-use matrix::update::traits::InPlaceUpdates;
-use matrix::eo::eo_traits::{ECO, ERO};
+use srmatrix::api::*;
+use srdiscrete::api::*;
 
 
 #[doc="LU factorization with partial
@@ -311,8 +305,7 @@ pub fn lup_eco(a : &MatrixF64) -> (MatrixF64, MatrixF64, MatrixF64){
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::constructors::*;
-    use linalg::matrix::mat_traits::*;
+    use matrix::mat_traits::*;
 
     #[test]
     fn test_lu_ero_0(){
@@ -532,102 +525,102 @@ mod test{
  *   Bench marks follow.
  *
  *******************************************************/
-#[cfg(test)]
-mod bench {
-    extern crate test;
-    use super::*;
-    use matrix::constructors::*;
-    use self::test::Bencher;
+// #[cfg(test)]
+// mod bench {
+//     extern crate test;
+//     use super::*;
+//     use matrix::constructors::*;
+//     use self::test::Bencher;
 
-    #[bench]
-    fn bench_lu_ero_hadamard_32 (b: &mut Bencher){
-        let a = hadamard(32).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_ero();
-        });
-    }
+//     #[bench]
+//     fn bench_lu_ero_hadamard_32 (b: &mut Bencher){
+//         let a = hadamard(32).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_ero();
+//         });
+//     }
 
 
-    #[bench]
-    fn bench_lu_ero_hadamard_64 (b: &mut Bencher){
-        let a = hadamard(64).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_ero();
-        });
-    }
+//     #[bench]
+//     fn bench_lu_ero_hadamard_64 (b: &mut Bencher){
+//         let a = hadamard(64).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_ero();
+//         });
+//     }
 
-    #[bench]
-    fn bench_lu_ero_hadamard_128 (b: &mut Bencher){
-        let a = hadamard(128).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_ero();
-        });
-    }
+//     #[bench]
+//     fn bench_lu_ero_hadamard_128 (b: &mut Bencher){
+//         let a = hadamard(128).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_ero();
+//         });
+//     }
 
-    #[bench]
-    fn bench_lu_ero_hadamard_256 (b: &mut Bencher){
-        let a = hadamard(256).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_ero();
-        });
-    }
+//     #[bench]
+//     fn bench_lu_ero_hadamard_256 (b: &mut Bencher){
+//         let a = hadamard(256).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_ero();
+//         });
+//     }
 
-    #[bench]
-    #[ignore]
-    fn bench_lu_ero_hadamard_512 (b: &mut Bencher){
-        let a = hadamard(512).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_ero();
-        });
-    }
+//     #[bench]
+//     #[ignore]
+//     fn bench_lu_ero_hadamard_512 (b: &mut Bencher){
+//         let a = hadamard(512).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_ero();
+//         });
+//     }
 
-    #[bench]
-    fn bench_lu_eco_hadamard_32 (b: &mut Bencher){
-        let a = hadamard(32).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_eco();
-        });
-    }
+//     #[bench]
+//     fn bench_lu_eco_hadamard_32 (b: &mut Bencher){
+//         let a = hadamard(32).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_eco();
+//         });
+//     }
 
-    #[bench]
-    fn bench_lu_eco_hadamard_64 (b: &mut Bencher){
-        let a = hadamard(64).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_eco();
-        });
-    }
+//     #[bench]
+//     fn bench_lu_eco_hadamard_64 (b: &mut Bencher){
+//         let a = hadamard(64).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_eco();
+//         });
+//     }
 
-    #[bench]
-    fn bench_lu_eco_hadamard_128 (b: &mut Bencher){
-        let a = hadamard(128).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_eco();
-        });
-    }
+//     #[bench]
+//     fn bench_lu_eco_hadamard_128 (b: &mut Bencher){
+//         let a = hadamard(128).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_eco();
+//         });
+//     }
 
-    #[bench]
-    fn bench_lu_eco_hadamard_256 (b: &mut Bencher){
-        let a = hadamard(256).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_eco();
-        });
-    }
+//     #[bench]
+//     fn bench_lu_eco_hadamard_256 (b: &mut Bencher){
+//         let a = hadamard(256).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_eco();
+//         });
+//     }
 
-    #[bench]
-    fn bench_lu_eco_hadamard_512 (b: &mut Bencher){
-        let a = hadamard(512).unwrap();
-        let mut lus = LUDecomposition::new(a);
-        b.iter(|| {
-            lus.decompose_eco();
-        });
-    }
-}
+//     #[bench]
+//     fn bench_lu_eco_hadamard_512 (b: &mut Bencher){
+//         let a = hadamard(512).unwrap();
+//         let mut lus = LUDecomposition::new(a);
+//         b.iter(|| {
+//             lus.decompose_eco();
+//         });
+//     }
+// }

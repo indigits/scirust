@@ -1,0 +1,19 @@
+[package]
+name = "srlinalg"
+version = "0.1.0"
+authors = ["Shailesh Kumar <shailesh@indigits.com>"]
+
+[dependencies]
+log = "0.3.1"
+num = "0.1.36"
+sralgebra = { path = "../sralgebra" }
+srmatrix = { path = "../srmatrix" }
+srdiscrete = { path = "../srdiscrete" }
+
+
+[lib]
+bench = false
+
+[[bench]]
+name = "example"
+harness = false

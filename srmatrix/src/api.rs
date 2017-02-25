@@ -1,5 +1,6 @@
 
 // Matrix library
+pub use error::*;
 pub use matrix::*;
 pub use traits::*;
 pub use constructors::*;
@@ -12,3 +13,4 @@ pub use matrix_minmax::*;
 pub use view_conversion::*;
 pub use view_minmax::*;
 pub use eo::*;
+

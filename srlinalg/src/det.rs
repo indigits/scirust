@@ -4,10 +4,10 @@ use num::traits::{Float, Signed, One};
 
 // local imports
 use sralgebra::{CommutativeRingPartial};
-use matrix::matrix::{Matrix};
-use matrix::traits::{Shape, Extraction, MatrixBuffer, Search};
-use matrix::eo::eo_traits::ECO;
-use error::SRError;
+use srmatrix::api::{Matrix};
+use srmatrix::api::{Shape, Extraction, MatrixBuffer, Search};
+use srmatrix::api::eo_traits::ECO;
+use srmatrix::api::SRError;
 
 #[doc="Returns the determinant of a matrix.
 
@@ -70,7 +70,7 @@ pub fn det_naive<T:CommutativeRingPartial>(m : &Matrix<T>)->T{
     sign = -sign;
     for c in 0..(n-1){
         for r in 1..n{
-            debug!("r : {}, c : {}", r , c);
+            //debug!("r : {}, c : {}", r , c);
             let src_offset = m.cell_to_offset(r, c);
             let dst_offset = m2.cell_to_offset(r - 1, c);
             //debug_assert!(src_offset < m.capacity() as int);
@@ -148,10 +148,9 @@ pub fn det_ge<T:CommutativeRingPartial+Signed+Float+PartialOrd>(a : &mut Matrix<
 #[cfg(test)]
 mod test{
     use super::*;
-    use linalg::matrix::mat_traits::*;
+    use srmatrix::api::*;
+    use matrix::mat_traits::*;
     use testdata;
-    use matrix::matrix::*;
-    use matrix::constructors::*;
 
     #[test]
     fn test_det_0(){
@@ -208,7 +207,7 @@ mod test{
 
     #[test]
     fn test_empty_mat_det(){
-        let m : MatrixI64 = Matrix::new(0, 0);
+        let m : MatrixI64 = Matrix::new_uninitialized(0, 0);
         let d = m.det().unwrap();
         assert_eq!(d, 1);
     }
@@ -230,31 +229,31 @@ mod test{
 #[cfg(test)]
 mod bench{
 
-    extern crate test;
-    use self::test::Bencher;
-    use super::*;
-    use matrix::constructors::*;
+    // extern crate test;
+    // use self::test::Bencher;
+    // use super::*;
+    // use matrix::constructors::*;
 
-    #[bench]
-    fn bench_det_naive_hadamard_8 (b: &mut Bencher){
-        let a = hadamard(8).unwrap();
-        b.iter(|| {
-            det_naive(&a);
-        });
-    }
-    #[bench]
-    fn bench_det_ge_hadamard_8 (b: &mut Bencher){
-        let a = hadamard(8).unwrap();
-        b.iter(|| {
-            det_ge(&mut a.clone());
-        });
-    }
-    #[bench]
-    #[ignore]
-    fn bench_det_naive_hadamard_16 (b: &mut Bencher){
-        let a = hadamard(16).unwrap();
-        b.iter(|| {
-            det_naive(&a);
-        });
-    }
+    // #[bench]
+    // fn bench_det_naive_hadamard_8 (b: &mut Bencher){
+    //     let a = hadamard(8).unwrap();
+    //     b.iter(|| {
+    //         det_naive(&a);
+    //     });
+    // }
+    // #[bench]
+    // fn bench_det_ge_hadamard_8 (b: &mut Bencher){
+    //     let a = hadamard(8).unwrap();
+    //     b.iter(|| {
+    //         det_ge(&mut a.clone());
+    //     });
+    // }
+    // #[bench]
+    // #[ignore]
+    // fn bench_det_naive_hadamard_16 (b: &mut Bencher){
+    //     let a = hadamard(16).unwrap();
+    //     b.iter(|| {
+    //         det_naive(&a);
+    //     });
+    // }
 }

@@ -4,14 +4,9 @@
 
 // std imports
 
-// srmat imports
-//use error::SRError;
-use matrix::matrix::{MatrixF64};
-use matrix::traits::{Shape, NumberMatrix,
-    MinMaxAbs};
-use error::SRError;
-use linalg::singularity::*;
-use matrix::eo::eo_traits::ERO;
+// local imports
+use srmatrix::api::*;
+use singularity::*;
 
 
 /// A Gauss elimination problem specification
@@ -291,8 +286,6 @@ impl<'a, 'b, 'c> LinearSystemValidator<'a, 'b, 'c>{
 #[cfg(test)]
 mod test{
     use super::*;
-    use matrix::constructors::*;
-    use matrix::traits::*;
 
     #[test]
     fn test_ge_0(){

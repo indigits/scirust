@@ -5,14 +5,11 @@
 // std imports
 
 // external imports
-use num::{Zero};
 
 // local imports
 use sralgebra::{CommutativeMonoidAddPartial,
 CommutativeMonoidMulPartial};
-//use error::SRError;
-use matrix::matrix::Matrix;
-use matrix::traits::{Shape, NumberMatrix};
+use srmatrix::api::*;
 
 /// Indicates if a lower triangular matrix is singular or not.
 pub fn is_singular_lt<T:CommutativeMonoidAddPartial+CommutativeMonoidMulPartial>(m : &Matrix<T>) -> bool {
@@ -58,10 +55,9 @@ pub fn has_zero_on_diagonal<T:CommutativeMonoidAddPartial>(m : &Matrix<T>) -> bo
 #[cfg(test)]
 mod test{
 
-    use matrix::constructors::*;
-    use matrix::traits::*;
+    use srmatrix::api::*;
     use super::*;
-    use linalg::matrix::mat_traits::*;
+    use matrix::mat_traits::*;
 
     #[test]
     fn test_triangular_singularity(){

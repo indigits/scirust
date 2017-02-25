@@ -7,14 +7,13 @@ use num::Signed;
 // local imports
 use sralgebra::{CommutativeRingPartial};
 use super::mat_traits::LANumberMatrix;
-use linalg;
-use matrix::matrix::Matrix;
-use error::SRError;
+use srmatrix::api::*;
+use det;
 
 impl<T:CommutativeRingPartial+Signed> LANumberMatrix<T> for Matrix<T>{
     /// Returns determinant of the matrix
     fn det(&self) -> Result<T,SRError>{
-        linalg::det::det(self)
+        det::det(self)
     }
 }
 
