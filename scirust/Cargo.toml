@@ -28,14 +28,14 @@ license="Apache-2.0"
 log = "0.3.1"
 rand = "0.3.7"
 num = "*"
-sralgebra = { path = "../sralgebra" }
-srdiscrete = { path = "../srdiscrete" }
-sralgorithm = { path = "../sralgorithm" }
-srmatrix = { path = "../srmatrix" }
-srlinalg = { path = "../srlinalg" }
-srsignal = { path = "../srsignal" }
-srstat = { path = "../srstat" }
-#sropt = { path = "../sropt" }
+sralgebra = { path = "../sralgebra" , version="*"}
+srdiscrete = { path = "../srdiscrete" , version="*"}
+sralgorithm = { path = "../sralgorithm"  , version="*"}
+srmatrix = { path = "../srmatrix"  , version="*"}
+srlinalg = { path = "../srlinalg"  , version="*"}
+srsignal = { path = "../srsignal"  , version="*"}
+srstat = { path = "../srstat"  , version="*"}
+#sropt = { path = "../sropt"  , version="*"}
 
 
 #[[bin]]
