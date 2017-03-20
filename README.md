@@ -70,13 +70,14 @@ Working with matrices requires a lot of low level code. As
 a user of the library, we expect that you won't have to write
 the low level code yourself. If you are reading or debugging
 through the source code of the library, you would see a lot
-of low level code. Familiarity with Rust 
-help you sail through them.
+of low level code. Good knowledge of Rust 
+help you sail through them. Check out topics like: 
 
 * [References and Borrowing](https://doc.rust-lang.org/book/references-and-borrowing.html)
 * [Lifetimes](https://doc.rust-lang.org/book/lifetimes.html)
 * [Unsafe code](https://doc.rust-lang.org/book/unsafe.html)
 * [Raw Pointers](https://doc.rust-lang.org/book/raw-pointers.html)
+* [Traits](https://doc.rust-lang.org/book/traits.html)
 
 
 The library code is full of unit tests. These unit tests serve
