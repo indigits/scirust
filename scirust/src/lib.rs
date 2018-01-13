@@ -78,6 +78,7 @@ extern crate srmatrix;
 extern crate srlinalg;
 extern crate srsignal;
 extern crate srstat;
+extern crate srinterp;
 
 // Common modules
 

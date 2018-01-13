@@ -36,6 +36,7 @@ srlinalg = { path = "../srlinalg"  , version="*"}
 srsignal = { path = "../srsignal"  , version="*"}
 srstat = { path = "../srstat"  , version="*"}
 #sropt = { path = "../sropt"  , version="*"}
+srinterp = { path = "../srinterp" , version="*"}
 
 
 #[[bin]]

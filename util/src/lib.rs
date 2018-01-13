@@ -11,6 +11,7 @@ extern crate core;
 // modules
 //pub mod memory;
 pub mod print;
+pub mod sorting;
 
 
 #[cfg(test)]
