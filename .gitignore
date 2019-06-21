@@ -17,3 +17,5 @@ debug/*
 target/*
 */target/*
 
+*/.vscode/tasks.json
+*.swp
