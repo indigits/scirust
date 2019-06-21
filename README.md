@@ -13,8 +13,6 @@ Current emphasis is less on performance and more on providing a comprehensive AP
 [![](http://meritbadge.herokuapp.com/scirust)](https://crates.io/crates/scirust)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/indigits/scirust?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-NOTE: The library currently doesn't build against the stable release of Rust. It builds
-against the nightly release of Rust. This scenario is likely to stay till Q3 2015.
 
 Current areas of focus
 
@@ -25,9 +23,6 @@ Current areas of focus
 * Signal processing
 
 
-For more details and examples, 
-see the 
-[API Documentation ](http://indigits.github.io/scirust/).
 
 A discussion group is setup at
 [SciRust Google Group](https://groups.google.com/forum/#!forum/scirust).
@@ -64,7 +59,7 @@ A discussion group is setup at
 
 
 If you are unfamiliar with Rust, you are recommended to go through
-[The Rust Guide](http://doc.rust-lang.org/guide.html).
+[The Rust Programming Language Book](https://doc.rust-lang.org/book/README.html).
 
 The library can be built and used using 
 [Cargo](http://doc.crates.io/guide.html) which is the official
@@ -75,12 +70,14 @@ Working with matrices requires a lot of low level code. As
 a user of the library, we expect that you won't have to write
 the low level code yourself. If you are reading or debugging
 through the source code of the library, you would see a lot
-of low level code. Familiarity with following guides will
-help you sail through them.
+of low level code. Good knowledge of Rust 
+help you sail through them. Check out topics like: 
 
-* [References and Lifetime Guide](http://doc.rust-lang.org/guide-lifetimes.html)
-* [Writing low level and unsafe code in Rust](http://doc.rust-lang.org/guide-unsafe.html)
-* [Rust Pointers Guide](http://doc.rust-lang.org/guide-pointers.html)
+* [References and Borrowing](https://doc.rust-lang.org/book/references-and-borrowing.html)
+* [Lifetimes](https://doc.rust-lang.org/book/lifetimes.html)
+* [Unsafe code](https://doc.rust-lang.org/book/unsafe.html)
+* [Raw Pointers](https://doc.rust-lang.org/book/raw-pointers.html)
+* [Traits](https://doc.rust-lang.org/book/traits.html)
 
 
 The library code is full of unit tests. These unit tests serve
@@ -93,7 +90,7 @@ multiple purposes
 
 
 If you haven't read already, please familiarize yourself with
-[Rust Testing Guide](http://doc.rust-lang.org/guide-testing.html).
+[Unit Testing in Rust](https://doc.rust-lang.org/book/testing.html).
 Writing unit tests will help you write better and more reliable code.
 
 
