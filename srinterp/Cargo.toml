@@ -1,0 +1,4 @@
+[package]
+name = "srinterp"
+version = "0.1.0"
+authors = ["Vladimir Ivanov <zlumyo@gmail.com>"]
